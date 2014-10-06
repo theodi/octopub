@@ -1,13 +1,26 @@
 Given(/^I have a Github account$/) do
   @email = 'test@example.com'
+  @name = "Test User"
+  @nickname = "test"
+  @token = "abcd123r4feefdsfscas"
 
   OmniAuth.config.mock_auth[:github] = {
       "provider"=>"github",
       "uid" => "123545",
       "info"=> {
+                  "nickname"=> @nickname,
                   "email"=> @email,
-                  "name"=>"Test User"
-               }
+                  "name"=>@name,
+                  "image"=>"https://avatars.githubusercontent.com/u/123545?v=2",
+                  "urls" => {
+                      "GitHub"=>"https://github.com/test",
+                      "Blog"=>nil
+                  }
+               },
+      "credentials" => {
+                    "token" => @token,
+                    "expires" => false
+                  }
   }
 end
 
@@ -29,4 +42,6 @@ Then(/^a user should be created in the database$/) do
   user = User.first
 
   expect(user.email).to eql(@email)
+  expect(user.name).to eql(@nickname)
+  expect(user.token).to eql(@token)
 end
