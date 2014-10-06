@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 #ruby=ruby-2.1.2
 #ruby-gemset=git-data-publisher
 
+ruby '2.1.2'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 # Use SCSS for stylesheets
@@ -35,6 +37,7 @@ end
 
 group :production do
   gem 'rails_12factor'
+  gem 'unicorn'
 end
 
 gem 'omniauth-github'
