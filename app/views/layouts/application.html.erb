@@ -37,20 +37,14 @@
 
       </nav>
 
-      <% if flash.count > 0 %>
-        <div class="row">
-          <div class="col-md-12">
-            <% flash.each do |name, msg| %>
-              <% if msg.is_a?(String) %>
-                <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-
       <div class="row">
         <div class="col-md-12">
+          <% flash.each do |name, msg| %>
+            <% if msg.is_a?(String) %>
+              <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
+            <% end %>
+          <% end %>
+          
           <%= yield %>
         </div>
       </div>
