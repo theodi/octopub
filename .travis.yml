@@ -5,9 +5,9 @@ rvm:
 - 2.1.2
 bundler_args: "--without development --path=~/.bundle"
 before_script:
-  - bundle exec rake db:create db:migrate 
+- bundle exec rake db:create db:migrate
 addons:
-  postgresql: "9.3"
+  postgresql: '9.3'
 notifications:
   irc:
     channels:
@@ -19,7 +19,7 @@ notifications:
 deploy:
   provider: heroku
   api_key:
-    secure: NoZ/CbTKvDZ2JaeA6ObgWZd8QlzBMYdv/9uSZoMsek++MaZz0bah6UgQrETdbukbYLXlshSwFawvZP3CL8HLNou+R7brllQtfStfEcK5T3tzAYe2I1HtHbK/7q+nfHaeJg8CScu2QU9g3Ebt0ehhQ7zQXyralKvcXTrcpS8oHb0=
+    secure: P0dNrAt/U6fOuVW2yF11+SbGaEMlefaMyQ5ZurbRJdU3eB3BTOscjEayoIjDjFWCtFwLOpTgq+ZJMTdJuHgiJzGIgyVNbAZLaCuvz69rtUSiqoZvSASfVHfwIm11KM8dhUfa1VHXOnbzNCQHx6PO1nDaaYdK3jAHB7GZ1QhFIPc=
   run:
     - "rake db:migrate"
   app: git-data-publisher
