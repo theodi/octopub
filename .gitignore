@@ -2,3 +2,5 @@ db/development.sqlite3
 log/development.log
 db/test.sqlite3
 log/test.log
+.env
+tmp
