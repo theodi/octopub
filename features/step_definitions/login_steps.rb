@@ -36,6 +36,10 @@ Then(/^I should see a message saying I have logged in successfully$/) do
   expect(page).to have_content 'Signed in!'
 end
 
+Then(/^I should see that I am signed in$/) do
+  expect(page).to have_content "Signed in as #{@nickname}"
+end
+
 Then(/^a user should be created in the database$/) do
   expect(User.count).to eql(1)
 
