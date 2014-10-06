@@ -19,7 +19,7 @@ notifications:
 deploy:
   provider: heroku
   api_key:
-    secure: P0dNrAt/U6fOuVW2yF11+SbGaEMlefaMyQ5ZurbRJdU3eB3BTOscjEayoIjDjFWCtFwLOpTgq+ZJMTdJuHgiJzGIgyVNbAZLaCuvz69rtUSiqoZvSASfVHfwIm11KM8dhUfa1VHXOnbzNCQHx6PO1nDaaYdK3jAHB7GZ1QhFIPc=
+    secure: YJnNMUmk/xpwehdo8uc3zaBwOY3LpmF1arjXQUIWE5cJ8a0XQ6CiyvccMKGIufKvqiyS5LX1ObQxbROZNyM2GLn5NB/Q6tBpGH8MuvVUVRELb1SUyirBLRjH6ojD7ObeEOkVs64FEXq/zYjOfi8/q+MOyxacK2ltt6VK8s0Nev4=
   run:
     - "rake db:migrate"
   app: git-data-publisher
