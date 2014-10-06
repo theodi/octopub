@@ -1,26 +1,60 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>GitDataPublisher</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Git Data Publisher</title>
 
-  <% flash.each do |name, msg| %>
-    <% if msg.is_a?(String) %>
-      <%= content_tag :div, msg, :class => "flash_#{name}" %>
-    <% end %>
-  <% end %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
 
-  <% if current_user %>
-    <p><%= link_to 'Logout', signout_path %></p>
-  <% else %>
-    <p><%= link_to 'Sign in with Github', '/auth/github' %></p>
-  <% end %>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container-fluid">
+      <nav class="navbar" role="navigation">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Git Data Publisher</a>
+        </div>
 
-<%= yield %>
+        <% if current_user %>
+          <p class="navbar-text navbar-right">
+            Signed in as <%= current_user.name %>
+            <%= bs_button_to 'Logout', signout_path, style: "primary" %>
+          </p>
+        <% else %>
+          <p class="navbar-text navbar-right">
+            <%= bs_button_to 'Sign in with Github', '/auth/github', style: "primary" %>
+          </p>
+        <% end %>
 
-</body>
+      </nav>
+
+      <% if flash.count > 0 %>
+        <div class="row">
+          <div class="col-md-12">
+            <% flash.each do |name, msg| %>
+              <% if msg.is_a?(String) %>
+                <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="row">
+        <div class="col-md-12">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+
+  </body>
 </html>
