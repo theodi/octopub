@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
 
   def create
     current_user.datasets.create(name: params["dataset"]["name"])
-    redirect_to datasets_path
+    redirect_to datasets_path, :notice => "Dataset created sucessfully"
   end
 
 end

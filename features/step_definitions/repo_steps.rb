@@ -27,3 +27,7 @@ When(/^the repo details should be stored in the database$/) do
   expect(dataset.name).to eql(@name)
   expect(dataset.url).to eql(@url)
 end
+
+When(/^I should see "(.*?)"$/) do |message|
+  expect(page).to have_content message
+end

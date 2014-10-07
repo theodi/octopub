@@ -7,5 +7,6 @@ Feature: Upload data to Github
     And I add my dataset details
     Then a new Github repo should be created
     When I click submit
+    And I should see "Dataset created sucessfully"
     And the repo details should be stored in the database
     And my repo should be listed in the datasets index
