@@ -4,7 +4,18 @@ end
 
 When(/^I add my dataset details$/) do
   @name = "My cool dataset"
+  @description = "This is a description"
+  @publisher_name = "Cool inc"
+  @publisher_url = "http://example.com"
+  @license = Odlifier::License.define("ogl-uk")
+  @frequency = "Monthly"
+
   fill_in "Dataset name", with: @name
+  fill_in "Description", with: @description
+  fill_in "Publisher name", with: @publisher_name
+  fill_in "Publisher URL", with: @publisher_url
+  select @license.title, from: "_dataset[license]"
+  select @frequency, from: "_dataset[frequency]"
 end
 
 When(/^I specify a file$/) do
@@ -39,9 +50,15 @@ end
 
 When(/^the repo details should be stored in the database$/) do
   dataset = Dataset.last
+
   expect(dataset.name).to eql(@name)
+  expect(dataset.description).to eql(@description)
   expect(dataset.url).to eql(@url)
   expect(dataset.repo).to eql(@repo)
+  expect(dataset.publisher_name).to eql(@publisher_name)
+  expect(dataset.publisher_url).to eql(@publisher_url)
+  expect(dataset.license).to eql(@license.id)
+  expect(dataset.frequency).to eql(@frequency)
 end
 
 When(/^I should see "(.*?)"$/) do |message|

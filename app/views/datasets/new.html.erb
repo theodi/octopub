@@ -2,9 +2,24 @@
 
 <%= bootstrap_form_tag url: datasets_path, method: :post do |f| %>
   <%= f.text_field "dataset[name]", label: "Dataset name" %>
+  <%= f.text_area "dataset[description]", label: "Description" %>
+  <%= f.text_field "dataset[publisher_name]", label: "Publisher name" %>
+  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL" %>
+  <%= f.select "dataset[license]", @licenses, label: "License" %>
+  <%= f.select "dataset[frequency]", [
+                                        "One-off",
+                                        "Annual",
+                                        "Every working day",
+                                        "Daily", "Monthly",
+                                        "Every minute",
+                                        "Every quarter",
+                                        "Half yearly",
+                                        "Weekly"
+                                      ], label: "Publication frequency" %>
   <fieldset>
     <h3>Data files</h3>
     <div class="well bg-info">
+      <%= f.text_field "files[][title]", label: "Title" %>
       <%= f.file_field "files[][file]", label: "File" %>
     </div>
   </fieldset>
