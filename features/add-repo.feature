@@ -1,7 +1,7 @@
 @omniauth @vcr
 Feature: Upload data to Github
 
-  Scenario: Add data to new repo
+  Scenario: Create new repo without data
     Given I am signed into Github
     When I go to the add new dataset page
     And I add my dataset details
