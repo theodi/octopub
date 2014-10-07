@@ -4,7 +4,21 @@ end
 
 When(/^I add my dataset details$/) do
   @name = "My cool dataset"
-  fill_in "dataset_name", with: @name
+  fill_in "Dataset name", with: @name
+end
+
+When(/^I specify a file$/) do
+  @filename = 'test-data.csv'
+  attach_file "_files[][file]", File.join(Rails.root, 'features', 'fixtures', @filename)
+end
+
+When(/^my dataset should get added to my repo$/) do
+  expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      @repo,
+      @filename,
+      "Adding #{@filename}",
+      File.open(File.join(Rails.root, 'features', 'fixtures', @filename)).read
+  )
 end
 
 When(/^I click submit$/) do
