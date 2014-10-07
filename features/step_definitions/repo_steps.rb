@@ -12,9 +12,10 @@ When(/^I click submit$/) do
 end
 
 Then(/^a new Github repo should be created$/) do
-  @url = "https://github.com/test/My-cool-dataset"
+  @repo = "test/My-cool-dataset"
+  @url = "https://github.com/#{@repo}"
   expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(@name) {
-     { html_url: @url }
+     { html_url: @url, full_name: @repo }
   }
 end
 
@@ -26,6 +27,7 @@ When(/^the repo details should be stored in the database$/) do
   dataset = Dataset.last
   expect(dataset.name).to eql(@name)
   expect(dataset.url).to eql(@url)
+  expect(dataset.repo).to eql(@repo)
 end
 
 When(/^I should see "(.*?)"$/) do |message|

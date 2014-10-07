@@ -8,6 +8,7 @@ class Dataset < ActiveRecord::Base
     def create_in_github
       repo = user.octokit_client.create_repository(name)
       self.url = repo[:html_url]
+      self.repo = repo[:full_name]
     end
 
 end
