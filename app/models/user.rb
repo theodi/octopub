@@ -1,12 +1,12 @@
 class User < ActiveRecord::Base
 
-  def self.create_with_omniauth(auth)
-    create! do |user|
-      user.provider = auth["provider"]
-      user.uid = auth["uid"]
-      user.email = auth["info"]["email"]
-      user.name = auth["info"]["nickname"]
-      user.token = auth["credentials"]["token"]
-    end
+  def self.find_for_github_oauth(auth)
+    user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
+    user.update_attributes(
+                           name: auth["info"]["nickname"],
+                           email: auth["info"]["email"],
+                           token: auth["credentials"]["token"]
+                          )
+    user
   end
 end
