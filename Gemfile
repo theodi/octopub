@@ -32,6 +32,7 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'rspec-expectations'
+  gem 'rspec-mocks'
   gem 'pry'
 end
 
@@ -40,9 +41,15 @@ group :production do
   gem 'unicorn'
 end
 
+group :development do
+  gem 'pry-remote'
+end
+
 gem 'omniauth-github'
 gem 'dotenv-rails'
 gem 'pg'
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
+gem 'bootstrap_form'
+gem 'octokit'

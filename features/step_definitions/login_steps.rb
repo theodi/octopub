@@ -49,3 +49,12 @@ Then(/^a user should be created in the database$/) do
   expect(user.name).to eql(@nickname)
   expect(user.token).to eql(@token)
 end
+
+Given(/^I am signed into Github$/) do
+  steps %Q{
+    Given I have a Github account
+    And I visit the homepage
+    And I click on the login link
+  }
+  @user = User.find_by_email(@email)
+end
