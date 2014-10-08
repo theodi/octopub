@@ -4,12 +4,13 @@ class Dataset < ActiveRecord::Base
   before_create :create_in_github
 
   def add_files(files)
-    files.each { |file| create_contents(file["file"].original_filename, file["file"].tempfile.read) }
+    files.each { |file| create_contents(file["file"].original_filename, file["file"].tempfile.read, "data") }
     add_datapackage(files)
   end
 
-  def create_contents(filename, file)
-    user.octokit_client.create_contents(repo, filename, "Adding #{filename}", file)
+  def create_contents(filename, file, folder = "")
+    path = folder.blank? ? filename : folder + "/" + filename
+    user.octokit_client.create_contents(repo, path, "Adding #{filename}", file)
   end
 
   def add_datapackage(files)

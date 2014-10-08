@@ -63,7 +63,7 @@ Then(/^my (\d+) datasets should get added to my repo$/) do |num|
     file = @files[n]
     expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @repo,
-      file[:filename],
+      "data/" + file[:filename],
       "Adding #{file[:filename]}",
       File.open(file[:path]).read
     )
@@ -73,7 +73,7 @@ end
 When(/^my dataset should get added to my repo$/) do
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @repo,
-      @files.first[:filename],
+      "data/" + @files.first[:filename],
       "Adding #{@files.first[:filename]}",
       File.open(@files.first[:path]).read
   )
