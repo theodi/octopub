@@ -77,6 +77,7 @@ When(/^my dataset should get added to my repo$/) do
       "Adding #{@files.first[:filename]}",
       File.open(@files.first[:path]).read
   )
+  expect_any_instance_of(Octokit::Client).to receive(:create_contents).at_least(:once)
 end
 
 When(/^I click submit$/) do
@@ -109,4 +110,8 @@ end
 
 When(/^I should see "(.*?)"$/) do |message|
   expect(page).to have_content message
+end
+
+When(/^I don't specify any files$/) do
+  # nothing
 end

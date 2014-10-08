@@ -4,7 +4,6 @@ class Dataset < ActiveRecord::Base
   before_create :create_in_github
 
   def add_files(files)
-    clear_empty_files(files)
     files.each { |file| create_contents(file["file"].original_filename, file["file"].tempfile.read) }
     add_datapackage(files)
   end
@@ -52,10 +51,6 @@ class Dataset < ActiveRecord::Base
   end
 
   private
-
-    def clear_empty_files(files)
-      files.delete_if { |f| f["file"].nil? }
-    end
 
     def create_in_github
       repo = user.octokit_client.create_repository(name)
