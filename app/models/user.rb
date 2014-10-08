@@ -13,7 +13,8 @@ class User < ActiveRecord::Base
   end
 
   def octokit_client
-    Octokit::Client.new :access_token => token
+    @client ||= Octokit::Client.new :access_token => token
+    @client
   end
 
 end
