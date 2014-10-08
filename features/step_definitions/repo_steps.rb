@@ -17,6 +17,8 @@ When(/^I add my dataset details$/) do
   fill_in "Publisher URL", with: @publisher_url
   select @license.title, from: "_dataset[license]"
   select @frequency, from: "_dataset[frequency]"
+
+  @repo = "test/My-cool-dataset"
 end
 
 When(/^I specify a file$/) do
@@ -34,6 +36,7 @@ When(/^I specify a file$/) do
 end
 
 When(/^I specify (\d+) files$/) do |num|
+  @dataset_count = num.to_i
   num.to_i.times do |n|
     filename = "test-data-#{n}.csv"
 
@@ -41,12 +44,15 @@ When(/^I specify (\d+) files$/) do |num|
     file.write(SecureRandom.hex)
     file.rewind
 
+    name = "Test Data #{n}"
+
     @files << {
       :name => "Test Data #{n}",
       :filename => File.basename(file.path),
       :path => file.path
     }
 
+    all("#files input[type=text]").last.set(name)
     all("input[type=file]").last.set(file.path)
     click_link 'clone'
   end
@@ -78,7 +84,6 @@ When(/^I click submit$/) do
 end
 
 Then(/^a new Github repo should be created$/) do
-  @repo = "test/My-cool-dataset"
   @url = "https://github.com/#{@repo}"
   expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(@name) {
      { html_url: @url, full_name: @repo }
