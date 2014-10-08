@@ -6,13 +6,12 @@ class Dataset < ActiveRecord::Base
   def add_files(files)
     clear_empty_files(files)
     files.each do |file|
-      user.octokit_client.create_contents(
-                                          repo,
-                                          file["file"].original_filename,
-                                          "Adding #{file["file"].original_filename}",
-                                          file["file"].tempfile.read
-                                          )
+      create_contents(file["file"].original_filename, file["file"].tempfile.read)
     end
+  end
+
+  def create_contents(filename, file)
+    user.octokit_client.create_contents(repo, filename, "Adding #{filename}", file)
   end
 
   private
