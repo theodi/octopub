@@ -16,3 +16,22 @@
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+body {
+  padding: 20px 0;
+}
+
+.navbar-text {
+  margin: 7px 15px 5px 0 !important;
+
+  .btn {
+    margin-left: 7px;
+  }
+}
+
+footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid #e5e5e5;
+}

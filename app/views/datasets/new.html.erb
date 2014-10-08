@@ -1,4 +1,4 @@
-<h2>Add Dataset</h2>
+<h1 class="page-header">Add Dataset</h1>
 
 <%= bootstrap_form_tag url: datasets_path, method: :post do |f| %>
   <%= f.text_field "dataset[name]", label: "Dataset name" %>
@@ -23,5 +23,5 @@
       <%= f.file_field "files[][file]", label: "File" %>
     </div>
   </fieldset>
-  <%= f.submit "Submit" %>
+  <%= f.submit "Submit", class: "btn btn-primary btn-lg btn-block" %>
 <% end %>

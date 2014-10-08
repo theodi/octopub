@@ -18,8 +18,8 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container-fluid">
-      <nav class="navbar" role="navigation">
+    <div class="container">
+      <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">Git Data Publisher</a>
         </div>
@@ -45,7 +45,7 @@
       </nav>
 
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
           <% flash.each do |name, msg| %>
             <% if msg.is_a?(String) %>
               <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
@@ -55,7 +55,13 @@
           <%= yield %>
         </div>
       </div>
+
+      <footer>
+        <p class="text-center text-muted">An <a href="http://theodi.org/">Open Data Institute Experiment</a></p>
+      </footer>
+
     </div>
+
 
   </body>
 </html>
