@@ -19,3 +19,13 @@ Feature: Upload data to Github
     Then a new Github repo should be created
     And my dataset should get added to my repo
     When I click submit
+
+  @javascript
+  Scenario: Create new repo with multiple datasets
+    Given I am signed into Github
+    When I go to the add new dataset page
+    And I add my dataset details
+    And I specify 5 files
+    Then a new Github repo should be created
+    And my 5 datasets should get added to my repo
+    When I click submit

@@ -16,12 +16,29 @@
                                         "Half yearly",
                                         "Weekly"
                                       ], label: "Publication frequency" %>
-  <fieldset>
+  <div id="files">
     <h3>Data files</h3>
-    <div class="well bg-info">
-      <%= f.text_field "files[][title]", label: "Title" %>
-      <%= f.file_field "files[][file]", label: "File" %>
-    </div>
-  </fieldset>
+    <fieldset class="file">
+      <div class="well bg-info">
+        <%= f.text_field "files[][title]", label: "Title" %>
+        <%= f.file_field "files[][file]", label: "File" %>
+      </div>
+    </fieldset>
+  </div>
+  <p class="text-right" id="wut">
+    <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
   <%= f.submit "Submit", class: "btn btn-primary btn-lg btn-block" %>
 <% end %>
+
+<script>
+  $(document).ready(function() {
+    var file = $('.file:first').clone();
+
+    $('#clone').click(function(e) {
+      e.preventDefault();
+      $(file).clone().appendTo('#files');
+    });
+
+  });
+</script>

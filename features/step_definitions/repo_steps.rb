@@ -23,6 +23,31 @@ When(/^I specify a file$/) do
   attach_file "_files[][file]", File.join(Rails.root, 'features', 'fixtures', @filename)
 end
 
+When(/^I specify (\d+) files$/) do |num|
+  num.to_i.times do |n|
+    filename = "test-data-#{n}.csv"
+    file = Tempfile.new(filename)
+    file.write(SecureRandom.hex)
+    file.rewind
+    instance_variable_set("@path#{n}", file.path)
+    all("input[type=file]").last.set(file.path)
+    click_link 'clone'
+  end
+end
+
+Then(/^my (\d+) datasets should get added to my repo$/) do |num|
+  num.to_i.times do |n|
+    path = instance_variable_get("@path#{n}")
+    filename = File.basename(path)
+    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      @repo,
+      filename,
+      "Adding #{filename}",
+      File.open(path).read
+    )
+  end
+end
+
 When(/^my dataset should get added to my repo$/) do
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @repo,

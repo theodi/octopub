@@ -34,6 +34,7 @@ group :test do
   gem 'rspec-expectations'
   gem 'rspec-mocks'
   gem 'pry'
+  gem 'poltergeist'
 end
 
 group :production do
