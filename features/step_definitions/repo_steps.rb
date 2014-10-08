@@ -65,7 +65,8 @@ Then(/^my (\d+) datasets should get added to my repo$/) do |num|
       @repo,
       "data/" + file[:filename],
       "Adding #{file[:filename]}",
-      File.open(file[:path]).read
+      File.open(file[:path]).read,
+      branch: "gh-pages"
     )
   end
 end
@@ -75,7 +76,8 @@ When(/^my dataset should get added to my repo$/) do
       @repo,
       "data/" + @files.first[:filename],
       "Adding #{@files.first[:filename]}",
-      File.open(@files.first[:path]).read
+      File.open(@files.first[:path]).read,
+      branch: "gh-pages"
   )
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).at_least(:once)
 end

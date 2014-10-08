@@ -10,7 +10,7 @@ class Dataset < ActiveRecord::Base
 
   def create_contents(filename, file, folder = "")
     path = folder.blank? ? filename : folder + "/" + filename
-    user.octokit_client.create_contents(repo, path, "Adding #{filename}", file)
+    user.octokit_client.create_contents(repo, path, "Adding #{filename}", file, branch: "gh-pages")
   end
 
   def add_datapackage(files)

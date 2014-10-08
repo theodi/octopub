@@ -37,6 +37,7 @@ Then(/^the datapackage\.json should be added to my repo$/) do
     @repo,
     "datapackage.json",
     "Adding datapackage.json",
-    @datapackage.to_json
+    @datapackage.to_json,
+    branch: "gh-pages"
   )
 end
