@@ -9,6 +9,7 @@ When(/^I add my dataset details$/) do
   @publisher_url = "http://example.com"
   @license = Odlifier::License.define("ogl-uk")
   @frequency = "Monthly"
+  @files = []
 
   fill_in "Dataset name", with: @name
   fill_in "Description", with: @description
@@ -19,17 +20,33 @@ When(/^I add my dataset details$/) do
 end
 
 When(/^I specify a file$/) do
-  @filename = 'test-data.csv'
-  attach_file "_files[][file]", File.join(Rails.root, 'features', 'fixtures', @filename)
+  name = 'Test Data'
+  filename = 'test-data.csv'
+  path = File.join(Rails.root, 'features', 'fixtures', filename)
+
+  @files << {
+    :name => name,
+    :filename => filename,
+    :path => path
+  }
+
+  attach_file "_files[][file]", path
 end
 
 When(/^I specify (\d+) files$/) do |num|
   num.to_i.times do |n|
     filename = "test-data-#{n}.csv"
+
     file = Tempfile.new(filename)
     file.write(SecureRandom.hex)
     file.rewind
-    instance_variable_set("@path#{n}", file.path)
+
+    @files << {
+      :name => "Test Data #{n}",
+      :filename => File.basename(file.path),
+      :path => file.path
+    }
+
     all("input[type=file]").last.set(file.path)
     click_link 'clone'
   end
@@ -37,13 +54,12 @@ end
 
 Then(/^my (\d+) datasets should get added to my repo$/) do |num|
   num.to_i.times do |n|
-    path = instance_variable_get("@path#{n}")
-    filename = File.basename(path)
+    file = @files[n]
     expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @repo,
-      filename,
-      "Adding #{filename}",
-      File.open(path).read
+      file[:filename],
+      "Adding #{file[:filename]}",
+      File.open(file[:path]).read
     )
   end
 end
@@ -51,9 +67,9 @@ end
 When(/^my dataset should get added to my repo$/) do
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @repo,
-      @filename,
-      "Adding #{@filename}",
-      File.open(File.join(Rails.root, 'features', 'fixtures', @filename)).read
+      @files.first[:filename],
+      "Adding #{@files.first[:filename]}",
+      File.open(@files.first[:path]).read
   )
 end
 
