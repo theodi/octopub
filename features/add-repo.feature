@@ -17,6 +17,7 @@ Feature: Upload data to Github
     Then a new Github repo should be created
     And my dataset should get added to my repo
     When I click submit
+    And the repo details should be stored in the database
 
   @javascript
   Scenario: Create new repo with multiple datasets
@@ -27,3 +28,4 @@ Feature: Upload data to Github
     Then a new Github repo should be created
     And my 5 datasets should get added to my repo
     When I click submit
+    And the repo details should be stored in the database

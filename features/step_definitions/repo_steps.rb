@@ -32,6 +32,7 @@ When(/^I specify a file$/) do
     :path => path
   }
 
+  all("#files input[type=text]").last.set(name)
   attach_file "_files[][file]", path
 end
 
@@ -108,6 +109,13 @@ When(/^the repo details should be stored in the database$/) do
   expect(dataset.publisher_url).to eql(@publisher_url)
   expect(dataset.license).to eql(@license.id)
   expect(dataset.frequency).to eql(@frequency)
+
+  expect(dataset.dataset_files.count).to eql(@files.count)
+
+  @files.each_with_index do |file, i|
+    expect(dataset.dataset_files[i].filename).to eql(@files[i][:filename])
+    expect(dataset.dataset_files[i].title).to eql(@files[i][:name])
+  end
 end
 
 When(/^I should see "(.*?)"$/) do |message|
