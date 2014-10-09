@@ -22,7 +22,7 @@ class Dataset < ActiveRecord::Base
 
   def create_contents(filename, file, folder = "")
     path = folder.blank? ? filename : folder + "/" + filename
-    user.octokit_client.create_contents(repo, path, "Adding #{filename}", file, branch: "gh-pages")
+    user.octokit_client.create_contents(full_name, path, "Adding #{filename}", file, branch: "gh-pages")
   end
 
   def add_datapackage
@@ -53,10 +53,10 @@ class Dataset < ActiveRecord::Base
 
     dataset_files.each do |file|
       datapackage["resources"] << {
-        "url" => "http://github.com/#{repo}/data/#{file.filename}",
-        "name" => file.filename,
+        "url" => file.gh_pages_url,
+        "name" => file.title,
         "mediatype" => "",
-        "description" => file.title
+        "description" => file.description
       }
     end
 
@@ -77,12 +77,24 @@ class Dataset < ActiveRecord::Base
     (type.use_instead || [type.content_type]).first
   end
 
+  def github_url
+    "http://github.com/#{full_name}"
+  end
+
+  def gh_pages_url
+    "http://#{user.name}.github.io/#{repo}"
+  end
+
+  def full_name
+    "#{user.name}/#{repo}"
+  end
+
   private
 
     def create_in_github
       repo = user.octokit_client.create_repository(name)
       self.url = repo[:html_url]
-      self.repo = repo[:full_name]
+      self.repo = repo[:name]
     end
 
 end

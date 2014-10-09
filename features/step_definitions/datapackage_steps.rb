@@ -18,10 +18,10 @@ Then(/^a datapackage\.json should be generated$/) do
 
   @files.each do |file|
     @datapackage["resources"] << {
-      "url" => "http://github.com/#{@repo}/data/#{file[:filename]}",
-      "name" => "#{file[:filename]}",
+      "url" => "http://#{@nickname}.github.io/#{@repo_name}/data/#{file[:filename]}",
+      "name" => "#{file[:name]}",
       "mediatype" => "",
-      "description" => "#{file[:name]}"
+      "description" => "#{file[:description]}"
     }
   end
 
@@ -34,7 +34,7 @@ Then(/^the datapackage\.json should be added to my repo$/) do
   }
 
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-    @repo,
+    @full_name,
     "datapackage.json",
     "Adding datapackage.json",
     @datapackage.to_json,

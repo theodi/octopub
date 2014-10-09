@@ -18,7 +18,8 @@ When(/^I add my dataset details$/) do
   select @license.title, from: "_dataset[license]"
   select @frequency, from: "_dataset[frequency]"
 
-  @repo = "test/My-cool-dataset"
+  @repo_name = "My-cool-dataset"
+  @full_name = "#{@nickname}/#{@repo_name}"
 end
 
 When(/^I specify a file$/) do
@@ -70,7 +71,7 @@ Then(/^my (\d+) datasets should get added to my repo$/) do |num|
   num.to_i.times do |n|
     file = @files[n]
     expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      @repo,
+      @full_name,
       "data/" + file[:filename],
       "Adding #{file[:filename]}",
       File.open(file[:path]).read,
@@ -81,7 +82,7 @@ end
 
 When(/^my dataset should get added to my repo$/) do
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      @repo,
+      @full_name,
       "data/" + @files.first[:filename],
       "Adding #{@files.first[:filename]}",
       File.open(@files.first[:path]).read,
@@ -95,9 +96,9 @@ When(/^I click submit$/) do
 end
 
 Then(/^a new Github repo should be created$/) do
-  @url = "https://github.com/#{@repo}"
+  @url = "https://github.com/#{@full_name}"
   expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(@name) {
-     { html_url: @url, full_name: @repo }
+     { html_url: @url, full_name: @full_name, name: @repo_name }
   }
 end
 
@@ -111,7 +112,7 @@ When(/^the repo details should be stored in the database$/) do
   expect(dataset.name).to eql(@name)
   expect(dataset.description).to eql(@description)
   expect(dataset.url).to eql(@url)
-  expect(dataset.repo).to eql(@repo)
+  expect(dataset.repo).to eql(@repo_name)
   expect(dataset.publisher_name).to eql(@publisher_name)
   expect(dataset.publisher_url).to eql(@publisher_url)
   expect(dataset.license).to eql(@license.id)

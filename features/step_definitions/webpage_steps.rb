@@ -5,7 +5,7 @@ When(/^the index\.html should be added to my repo$/) do
   }
 
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-    @repo,
+    @full_name,
     "index.html",
     "Adding index.html",
     an_instance_of(ActionView::OutputBuffer),
