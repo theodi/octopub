@@ -39,9 +39,9 @@ end
 When(/^I specify (\d+) files$/) do |num|
   @dataset_count = num.to_i
   num.to_i.times do |n|
-    filename = "test-data-#{n}.csv"
+    filename = "test-data-#{n}"
 
-    file = Tempfile.new(filename)
+    file = Tempfile.new([filename, '.csv'])
     file.write(SecureRandom.hex)
     file.rewind
 

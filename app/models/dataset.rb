@@ -10,11 +10,13 @@ class Dataset < ActiveRecord::Base
       dataset_files.new(
         title: file["title"],
         filename: file["file"].original_filename,
+        mediatype: get_content_type(file["file"].original_filename),
         tempfile: file["file"].tempfile
       )
     end
     save
     add_datapackage
+    add_webpage
   end
 
   def create_contents(filename, file, folder = "")
@@ -60,8 +62,18 @@ class Dataset < ActiveRecord::Base
     datapackage.to_json
   end
 
+  def webpage
+    ac = ActionController::Base.new()
+    ac.render_to_string(File.join(Rails.root, "app", "views", "datasets", "webpage.html.erb"), locals: { dataset: self }).to_s
+  end
+
   def license_details
     Odlifier::License.define(license)
+  end
+
+  def get_content_type(file)
+    type = MIME::Types.type_for(file).first
+    (type.use_instead || [type.content_type]).first
   end
 
   private
