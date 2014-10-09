@@ -10,6 +10,7 @@ class Dataset < ActiveRecord::Base
       dataset_files.new(
         title: file["title"],
         filename: file["file"].original_filename,
+        description: file["description"],
         mediatype: get_content_type(file["file"].original_filename),
         tempfile: file["file"].tempfile
       )

@@ -29,6 +29,7 @@ When(/^the page should contain the correct stuff$/) do
   @files.each do |file|
     expect(webpage).to match /#{file[:filename]}/
     expect(webpage).to match /#{file[:name]}/
+    expect(webpage).to match /#{file[:description]}/
     expect(webpage).to match /text\/csv/
   end
 

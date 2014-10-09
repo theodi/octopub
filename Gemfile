@@ -35,6 +35,7 @@ group :test do
   gem 'rspec-mocks'
   gem 'pry'
   gem 'poltergeist'
+  gem 'faker'
 end
 
 group :production do

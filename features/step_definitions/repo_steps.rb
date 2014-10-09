@@ -12,7 +12,7 @@ When(/^I add my dataset details$/) do
   @files = []
 
   fill_in "Dataset name", with: @name
-  fill_in "Description", with: @description
+  fill_in "Dataset description", with: @description
   fill_in "Publisher name", with: @publisher_name
   fill_in "Publisher URL", with: @publisher_url
   select @license.title, from: "_dataset[license]"
@@ -23,16 +23,19 @@ end
 
 When(/^I specify a file$/) do
   name = 'Test Data'
+  description = Faker::Company.bs
   filename = 'test-data.csv'
   path = File.join(Rails.root, 'features', 'fixtures', filename)
 
   @files << {
     :name => name,
+    :description => description,
     :filename => filename,
     :path => path
   }
 
-  all("#files input[type=text]").last.set(name)
+  all("#files .title").last.set(name)
+  all("#files .description").last.set(description)
   attach_file "_files[][file]", path
 end
 
@@ -46,17 +49,21 @@ When(/^I specify (\d+) files$/) do |num|
     file.rewind
 
     name = "Test Data #{n}"
+    description = Faker::Company.bs
 
     @files << {
       :name => "Test Data #{n}",
+      :description => description,
       :filename => File.basename(file.path),
       :path => file.path
     }
 
-    all("#files input[type=text]").last.set(name)
+    all("#files .title").last.set(name)
+    all("#files .description").last.set(description)
     all("input[type=file]").last.set(file.path)
     click_link 'clone'
   end
+
 end
 
 Then(/^my (\d+) datasets should get added to my repo$/) do |num|
@@ -115,6 +122,7 @@ When(/^the repo details should be stored in the database$/) do
   @files.each_with_index do |file, i|
     expect(dataset.dataset_files[i].filename).to eql(@files[i][:filename])
     expect(dataset.dataset_files[i].title).to eql(@files[i][:name])
+    expect(dataset.dataset_files[i].description).to eql(@files[i][:description])
   end
 end
 

@@ -2,7 +2,7 @@
 
 <%= bootstrap_form_tag url: datasets_path, method: :post do |f| %>
   <%= f.text_field "dataset[name]", label: "Dataset name" %>
-  <%= f.text_area "dataset[description]", label: "Description" %>
+  <%= f.text_area "dataset[description]", label: "Dataset description" %>
   <%= f.text_field "dataset[publisher_name]", label: "Publisher name" %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL" %>
   <%= f.select "dataset[license]", @licenses, label: "License" %>
@@ -20,7 +20,8 @@
     <h3>Data files</h3>
     <fieldset class="file">
       <div class="well bg-info">
-        <%= f.text_field "files[][title]", label: "Title" %>
+        <%= f.text_field "files[][title]", label: "Title", class: "title" %>
+        <%= f.text_field "files[][description]", label: "Description", class: "description" %>
         <%= f.file_field "files[][file]", label: "File" %>
       </div>
     </fieldset>

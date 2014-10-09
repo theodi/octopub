@@ -68,6 +68,8 @@ GEM
       dotenv (= 1.0.1)
     erubis (2.7.0)
     execjs (2.2.1)
+    faker (1.4.3)
+      i18n (~> 0.5)
     faraday (0.8.0)
       multipart-post (~> 1.1)
     gherkin (2.12.2)
@@ -220,6 +222,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   dotenv-rails
+  faker
   jbuilder (~> 2.0)
   jquery-rails
   octokit
