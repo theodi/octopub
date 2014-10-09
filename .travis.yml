@@ -18,6 +18,7 @@ notifications:
     on_failure: always
 deploy:
   provider: heroku
+  strategy: api
   api_key:
     secure: YJnNMUmk/xpwehdo8uc3zaBwOY3LpmF1arjXQUIWE5cJ8a0XQ6CiyvccMKGIufKvqiyS5LX1ObQxbROZNyM2GLn5NB/Q6tBpGH8MuvVUVRELb1SUyirBLRjH6ojD7ObeEOkVs64FEXq/zYjOfi8/q+MOyxacK2ltt6VK8s0Nev4=
   run:
