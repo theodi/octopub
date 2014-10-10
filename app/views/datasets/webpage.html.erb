@@ -17,7 +17,6 @@
   		<div class='container'>
   			<div class='navbar-inner'>
   				<a class='brand' href='/'>
-  					<h1><%= dataset.name %></h1>
   					<img alt="Logo" src="img/logo.png" />
   				</a>
   			</div>
@@ -72,6 +71,8 @@
     <h2>Subscribe to changes</h2>
     <p><a href="<%= dataset.atom_url %>" target="_blank"><img src="img/rss.png" width="20px"/></a> Subscribe to changes in this dataset.</p>
     <p class="lastUpdate">Last update: <%= dataset.updated_at %></p>
+
+  </div>
 
   <footer id='footer'>
   	<div class="container right">
