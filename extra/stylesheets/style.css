@@ -1,0 +1,108 @@
+body {
+	font-size: 18px;
+	background-color: #fff;
+	margin: 0;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 20px;
+	color: #333333;
+}
+
+.container {
+	width: 1170px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+/** NAV BLOCK **/
+
+nav {
+	display: block;
+}
+#topbar .navbar-inner {
+	position: relative;
+	background-image: none;
+	border: none;
+}
+#topbar {
+	height: 80px;
+	background: #1b1b1b;
+}
+#topbar .brand {
+	position: absolute;
+	right: 0;
+	padding: 0px 20px 10px;
+}
+
+/** DATASET TITLE **/
+
+header {
+	margin-top: 30px;
+	padding: 10px 0;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	color: #fff;
+	background-color: #00b7ff;
+	display: block;
+}
+
+/** DATA ITEMS **/
+
+.dataitem {
+	height: 120px;
+	width: 40%;
+	display: inline-block;
+	border: 1px solid #1d1d1d;
+	margin: 20px;
+}
+
+.download-block {
+	width: 120px;
+	background-color: #00b7ff;
+	height: 100%;
+	text-align: center;
+	display: inline-block;
+}
+
+.fa {
+	color: white;
+	display: block;
+	padding-top: 20px;
+}
+
+.download-block a {
+	color: white;
+	text-decoration: none;
+}
+
+.description-block {
+	display: inline-block;
+	width: 70%;
+	height: 120px;
+	vertical-align: top;
+	padding-left: 10px;
+}
+
+.objectHistory {
+	text-align: right;
+}
+.objectHistory a {
+	text-decoration: none;
+	color: #00b7ff;
+}
+
+.lastUpdate {
+	text-align: right;
+}
+
+/** Footer **/
+
+footer {
+	font-size: 0.88em;
+	color: #adaeaf;
+	background-color: #000;
+	display: block;
+}
+.right {
+	position: relative;
+	padding: 10px 20px 10px;
+}

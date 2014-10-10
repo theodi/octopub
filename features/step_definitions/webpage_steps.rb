@@ -12,6 +12,19 @@ When(/^the index\.html should be added to my repo$/) do
     branch: "gh-pages"
   )
 
+end
+
+Then(/^the assets should be added to my repo$/) do
+  ['css/style.css', 'img/logo.png','img/logo_cc_80x15.png','img/rss.png'].each do |filename|
+    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      @full_name,
+      filename,
+      "Adding #{filename.split("/").last}",
+      an_instance_of(String),
+      branch: "gh-pages"
+    )
+  end
+
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).at_least(:once)
 end
 

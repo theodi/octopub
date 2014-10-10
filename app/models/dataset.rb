@@ -31,6 +31,10 @@ class Dataset < ActiveRecord::Base
 
   def add_webpage
     create_contents("index.html", webpage)
+    create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
+    ['logo.png','logo_cc_80x15.png','rss.png'].each do |image|
+      create_contents(image, File.open(File.join(Rails.root, "extra", "images", image)).read, "img")
+    end
   end
 
   def datapackage
