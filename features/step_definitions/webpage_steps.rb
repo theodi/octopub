@@ -15,7 +15,7 @@ When(/^the index\.html should be added to my repo$/) do
 end
 
 Then(/^the assets should be added to my repo$/) do
-  ['css/style.css', 'img/logo.png','img/logo_cc_80x15.png','img/rss.png'].each do |filename|
+  ['.nojekyll', 'css/style.css', 'img/logo.png','img/logo_cc_80x15.png','img/rss.png'].each do |filename|
     expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @full_name,
       filename,
