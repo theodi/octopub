@@ -61,6 +61,18 @@
     <%= render partial: "dataset_files/file", collection: files, locals: { dataset: dataset } %>
   </div>
 
+  <h2>Data quality and accuracy</h2>
+
+    <p><a href="<%= dataset.issues_url %>" target="_blank">See all open issues with this dataset</a></p>
+
+	  <p>If you find an error in this dataset, have a comment or request, please log this in the <a href="<%= dataset.issues_url %>" target="_blank">Dataset Issue Tracer</a>.</p>
+
+	  <p>All comments and subsequent fixes will be <a href="<%= dataset.issues_url %>" target="_blank">logged openly</a> such that you can easily see the provenance of each object in this dataset.</p>
+
+    <h2>Subscribe to changes</h2>
+    <p><a href="<%= dataset.atom_url %>" target="_blank"><img src="img/rss.png" width="20px"/></a> Subscribe to changes in this dataset.</p>
+    <p class="lastUpdate">Last update: <%= dataset.updated_at %></p>
+
   <footer id='footer'>
   	<div class="container right">
   	<p><a href="http://git-data-publisher.herokuapp.com/">GitHub data publisher</a> by <a href='http://www.theodi.org'>Open Data Institute</a></p>

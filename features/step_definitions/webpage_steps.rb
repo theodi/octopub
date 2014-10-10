@@ -33,4 +33,7 @@ When(/^the page should contain the correct stuff$/) do
     expect(webpage).to match /text\/csv/
   end
 
+  expect(webpage).to match /http:\/\/github.com\/#{@full_name}\/issues/
+  expect(webpage).to match /http:\/\/github.com\/#{@full_name}\/commits\/gh_pages\.atom/
+
 end

@@ -89,6 +89,14 @@ class Dataset < ActiveRecord::Base
     "#{user.name}/#{repo}"
   end
 
+  def issues_url
+    "#{github_url}/issues"
+  end
+
+  def atom_url
+    "#{github_url}/commits/gh_pages.atom"
+  end
+
   private
 
     def create_in_github
