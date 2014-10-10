@@ -29,7 +29,7 @@ When(/^I visit the homepage$/) do
 end
 
 When(/^I click on the login link$/) do
-  click_link 'Sign in with Github'
+  click_link 'Sign in with Github', match: :first
 end
 
 Then(/^I should see a message saying I have logged in successfully$/) do
