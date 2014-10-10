@@ -4,6 +4,7 @@ class DatasetsController < ApplicationController
   before_filter :set_licenses, only: [:create, :new]
 
   def index
+    current_user.refresh_datasets if params[:refresh]
     @datasets = current_user.datasets
   end
 
