@@ -99,7 +99,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def atom_url
-    "#{github_url}/commits/gh_pages.atom"
+    "#{github_url}/commits/gh-pages.atom"
   end
 
   private

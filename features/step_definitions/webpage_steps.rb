@@ -47,6 +47,6 @@ When(/^the page should contain the correct stuff$/) do
   end
 
   expect(webpage).to match /http:\/\/github.com\/#{@full_name}\/issues/
-  expect(webpage).to match /http:\/\/github.com\/#{@full_name}\/commits\/gh_pages\.atom/
+  expect(webpage).to match /http:\/\/github.com\/#{@full_name}\/commits\/gh-pages\.atom/
 
 end
