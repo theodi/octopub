@@ -15,7 +15,7 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def history_url
-    "#{github_url}/commits/gh-pages/data/#{filename}"
+    "#{dataset.github_url}/commits/gh-pages/data/#{filename}"
   end
 
   private
