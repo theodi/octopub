@@ -1,7 +1,7 @@
 Then(/^a datapackage\.json should be generated$/) do
   @datapackage = {}
 
-  @datapackage["name"] = @name
+  @datapackage["name"] = @name.downcase.dasherize
   @datapackage["datapackage-version"] = ""
   @datapackage["title"] = @name
   @datapackage["description"] = @description
@@ -10,8 +10,8 @@ Then(/^a datapackage\.json should be generated$/) do
     "title" => @license.title
   }]
   @datapackage["publishers"] = [{
-    "url"   => @publisher_name,
-    "title" => @publisher_url
+    "name"   => @publisher_name,
+    "web" => @publisher_url
   }]
 
   @datapackage["resources"] = []
@@ -34,7 +34,7 @@ Then(/^the datapackage\.json should be added to my repo$/) do
   }
 
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-    @full_name,
+    @full_name.downcase,
     "datapackage.json",
     "Adding datapackage.json",
     @datapackage.to_json,

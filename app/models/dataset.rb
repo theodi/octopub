@@ -41,7 +41,7 @@ class Dataset < ActiveRecord::Base
   def datapackage
     datapackage = {}
 
-    datapackage["name"] = name
+    datapackage["name"] = name.downcase.dasherize
     datapackage["datapackage-version"] = ""
     datapackage["title"] = name
     datapackage["description"] = description
@@ -50,8 +50,8 @@ class Dataset < ActiveRecord::Base
       "title" => license_details.title
     }]
     datapackage["publishers"] = [{
-      "url"   => publisher_name,
-      "title" => publisher_url
+      "name"   => publisher_name,
+      "web" => publisher_url
     }]
 
     datapackage["resources"] = []
