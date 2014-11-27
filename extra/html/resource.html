@@ -27,7 +27,9 @@ layout: default
 
 <h1>{{ resource.name }}</h1>
 
-{% include data_table.html %}
+<div class="table-container">
+  {% include data_table.html %}
+</div>
 
 {% assign csvlint = resource.links | where:"name","CSV Validation" | first %}
 <!-- <div class='pull-right'>

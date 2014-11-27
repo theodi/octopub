@@ -3,3 +3,10 @@
   padding: 15px 0 7px 0;
   margin-top: 20px;
 }
+
+.table-container {
+  width: 100%;
+  overflow: scroll;
+  height: 400px;
+  margin: 20px 5px;
+}
