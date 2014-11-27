@@ -55,7 +55,8 @@ class Dataset < ActiveRecord::Base
         "url" => file.gh_pages_url,
         "name" => file.title,
         "mediatype" => "",
-        "description" => file.description
+        "description" => file.description,
+        "path" => "data/#{file.filename}"
       }
     end
 

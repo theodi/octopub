@@ -21,7 +21,8 @@ Then(/^a datapackage\.json should be generated$/) do
       "url" => "http://#{@nickname}.github.io/#{@repo_name}/data/#{file[:filename]}",
       "name" => "#{file[:name]}",
       "mediatype" => "",
-      "description" => "#{file[:description]}"
+      "description" => "#{file[:description]}",
+      "path" => "data/#{file[:filename]}"
     }
   end
 
