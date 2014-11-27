@@ -36,7 +36,7 @@ class DatasetsController < ApplicationController
                   "cc-by",
                   "cc-by-sa",
                   "cc0",
-                  "ogl-uk",
+                  "OGL-UK-3.0",
                   "odc-by",
                   "odc-pddl"
                 ].map do |id|

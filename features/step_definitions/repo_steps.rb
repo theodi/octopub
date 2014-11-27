@@ -7,7 +7,7 @@ When(/^I add my dataset details$/) do
   @description = "This is a description"
   @publisher_name = "Cool inc"
   @publisher_url = "http://example.com"
-  @license = Odlifier::License.define("ogl-uk")
+  @license = Odlifier::License.define("OGL-UK-3.0")
   @frequency = "Monthly"
   @files = []
 
