@@ -15,7 +15,7 @@ When(/^the index\.html should be added to my repo$/) do
 end
 
 Then(/^the assets should be added to my repo$/) do
-  ['css/style.css'].each do |filename|
+  ['css/style.css', '_layouts/default.html'].each do |filename|
     expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @full_name,
       filename,

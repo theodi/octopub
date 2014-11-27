@@ -29,6 +29,7 @@ class Dataset < ActiveRecord::Base
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
+    create_contents("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
   end
 
   def datapackage
