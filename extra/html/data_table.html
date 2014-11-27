@@ -1,0 +1,14 @@
+<table class='table table-striped'>
+  <tr>
+    {% for item in data_table.first %}
+      <th>{{ item[0] }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data_table %}
+  <tr>
+    {% for item in row %}
+      <td>{{ item[1] }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>

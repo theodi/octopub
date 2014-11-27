@@ -1,0 +1,39 @@
+---
+layout: default
+---
+
+{% assign path = page.path | split:"." | first | split:"/" %}
+{% assign resource_path = page.path | split:"." | first | append:".csv" %}
+
+{% assign path0 = path[0] %}
+{% assign path1 = path[1] %}
+{% assign data_table = site.data[path0][path1] %}
+
+{% for r in site.data.datapackage.resources %}
+  {% if r.path == resource_path %}
+    {% assign resource = r %}
+  {% endif %}
+{% endfor %}
+
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        {{ site.data.datapackage.title }}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<h1>{{ resource.name }}</h1>
+
+{% include data_table.html %}
+
+{% assign csvlint = resource.links | where:"name","CSV Validation" | first %}
+<!-- <div class='pull-right'>
+  <a href='{{ csvlint.url }}'>
+    <img src="{{ csvlint.url }}.svg" alt="{{ csvlint.name }}" />
+  </a>
+</div> -->
+
+<a class='btn btn-primary' href='{{resource.url}}'><i class='fa fa-cloud-download'></i> Download CSV</a>
