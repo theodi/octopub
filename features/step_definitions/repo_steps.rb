@@ -97,7 +97,7 @@ end
 
 Then(/^a new Github repo should be created$/) do
   @url = "https://github.com/#{@full_name}"
-  expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(@name) {
+  expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(@name.downcase) {
      { html_url: @url, full_name: @full_name, name: @repo_name }
   }
 end
