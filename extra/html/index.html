@@ -50,8 +50,8 @@ layout: default
         <td property="dcat:title">{{ resource.name }}</td>
         <td property="dcat:format">{{ resource.mediatype }}</td>
         <td property="dcat:description">{{ resource.description }}</td>
-        <td><a href="#"><i class="fa fa-search"></i> View</a></td>
-        <td><a href="{{ resource.url }}" property='dcat:accessURL'><i class="fa fa-cloud-download"></i> Download</a></td>
+        <td><a href="{{ resource.path | split:"." | first }}.html"><i class="fa fa-search"></i> View</a></td>
+        <td><a href="{{ resource.path }}" property='dcat:accessURL'><i class="fa fa-cloud-download"></i> Download</a></td>
       </tr>
       {% endfor %}
     </tbody>
