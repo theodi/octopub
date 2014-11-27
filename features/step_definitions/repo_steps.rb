@@ -18,7 +18,7 @@ When(/^I add my dataset details$/) do
   select @license.title, from: "_dataset[license]"
   select @frequency, from: "_dataset[frequency]"
 
-  @repo_name = "My-cool-dataset"
+  @repo_name = "my-cool-dataset"
   @full_name = "#{@nickname}/#{@repo_name}"
 end
 
