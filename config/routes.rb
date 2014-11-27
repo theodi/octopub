@@ -7,4 +7,6 @@ Rails.application.routes.draw do
 
   resources :datasets
 
+  get "/dashboard" => "datasets#dashboard", :as => :dashboard
+
 end

@@ -24,12 +24,13 @@
           <a class="navbar-brand" href="/">Git Data Publisher</a>
         </div>
 
-        <% if current_user %>
           <ul class="nav navbar-nav">
-            <li><%= link_to "Add dataset", new_dataset_path %></li>
-            <li><%= link_to "List my datasets", datasets_path %></li>
+            <% if current_user %>
+              <li><%= link_to "Add dataset", new_dataset_path %></li>
+              <li><%= link_to "List my datasets", dashboard_path %></li>
+            <% end %>
+            <li><%= link_to "All datasets", datasets_path %></li>
           </ul>
-        <% end %>
 
         <% if current_user %>
           <p class="navbar-text navbar-right">
