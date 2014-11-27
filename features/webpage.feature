@@ -10,4 +10,3 @@ Feature: Add an index.html to the generated repo
     Then the index.html should be added to my repo
     And the assets should be added to my repo
     When I click submit
-    And the page should contain the correct stuff

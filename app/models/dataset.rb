@@ -16,8 +16,7 @@ class Dataset < ActiveRecord::Base
       )
     end
     save
-    add_datapackage
-    add_webpage
+    create_files
   end
 
   def create_contents(filename, file, folder = "")
@@ -25,17 +24,11 @@ class Dataset < ActiveRecord::Base
     user.octokit_client.create_contents(full_name, path, "Adding #{filename}", file, branch: "gh-pages")
   end
 
-  def add_datapackage
+  def create_files
     create_contents("datapackage.json", datapackage)
-  end
-
-  def add_webpage
-    create_contents("index.html", webpage)
-    create_contents(".nojekyll", "")
+    create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+    create_contents("_config.yml", config)
     create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
-    ['logo.png','logo_cc_80x15.png','rss.png'].each do |image|
-      create_contents(image, File.open(File.join(Rails.root, "extra", "images", image)).read, "img")
-    end
   end
 
   def datapackage
@@ -68,9 +61,11 @@ class Dataset < ActiveRecord::Base
     datapackage.to_json
   end
 
-  def webpage
-    ac = ActionController::Base.new()
-    ac.render_to_string(File.join(Rails.root, "app", "views", "datasets", "webpage.html.erb"), locals: { dataset: self }).to_s
+  def config
+    {
+      "data_source" => ".",
+      "update_frequency" => frequency,
+    }.to_yaml
   end
 
   def license_details
