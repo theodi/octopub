@@ -16,6 +16,7 @@ Feature: Upload data to Github
     And I specify a file
     Then a new Github repo should be created
     And my dataset should get added to my repo
+    And my dataset should have a HTML view attached
     When I click submit
     And the repo details should be stored in the database
 
@@ -27,5 +28,6 @@ Feature: Upload data to Github
     And I specify 5 files
     Then a new Github repo should be created
     And my 5 datasets should get added to my repo
+    And my 5 datasets should have HTML views attached
     When I click submit
     And the repo details should be stored in the database

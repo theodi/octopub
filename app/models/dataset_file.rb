@@ -22,6 +22,7 @@ class DatasetFile < ActiveRecord::Base
 
     def add_to_github
       dataset.create_contents(filename, tempfile.read, "data")
+      dataset.create_contents("#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data")
     end
 
 end

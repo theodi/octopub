@@ -32,6 +32,7 @@ Then(/^the datapackage\.json should be added to my repo$/) do
   steps %Q{
     Then a new Github repo should be created
     And my #{@dataset_count} datasets should get added to my repo
+    And my #{@dataset_count} datasets should have HTML views attached
   }
 
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(

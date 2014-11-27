@@ -80,6 +80,19 @@ Then(/^my (\d+) datasets should get added to my repo$/) do |num|
   end
 end
 
+Then(/^my (\d+) datasets should have HTML views attached$/) do |num|
+  num.to_i.times do |n|
+    file = @files[n]
+    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      @full_name,
+      "data/" + file[:filename].gsub('csv', 'md'),
+      "Adding #{file[:filename].gsub('csv', 'md')}",
+      File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read,
+      branch: "gh-pages"
+    )
+  end
+end
+
 When(/^my dataset should get added to my repo$/) do
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
       @full_name,
@@ -87,6 +100,16 @@ When(/^my dataset should get added to my repo$/) do
       "Adding #{@files.first[:filename]}",
       File.open(@files.first[:path]).read,
       branch: "gh-pages"
+  )
+end
+
+When(/^my dataset should have a HTML view attached$/) do
+  expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+    @full_name,
+    "data/" + @files.first[:filename].gsub('csv', 'md'),
+    "Adding #{@files.first[:filename].gsub('csv', 'md')}",
+    File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read,
+    branch: "gh-pages"
   )
   expect_any_instance_of(Octokit::Client).to receive(:create_contents).at_least(:once)
 end
