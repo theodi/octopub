@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/theodi/alternate-rails.git
+  revision: 83a5b8b73655283b2d9729eeae848488881eecc4
+  specs:
+    alternate_rails (0.0.2)
+      rails (>= 3.2.13)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -217,6 +224,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  alternate_rails!
   autoprefixer-rails
   bootstrap-sass (~> 3.2.0)
   bootstrap_form

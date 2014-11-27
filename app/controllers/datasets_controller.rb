@@ -2,6 +2,7 @@ class DatasetsController < ApplicationController
 
   before_filter :clear_files, only: :create
   before_filter :set_licenses, only: [:create, :new]
+  before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   def index
     @datasets = Dataset.all
