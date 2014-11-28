@@ -20,7 +20,7 @@ Then(/^a datapackage\.json should be generated$/) do
     @datapackage["resources"] << {
       "url" => "http://#{@nickname}.github.io/#{@repo_name}/data/#{file[:filename]}",
       "name" => "#{file[:name]}",
-      "mediatype" => "",
+      "mediatype" => "text/csv",
       "description" => "#{file[:description]}",
       "path" => "data/#{file[:filename]}"
     }
