@@ -56,7 +56,7 @@ class Dataset < ActiveRecord::Base
       datapackage["resources"] << {
         "url" => file.gh_pages_url,
         "name" => file.title,
-        "mediatype" => "",
+        "mediatype" => file.mediatype,
         "description" => file.description,
         "path" => "data/#{file.filename}"
       }
