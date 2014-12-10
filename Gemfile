@@ -1,9 +1,7 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-2.1.2
+ruby '2.1.4'
 #ruby-gemset=git-data-publisher
-
-ruby '2.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'

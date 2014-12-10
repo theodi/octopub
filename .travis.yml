@@ -2,7 +2,7 @@ language: ruby
 cache: bundler
 sudo: false
 rvm:
-- 2.1.2
+- 2.1.4
 bundler_args: "--without development --path=~/.bundle"
 before_script:
 - bundle exec rake db:create db:migrate
