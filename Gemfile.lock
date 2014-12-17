@@ -104,7 +104,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.4.3)
     mini_portile (0.6.1)
-    minitest (5.4.3)
+    minitest (5.5.0)
     multi_json (1.10.1)
     multi_test (0.1.1)
     multi_xml (0.5.5)
@@ -217,7 +217,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    websocket-driver (0.4.0)
+    websocket-driver (0.5.0)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.1)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
