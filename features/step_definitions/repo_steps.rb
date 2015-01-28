@@ -48,7 +48,6 @@ When(/^I specify (\d+) files$/) do |num|
     file = Tempfile.new([filename, '.csv'])
     file.write(SecureRandom.hex)
     file.rewind
-    sleep 1 # Wait for the file to be created
 
     name = "Test Data #{n}"
     description = Faker::Company.bs
