@@ -45,7 +45,7 @@ When(/^I specify (\d+) files$/) do |num|
   num.to_i.times do |n|
     filename = "test-data-#{n}"
 
-    file = Tempfile.new([filename, '.csv'])
+    file = File.new("/tmp/#{filename}#{DateTime.now.to_i}.csv", "wb")
     file.write(SecureRandom.hex)
     file.rewind
 
