@@ -42,6 +42,7 @@ layout: default
         <th>Description</th>
         <th>Data</th>
         <th>Download</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -52,6 +53,7 @@ layout: default
         <td property="dcat:description">{{ resource.description }}</td>
         <td><a href="{{ resource.path | split:"." | first }}.html"><i class="fa fa-search"></i> View</a></td>
         <td><a href="{{ resource.path }}" property='dcat:accessURL'><i class="fa fa-cloud-download"></i> Download</a></td>
+        <td><a href="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}"><img src="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
       </tr>
       {% endfor %}
     </tbody>
