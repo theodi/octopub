@@ -19,13 +19,15 @@ class DatasetsController < ApplicationController
 
   def create
     @dataset = current_user.datasets.new(dataset_params)
+    params["files"].each { |f| @dataset.dataset_files.new(f) }
     if params["files"].count == 0
       flash[:notice] = "You must specify at least one dataset"
       render "new"
-    else
+    elsif @dataset.valid?
       @dataset.save
-      @dataset.add_files(params["files"])
       redirect_to datasets_path, :notice => "Dataset created sucessfully"
+    else
+      render "new"
     end
   end
 
@@ -50,7 +52,7 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency)
+    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency, :files)
   end
 
 end

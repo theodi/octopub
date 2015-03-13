@@ -27,7 +27,6 @@ Feature: Upload data to Github
     And I add my dataset details
     And I specify 5 files
     Then a new Github repo should be created
-    And my 5 datasets should get added to my repo
-    And my 5 datasets should have HTML views attached
     When I click submit
+    And my 5 datasets should have been added to my repo
     And the repo details should be stored in the database

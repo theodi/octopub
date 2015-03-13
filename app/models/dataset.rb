@@ -3,21 +3,9 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  before_create :create_in_github
+  validates :name, presence: true
 
-  def add_files(files_array)
-    files_array.each do |file|
-      dataset_files.new(
-        title: file["title"],
-        filename: file["file"].original_filename,
-        description: file["description"],
-        mediatype: get_content_type(file["file"].original_filename),
-        tempfile: file["file"].tempfile
-      )
-    end
-    save
-    create_files
-  end
+  after_create :create_in_github
 
   def create_contents(filename, file, folder = "")
     path = folder.blank? ? filename : folder + "/" + filename
@@ -76,11 +64,6 @@ class Dataset < ActiveRecord::Base
     Odlifier::License.define(license)
   end
 
-  def get_content_type(file)
-    type = MIME::Types.type_for(file).first
-    (type.use_instead || [type.content_type]).first
-  end
-
   def github_url
     "http://github.com/#{full_name}"
   end
@@ -107,6 +90,10 @@ class Dataset < ActiveRecord::Base
       repo = user.octokit_client.create_repository(name.downcase)
       self.url = repo[:html_url]
       self.repo = repo[:name]
+      create_files
+
+      dataset_files.each { |f| f.add_to_github }
+      save
     end
 
     def add_collaborator
