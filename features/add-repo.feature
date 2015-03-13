@@ -29,4 +29,3 @@ Feature: Upload data to Github
     Then a new Github repo should be created
     When I click submit
     And my 5 datasets should have been added to my repo
-    And the repo details should be stored in the database
