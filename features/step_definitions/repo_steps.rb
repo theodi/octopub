@@ -72,19 +72,6 @@ Then(/^my (\d+) datasets should have been added to my repo$/) do |num|
   expect_any_instance_of(DatasetFile).to receive(:add_to_github)#.exactly(num.to_i).times
 end
 
-Then(/^my (\d+) datasets should get added to my repo$/) do |num|
-  num.to_i.times do |n|
-    file = @files[n]
-    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      @full_name,
-      "data/" + file[:filename],
-      "Adding #{file[:filename]}",
-      File.open(file[:path]).read,
-      branch: "gh-pages"
-    )
-  end
-end
-
 Then(/^my (\d+) datasets should have HTML views attached$/) do |num|
   num.to_i.times do |n|
     file = @files[n]
