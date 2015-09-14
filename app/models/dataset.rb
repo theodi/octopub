@@ -35,6 +35,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def datapackage
+
     datapackage = {}
 
     datapackage["name"] = name.downcase.dasherize
@@ -78,7 +79,7 @@ class Dataset < ActiveRecord::Base
 
   def get_content_type(file)
     type = MIME::Types.type_for(file).first
-    (type.use_instead || [type.content_type]).first
+    [(type.use_instead || type.content_type)].flatten.first
   end
 
   def github_url
