@@ -25,7 +25,7 @@ describe DatasetFile do
   end
 
   it "adds a file to Github", :skip_callbacks do
-    path = File.join(Rails.root, 'features', 'fixtures', 'test-data.csv')
+    path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
 
     file = build(:dataset_file, filename: "example.csv")
     file.tempfile = Rack::Test::UploadedFile.new(path, "text/csv")

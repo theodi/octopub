@@ -100,7 +100,7 @@ describe DatasetsController, type: :controller do
       name = 'Test Data'
       description = Faker::Company.bs
       filename = 'test-data.csv'
-      path = File.join(Rails.root, 'features', 'fixtures', filename)
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
       @files << {
         :title => name,
