@@ -6,17 +6,7 @@ describe Dataset do
     @user = create(:user, name: "user-mcuser", email: "user@user.com")
   end
 
-  before(:each, skip_callbacks: true) do
-    Dataset.skip_callback(:create, :before, :create_in_github)
-    DatasetFile.skip_callback(:create, :after, :add_to_github)
-  end
-
-  after(:each, skip_callbacks: true) do
-    Dataset.set_callback(:create, :before, :create_in_github)
-    DatasetFile.set_callback(:create, :after, :add_to_github)
-  end
-
-  it "creates a valid dataset", :skip_callbacks do
+  it "creates a valid dataset" do
     dataset = create(:dataset, name: "My Awesome Dataset",
                      description: "An awesome dataset",
                      publisher_name: "Awesome Inc",
@@ -29,7 +19,7 @@ describe Dataset do
   end
 
   it "creates a repo in Github" do
-    dataset = build(:dataset, user: @user)
+    dataset = build(:dataset, :with_callback, user: @user)
     name = "#{@user.name.downcase}/#{dataset.name.downcase}"
     html_url = "http://github.com/#{name}"
 
@@ -92,7 +82,7 @@ describe Dataset do
       ]
     end
 
-    it "adds a single file", :skip_callbacks do
+    it "adds a single file" do
       dataset = build(:dataset, user: @user)
       allow(dataset).to receive(:create_files) { nil }
 
@@ -105,7 +95,7 @@ describe Dataset do
       expect(dataset.dataset_files.first.mediatype).to eq("text/csv")
     end
 
-    it "adds multiple files", :skip_callbacks do
+    it "adds multiple files" do
       dataset = build(:dataset, user: @user)
       allow(dataset).to receive(:create_files) { nil }
 
@@ -120,7 +110,7 @@ describe Dataset do
     end
   end
 
-  it "sends the correct files to Github", :skip_callbacks do
+  it "sends the correct files to Github" do
     dataset = build :dataset, user: @user,
                               dataset_files: [
                                 create(:dataset_file)
@@ -137,7 +127,7 @@ describe Dataset do
     dataset.create_files
   end
 
-  it "generates the correct datapackage contents", :skip_callbacks do
+  it "generates the correct datapackage contents" do
     file = create(:dataset_file, filename: "example.csv",
                                  title: "My Awesome File",
                                  description: "My Awesome File Description")

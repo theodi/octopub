@@ -8,5 +8,15 @@ FactoryGirl.define do
     frequency "One-off"
 
     association :user, factory: :user
+
+    after(:build) { |dataset|
+      dataset.class.skip_callback(:create, :before, :create_in_github)
+    }
+
+    trait :with_callback do
+      after(:build) { |dataset|
+        dataset.class.set_callback(:create, :before, :create_in_github)
+      }
+    end
   end
 end
