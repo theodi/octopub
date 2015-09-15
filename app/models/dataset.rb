@@ -102,8 +102,4 @@ class Dataset < ActiveRecord::Base
       self.repo = repo[:name]
     end
 
-    def add_collaborator
-      user.octokit_client.add_collaborator(name, ENV['GITHUB_USER'])
-    end
-
 end
