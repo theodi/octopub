@@ -34,6 +34,7 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
+  gem 'coveralls', require: false
 end
 
 group :production do

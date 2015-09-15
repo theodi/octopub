@@ -58,6 +58,12 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
+    coveralls (0.8.2)
+      json (~> 1.8)
+      rest-client (>= 1.6.8, < 2)
+      simplecov (~> 0.10.0)
+      term-ansicolor (~> 1.3)
+      thor (~> 0.19.1)
     cucumber (1.3.20)
       builder (>= 2.1.2)
       diff-lcs (>= 1.1.3)
@@ -72,6 +78,7 @@ GEM
       rails (>= 3, < 5)
     database_cleaner (1.5.0)
     diff-lcs (1.2.5)
+    docile (1.1.5)
     dotenv (2.0.2)
     dotenv-rails (2.0.2)
       dotenv (= 2.0.2)
@@ -116,6 +123,7 @@ GEM
     multi_test (0.1.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -179,6 +187,9 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec-core (3.3.2)
       rspec-support (~> 3.3.0)
     rspec-expectations (3.3.1)
@@ -208,6 +219,11 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    simplecov (0.10.0)
+      docile (~> 1.1.0)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
     slop (3.6.0)
     spring (1.4.0)
     sprockets (2.12.4)
@@ -219,9 +235,12 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
+    term-ansicolor (1.3.2)
+      tins (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
+    tins (1.6.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -248,6 +267,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
   bootstrap_form
   coffee-rails (~> 4.0.0)
+  coveralls
   cucumber-rails
   database_cleaner
   dotenv-rails
