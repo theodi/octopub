@@ -38,7 +38,7 @@ class Dataset < ActiveRecord::Base
 
     datapackage = {}
 
-    datapackage["name"] = name.downcase.dasherize
+    datapackage["name"] = name.downcase.parameterize
     datapackage["datapackage-version"] = ""
     datapackage["title"] = name
     datapackage["description"] = description
