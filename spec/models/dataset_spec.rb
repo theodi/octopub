@@ -45,6 +45,34 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
+  it "creates a file in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      "#{@user.name}/repo",
+      "my-file",
+      "Adding my-file",
+      "File contents",
+      branch: "gh-pages"
+    )
+
+    dataset.create_contents("my-file", "File contents")
+  end
+
+  it "creates a file in a folder in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
+      "#{@user.name}/repo",
+      "folder/my-file",
+      "Adding my-file",
+      "File contents",
+      branch: "gh-pages"
+    )
+
+    dataset.create_contents("my-file", "File contents", "folder")
+  end
+
   context "with files" do
 
     before(:each) do
