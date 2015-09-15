@@ -29,11 +29,12 @@ gem 'spring',        group: :development
 group :test do
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
-  gem 'rspec-expectations'
-  gem 'rspec-mocks'
+  gem 'rspec-rails'
   gem 'pry'
   gem 'poltergeist'
   gem 'faker'
+  gem 'factory_girl_rails'
+  gem 'coveralls', require: false
 end
 
 group :production do

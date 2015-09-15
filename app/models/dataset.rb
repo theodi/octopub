@@ -38,7 +38,7 @@ class Dataset < ActiveRecord::Base
 
     datapackage = {}
 
-    datapackage["name"] = name.downcase.dasherize
+    datapackage["name"] = name.downcase.parameterize
     datapackage["datapackage-version"] = ""
     datapackage["title"] = name
     datapackage["description"] = description
@@ -94,24 +94,12 @@ class Dataset < ActiveRecord::Base
     "#{user.name}/#{repo}"
   end
 
-  def issues_url
-    "#{github_url}/issues"
-  end
-
-  def atom_url
-    "#{github_url}/commits/gh-pages.atom"
-  end
-
   private
 
     def create_in_github
       repo = user.octokit_client.create_repository(name.downcase)
       self.url = repo[:html_url]
       self.repo = repo[:name]
-    end
-
-    def add_collaborator
-      user.octokit_client.add_collaborator(name, ENV['GITHUB_USER'])
     end
 
 end

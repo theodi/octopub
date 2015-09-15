@@ -4,3 +4,4 @@ db/test.sqlite3
 log/test.log
 .env
 tmp
+coverage

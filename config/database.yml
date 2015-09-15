@@ -23,6 +23,3 @@ test: &test
 production:
   <<: *default
   database: git_data_publisher_production
-
-cucumber:
-  <<: *test
