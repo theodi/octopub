@@ -78,6 +78,11 @@ GEM
       railties (~> 4.0)
     erubis (2.7.0)
     execjs (2.6.0)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.5.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
     faker (1.5.0)
       i18n (~> 0.5)
     faraday (0.9.1)
@@ -174,11 +179,21 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    rspec-core (3.3.2)
+      rspec-support (~> 3.3.0)
     rspec-expectations (3.3.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
     rspec-mocks (3.3.2)
       diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.3.0)
+    rspec-rails (3.3.3)
+      actionpack (>= 3.0, < 4.3)
+      activesupport (>= 3.0, < 4.3)
+      railties (>= 3.0, < 4.3)
+      rspec-core (~> 3.3.0)
+      rspec-expectations (~> 3.3.0)
+      rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
     sass (3.2.19)
@@ -236,6 +251,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   dotenv-rails
+  factory_girl_rails
   faker
   font-awesome-sass
   jbuilder (~> 2.0)
@@ -250,8 +266,7 @@ DEPENDENCIES
   rails (~> 4.1.6)
   rails-bootstrap-helpers
   rails_12factor
-  rspec-expectations
-  rspec-mocks
+  rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   spring
