@@ -21,11 +21,11 @@ class Dataset < ActiveRecord::Base
 
   end
 
-  def create_contents(filename, file, folder)
+  def create_contents(filename, file, folder = nil)
     user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
   end
 
-  def update_contents(filename, file, folder, sha)
+  def update_contents(filename, file, sha, folder = nil)
     user.octokit_client.update_contents(full_name, path(filename, folder), "Updating #{filename}", sha, file, branch: "gh-pages")
   end
 
