@@ -1,0 +1,28 @@
+<h3>Data files</h3>
+<fieldset class="file">
+  <div class="well bg-info">
+    <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title %>
+    <%= f.text_field "files[][description]", label: "Description", class: "description", value: file.description %>
+    <% if file.filename %>
+      <div class="form-group filename-wrapper">
+        <div class="current-file">
+          <label class="control-label">
+            Current file
+          </label>
+          <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file", class: "change-file" %> </p>
+        </div>
+      </div>
+    <% else %>
+      <%= f.file_field "files[][file]", label: "File" %>
+    <% end %>
+  </div>
+</fieldset>
+
+<script>
+  $(document).ready(function() {
+    $('.change-file').click(function(e) {
+      $(this).parents('.current-file').addClass('hidden');
+      $(this).parents('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File" %>');
+    })
+  });
+</script>

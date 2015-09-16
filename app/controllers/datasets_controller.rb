@@ -1,8 +1,9 @@
 class DatasetsController < ApplicationController
 
-  before_filter :clear_files, only: :create
-  before_filter :set_licenses, only: [:create, :new]
+  before_filter :clear_files, only: [:create, :update]
+  before_filter :set_licenses, only: [:create, :new, :edit]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
+  before_filter :check_signed_in?, only: [:edit, :dashboard]
 
   def index
     @datasets = Dataset.all
@@ -29,6 +30,14 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def edit
+    @dataset = current_user.datasets.where(id: params["id"]).first
+    render_404 and return if @dataset.nil?
+  end
+
+  def update
+  end
+
   private
 
   def clear_files
@@ -51,6 +60,10 @@ class DatasetsController < ApplicationController
 
   def dataset_params
     params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency)
+  end
+
+  def check_signed_in?
+    render_404 if current_user.nil?
   end
 
 end
