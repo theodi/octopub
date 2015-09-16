@@ -116,7 +116,7 @@ describe Dataset do
                                 create(:dataset_file)
                               ]
 
-    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage)
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
     expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
     expect(dataset).to receive(:create_contents).with("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
@@ -162,6 +162,22 @@ describe Dataset do
       "description" => "My Awesome File Description",
       "path" => "data/example.csv"
     })
+  end
+
+  it "saves the datapackage sha", :vcr do
+    dataset = create(:dataset, dataset_files: [
+      create(:dataset_file)
+    ])
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) {
+      {
+        content: {
+          sha: "abc1234"
+        }
+      }
+    }
+    dataset.create_datapackage
+
+    expect(dataset.datapackage_sha).to eq("abc1234")
   end
 
   it "generates the correct config" do

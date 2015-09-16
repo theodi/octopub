@@ -25,13 +25,19 @@ class Dataset < ActiveRecord::Base
   end
 
   def create_files
-    create_contents("datapackage.json", datapackage)
+    create_datapackage
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
     create_contents("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
     create_contents("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
     create_contents("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+  end
+
+  def create_datapackage
+    response = create_contents("datapackage.json", datapackage)
+    self.datapackage_sha = response[:content][:sha]
+    save
   end
 
   def datapackage
