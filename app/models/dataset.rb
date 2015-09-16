@@ -19,7 +19,6 @@ class Dataset < ActiveRecord::Base
     create_files
   end
 
-  end
 
   def create_contents(filename, file, folder = nil)
     user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
