@@ -49,6 +49,12 @@ class Dataset < ActiveRecord::Base
     save
   end
 
+  def update_datapackage
+    response = update_contents("datapackage.json", datapackage, datapackage_sha)
+    self.datapackage_sha = response[:content][:sha]
+    save
+  end
+
   def datapackage
 
     datapackage = {}

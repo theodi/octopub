@@ -203,6 +203,20 @@ describe Dataset do
     expect(dataset.datapackage_sha).to eq("abc1234")
   end
 
+  it "updates the datapackage sha" do
+    dataset = create(:dataset, datapackage_sha: "abc1234")
+    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage, "abc1234") {
+      {
+        content: {
+          sha: "4321cba"
+        }
+      }
+    }
+    dataset.update_datapackage
+
+    expect(dataset.datapackage_sha).to eq("4321cba")
+  end
+
   it "generates the correct config" do
     dataset = build(:dataset, frequency: "weekly")
     config = YAML.load dataset.config
