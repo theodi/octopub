@@ -35,6 +35,13 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
+  it "generates a path" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect(dataset.path("filename")).to eq("filename")
+    expect(dataset.path("filename", "folder")).to eq("folder/filename")
+  end
+
   it "creates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
 

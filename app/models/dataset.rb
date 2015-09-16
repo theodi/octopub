@@ -20,8 +20,14 @@ class Dataset < ActiveRecord::Base
   end
 
   def create_contents(filename, file, folder = "")
-    path = folder.blank? ? filename : folder + "/" + filename
-    user.octokit_client.create_contents(full_name, path, "Adding #{filename}", file, branch: "gh-pages")
+    user.octokit_client.create_contents(full_name, path(folder, filename), "Adding #{filename}", file, branch: "gh-pages")
+  end
+
+  def create_contents(filename, file, folder)
+    user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
+  end
+  def path(filename, folder = "")
+    File.join([folder,filename].reject { |n| n.blank? })
   end
 
   def create_files
