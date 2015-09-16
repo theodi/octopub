@@ -70,6 +70,22 @@ describe Dataset do
     dataset.create_contents("my-file", "File contents", "folder")
   end
 
+  it "updates a file in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:update_contents).with(
+      "#{@user.name}/repo",
+      "my-file",
+      "Updating my-file",
+      "abc1234",
+      "File contents",
+      branch: "gh-pages"
+    )
+
+    dataset.update_contents("my-file", "File contents", "abc1234")
+  end
+
+
   context "with files" do
 
     before(:each) do
