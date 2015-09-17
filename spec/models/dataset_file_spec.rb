@@ -165,6 +165,23 @@ describe DatasetFile do
       expect(file.mediatype).to eq("text/csv")
     end
 
+    it "only updates the referenced file if a file is present" do
+      file = create(:dataset_file)
+
+      new_file = {
+        "id" => file.id,
+        "title" => 'My File',
+        "description" => 'A new description',
+      }
+
+      expect(file).to_not receive(:update_in_github)
+      file.update_file(new_file)
+
+      expect(file.title).to eq(new_file["title"])
+      expect(file.description).to eq(new_file["description"])
+      expect(file.mediatype).to eq("text/csv")
+    end
+
   end
 
 end

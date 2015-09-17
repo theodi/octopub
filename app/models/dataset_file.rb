@@ -34,13 +34,15 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def update_file(file)
-    self.update(
+    update_hash = {
       title: file["title"],
-      filename: file["file"].original_filename,
+      filename: file["file"].nil? ? nil : file["file"].original_filename,
       description: file["description"],
-      mediatype: self.class.get_content_type(file["file"].original_filename),
-    )
-    update_in_github(file["file"])
+      mediatype: file["file"].nil? ? nil : self.class.get_content_type(file["file"].original_filename)
+    }.delete_if { |k,v| v.nil? }
+
+    self.update(update_hash)
+    update_in_github(file["file"]) if file["file"]
   end
 
   def add_to_github(tempfile)
