@@ -13,6 +13,16 @@ class Dataset < ActiveRecord::Base
     create_files
   end
 
+  def update_files(files_array)
+    files_array.each do |file|
+      if file["id"]
+        DatasetFile.update_file(file)
+      else
+        dataset_files << DatasetFile.new_file(file, self)
+      end
+    end
+  end
+
   def create_contents(filename, file, folder = nil)
     user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
   end

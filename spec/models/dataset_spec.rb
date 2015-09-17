@@ -135,6 +135,75 @@ describe Dataset do
     end
   end
 
+  context "update_files" do
+
+    before(:each) do
+      @dataset = create(:dataset, user: @user)
+      @file = create(:dataset_file, dataset: @dataset)
+      @files = [{
+        "id" => @file.id,
+        "title" => "My super dataset",
+        "description" => "Another super dataset"
+      }]
+    end
+
+    it "updates the metadata of one file" do
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(1)
+      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
+      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
+    end
+
+    it "updates the metadata of multiple files" do
+      file2 = create(:dataset_file, dataset: @dataset)
+
+      @files << {
+        "id" => file2.id,
+        "title" => "My super dataset 2",
+        "description" => "Another super dataset 2"
+      }
+
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(2)
+      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
+      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
+      expect(@dataset.dataset_files.last.title).to eq("My super dataset 2")
+      expect(@dataset.dataset_files.last.description).to eq("Another super dataset 2")
+    end
+
+    it "updates a file in github" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @files.first["file"] = file
+
+      expect(DatasetFile).to receive(:find) { @file }
+      expect(@file).to receive(:update_in_github).with(file)
+
+      @dataset.update_files(@files)
+    end
+
+    it "adds new files" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @files << {
+        "title" => "New shiny",
+        "description" => "Shiny new file",
+        "file" => file
+      }
+
+      expect(DatasetFile).to receive(:new_file) { create(:dataset_file, dataset: @dataset) }
+
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(2)
+    end
+
+  end
+
   it "sends the correct files to Github" do
     dataset = build :dataset, user: @user,
                               dataset_files: [
