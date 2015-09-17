@@ -89,6 +89,8 @@ describe Dataset do
   context "with files" do
 
     before(:each) do
+      allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
+
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
 

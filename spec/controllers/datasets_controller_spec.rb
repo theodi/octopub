@@ -5,13 +5,13 @@ describe DatasetsController, type: :controller do
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")
     Dataset.skip_callback(:create, :before, :create_in_github)
-    DatasetFile.skip_callback(:create, :after, :add_to_github)
+    
+    allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
   end
 
   after(:each) do
     Dataset.set_callback(:create, :before, :create_in_github)
-    DatasetFile.set_callback(:create, :after, :add_to_github)
   end
 
   describe 'index' do
@@ -149,7 +149,7 @@ describe DatasetsController, type: :controller do
 
     it 'returns 404 if the user is not signed in' do
       dataset = create(:dataset, name: "Dataset", user: @user)
-      
+
       get 'edit', id: dataset.id
 
       expect(response.code).to eq("404")

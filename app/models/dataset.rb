@@ -12,18 +12,6 @@ class Dataset < ActiveRecord::Base
     save
     create_files
   end
-      dataset_files.new(
-        title: file["title"],
-        filename: file["file"].original_filename,
-        description: file["description"],
-        mediatype: get_content_type(file["file"].original_filename),
-        tempfile: file["file"].tempfile
-      )
-    end
-    save
-    create_files
-  end
-
 
   def create_contents(filename, file, folder = nil)
     user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
