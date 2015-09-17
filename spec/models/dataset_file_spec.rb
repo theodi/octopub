@@ -19,7 +19,7 @@ describe DatasetFile do
 
     before(:each) do
       @file = build(:dataset_file, filename: "example.csv")
-      @file.tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+      @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
 
       @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
     end
@@ -28,14 +28,14 @@ describe DatasetFile do
       expect(@dataset).to receive(:create_contents).with("example.csv", File.read(@path), "data") { { content: {} } }
       expect(@dataset).to receive(:create_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data") { { content: {} } }
 
-      @file.send(:add_to_github)
+      @file.send(:add_to_github, @tempfile)
     end
 
     it "sets the sha", :vcr do
       expect(@dataset).to receive(:create_contents).with("example.csv", File.read(@path), "data") { { content: { sha: "sha1"} } }
       expect(@dataset).to receive(:create_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data") { { content: { sha: "sha2"} } }
 
-      @file.send(:add_to_github)
+      @file.send(:add_to_github, @tempfile)
 
       expect(@file.file_sha).to eq("sha1")
       expect(@file.view_sha).to eq("sha2")
@@ -67,6 +67,40 @@ describe DatasetFile do
       expect(@file.file_sha).to eq("sha1")
       expect(@file.view_sha).to eq("sha2")
     end
+  end
+
+  context "self.new_file" do
+
+    before(:each) do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @file = {
+        "title" => 'My File',
+        "file" => @tempfile,
+        "description" => 'A description',
+      }
+    end
+
+    it "creates a file in github" do
+      created_file = create(:dataset_file)
+      expect(DatasetFile).to receive(:new) { created_file }
+      expect(created_file).to receive(:add_to_github).with(@tempfile.tempfile)
+
+      DatasetFile.new_file(@file)
+    end
+
+    it "creates a file" do
+      expect_any_instance_of(DatasetFile).to receive(:add_to_github) {}
+
+      file = DatasetFile.new_file(@file)
+
+      expect(file.title).to eq(@file["title"])
+      expect(file.filename).to eq(@tempfile.original_filename)
+      expect(file.description).to eq(@file["description"])
+      expect(file.mediatype).to eq("text/csv")
+    end
+
   end
 
   context "self.update_file" do

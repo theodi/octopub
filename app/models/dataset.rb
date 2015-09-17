@@ -97,11 +97,6 @@ class Dataset < ActiveRecord::Base
     Odlifier::License.define(license)
   end
 
-  def get_content_type(file)
-    type = MIME::Types.type_for(file).first
-    [(type.use_instead || type.content_type)].flatten.first
-  end
-
   def github_url
     "http://github.com/#{full_name}"
   end
@@ -112,6 +107,11 @@ class Dataset < ActiveRecord::Base
 
   def full_name
     "#{user.name}/#{repo}"
+  end
+
+  def get_content_type(file)
+    type = MIME::Types.type_for(file).first
+    [(type.use_instead || type.content_type)].flatten.first
   end
 
   private
