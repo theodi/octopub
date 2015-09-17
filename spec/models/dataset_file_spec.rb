@@ -67,6 +67,66 @@ describe DatasetFile do
       expect(@file.file_sha).to eq("sha1")
       expect(@file.view_sha).to eq("sha2")
     end
+  end
+
+  context "self.update_file" do
+
+    before(:each) do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @new_file = {
+        "title" => 'My File',
+        "file" => tempfile,
+        "description" => 'A new description',
+      }
+    end
+
+    it "updates a file" do
+      file = create(:dataset_file)
+
+      expect(DatasetFile).to receive(:find) { file }
+      expect(file).to receive(:update_file).with(@new_file)
+
+      DatasetFile.update_file(file.id, @new_file)
+    end
+
+    it "returns nil if a file is not found" do
+      allow_message_expectations_on_nil
+      file = nil
+
+      expect(DatasetFile).to receive(:find) { file }
+      expect(file).to_not receive(:update_file)
+
+      file = DatasetFile.update_file("123", @new_file)
+
+      expect(file).to eq(nil)
+    end
+
+  end
+
+  context "update_file" do
+
+    it "updates a file" do
+      file = create(:dataset_file)
+
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      new_file = {
+        "title" => 'My File',
+        "file" => tempfile,
+        "description" => 'A new description',
+      }
+
+      expect(file).to receive(:update_in_github).with(tempfile)
+      file.update_file(new_file)
+
+      expect(file.title).to eq(new_file["title"])
+      expect(file.filename).to eq(tempfile.original_filename)
+      expect(file.description).to eq(new_file["description"])
+      expect(file.mediatype).to eq("text/csv")
+    end
 
   end
 
