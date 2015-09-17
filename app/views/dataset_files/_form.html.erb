@@ -1,6 +1,7 @@
 <h3>Data files</h3>
 <fieldset class="file">
   <div class="well bg-info">
+    <%= f.hidden_field("files[][id]", value: file.id) if file.id %>
     <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title %>
     <%= f.text_field "files[][description]", label: "Description", class: "description", value: file.description %>
     <% if file.filename %>

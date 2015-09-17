@@ -14,10 +14,10 @@ class DatasetFile < ActiveRecord::Base
     f
   end
 
-  def self.update_file(id, new_file)
-    file = find(id)
-    file.update_file(new_file) unless file.nil?
-    file
+  def self.update_file(file)
+    f = find(file.delete("id"))
+    f.update_file(file) unless f.nil?
+    f
   end
 
   def self.get_content_type(file)

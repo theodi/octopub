@@ -108,8 +108,10 @@ describe DatasetFile do
     before(:each) do
       path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
       tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+      @file = create(:dataset_file)
 
       @new_file = {
+        "id" => @file.id,
         "title" => 'My File',
         "file" => tempfile,
         "description" => 'A new description',
@@ -117,12 +119,10 @@ describe DatasetFile do
     end
 
     it "updates a file" do
-      file = create(:dataset_file)
+      expect(DatasetFile).to receive(:find) { @file }
+      expect(@file).to receive(:update_file).with(@new_file)
 
-      expect(DatasetFile).to receive(:find) { file }
-      expect(file).to receive(:update_file).with(@new_file)
-
-      DatasetFile.update_file(file.id, @new_file)
+      DatasetFile.update_file(@new_file)
     end
 
     it "returns nil if a file is not found" do
@@ -132,7 +132,9 @@ describe DatasetFile do
       expect(DatasetFile).to receive(:find) { file }
       expect(file).to_not receive(:update_file)
 
-      file = DatasetFile.update_file("123", @new_file)
+      @new_file["id"] = 123
+
+      file = DatasetFile.update_file(@new_file)
 
       expect(file).to eq(nil)
     end
@@ -148,6 +150,7 @@ describe DatasetFile do
       tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
 
       new_file = {
+        "id" => file.id,
         "title" => 'My File',
         "file" => tempfile,
         "description" => 'A new description',
