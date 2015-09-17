@@ -7,6 +7,11 @@ class Dataset < ActiveRecord::Base
 
   def add_files(files_array)
     files_array.each do |file|
+      dataset_files << DatasetFile.new_file(file, self)
+    end
+    save
+    create_files
+  end
       dataset_files.new(
         title: file["title"],
         filename: file["file"].original_filename,

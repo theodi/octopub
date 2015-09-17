@@ -2,8 +2,9 @@ class DatasetFile < ActiveRecord::Base
 
   belongs_to :dataset
 
-  def self.new_file(file)
+  def self.new_file(file, dataset = nil)
     f = new(
+      dataset: dataset,
       title: file["title"],
       filename: file["file"].original_filename,
       description: file["description"],
