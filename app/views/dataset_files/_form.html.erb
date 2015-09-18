@@ -1,7 +1,6 @@
 <h3>Data files</h3>
 <fieldset class="file">
   <div class="well bg-info">
-    <%= f.hidden_field("files[][id]", value: file.id) if file.id %>
     <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title %>
     <%= f.text_field "files[][description]", label: "Description", class: "description", value: file.description %>
     <% if file.filename %>
@@ -16,14 +15,14 @@
     <% else %>
       <%= f.file_field "files[][file]", label: "File" %>
     <% end %>
+    <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
   </div>
 </fieldset>
 
 <script>
-  $(document).ready(function() {
-    $('.change-file').click(function(e) {
-      $(this).parents('.current-file').addClass('hidden');
-      $(this).parents('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File" %>');
-    })
-  });
+  $('.change-file').click(function(e) {
+    $(this).parents('.current-file').addClass('hidden');
+    $(this).parents('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File" %>');
+    return false;
+  })
 </script>

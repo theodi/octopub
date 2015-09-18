@@ -49,7 +49,7 @@ class DatasetsController < ApplicationController
   end
 
   def clear_files
-    params["files"].delete_if { |f| f["file"].nil? && f["title"].nil? }
+    params["files"].delete_if { |f| f["file"].blank? && f["title"].blank? }
   end
 
   def check_files
