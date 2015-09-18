@@ -1,9 +1,9 @@
 class DatasetsController < ApplicationController
 
-  before_filter :clear_files, only: [:create, :update]
+  before_filter :check_signed_in?, only: [:edit, :dashboard, :update]
+  before_filter :handle_files, only: [:create, :update]
   before_filter :set_licenses, only: [:create, :new, :edit]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
-  before_filter :check_signed_in?, only: [:edit, :dashboard]
 
   def index
     @datasets = Dataset.all
@@ -20,14 +20,9 @@ class DatasetsController < ApplicationController
 
   def create
     @dataset = current_user.datasets.new(dataset_params)
-    if params["files"].count == 0
-      flash[:notice] = "You must specify at least one dataset"
-      render "new"
-    else
-      @dataset.save
-      @dataset.add_files(params["files"])
-      redirect_to datasets_path, :notice => "Dataset created sucessfully"
-    end
+    @dataset.save
+    @dataset.add_files(params["files"])
+    redirect_to datasets_path, :notice => "Dataset created sucessfully"
   end
 
   def edit
@@ -36,12 +31,28 @@ class DatasetsController < ApplicationController
   end
 
   def update
+    @dataset = current_user.datasets.where(id: params["id"]).first
+    @dataset.update(dataset_params)
+    @dataset.update_files(params["files"])
+    redirect_to datasets_path, :notice => "Dataset updated sucessfully"
   end
 
   private
 
+  def handle_files
+    clear_files
+    check_files
+  end
+
   def clear_files
-    params["files"].delete_if { |f| f["file"].nil? }
+    params["files"].delete_if { |f| f["file"].nil? && f["title"].nil? }
+  end
+
+  def check_files
+    if params["files"].count == 0
+      flash[:notice] = "You must specify at least one dataset"
+      render "new"
+    end
   end
 
   def set_licenses

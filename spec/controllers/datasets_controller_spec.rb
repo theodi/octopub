@@ -157,4 +157,48 @@ describe DatasetsController, type: :controller do
 
   end
 
+  describe 'update' do
+
+    before(:each) do
+      sign_in @user
+      @dataset = create(:dataset, name: "Dataset", user: @user)
+      @file = create(:dataset_file, dataset: @dataset)
+      @dataset_hash = {
+        name: "New name",
+        description: "New description",
+        publisher_name: "New Publisher",
+        publisher_url: "http://new.publisher.com",
+        license: "OGL-UK-3",
+        frequency: "annual"
+      }
+    end
+
+    it 'updates a dataset' do
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+         }]
+
+      expect(response).to redirect_to(datasets_path)
+      @dataset.reload
+
+      expect(@dataset.name).to eq("New name")
+      expect(@dataset.description).to eq("New description")
+      expect(@dataset.publisher_name).to eq("New Publisher")
+      expect(@dataset.publisher_url).to eq("http://new.publisher.com")
+      expect(@dataset.license).to eq("OGL-UK-3")
+      expect(@dataset.frequency).to eq("annual")
+      expect(@dataset.dataset_files.count).to eq(1)
+      expect(@dataset.dataset_files.first.title).to eq("New title")
+      expect(@dataset.dataset_files.first.description).to eq("New description")
+    end
+
+    it 'returns an error if there are no files' do
+      request = put 'update', id: @dataset.id, dataset: @dataset_hash, files: []
+
+      expect(request).to render_template(:new)
+      expect(flash[:notice]).to eq("You must specify at least one dataset")
+    end
+  end
 end
