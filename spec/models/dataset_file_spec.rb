@@ -69,6 +69,20 @@ describe DatasetFile do
     end
   end
 
+  context "delete_from_github" do
+
+    it "deletes a file from github" do
+      file = create(:dataset_file, filename: "example.csv", file_sha: "abbsdfsdfsdfsdvs", view_sha: "fgdfdgdfgdfgf")
+      dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
+
+      expect(dataset).to receive(:delete_contents).with("example.csv", "abbsdfsdfsdfsdvs")
+      expect(dataset).to receive(:delete_contents).with("example.md", "fgdfdgdfgdfgf")
+
+      file.send(:delete_from_github, file)
+    end
+
+  end
+
   context "self.new_file" do
 
     before(:each) do

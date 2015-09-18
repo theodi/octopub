@@ -61,4 +61,9 @@ class DatasetFile < ActiveRecord::Base
     save
   end
 
+  def delete_from_github(file)
+    dataset.delete_contents(file.filename, file.file_sha)
+    dataset.delete_contents("#{File.basename(file.filename, '.*')}.md", file.view_sha)
+  end
+
 end
