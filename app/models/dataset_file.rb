@@ -34,6 +34,8 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def update_file(file)
+    original_file = self.dup
+
     update_hash = {
       title: file["title"],
       filename: file["file"].nil? ? nil : file["file"].original_filename,
@@ -42,7 +44,11 @@ class DatasetFile < ActiveRecord::Base
     }.delete_if { |k,v| v.nil? }
 
     self.update(update_hash)
-    update_in_github(file["file"]) if file["file"]
+
+    if file["file"]
+      update_in_github(file["file"])
+      delete_from_github(original_file) unless file["file"].original_filename == original_file.filename
+    end
   end
 
   def add_to_github(tempfile)

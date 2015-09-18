@@ -196,6 +196,24 @@ describe DatasetFile do
       expect(file.mediatype).to eq("text/csv")
     end
 
+    it "deletes the old file if the filenames are different" do
+      file = create(:dataset_file)
+
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data0.csv')
+      tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      new_file = {
+        "id" => file.id,
+        "title" => 'My File',
+        "file" => tempfile,
+        "description" => 'A new description',
+      }
+
+      expect(file).to receive(:update_in_github).with(tempfile)
+      expect(file).to receive(:delete_from_github)
+      file.update_file(new_file)
+    end
+
   end
 
 end
