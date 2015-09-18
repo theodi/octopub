@@ -162,7 +162,7 @@ describe DatasetsController, type: :controller do
     before(:each) do
       sign_in @user
       @dataset = create(:dataset, name: "Dataset", user: @user)
-      @file = create(:dataset_file, dataset: @dataset)
+      @file = create(:dataset_file, dataset: @dataset, filename: 'test-data.csv')
       @dataset_hash = {
         name: "New name",
         description: "New description",

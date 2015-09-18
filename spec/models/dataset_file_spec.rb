@@ -158,7 +158,7 @@ describe DatasetFile do
   context "update_file" do
 
     it "updates a file" do
-      file = create(:dataset_file)
+      file = create(:dataset_file, filename: 'test-data.csv')
 
       path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
       tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
