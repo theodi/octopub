@@ -113,11 +113,6 @@ class Dataset < ActiveRecord::Base
     "#{user.name}/#{repo}"
   end
 
-  def get_content_type(file)
-    type = MIME::Types.type_for(file).first
-    [(type.use_instead || type.content_type)].flatten.first
-  end
-
   private
 
     def create_in_github
