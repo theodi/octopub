@@ -32,6 +32,10 @@ class Dataset < ActiveRecord::Base
     user.octokit_client.update_contents(full_name, path(filename, folder), "Updating #{filename}", sha, file, branch: "gh-pages")
   end
 
+  def delete_contents(filename, sha, folder = nil)
+    user.octokit_client.delete_contents(full_name, path(filename, folder), "Deleting #{filename}", sha, branch: "gh-pages")
+  end
+
   def path(filename, folder = "")
     File.join([folder,filename].reject { |n| n.blank? })
   end

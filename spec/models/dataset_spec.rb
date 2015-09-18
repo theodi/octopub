@@ -85,6 +85,20 @@ describe Dataset do
     dataset.update_contents("my-file", "File contents", "abc1234")
   end
 
+  it "deletes a file in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:delete_contents).with(
+      "#{@user.name}/repo",
+      "my-file",
+      "Deleting my-file",
+      "abc1234",
+      branch: "gh-pages"
+    )
+
+    dataset.delete_contents("my-file", "abc1234")
+  end
+
 
   context "with files" do
 
