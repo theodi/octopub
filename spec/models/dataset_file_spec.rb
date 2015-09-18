@@ -85,7 +85,7 @@ describe DatasetFile do
     it "creates a file in github" do
       created_file = create(:dataset_file)
       expect(DatasetFile).to receive(:new) { created_file }
-      expect(created_file).to receive(:add_to_github).with(@tempfile.tempfile)
+      expect(created_file).to receive(:add_to_github).with(@tempfile)
 
       DatasetFile.new_file(@file)
     end

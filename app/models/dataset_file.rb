@@ -10,7 +10,7 @@ class DatasetFile < ActiveRecord::Base
       description: file["description"],
       mediatype: get_content_type(file["file"].original_filename),
     )
-    f.add_to_github(file["file"].tempfile)
+    f.add_to_github(file["file"])
     f
   end
 
