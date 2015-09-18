@@ -35,6 +35,13 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
+  it "generates a path" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect(dataset.path("filename")).to eq("filename")
+    expect(dataset.path("filename", "folder")).to eq("folder/filename")
+  end
+
   it "creates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
 
@@ -63,9 +70,41 @@ describe Dataset do
     dataset.create_contents("my-file", "File contents", "folder")
   end
 
+  it "updates a file in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:update_contents).with(
+      "#{@user.name}/repo",
+      "my-file",
+      "Updating my-file",
+      "abc1234",
+      "File contents",
+      branch: "gh-pages"
+    )
+
+    dataset.update_contents("my-file", "File contents", "abc1234")
+  end
+
+  it "deletes a file in Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+
+    expect_any_instance_of(Octokit::Client).to receive(:delete_contents).with(
+      "#{@user.name}/repo",
+      "my-file",
+      "Deleting my-file",
+      "abc1234",
+      branch: "gh-pages"
+    )
+
+    dataset.delete_contents("my-file", "abc1234")
+  end
+
+
   context "with files" do
 
     before(:each) do
+      allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
+
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
@@ -110,13 +149,84 @@ describe Dataset do
     end
   end
 
+  context "update_files" do
+
+    before(:each) do
+      @dataset = create(:dataset, user: @user)
+      @file = create(:dataset_file, dataset: @dataset, filename: 'test-data.csv')
+      @files = [{
+        "id" => @file.id,
+        "title" => "My super dataset",
+        "description" => "Another super dataset"
+      }]
+
+      expect(@dataset).to receive(:update_datapackage)
+    end
+
+    it "updates the metadata of one file" do
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(1)
+      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
+      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
+    end
+
+    it "updates the metadata of multiple files" do
+      file2 = create(:dataset_file, dataset: @dataset)
+
+      @files << {
+        "id" => file2.id,
+        "title" => "My super dataset 2",
+        "description" => "Another super dataset 2"
+      }
+
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(2)
+      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
+      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
+      expect(@dataset.dataset_files.last.title).to eq("My super dataset 2")
+      expect(@dataset.dataset_files.last.description).to eq("Another super dataset 2")
+    end
+
+    it "updates a file in github" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @files.first["file"] = file
+
+      expect(DatasetFile).to receive(:find) { @file }
+      expect(@file).to receive(:update_in_github).with(file)
+
+      @dataset.update_files(@files)
+    end
+
+    it "adds new files" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      @files << {
+        "title" => "New shiny",
+        "description" => "Shiny new file",
+        "file" => file
+      }
+
+      expect(DatasetFile).to receive(:new_file) { create(:dataset_file, dataset: @dataset) }
+
+      @dataset.update_files(@files)
+
+      expect(@dataset.dataset_files.count).to eq(2)
+    end
+
+  end
+
   it "sends the correct files to Github" do
     dataset = build :dataset, user: @user,
                               dataset_files: [
                                 create(:dataset_file)
                               ]
 
-    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage)
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
     expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
     expect(dataset).to receive(:create_contents).with("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
@@ -162,6 +272,36 @@ describe Dataset do
       "description" => "My Awesome File Description",
       "path" => "data/example.csv"
     })
+  end
+
+  it "saves the datapackage sha", :vcr do
+    dataset = create(:dataset, dataset_files: [
+      create(:dataset_file)
+    ])
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) {
+      {
+        content: {
+          sha: "abc1234"
+        }
+      }
+    }
+    dataset.create_datapackage
+
+    expect(dataset.datapackage_sha).to eq("abc1234")
+  end
+
+  it "updates the datapackage sha" do
+    dataset = create(:dataset, datapackage_sha: "abc1234")
+    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage, "abc1234") {
+      {
+        content: {
+          sha: "4321cba"
+        }
+      }
+    }
+    dataset.update_datapackage
+
+    expect(dataset.datapackage_sha).to eq("4321cba")
   end
 
   it "generates the correct config" do

@@ -4,6 +4,8 @@ FactoryGirl.define do
     filename 'dataset.csv'
     description Faker::Company.bs
     mediatype 'text/csv'
+    file_sha 'abc123'
+    view_sha 'cba321'
 
     after(:build) { |dataset_file|
       dataset_file.class.skip_callback(:create, :after, :add_to_github)

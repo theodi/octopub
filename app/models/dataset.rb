@@ -7,31 +7,59 @@ class Dataset < ActiveRecord::Base
 
   def add_files(files_array)
     files_array.each do |file|
-      dataset_files.new(
-        title: file["title"],
-        filename: file["file"].original_filename,
-        description: file["description"],
-        mediatype: get_content_type(file["file"].original_filename),
-        tempfile: file["file"].tempfile
-      )
+      dataset_files << DatasetFile.new_file(file, self)
     end
     save
     create_files
   end
 
-  def create_contents(filename, file, folder = "")
-    path = folder.blank? ? filename : folder + "/" + filename
-    user.octokit_client.create_contents(full_name, path, "Adding #{filename}", file, branch: "gh-pages")
+  def update_files(files_array)
+    files_array.each do |file|
+      if file["id"]
+        DatasetFile.update_file(file)
+      else
+        dataset_files << DatasetFile.new_file(file, self)
+      end
+    end
+    update_datapackage
+  end
+
+  def create_contents(filename, file, folder = nil)
+    user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
+  end
+
+  def update_contents(filename, file, sha, folder = nil)
+    user.octokit_client.update_contents(full_name, path(filename, folder), "Updating #{filename}", sha, file, branch: "gh-pages")
+  end
+
+  def delete_contents(filename, sha, folder = nil)
+    user.octokit_client.delete_contents(full_name, path(filename, folder), "Deleting #{filename}", sha, branch: "gh-pages")
+  end
+
+  def path(filename, folder = "")
+    File.join([folder,filename].reject { |n| n.blank? })
   end
 
   def create_files
-    create_contents("datapackage.json", datapackage)
+    create_datapackage
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
     create_contents("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
     create_contents("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
     create_contents("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+  end
+
+  def create_datapackage
+    response = create_contents("datapackage.json", datapackage)
+    self.datapackage_sha = response[:content][:sha]
+    save
+  end
+
+  def update_datapackage
+    response = update_contents("datapackage.json", datapackage, datapackage_sha)
+    self.datapackage_sha = response[:content][:sha]
+    save
   end
 
   def datapackage
@@ -75,11 +103,6 @@ class Dataset < ActiveRecord::Base
 
   def license_details
     Odlifier::License.define(license)
-  end
-
-  def get_content_type(file)
-    type = MIME::Types.type_for(file).first
-    [(type.use_instead || type.content_type)].flatten.first
   end
 
   def github_url

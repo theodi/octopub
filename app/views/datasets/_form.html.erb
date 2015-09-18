@@ -1,0 +1,45 @@
+<%= bootstrap_form_tag url: url, method: method do |f| %>
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name %>
+  <%= f.text_area "dataset[description]", label: "Dataset description", value: @dataset.description  %>
+  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: @dataset.publisher_name %>
+  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: @dataset.publisher_url %>
+  <%= f.select "dataset[license]", @licenses, label: "License", selected: @dataset.license %>
+  <%= f.select "dataset[frequency]", [
+                                        "One-off",
+                                        "Annual",
+                                        "Every working day",
+                                        "Daily", "Monthly",
+                                        "Every minute",
+                                        "Every quarter",
+                                        "Half yearly",
+                                        "Weekly"
+                                      ], label: "Publication frequency", selected: @dataset.frequency %>
+  <div id="files">
+    <% if @dataset.dataset_files.count == 0 %>
+      <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, f: f } %>
+    <% else %>
+      <% @dataset.dataset_files.each do |file| %>
+        <div class="hidden">
+          <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, f: f } %>
+        </div>
+        <%= render partial: "dataset_files/form", locals: { file: file, f: f } %>
+      <% end %>
+    <% end %>
+  </div>
+  <p class="text-right" id="wut">
+    <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
+  <%= f.submit "Submit", class: "btn btn-primary btn-lg btn-block" %>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    var file = $('.file:first').clone();
+
+    $('#clone').click(function(e) {
+      e.preventDefault();
+      $(file).clone().appendTo('#files');
+    });
+
+  });
+</script>
