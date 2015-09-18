@@ -46,7 +46,7 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def add_to_github(tempfile)
-    response = dataset.create_contents(filename, tempfile.read, "data")
+    response = dataset.create_contents(filename, tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace), "data")
     self.file_sha = response[:content][:sha]
     response = dataset.create_contents("#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data")
     self.view_sha = response[:content][:sha]
@@ -54,7 +54,7 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def update_in_github(tempfile)
-    response = dataset.update_contents(filename, tempfile.read, file_sha, "data")
+    response = dataset.update_contents(filename, tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace), file_sha, "data")
     self.file_sha = response[:content][:sha]
     response = dataset.update_contents("#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, view_sha, "data")
     self.view_sha = response[:content][:sha]
