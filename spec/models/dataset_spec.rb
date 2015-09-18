@@ -145,6 +145,8 @@ describe Dataset do
         "title" => "My super dataset",
         "description" => "Another super dataset"
       }]
+
+      expect(@dataset).to receive(:update_datapackage)
     end
 
     it "updates the metadata of one file" do

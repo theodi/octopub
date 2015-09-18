@@ -173,7 +173,12 @@ describe DatasetsController, type: :controller do
       }
     end
 
-    it 'updates a dataset' do
+    before(datapackage: true) do
+      expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
+      expect(@dataset).to receive(:update_datapackage)
+    end
+
+    it 'updates a dataset', :datapackage do
       put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
           id: @file.id,
           title: "New title",
@@ -201,7 +206,7 @@ describe DatasetsController, type: :controller do
       expect(flash[:notice]).to eq("You must specify at least one dataset")
     end
 
-    it 'updates a file in Github' do
+    it 'updates a file in Github', :datapackage do
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
       file = Rack::Test::UploadedFile.new(path, "text/csv")
@@ -215,7 +220,7 @@ describe DatasetsController, type: :controller do
       }]
     end
 
-    it 'adds a new file in Github' do
+    it 'adds a new file in Github', :datapackage do
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
       file = Rack::Test::UploadedFile.new(path, "text/csv")

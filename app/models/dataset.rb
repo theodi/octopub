@@ -21,6 +21,7 @@ class Dataset < ActiveRecord::Base
         dataset_files << DatasetFile.new_file(file, self)
       end
     end
+    update_datapackage
   end
 
   def create_contents(filename, file, folder = nil)
