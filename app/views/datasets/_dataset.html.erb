@@ -1,1 +1,4 @@
-<li><%= link_to dataset.name, dataset.gh_pages_url %></li>
+<li>
+  <%= link_to dataset.name, dataset.gh_pages_url %>
+  <%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-xs btn-warning") if request.env['PATH_INFO'] == "/dashboard" %>
+</li>
