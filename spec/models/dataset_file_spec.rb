@@ -52,15 +52,15 @@ describe DatasetFile do
     end
 
     it "updates a file in Github" do
-      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), "data", @file.file_sha) { { content: {} } }
-      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data", @file.view_sha) { { content: {} } }
+      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), @file.file_sha, "data") { { content: {} } }
+      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, @file.view_sha, "data") { { content: {} } }
 
       @file.send(:update_in_github, @tempfile)
     end
 
     it "sets the new sha" do
-      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), "data", @file.file_sha) { { content: { sha: "sha1"} } }
-      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data", @file.view_sha) { { content: { sha: "sha2"} } }
+      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), @file.file_sha, "data") { { content: { sha: "sha1"} } }
+      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, @file.view_sha, "data") { { content: { sha: "sha2"} } }
 
       @file.send(:update_in_github, @tempfile)
 
