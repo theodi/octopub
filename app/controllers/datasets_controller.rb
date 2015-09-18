@@ -1,6 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update]
+  before_filter :get_dataset, only: [:edit, :update]
   before_filter :handle_files, only: [:create, :update]
   before_filter :set_licenses, only: [:create, :new, :edit]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
@@ -31,13 +32,16 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    @dataset = current_user.datasets.where(id: params["id"]).first
     @dataset.update(dataset_params)
     @dataset.update_files(params["files"])
     redirect_to datasets_path, :notice => "Dataset updated sucessfully"
   end
 
   private
+
+  def get_dataset
+    @dataset = Dataset.where(id: params["id"], user_id: current_user.id).first
+  end
 
   def handle_files
     clear_files
