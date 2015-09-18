@@ -5,7 +5,7 @@ describe DatasetsController, type: :controller do
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")
     Dataset.skip_callback(:create, :before, :create_in_github)
-    
+
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
   end
@@ -200,5 +200,46 @@ describe DatasetsController, type: :controller do
       expect(request).to render_template(:new)
       expect(flash[:notice]).to eq("You must specify at least one dataset")
     end
+
+    it 'updates a file in Github' do
+      filename = 'test-data.csv'
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      expect(DatasetFile).to receive(:find).with(@file.id.to_s) { @file }
+      expect(@file).to receive(:update_in_github).with(file)
+
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          id: @file.id,
+          file: file
+      }]
+    end
+
+    it 'adds a new file in Github' do
+      filename = 'test-data.csv'
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+      file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+      new_file = create(:dataset_file, dataset: @dataset)
+
+      expect(DatasetFile).to receive(:new) { new_file }
+      expect(new_file).to receive(:add_to_github).with(file)
+
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+         },
+        {
+          title: "New file",
+          description: "New file description",
+          file: file
+        }
+      ]
+
+      expect(@dataset.dataset_files.count).to eq(2)
+    end
+
   end
+
 end
