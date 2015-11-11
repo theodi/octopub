@@ -36,7 +36,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.8)
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (6.0.3)
+    autoprefixer-rails (6.1.0.1)
       execjs
       json
     bootstrap-sass (3.2.0.2)
@@ -58,7 +58,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
-    coveralls (0.8.3)
+    coveralls (0.8.5)
       json (~> 1.8)
       rest-client (>= 1.6.8, < 2)
       simplecov (~> 0.10.0)
@@ -230,7 +230,7 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
-    spring (1.4.0)
+    spring (1.4.1)
     sprockets (2.12.4)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -245,7 +245,7 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (1.4.1)
-    tins (1.6.0)
+    tins (1.7.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -260,7 +260,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    websocket-driver (0.6.2)
+    websocket-driver (0.6.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
     xpath (2.0.0)
