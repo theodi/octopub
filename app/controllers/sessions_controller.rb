@@ -1,3 +1,4 @@
+:nocov:
 class SessionsController < ApplicationController
   def create
     auth = request.env["omniauth.auth"]
@@ -14,3 +15,4 @@ class SessionsController < ApplicationController
   end
 
 end
+:nocov:
