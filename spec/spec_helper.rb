@@ -10,6 +10,7 @@ require 'rspec/rails'
 require 'database_cleaner'
 require 'factory_girl'
 require 'omniauth'
+require 'support/vcr_helper'
 
 DatabaseCleaner.strategy = :truncation
 OmniAuth.config.test_mode = true
