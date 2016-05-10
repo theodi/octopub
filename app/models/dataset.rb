@@ -40,8 +40,8 @@ class Dataset < ActiveRecord::Base
     @repo.update_file(filename, file)
   end
 
-  def delete_contents(filename, sha, folder = nil)
-    user.octokit_client.delete_contents(full_name, path(filename, folder), "Deleting #{filename}", sha, branch: "gh-pages")
+  def delete_contents(filename)
+    @repo.delete_file(filename)
   end
 
   def path(filename, folder = "")

@@ -25,58 +25,38 @@ describe DatasetFile do
     end
 
     it "adds a file to Github" do
-      expect(@dataset).to receive(:create_contents).with("example.csv", File.read(@path), "data") { { content: {} } }
-      expect(@dataset).to receive(:create_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data") { { content: {} } }
+      expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
+      expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
 
       @file.send(:add_to_github, @tempfile)
-    end
-
-    it "sets the sha", :vcr do
-      expect(@dataset).to receive(:create_contents).with("example.csv", File.read(@path), "data") { { content: { sha: "sha1"} } }
-      expect(@dataset).to receive(:create_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data") { { content: { sha: "sha2"} } }
-
-      @file.send(:add_to_github, @tempfile)
-
-      expect(@file.file_sha).to eq("sha1")
-      expect(@file.view_sha).to eq("sha2")
     end
   end
 
   context "update_in_github" do
 
     before(:each) do
-      @file = create(:dataset_file, filename: "example.csv", file_sha: "abbsdfsdfsdfsdvs", view_sha: "fgdfdgdfgdfgf")
+      @file = create(:dataset_file, filename: "example.csv")
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
 
       @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
     end
 
     it "updates a file in Github" do
-      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), @file.file_sha, "data") { { content: {} } }
-      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, @file.view_sha, "data") { { content: {} } }
+      expect(@dataset).to receive(:update_contents).with("data/example.csv", File.read(@path))
+      expect(@dataset).to receive(:update_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
 
       @file.send(:update_in_github, @tempfile)
-    end
-
-    it "sets the new sha" do
-      expect(@dataset).to receive(:update_contents).with("example.csv", File.read(@path), @file.file_sha, "data") { { content: { sha: "sha1"} } }
-      expect(@dataset).to receive(:update_contents).with("example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, @file.view_sha, "data") { { content: { sha: "sha2"} } }
-
-      @file.send(:update_in_github, @tempfile)
-
-      expect(@file.file_sha).to eq("sha1")
-      expect(@file.view_sha).to eq("sha2")
     end
   end
 
   context "delete_from_github" do
 
     it "deletes a file from github" do
-      file = create(:dataset_file, filename: "example.csv", file_sha: "abbsdfsdfsdfsdvs", view_sha: "fgdfdgdfgdfgf")
+      file = create(:dataset_file, filename: "example.csv")
       dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
 
-      expect(dataset).to receive(:delete_contents).with("example.csv", "abbsdfsdfsdfsdvs")
-      expect(dataset).to receive(:delete_contents).with("example.md", "fgdfdgdfgdfgf")
+      expect(dataset).to receive(:delete_contents).with("example.csv")
+      expect(dataset).to receive(:delete_contents).with("example.md")
 
       file.send(:delete_from_github, file)
     end
