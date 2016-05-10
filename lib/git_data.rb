@@ -44,8 +44,8 @@ class GitData
   end
 
   def update_tree(filename, blob_sha)
-    item = tree.find { |item| item[:path] == filename }
-    item[:sha] = blob_sha
+    item = tree.find { |item| item["path"] == filename }
+    item["sha"] = blob_sha
   end
 
   def create_tree
@@ -57,10 +57,7 @@ class GitData
   end
 
   def tree_data(sha)
-    tree = @client.tree(full_name, sha, recursive: true).tree.map { |r| r.to_h }
-    tree.delete_if { |t| t[:type] == 'tree' }
-    tree.each { |h| h.delete(:size) ; h.delete(:url) }
-    tree
+    @client.tree(full_name, sha, recursive: true).tree
   end
 
   def create
@@ -76,7 +73,8 @@ class GitData
 
   def find
     @repo = @client.repository(full_name)
-    @tree = tree_data(base_tree)
+    tree = tree_data(base_tree)
+    tree.each { |t| append_to_tree(t.path, t.sha) if t.type == 'blob' }
     @repo
   end
 
