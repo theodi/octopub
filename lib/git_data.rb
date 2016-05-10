@@ -21,6 +21,11 @@ class GitData
     append_to_tree(filename, blob_sha)
   end
 
+  def update_file(filename, file_contents)
+    blob_sha = blob_sha(file_contents)
+    update_tree(filename, blob_sha)
+  end
+
   def blob_sha(content)
     @client.create_blob(full_name, content, 'utf-8')
   end
@@ -38,12 +43,23 @@ class GitData
     }
   end
 
+  def update_tree(filename, blob_sha)
+    item = tree.find { |item| item[:path] == filename }
+    item[:sha] = blob_sha
+  end
+
   def create_tree
     @client.create_tree(full_name, tree, base_tree: base_tree)
   end
 
   def base_tree
     @client.refs(full_name).first.object.sha
+  end
+
+  def tree_data(sha)
+    tree = @client.tree(full_name, sha, recursive: true).tree.map { |r| r.to_h }
+    tree.each { |h| h.delete(:size) }
+    tree
   end
 
   def create
@@ -59,6 +75,7 @@ class GitData
 
   def find
     @repo = @client.repository(full_name)
+    @tree = tree_data(base_tree)
   end
 
   def full_name
