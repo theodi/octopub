@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'git_data'
 
-describe GitData do
+describe GitData, :vcr do
 
   before(:all) do
     @client = Octokit::Client.new :access_token => ENV['GITHUB_TOKEN']
@@ -11,7 +11,7 @@ describe GitData do
     @git_data = GitData.new(@client, @name, @username)
   end
 
-  context '#create', :delete_repo, :vcr do
+  context '#create', :delete_repo do
     before(:all) do
       @git_data.create
     end
@@ -29,7 +29,7 @@ describe GitData do
     end
   end
 
-  context '#find', :delete_repo, :vcr do
+  context '#find', :delete_repo do
     before(:all) do
       @git_data.create
     end
@@ -40,7 +40,7 @@ describe GitData do
     end
   end
 
-  context '#add_file', :delete_repo, :vcr do
+  context '#add_file', :delete_repo do
 
     before(:all) do
       @git_data.create
@@ -87,7 +87,7 @@ describe GitData do
     end
   end
 
-  context 'adding files', :vcr do
+  context 'adding files' do
 
     before(:each) do
       @git_data.create
@@ -143,7 +143,7 @@ describe GitData do
     end
   end
 
-  it 'updates a file', :delete_repo, :vcr do
+  it 'updates a file', :delete_repo do
     @git_data.create
     @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
     @git_data.add_file('my-awesome-file.csv', @file)
@@ -158,6 +158,9 @@ describe GitData do
     @new_data.push
 
     tree = @client.tree(@repo_name, @new_data.base_tree)
+
+    require "pry"; binding.pry
+
     content = @client.contents(@repo_name, path: 'my-awesome-file.csv', ref: 'heads/gh-pages').content
 
     expect(tree.tree.count).to eq(2)
@@ -166,7 +169,7 @@ describe GitData do
     expect(content).to eq(Base64.encode64 new_content)
   end
 
-  it 'updates a file within a folder', :delete_repo, :vcr do
+  it 'updates a file within a folder', :delete_repo do
     @git_data.create
     @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
     @git_data.add_file('data/my-awesome-file.csv', @file)

@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Tue, 10 May 2016 13:24:10 GMT
+      - Tue, 10 May 2016 14:04:47 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -35,7 +35,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4280'
+      - '3620'
       X-Ratelimit-Reset:
       - '1462889517'
       Cache-Control:
@@ -71,12 +71,12 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - bd82876e9bf04990f289ba22f246ee9b
+      - 065b43cd9674091fec48a221b420fbb3
       X-Github-Request-Id:
-      - 56A82ECA:B977:850FBAD:5731E0FA
+      - 56A82ECA:FD15:35E4FF2:5731EA7F
     body:
       encoding: UTF-8
       string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
     http_version: 
-  recorded_at: Tue, 10 May 2016 13:24:47 GMT
+  recorded_at: Tue, 10 May 2016 14:05:24 GMT
 recorded_with: VCR 3.0.1
