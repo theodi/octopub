@@ -278,34 +278,18 @@ describe Dataset do
     })
   end
 
-  it "saves the datapackage sha", :vcr do
+  it "saves the datapackage", :vcr do
     dataset = create(:dataset, dataset_files: [
       create(:dataset_file)
     ])
-    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) {
-      {
-        content: {
-          sha: "abc1234"
-        }
-      }
-    }
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage)
     dataset.create_datapackage
-
-    expect(dataset.datapackage_sha).to eq("abc1234")
   end
 
-  it "updates the datapackage sha" do
-    dataset = create(:dataset, datapackage_sha: "abc1234")
-    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage, "abc1234") {
-      {
-        content: {
-          sha: "4321cba"
-        }
-      }
-    }
+  it "updates the datapackage" do
+    dataset = create(:dataset)
+    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage)
     dataset.update_datapackage
-
-    expect(dataset.datapackage_sha).to eq("4321cba")
   end
 
   it "generates the correct config" do
