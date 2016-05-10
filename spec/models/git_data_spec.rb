@@ -11,7 +11,7 @@ describe GitData do
     @git_data = GitData.new(@client, @name, @username)
   end
 
-  context '#create', delete_repo: true do
+  context '#create', :delete_repo, :vcr do
     before(:all) do
       @git_data.create
     end
@@ -29,7 +29,7 @@ describe GitData do
     end
   end
 
-  context '#find', delete_repo: true do
+  context '#find', :delete_repo, :vcr do
     before(:all) do
       @git_data.create
     end
@@ -40,7 +40,7 @@ describe GitData do
     end
   end
 
-  context '#add_file', delete_repo: true do
+  context '#add_file', :delete_repo, :vcr do
 
     before(:all) do
       @git_data.create
@@ -87,7 +87,7 @@ describe GitData do
     end
   end
 
-  context 'adding files' do
+  context 'adding files', :vcr do
 
     before(:each) do
       @git_data.create
@@ -143,7 +143,7 @@ describe GitData do
     end
   end
 
-  it 'updates a file', delete_repo: true do
+  it 'updates a file', :delete_repo, :vcr do
     @git_data.create
     @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
     @git_data.add_file('my-awesome-file.csv', @file)
