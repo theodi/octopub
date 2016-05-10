@@ -76,6 +76,7 @@ class GitData
   def find
     @repo = @client.repository(full_name)
     @tree = tree_data(base_tree)
+    @repo
   end
 
   def full_name
