@@ -86,4 +86,8 @@ class GitData
     @html_url || @repo.html_url
   end
 
+  def name
+    @repo_name
+  end
+
 end
