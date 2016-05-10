@@ -36,8 +36,8 @@ class Dataset < ActiveRecord::Base
     @repo.add_file(filename, file)
   end
 
-  def update_contents(filename, file, sha, folder = nil)
-    user.octokit_client.update_contents(full_name, path(filename, folder), "Updating #{filename}", sha, file, branch: "gh-pages")
+  def update_contents(filename, file)
+    @repo.update_file(filename, file)
   end
 
   def delete_contents(filename, sha, folder = nil)
