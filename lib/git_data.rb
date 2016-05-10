@@ -26,6 +26,11 @@ class GitData
     update_tree(filename, blob_sha)
   end
 
+  def delete_file(filename)
+    tree.delete_if { |item| item["path"] == filename }
+    @base_tree = false
+  end
+
   def blob_sha(content)
     @client.create_blob(full_name, content, 'utf-8')
   end
@@ -49,7 +54,11 @@ class GitData
   end
 
   def create_tree
-    @client.create_tree(full_name, tree, base_tree: base_tree)
+    if @base_tree === false
+      @client.create_tree(full_name, tree)
+    else
+      @client.create_tree(full_name, tree, base_tree: base_tree)
+    end
   end
 
   def base_tree
