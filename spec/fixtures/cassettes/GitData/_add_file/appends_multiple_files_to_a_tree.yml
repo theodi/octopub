@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Tue, 10 May 2016 13:24:09 GMT
+      - Tue, 10 May 2016 14:04:46 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -35,7 +35,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4283'
+      - '3624'
       X-Ratelimit-Reset:
       - '1462889517'
       Cache-Control:
@@ -71,14 +71,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 065b43cd9674091fec48a221b420fbb3
+      - 8dd185e423974a7e13abbbe6e060031e
       X-Github-Request-Id:
-      - 56A82ECA:B975:49303ED:5731E0F9
+      - 56A82ECA:FD1A:93890C8:5731EA7E
     body:
       encoding: UTF-8
       string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
     http_version: 
-  recorded_at: Tue, 10 May 2016 13:24:46 GMT
+  recorded_at: Tue, 10 May 2016 14:05:23 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
@@ -104,7 +104,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Tue, 10 May 2016 13:24:09 GMT
+      - Tue, 10 May 2016 14:04:46 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -114,7 +114,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4282'
+      - '3622'
       X-Ratelimit-Reset:
       - '1462889517'
       Cache-Control:
@@ -150,12 +150,12 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 5aeb3f30c9e3ef6ef7bcbcddfd9a68f7
+      - e724c57ebb9961c772a91e2dd7421c8d
       X-Github-Request-Id:
-      - 56A82ECA:B978:9E3F6C8:5731E0F9
+      - 56A82ECA:FD18:8609524:5731EA7E
     body:
       encoding: UTF-8
       string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
     http_version: 
-  recorded_at: Tue, 10 May 2016 13:24:46 GMT
+  recorded_at: Tue, 10 May 2016 14:05:23 GMT
 recorded_with: VCR 3.0.1
