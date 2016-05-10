@@ -59,15 +59,11 @@ class Dataset < ActiveRecord::Base
   end
 
   def create_datapackage
-    response = create_contents("datapackage.json", datapackage)
-    self.datapackage_sha = response[:content][:sha]
-    save
+    create_contents("datapackage.json", datapackage)
   end
 
   def update_datapackage
-    response = update_contents("datapackage.json", datapackage, datapackage_sha)
-    self.datapackage_sha = response[:content][:sha]
-    save
+    update_contents("datapackage.json", datapackage)
   end
 
   def datapackage
