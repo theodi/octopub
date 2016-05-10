@@ -86,16 +86,11 @@ describe Dataset do
 
   it "deletes a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:delete_contents).with(
-      "#{@user.name}/repo",
-      "my-file",
-      "Deleting my-file",
-      "abc1234",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:delete_file).with("my-file")
 
-    dataset.delete_contents("my-file", "abc1234")
+    dataset.delete_contents("my-file")
   end
 
   context "with files" do
