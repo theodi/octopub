@@ -1,3 +1,5 @@
+require 'git_data'
+
 class Dataset < ActiveRecord::Base
 
   belongs_to :user
@@ -24,8 +26,8 @@ class Dataset < ActiveRecord::Base
     update_datapackage
   end
 
-  def create_contents(filename, file, folder = nil)
-    user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
+  def create_contents(filename, file)
+    @repo.add_file(filename, file)
   end
 
   def update_contents(filename, file, sha, folder = nil)
@@ -44,10 +46,10 @@ class Dataset < ActiveRecord::Base
     create_datapackage
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
-    create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
-    create_contents("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
-    create_contents("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
-    create_contents("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+    create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
   end
 
   def create_datapackage
@@ -63,7 +65,6 @@ class Dataset < ActiveRecord::Base
   end
 
   def datapackage
-
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
@@ -120,9 +121,10 @@ class Dataset < ActiveRecord::Base
   private
 
     def create_in_github
-      repo = user.octokit_client.create_repository(name.downcase)
-      self.url = repo[:html_url]
-      self.repo = repo[:name]
+      @repo = GitData.new(user.octokit_client, name, user.name)
+      @repo.create
+      self.url = @repo.html_url
+      self.repo = @repo.name
     end
 
 end

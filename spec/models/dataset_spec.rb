@@ -20,14 +20,15 @@ describe Dataset do
 
   it "creates a repo in Github" do
     dataset = build(:dataset, :with_callback, user: @user)
-    name = "#{@user.name.downcase}/#{dataset.name.downcase}"
+    name = dataset.name.parameterize
     html_url = "http://github.com/#{name}"
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(dataset.name.downcase) {
-        {
-          name: name,
-          html_url: html_url,
-        }
+    expect(GitData).to receive(:new).with(a_kind_of(Octokit::Client), dataset.name, @user.name) {
+      obj = double(GitData)
+      expect(obj).to receive(:create)
+      expect(obj).to receive(:html_url) { html_url }
+      expect(obj).to receive(:name) { name }
+      obj
     }
 
     dataset.save
@@ -44,30 +45,20 @@ describe Dataset do
 
   it "creates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      "#{@user.name}/repo",
-      "my-file",
-      "Adding my-file",
-      "File contents",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:add_file).with("my-file", "File contents")
 
     dataset.create_contents("my-file", "File contents")
   end
 
   it "creates a file in a folder in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      "#{@user.name}/repo",
-      "folder/my-file",
-      "Adding my-file",
-      "File contents",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
 
-    dataset.create_contents("my-file", "File contents", "folder")
+    dataset.create_contents("folder/my-file", "File contents")
   end
 
   it "updates a file in Github" do
@@ -229,10 +220,10 @@ describe Dataset do
     expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
     expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
-    expect(dataset).to receive(:create_contents).with("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
-    expect(dataset).to receive(:create_contents).with("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
-    expect(dataset).to receive(:create_contents).with("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
-    expect(dataset).to receive(:create_contents).with("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+    expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
 
     dataset.create_files
   end

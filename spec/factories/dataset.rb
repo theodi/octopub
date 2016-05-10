@@ -11,6 +11,7 @@ FactoryGirl.define do
 
     after(:build) { |dataset|
       dataset.class.skip_callback(:create, :before, :create_in_github)
+      dataset.instance_variable_set(:@repo, GitData.new(nil, dataset.name, dataset.user.name))
     }
 
     trait :with_callback do
