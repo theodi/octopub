@@ -158,9 +158,6 @@ describe GitData, :vcr do
     @new_data.push
 
     tree = @client.tree(@repo_name, @new_data.base_tree)
-
-    require "pry"; binding.pry
-
     content = @client.contents(@repo_name, path: 'my-awesome-file.csv', ref: 'heads/gh-pages').content
 
     expect(tree.tree.count).to eq(2)
