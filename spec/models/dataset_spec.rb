@@ -36,15 +36,6 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
-  it "pushes to github" do
-    dataset = build(:dataset, :with_push_callback, user: @user)
-    repo = dataset.instance_variable_get(:@repo)
-
-    expect(repo).to receive(:push)
-
-    dataset.save
-  end
-
   it "generates a path" do
     dataset = build(:dataset, user: @user, repo: "repo")
 
@@ -99,7 +90,6 @@ describe Dataset do
     dataset.delete_contents("my-file", "abc1234")
   end
 
-
   context "with files" do
 
     before(:each) do
@@ -119,33 +109,33 @@ describe Dataset do
           "file" => @file
         }
       ]
+
+      @dataset = build(:dataset, user: @user)
+      @repo = @dataset.instance_variable_get(:@repo)
+
+      allow(@dataset).to receive(:create_files) { nil }
+      expect(@repo).to receive(:push)
     end
 
     it "adds a single file" do
-      dataset = build(:dataset, user: @user)
-      allow(dataset).to receive(:create_files) { nil }
+      @dataset.add_files(@files)
 
-      dataset.add_files(@files)
-
-      expect(dataset.dataset_files.count).to eq(1)
-      expect(dataset.dataset_files.first.title).to eq(@name)
-      expect(dataset.dataset_files.first.filename).to eq(@file.original_filename)
-      expect(dataset.dataset_files.first.description).to eq(@description)
-      expect(dataset.dataset_files.first.mediatype).to eq("text/csv")
+      expect(@dataset.dataset_files.count).to eq(1)
+      expect(@dataset.dataset_files.first.title).to eq(@name)
+      expect(@dataset.dataset_files.first.filename).to eq(@file.original_filename)
+      expect(@dataset.dataset_files.first.description).to eq(@description)
+      expect(@dataset.dataset_files.first.mediatype).to eq("text/csv")
     end
 
     it "adds multiple files" do
-      dataset = build(:dataset, user: @user)
-      allow(dataset).to receive(:create_files) { nil }
-
       @files << {
         "title" => 'Test Data 2',
         "description" => Faker::Company.bs,
         "file" => @file
       }
 
-      dataset.add_files(@files)
-      expect(dataset.dataset_files.count).to eq(2)
+      @dataset.add_files(@files)
+      expect(@dataset.dataset_files.count).to eq(2)
     end
   end
 
