@@ -36,6 +36,20 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
+  it "gets a repo from Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+    dataset.save
+
+    expect(GitData).to receive(:new).with(a_kind_of(Octokit::Client), dataset.name, @user.name) {
+      obj = double(GitData)
+      expect(obj).to receive(:find)
+      obj
+    }
+
+    dataset = Dataset.last
+    expect(dataset.instance_variable_get(:@repo)).to_not be_nil
+  end
+
   it "generates a path" do
     dataset = build(:dataset, user: @user, repo: "repo")
 

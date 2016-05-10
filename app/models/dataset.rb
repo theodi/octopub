@@ -7,6 +7,11 @@ class Dataset < ActiveRecord::Base
 
   before_create :create_in_github
 
+  after_find do |dataset|
+    @repo = GitData.new(user.octokit_client, dataset.name, user.name)
+    @repo.find
+  end
+
   def add_files(files_array)
     files_array.each do |file|
       dataset_files << DatasetFile.new_file(file, self)
