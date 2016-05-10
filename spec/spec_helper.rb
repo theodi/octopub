@@ -36,6 +36,10 @@ RSpec.configure do |config|
   end
 
   config.infer_spec_type_from_file_location!
+
+  config.after(:context, delete_repo: true) do
+    @client.delete_repository(@repo_name)
+  end
 end
 
 def sign_in(user)
