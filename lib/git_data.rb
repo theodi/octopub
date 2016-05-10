@@ -58,7 +58,8 @@ class GitData
 
   def tree_data(sha)
     tree = @client.tree(full_name, sha, recursive: true).tree.map { |r| r.to_h }
-    tree.each { |h| h.delete(:size) }
+    tree.delete_if { |t| t[:type] == 'tree' }
+    tree.each { |h| h.delete(:size) ; h.delete(:url) }
     tree
   end
 
