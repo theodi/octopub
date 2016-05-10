@@ -36,6 +36,15 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
+  it "pushes to github" do
+    dataset = build(:dataset, :with_push_callback, user: @user)
+    repo = dataset.instance_variable_get(:@repo)
+
+    expect(repo).to receive(:push)
+
+    dataset.save
+  end
+
   it "generates a path" do
     dataset = build(:dataset, user: @user, repo: "repo")
 
