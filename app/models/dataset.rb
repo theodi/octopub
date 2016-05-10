@@ -6,6 +6,7 @@ class Dataset < ActiveRecord::Base
   has_many :dataset_files
 
   before_create :create_in_github
+  before_save :push_to_github
 
   def add_files(files_array)
     files_array.each do |file|
@@ -125,6 +126,10 @@ class Dataset < ActiveRecord::Base
       @repo.create
       self.url = @repo.html_url
       self.repo = @repo.name
+    end
+
+    def push_to_github
+      @repo.push
     end
 
 end
