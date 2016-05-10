@@ -166,4 +166,26 @@ describe GitData do
     expect(content).to eq(Base64.encode64 new_content)
   end
 
+  it 'updates a file within a folder', :delete_repo, :vcr do
+    @git_data.create
+    @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
+    @git_data.add_file('data/my-awesome-file.csv', @file)
+    @git_data.push
+
+    @new_data = GitData.new(@client, @name, @username)
+
+    @new_data.find
+    new_content = "new,content,here\r\n1,2,3"
+
+    @new_data.update_file('data/my-awesome-file.csv', new_content)
+    @new_data.push
+
+    tree = @client.tree(@repo_name, @new_data.base_tree, recursive: true)
+    content = @client.contents(@repo_name, path: 'data/my-awesome-file.csv', ref: 'heads/gh-pages').content
+    expect(tree.tree.count).to eq(3)
+    expect(tree.tree.last.path).to eq('data/my-awesome-file.csv')
+
+    expect(content).to eq(Base64.encode64 new_content)
+  end
+
 end
