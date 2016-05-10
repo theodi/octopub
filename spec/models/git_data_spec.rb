@@ -143,4 +143,27 @@ describe GitData do
     end
   end
 
+  it 'updates a file', delete_repo: true do
+    @git_data.create
+    @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
+    @git_data.add_file('my-awesome-file.csv', @file)
+    @git_data.push
+
+    @new_data = GitData.new(@client, @name, @username)
+
+    @new_data.find
+    new_content = "new,content,here\r\n1,2,3"
+
+    @new_data.update_file('my-awesome-file.csv', new_content)
+    @new_data.push
+
+    tree = @client.tree(@repo_name, @new_data.base_tree)
+    content = @client.contents(@repo_name, path: 'my-awesome-file.csv', ref: 'heads/gh-pages').content
+
+    expect(tree.tree.count).to eq(2)
+    expect(tree.tree.last.path).to eq('my-awesome-file.csv')
+
+    expect(content).to eq(Base64.encode64 new_content)
+  end
+
 end
