@@ -102,6 +102,18 @@ describe DatasetsController, type: :controller do
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
+      Dataset.set_callback(:create, :before, :create_in_github)
+
+      repo = double(GitData)
+
+      expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+        repo
+      }
+
+      expect(repo).to receive(:html_url) { nil }
+      expect(repo).to receive(:name) { nil }
+      expect(repo).to receive(:save)
+
       @files << {
         :title => name,
         :description => description,
