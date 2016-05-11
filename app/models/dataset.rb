@@ -7,10 +7,6 @@ class Dataset < ActiveRecord::Base
 
   before_create :create_in_github
 
-  after_find do |dataset|
-    @repo = GitData.find(user.name, dataset.name, client: user.octokit_client)
-  end
-
   def add_files(files_array)
     files_array.each do |file|
       dataset_files << DatasetFile.new_file(file, self)
@@ -21,6 +17,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def update_files(files_array)
+    fetch_repo
     files_array.each do |file|
       if file["id"]
         DatasetFile.update_file(file)
@@ -130,6 +127,10 @@ class Dataset < ActiveRecord::Base
 
     def push_to_github
       @repo.save
+    end
+
+    def fetch_repo
+      @repo = GitData.find(user.name, self.name, client: user.octokit_client)
     end
 
 end
