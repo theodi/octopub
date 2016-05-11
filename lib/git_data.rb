@@ -23,7 +23,7 @@ class GitData
   end
 
   def self.full_name(username, repo_name)
-    "#{username}/#{repo_name.parameterize}"
+    "#{username.parameterize}/#{repo_name.parameterize}"
   end
 
   def initialize(client, repo, build_base = false)
