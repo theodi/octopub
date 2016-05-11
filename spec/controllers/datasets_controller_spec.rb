@@ -186,8 +186,12 @@ describe DatasetsController, type: :controller do
     end
 
     before(datapackage: true) do
+      repo = double(GitData)
+
       expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
       expect(@dataset).to receive(:update_datapackage)
+      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
+      expect(repo).to receive(:save)
     end
 
     it 'updates a dataset', :datapackage do
