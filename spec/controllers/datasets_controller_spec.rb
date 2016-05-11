@@ -204,7 +204,7 @@ describe DatasetsController, type: :controller do
       expect(response).to redirect_to(datasets_path)
       @dataset.reload
 
-      expect(@dataset.name).to eq("New name")
+      expect(@dataset.name).to eq("Dataset")
       expect(@dataset.description).to eq("New description")
       expect(@dataset.publisher_name).to eq("New Publisher")
       expect(@dataset.publisher_url).to eq("http://new.publisher.com")

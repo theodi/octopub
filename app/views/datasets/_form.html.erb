@@ -1,5 +1,5 @@
 <%= bootstrap_form_tag url: url, method: method do |f| %>
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name %>
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil? %>
   <%= f.text_area "dataset[description]", label: "Dataset description", value: @dataset.description  %>
   <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: @dataset.publisher_name %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: @dataset.publisher_url %>
