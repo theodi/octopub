@@ -1,3 +1,17 @@
+class FakeData
+  def save
+  end
+
+  def add_file(filename, file)
+  end
+
+  def update_file(filename, file)
+  end
+
+  def delete_file(filename)
+  end
+end
+
 FactoryGirl.define do
   factory :dataset do
     name "My Awesome Dataset"
@@ -11,7 +25,7 @@ FactoryGirl.define do
 
     after(:build) { |dataset|
       dataset.class.skip_callback(:create, :before, :create_in_github)
-      dataset.instance_variable_set(:@repo, GitData.new(nil, dataset.name, dataset.user.name))
+      dataset.instance_variable_set(:@repo, FakeData.new)
     }
 
     trait :with_callback do
