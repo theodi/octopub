@@ -13,11 +13,9 @@ layout: default
 
   <p property="dct:description">{{ site.data.datapackage.description }}</p>
 
-  <p property="dct:rights" resource="#rights" typeof="odrs:RightsStatement">
-    <strong property="rdfs:label">License</strong><br />
-    <span property="dct:license odrs:dataLicense odrs:contentLicense" resource="{{ site.data.datapackage.licenses.first['url'] }}">
-      <a href="{{ site.data.datapackage.licenses.first['url'] }}"><span property="dct:title">{{ site.data.datapackage.licenses.first['title'] }}</span></a>
-    </span>
+  <p property="dct:license" resource="{{ site.data.datapackage.licenses.first['url'] }}">
+    <strong>License</strong><br />
+    <a href="{{ site.data.datapackage.licenses.first['url'] }}"><span property="dct:title">{{ site.data.datapackage.licenses.first['title'] }}</span></a>
   </p>
 
   <p property="dct:publisher" resource="{{ site.data.datapackage.publishers.first['web'] }}">
