@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   has_many :datasets
 
+  before_create :generate_api_key
+
   def self.find_for_github_oauth(auth)
     user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
     user.update_attributes(
@@ -26,5 +28,11 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+  private
+
+    def generate_api_key
+      self.api_key = SecureRandom.hex(10)
+    end
 
 end

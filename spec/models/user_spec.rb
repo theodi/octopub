@@ -24,6 +24,7 @@ describe User do
       expect(user.name).to eq("user-mcuser")
       expect(user.email).to eq("user@example.com")
       expect(user.token).to eq("21312313233")
+      expect(user.api_key).to match /[a-z0-9]{20}/
     end
 
     it "finds a user from Github oauth" do
