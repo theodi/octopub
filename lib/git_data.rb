@@ -1,6 +1,6 @@
 class GitData
 
-  attr_reader :full_name, :html_url
+  attr_reader :full_name, :html_url, :name
 
   def self.create(username, repo_name, options = {})
     client = options[:client]
@@ -30,6 +30,7 @@ class GitData
     @client, @repo = client, repo
     @full_name = @repo.full_name
     @html_url = @repo.html_url
+    @name = @repo.name
     if build_base === true
       tree = tree_data(base_tree)
       tree.each { |t| append_to_tree(t[:path], t[:sha]) if t[:type] == 'blob' }
