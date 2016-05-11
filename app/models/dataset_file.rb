@@ -52,24 +52,20 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def add_to_github(tempfile)
-    response = dataset.create_contents(filename, tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace), "data")
-    self.file_sha = response[:content][:sha]
-    response = dataset.create_contents("#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, "data")
-    self.view_sha = response[:content][:sha]
+    dataset.create_contents("data/#{filename}", tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    dataset.create_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
     save
   end
 
   def update_in_github(tempfile)
-    response = dataset.update_contents(filename, tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace), file_sha, "data")
-    self.file_sha = response[:content][:sha]
-    response = dataset.update_contents("#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read, view_sha, "data")
-    self.view_sha = response[:content][:sha]
+    dataset.update_contents("data/#{filename}", tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    dataset.update_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
     save
   end
 
   def delete_from_github(file)
-    dataset.delete_contents(file.filename, file.file_sha)
-    dataset.delete_contents("#{File.basename(file.filename, '.*')}.md", file.view_sha)
+    dataset.delete_contents(file.filename)
+    dataset.delete_contents("#{File.basename(file.filename, '.*')}.md")
   end
 
 end

@@ -1,0 +1,82 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
+    body:
+      encoding: UTF-8
+      string: '{"content":"new,content,here\r\n1,2,3","encoding":"utf-8"}'
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Wed, 11 May 2016 09:43:56 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '173'
+      Status:
+      - 201 Created
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4805'
+      X-Ratelimit-Reset:
+      - '1462962503'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - '"96c6be84ea717e53992586c50f3dd253"'
+      X-Oauth-Scopes:
+      - delete_repo, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Oauth-Client-Id:
+      - 5a928d2c36588bef4f4c
+      Location:
+      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/d373990e0a90d67e4d7fe645cbc29c60bddead6a
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - a51acaae89a7607fd7ee967627be18e4
+      X-Github-Request-Id:
+      - 56A82ECA:FD15:3E1F369:5732FEDC
+    body:
+      encoding: UTF-8
+      string: '{"sha":"d373990e0a90d67e4d7fe645cbc29c60bddead6a","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/d373990e0a90d67e4d7fe645cbc29c60bddead6a"}'
+    http_version: 
+  recorded_at: Wed, 11 May 2016 09:44:35 GMT
+recorded_with: VCR 3.0.1

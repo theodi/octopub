@@ -35,6 +35,8 @@ group :test do
   gem 'faker'
   gem 'factory_girl_rails'
   gem 'coveralls', require: false
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :production do
@@ -57,3 +59,4 @@ gem 'bootstrap_form'
 gem 'octokit'
 gem 'odlifier'
 gem 'alternate_rails', github: 'theodi/alternate-rails'
+gem 'git'

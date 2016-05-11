@@ -1,3 +1,5 @@
+require 'git_data'
+
 class Dataset < ActiveRecord::Base
 
   belongs_to :user
@@ -11,9 +13,11 @@ class Dataset < ActiveRecord::Base
     end
     save
     create_files
+    push_to_github
   end
 
   def update_files(files_array)
+    fetch_repo
     files_array.each do |file|
       if file["id"]
         DatasetFile.update_file(file)
@@ -22,18 +26,19 @@ class Dataset < ActiveRecord::Base
       end
     end
     update_datapackage
+    push_to_github
   end
 
-  def create_contents(filename, file, folder = nil)
-    user.octokit_client.create_contents(full_name, path(filename, folder), "Adding #{filename}", file, branch: "gh-pages")
+  def create_contents(filename, file)
+    @repo.add_file(filename, file)
   end
 
-  def update_contents(filename, file, sha, folder = nil)
-    user.octokit_client.update_contents(full_name, path(filename, folder), "Updating #{filename}", sha, file, branch: "gh-pages")
+  def update_contents(filename, file)
+    @repo.update_file(filename, file)
   end
 
-  def delete_contents(filename, sha, folder = nil)
-    user.octokit_client.delete_contents(full_name, path(filename, folder), "Deleting #{filename}", sha, branch: "gh-pages")
+  def delete_contents(filename)
+    @repo.delete_file(filename)
   end
 
   def path(filename, folder = "")
@@ -44,26 +49,21 @@ class Dataset < ActiveRecord::Base
     create_datapackage
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
-    create_contents("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
-    create_contents("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
-    create_contents("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
-    create_contents("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+    create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
   end
 
   def create_datapackage
-    response = create_contents("datapackage.json", datapackage)
-    self.datapackage_sha = response[:content][:sha]
-    save
+    create_contents("datapackage.json", datapackage)
   end
 
   def update_datapackage
-    response = update_contents("datapackage.json", datapackage, datapackage_sha)
-    self.datapackage_sha = response[:content][:sha]
-    save
+    update_contents("datapackage.json", datapackage)
   end
 
   def datapackage
-
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
@@ -120,9 +120,17 @@ class Dataset < ActiveRecord::Base
   private
 
     def create_in_github
-      repo = user.octokit_client.create_repository(name.downcase)
-      self.url = repo[:html_url]
-      self.repo = repo[:name]
+      @repo = GitData.create(user.name, name, client: user.octokit_client)
+      self.url = @repo.html_url
+      self.repo = @repo.name
+    end
+
+    def push_to_github
+      @repo.save
+    end
+
+    def fetch_repo
+      @repo = GitData.find(user.name, self.name, client: user.octokit_client)
     end
 
 end

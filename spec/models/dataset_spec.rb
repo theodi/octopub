@@ -19,20 +19,36 @@ describe Dataset do
   end
 
   it "creates a repo in Github" do
-    dataset = build(:dataset, :with_callback, user: @user)
-    name = "#{@user.name.downcase}/#{dataset.name.downcase}"
-    html_url = "http://github.com/#{name}"
+    name = "My Awesome Dataset"
+    html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_repository).with(dataset.name.downcase) {
-        {
-          name: name,
-          html_url: html_url,
-        }
+    dataset = build(:dataset, :with_callback, user: @user, name: name)
+
+    expect(GitData).to receive(:create).with(@user.name, name, client: a_kind_of(Octokit::Client)) {
+      obj = double(GitData)
+      expect(obj).to receive(:html_url) { html_url }
+      expect(obj).to receive(:name) { name.parameterize }
+      obj
     }
 
     dataset.save
-    expect(dataset.repo).to eq(name)
+    expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
+  end
+
+  it "gets a repo from Github" do
+    dataset = build(:dataset, user: @user, repo: "repo")
+    dataset.save
+
+    double = double(GitData)
+
+    expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
+      double
+    }
+
+    dataset = Dataset.last
+    dataset.send(:fetch_repo)
+    expect(dataset.instance_variable_get(:@repo)).to eq(double)
   end
 
   it "generates a path" do
@@ -44,61 +60,39 @@ describe Dataset do
 
   it "creates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      "#{@user.name}/repo",
-      "my-file",
-      "Adding my-file",
-      "File contents",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:add_file).with("my-file", "File contents")
 
     dataset.create_contents("my-file", "File contents")
   end
 
   it "creates a file in a folder in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:create_contents).with(
-      "#{@user.name}/repo",
-      "folder/my-file",
-      "Adding my-file",
-      "File contents",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
 
-    dataset.create_contents("my-file", "File contents", "folder")
+    dataset.create_contents("folder/my-file", "File contents")
   end
 
   it "updates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:update_contents).with(
-      "#{@user.name}/repo",
-      "my-file",
-      "Updating my-file",
-      "abc1234",
-      "File contents",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:update_file).with("my-file", "File contents")
 
-    dataset.update_contents("my-file", "File contents", "abc1234")
+    dataset.update_contents("my-file", "File contents")
   end
 
   it "deletes a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
+    repo = dataset.instance_variable_get(:@repo)
 
-    expect_any_instance_of(Octokit::Client).to receive(:delete_contents).with(
-      "#{@user.name}/repo",
-      "my-file",
-      "Deleting my-file",
-      "abc1234",
-      branch: "gh-pages"
-    )
+    expect(repo).to receive(:delete_file).with("my-file")
 
-    dataset.delete_contents("my-file", "abc1234")
+    dataset.delete_contents("my-file")
   end
-
 
   context "with files" do
 
@@ -119,33 +113,33 @@ describe Dataset do
           "file" => @file
         }
       ]
+
+      @dataset = build(:dataset, user: @user)
+      @repo = @dataset.instance_variable_get(:@repo)
+
+      allow(@dataset).to receive(:create_files) { nil }
+      expect(@repo).to receive(:save)
     end
 
     it "adds a single file" do
-      dataset = build(:dataset, user: @user)
-      allow(dataset).to receive(:create_files) { nil }
+      @dataset.add_files(@files)
 
-      dataset.add_files(@files)
-
-      expect(dataset.dataset_files.count).to eq(1)
-      expect(dataset.dataset_files.first.title).to eq(@name)
-      expect(dataset.dataset_files.first.filename).to eq(@file.original_filename)
-      expect(dataset.dataset_files.first.description).to eq(@description)
-      expect(dataset.dataset_files.first.mediatype).to eq("text/csv")
+      expect(@dataset.dataset_files.count).to eq(1)
+      expect(@dataset.dataset_files.first.title).to eq(@name)
+      expect(@dataset.dataset_files.first.filename).to eq(@file.original_filename)
+      expect(@dataset.dataset_files.first.description).to eq(@description)
+      expect(@dataset.dataset_files.first.mediatype).to eq("text/csv")
     end
 
     it "adds multiple files" do
-      dataset = build(:dataset, user: @user)
-      allow(dataset).to receive(:create_files) { nil }
-
       @files << {
         "title" => 'Test Data 2',
         "description" => Faker::Company.bs,
         "file" => @file
       }
 
-      dataset.add_files(@files)
-      expect(dataset.dataset_files.count).to eq(2)
+      @dataset.add_files(@files)
+      expect(@dataset.dataset_files.count).to eq(2)
     end
   end
 
@@ -159,6 +153,10 @@ describe Dataset do
         "title" => "My super dataset",
         "description" => "Another super dataset"
       }]
+
+      repo = double(GitData)
+      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
+      expect(repo).to receive(:save)
 
       expect(@dataset).to receive(:update_datapackage)
     end
@@ -229,10 +227,10 @@ describe Dataset do
     expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
     expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
-    expect(dataset).to receive(:create_contents).with("style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read, "css")
-    expect(dataset).to receive(:create_contents).with("default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read, "_layouts")
-    expect(dataset).to receive(:create_contents).with("resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read, "_layouts")
-    expect(dataset).to receive(:create_contents).with("data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read, "_includes")
+    expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
 
     dataset.create_files
   end
@@ -274,34 +272,18 @@ describe Dataset do
     })
   end
 
-  it "saves the datapackage sha", :vcr do
+  it "saves the datapackage", :vcr do
     dataset = create(:dataset, dataset_files: [
       create(:dataset_file)
     ])
-    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) {
-      {
-        content: {
-          sha: "abc1234"
-        }
-      }
-    }
+    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage)
     dataset.create_datapackage
-
-    expect(dataset.datapackage_sha).to eq("abc1234")
   end
 
-  it "updates the datapackage sha" do
-    dataset = create(:dataset, datapackage_sha: "abc1234")
-    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage, "abc1234") {
-      {
-        content: {
-          sha: "4321cba"
-        }
-      }
-    }
+  it "updates the datapackage" do
+    dataset = create(:dataset)
+    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage)
     dataset.update_datapackage
-
-    expect(dataset.datapackage_sha).to eq("4321cba")
   end
 
   it "generates the correct config" do

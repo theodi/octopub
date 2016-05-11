@@ -102,6 +102,18 @@ describe DatasetsController, type: :controller do
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
+      Dataset.set_callback(:create, :before, :create_in_github)
+
+      repo = double(GitData)
+
+      expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+        repo
+      }
+
+      expect(repo).to receive(:html_url) { nil }
+      expect(repo).to receive(:name) { nil }
+      expect(repo).to receive(:save)
+
       @files << {
         :title => name,
         :description => description,
@@ -174,8 +186,12 @@ describe DatasetsController, type: :controller do
     end
 
     before(datapackage: true) do
+      repo = double(GitData)
+
       expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
       expect(@dataset).to receive(:update_datapackage)
+      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
+      expect(repo).to receive(:save)
     end
 
     it 'updates a dataset', :datapackage do
@@ -188,7 +204,7 @@ describe DatasetsController, type: :controller do
       expect(response).to redirect_to(datasets_path)
       @dataset.reload
 
-      expect(@dataset.name).to eq("New name")
+      expect(@dataset.name).to eq("Dataset")
       expect(@dataset.description).to eq("New description")
       expect(@dataset.publisher_name).to eq("New Publisher")
       expect(@dataset.publisher_url).to eq("http://new.publisher.com")

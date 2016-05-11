@@ -32,7 +32,9 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    @dataset.update(dataset_params)
+    p = dataset_params
+    p.delete(:name)
+    @dataset.update(p)
     @dataset.update_files(params["files"])
     redirect_to datasets_path, :notice => "Dataset updated sucessfully"
   end
