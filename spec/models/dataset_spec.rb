@@ -19,20 +19,20 @@ describe Dataset do
   end
 
   it "creates a repo in Github" do
-    dataset = build(:dataset, :with_callback, user: @user)
-    name = dataset.name.parameterize
-    html_url = "http://github.com/#{name}"
+    name = "My Awesome Dataset"
+    html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
-    expect(GitData).to receive(:new).with(a_kind_of(Octokit::Client), dataset.name, @user.name) {
+    dataset = build(:dataset, :with_callback, user: @user, name: name)
+
+    expect(GitData).to receive(:create).with(@user.name, name, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
-      expect(obj).to receive(:create)
       expect(obj).to receive(:html_url) { html_url }
-      expect(obj).to receive(:name) { name }
+      expect(obj).to receive(:name) { name.parameterize }
       obj
     }
 
     dataset.save
-    expect(dataset.repo).to eq(name)
+    expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
   end
 
@@ -40,14 +40,14 @@ describe Dataset do
     dataset = build(:dataset, user: @user, repo: "repo")
     dataset.save
 
-    expect(GitData).to receive(:new).with(a_kind_of(Octokit::Client), dataset.name, @user.name) {
-      obj = double(GitData)
-      expect(obj).to receive(:find)
-      obj
+    double = double(GitData)
+
+    expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
+      double
     }
 
     dataset = Dataset.last
-    expect(dataset.instance_variable_get(:@repo)).to_not be_nil
+    expect(dataset.instance_variable_get(:@repo)).to eq(double)
   end
 
   it "generates a path" do
@@ -117,7 +117,7 @@ describe Dataset do
       @repo = @dataset.instance_variable_get(:@repo)
 
       allow(@dataset).to receive(:create_files) { nil }
-      expect(@repo).to receive(:push)
+      expect(@repo).to receive(:save)
     end
 
     it "adds a single file" do
@@ -153,7 +153,10 @@ describe Dataset do
         "description" => "Another super dataset"
       }]
 
+      @repo = @dataset.instance_variable_get(:@repo)
+
       expect(@dataset).to receive(:update_datapackage)
+      expect(@repo).to receive(:save)
     end
 
     it "updates the metadata of one file" do
