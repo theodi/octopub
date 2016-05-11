@@ -11,6 +11,7 @@ require 'database_cleaner'
 require 'factory_girl'
 require 'omniauth'
 require 'support/vcr_helper'
+require 'support/fake_data'
 
 DatabaseCleaner.strategy = :truncation
 OmniAuth.config.test_mode = true
