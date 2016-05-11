@@ -47,6 +47,7 @@ describe Dataset do
     }
 
     dataset = Dataset.last
+    dataset.send(:fetch_repo)
     expect(dataset.instance_variable_get(:@repo)).to eq(double)
   end
 
@@ -153,10 +154,11 @@ describe Dataset do
         "description" => "Another super dataset"
       }]
 
-      @repo = @dataset.instance_variable_get(:@repo)
+      repo = double(GitData)
+      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
+      expect(repo).to receive(:save)
 
       expect(@dataset).to receive(:update_datapackage)
-      expect(@repo).to receive(:save)
     end
 
     it "updates the metadata of one file" do
