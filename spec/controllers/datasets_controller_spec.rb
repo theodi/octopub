@@ -67,7 +67,6 @@ describe DatasetsController, type: :controller do
   end
 
   describe 'create dataset' do
-
     before do
       sign_in @user
 
@@ -134,6 +133,48 @@ describe DatasetsController, type: :controller do
       expect(Dataset.count).to eq(1)
       expect(@user.datasets.count).to eq(1)
       expect(@user.datasets.first.dataset_files.count).to eq(1)
+    end
+
+    it 'creates a dataset with JSON' do
+      name = 'Test Data'
+      description = Faker::Company.bs
+      filename = 'test-data.csv'
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+
+      Dataset.set_callback(:create, :before, :create_in_github)
+
+      repo = double(GitData)
+
+      expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+        repo
+      }
+
+      expect(repo).to receive(:html_url) { nil }
+      expect(repo).to receive(:name) { nil }
+      expect(repo).to receive(:save)
+
+      @files << {
+        :title => name,
+        :description => description,
+        :file => Rack::Test::UploadedFile.new(path, "text/csv")
+      }
+
+      post 'create', :format => :json, dataset: {
+        name: @name,
+        description: @description,
+        publisher_name: @publisher_name,
+        publisher_url: @publisher_url,
+        license: @license,
+        frequency: @frequency
+      },
+      files: @files,
+      token: @user.token
+
+      expect(Dataset.count).to eq(1)
+      expect(@user.datasets.count).to eq(1)
+      expect(@user.datasets.first.dataset_files.count).to eq(1)
+
+      expect(response.body).to eq Dataset.last.to_json
     end
   end
 

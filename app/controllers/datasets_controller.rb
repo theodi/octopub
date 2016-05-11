@@ -23,7 +23,16 @@ class DatasetsController < ApplicationController
     @dataset = current_user.datasets.new(dataset_params)
     @dataset.save
     @dataset.add_files(params["files"])
-    redirect_to datasets_path, :notice => "Dataset created sucessfully"
+
+    respond_to do |format|
+      format.html do
+        redirect_to datasets_path, :notice => "Dataset created sucessfully"
+      end
+
+      format.json do
+        render json: @dataset.to_json
+      end
+    end
   end
 
   def edit
