@@ -14,8 +14,8 @@ class ApplicationController < ActionController::Base
       @current_user ||= begin
         if session[:user_id]
           User.find(session[:user_id])
-        elsif params[:token]
-          User.find_by_token params[:token]
+        elsif params[:api_key]
+          User.find_by_api_key params[:api_key]
         end
       end
     end

@@ -17,9 +17,9 @@ describe ApplicationController, type: :controller do
        expect(controller.instance_eval{ @current_user }).to eq(user)
      end
 
-     it "gets the current user from a token" do
+     it "gets the current user from an api key" do
        user = create(:user, id: 456)
-       controller.params[:token] = user.token
+       controller.params[:api_key] = user.api_key
        controller.instance_eval{ current_user }
 
        expect(controller.instance_eval{ @current_user }).to eq(user)
