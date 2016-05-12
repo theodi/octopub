@@ -258,7 +258,7 @@ GEM
       kgio (~> 2.6)
       raindrops (~> 0.7)
     vcr (3.0.1)
-    webmock (2.0.1)
+    webmock (1.24.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -305,4 +305,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   vcr
-  webmock
+  webmock (~> 1.24)
+
+BUNDLED WITH
+   1.12.3
