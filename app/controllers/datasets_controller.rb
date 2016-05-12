@@ -6,6 +6,8 @@ class DatasetsController < ApplicationController
   before_filter :set_licenses, only: [:create, :new, :edit]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
+  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+
   def index
     @datasets = Dataset.all
   end
