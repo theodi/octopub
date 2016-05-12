@@ -36,7 +36,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'coveralls', require: false
   gem 'vcr'
-  gem 'webmock'
+  gem 'webmock', '~> 1.24'
 end
 
 group :production do
