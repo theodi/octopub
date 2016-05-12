@@ -2,10 +2,8 @@ class SessionsController < ApplicationController
   def create
     user = User.find_for_github_oauth(auth)
 
-    if format == "json"
-      render json: {
-        api_key: user.api_key
-      }.to_json, content_type: 'application/json'
+    if referer == "comma-chameleon"
+      redirect_to redirect_url(api_key: user.api_key)
     else
       session[:user_id] = user.id
       redirect_to root_url, :notice => "Signed in!"
@@ -17,13 +15,17 @@ class SessionsController < ApplicationController
     redirect_to root_url, :notice => "Signed out!"
   end
 
+  def redirect
+    render nothing: true
+  end
+
   private
 
     def auth
       request.env["omniauth.auth"]
     end
 
-    def format
-      (request.env["omniauth.params"] || {})["format"]
+    def referer
+      (request.env["omniauth.params"] || {})["referer"]
     end
 end

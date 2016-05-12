@@ -29,14 +29,11 @@ describe SessionsController, type: :controller do
     end
 
     it 'returns an API key' do
-      allow(controller).to receive(:format) { 'json' }
+      allow(controller).to receive(:referer) { 'comma-chameleon' }
 
       request = get :create, provider: 'github'
 
-      expect(request.body).to eq({
-        api_key: @user.api_key
-      }.to_json)
-      expect(request.content_type).to eq('application/json')
+      expect(request.body).to redirect_to("/redirect?api_key=#{@user.api_key}")
     end
   end
 

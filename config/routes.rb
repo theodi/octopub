@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get "/auth/:provider/callback" => "sessions#create", :as => :callback
   get "/signout" => "sessions#destroy", :as => :signout
+  get "/redirect" => "sessions#redirect", :as => :redirect
 
   resources :datasets
 
