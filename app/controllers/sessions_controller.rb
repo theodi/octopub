@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
     if format == "json"
       render json: {
         api_key: user.api_key
-      }.to_json
+      }.to_json, content_type: 'application/json'
     else
       session[:user_id] = user.id
       redirect_to root_url, :notice => "Signed in!"

@@ -36,6 +36,7 @@ describe SessionsController, type: :controller do
       expect(request.body).to eq({
         api_key: @user.api_key
       }.to_json)
+      expect(request.content_type).to eq('application/json')
     end
   end
 
