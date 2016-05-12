@@ -8,11 +8,14 @@ describe GitData, :vcr do
     @name = 'My Awesome Repo'
     @username = ENV['GITHUB_USER']
     @repo_name = "#{ENV['GITHUB_USER']}/my-awesome-repo"
-    #@git_data = GitData.new(@client, @name, @username)
   end
 
-  context '#create', :delete_repo do
-    before(:all) do
+  after(:each) do
+    @client.delete_repository(@repo_name)
+  end
+
+  context '#create'  do
+    before(:each) do
       @repo = GitData.create(@username, @name, client: @client)
     end
 
@@ -30,8 +33,8 @@ describe GitData, :vcr do
     end
   end
 
-  context '#find', :delete_repo do
-    before(:all) do
+  context '#find'  do
+    before(:each) do
       GitData.create(@username, @name, client: @client)
       @repo = GitData.find(@username, @name, client: @client)
     end
@@ -46,8 +49,8 @@ describe GitData, :vcr do
     end
   end
 
-  context '#add_file', :delete_repo do
-    before(:all) do
+  context '#add_file'  do
+    before(:each) do
       @repo = GitData.create(@username, @name, client: @client)
       @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
     end
@@ -92,8 +95,8 @@ describe GitData, :vcr do
     end
   end
 
-  context '#update_file', :delete_repo do
-    before(:all) do
+  context '#update_file'  do
+    before(:each) do
       repo = GitData.create(@username, @name, client: @client)
       repo.add_file('my-awesome-file.csv', "old content")
       repo.save
@@ -117,8 +120,8 @@ describe GitData, :vcr do
     end
   end
 
-  context '#delete_file', :delete_repo do
-    before(:all) do
+  context '#delete_file'  do
+    before(:each) do
       repo = GitData.create(@username, @name, client: @client)
       repo.add_file('my-awesome-file.csv', "old content")
       repo.add_file('my-other-awesome-file.csv', "old content")
@@ -128,7 +131,7 @@ describe GitData, :vcr do
       @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
     end
 
-    it 'deletes a file', :delete_repo do
+    it 'deletes a file' do
       @repo.delete_file('my-other-awesome-file.csv')
       tree = @repo.send(:tree)
 
@@ -138,16 +141,11 @@ describe GitData, :vcr do
 
   end
 
-  context '#save' do
+  context '#save'  do
 
     before(:each) do
       @repo = GitData.create(@username, @name, client: @client)
       @file = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'test-data.csv'))
-    end
-
-    after(:each) do
-      # This can probably be something more ActiveRecord-y - like @repo.delete
-      @client.delete_repository(@repo_name)
     end
 
     it 'adds a single file' do
