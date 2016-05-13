@@ -227,7 +227,7 @@ describe DatasetsController, type: :controller do
 
       get 'edit', id: dataset.id
 
-      expect(response.code).to eq("404")
+      expect(response.code).to eq("403")
     end
 
   end
