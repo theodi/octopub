@@ -32,7 +32,10 @@ class DatasetsController < ApplicationController
       end
 
       format.json do
-        render json: @dataset.to_json
+        response = (@dataset.attributes).merge({
+          gh_pages_url: @dataset.gh_pages_url
+        })
+        render json: response.to_json
       end
     end
   end
