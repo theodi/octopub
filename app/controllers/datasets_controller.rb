@@ -91,7 +91,7 @@ class DatasetsController < ApplicationController
   end
 
   def check_signed_in?
-    head :forbidden if current_user.nil?
+    render_403 if current_user.nil?
   end
 
 end
