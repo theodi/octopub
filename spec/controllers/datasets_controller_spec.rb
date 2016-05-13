@@ -61,6 +61,8 @@ describe DatasetsController, type: :controller do
 
   describe 'new dataset' do
     it 'initializes a new dataset' do
+      sign_in @user
+
       get 'new'
       expect(assigns(:dataset).class).to eq(Dataset)
     end
