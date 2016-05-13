@@ -61,6 +61,8 @@ describe DatasetsController, type: :controller do
 
   describe 'new dataset' do
     it 'initializes a new dataset' do
+      sign_in @user
+
       get 'new'
       expect(assigns(:dataset).class).to eq(Dataset)
     end
@@ -135,47 +137,69 @@ describe DatasetsController, type: :controller do
       expect(@user.datasets.first.dataset_files.count).to eq(1)
     end
 
-    it 'creates a dataset with JSON' do
-      name = 'Test Data'
-      description = Faker::Company.bs
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+    context 'via the API' do
 
-      Dataset.set_callback(:create, :before, :create_in_github)
+      before(:each) do
+        name = 'Test Data'
+        description = Faker::Company.bs
+        filename = 'test-data.csv'
+        path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-      repo = double(GitData)
+        Dataset.set_callback(:create, :before, :create_in_github)
 
-      expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
-        repo
-      }
+        repo = double(GitData)
 
-      expect(repo).to receive(:html_url) { nil }
-      expect(repo).to receive(:name) { nil }
-      expect(repo).to receive(:save)
+        expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+          repo
+        }
 
-      @files << {
-        :title => name,
-        :description => description,
-        :file => Rack::Test::UploadedFile.new(path, "text/csv")
-      }
+        expect(repo).to receive(:html_url) { nil }
+        expect(repo).to receive(:name) { nil }
+        expect(repo).to receive(:save)
 
-      post 'create', :format => :json, dataset: {
-        name: @name,
-        description: @description,
-        publisher_name: @publisher_name,
-        publisher_url: @publisher_url,
-        license: @license,
-        frequency: @frequency
-      },
-      files: @files,
-      token: @user.token
+        @files << {
+          :title => name,
+          :description => description,
+          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+        }
+      end
 
-      expect(Dataset.count).to eq(1)
-      expect(@user.datasets.count).to eq(1)
-      expect(@user.datasets.first.dataset_files.count).to eq(1)
+      it 'creates a dataset with JSON' do
+        post 'create', :format => :json, dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        },
+        files: @files,
+        api_key: @user.api_key
 
-      expect(response.body).to eq Dataset.last.to_json
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+
+        expect(response.body).to eq Dataset.last.to_json
+      end
+
+      it 'skips the authenticity token if creating via the API' do
+        expect(controller).to_not receive(:verify_authenticity_token)
+
+        post 'create', :format => :json, dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        },
+        files: @files,
+        api_key: @user.api_key
+      end
+
     end
+
   end
 
   describe 'edit' do
@@ -205,7 +229,7 @@ describe DatasetsController, type: :controller do
 
       get 'edit', id: dataset.id
 
-      expect(response.code).to eq("404")
+      expect(response.code).to eq("403")
     end
 
   end

@@ -1,12 +1,12 @@
 class DatasetsController < ApplicationController
 
-  before_filter :check_signed_in?, only: [:edit, :dashboard, :update]
+  before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :get_dataset, only: [:edit, :update]
   before_filter :handle_files, only: [:create, :update]
   before_filter :set_licenses, only: [:create, :new, :edit]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
-  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+  skip_before_filter :verify_authenticity_token, only: :create, if: Proc.new { !current_user.nil? }
 
   def index
     @datasets = Dataset.all
@@ -91,7 +91,7 @@ class DatasetsController < ApplicationController
   end
 
   def check_signed_in?
-    render_404 if current_user.nil?
+    render_403 if current_user.nil?
   end
 
 end
