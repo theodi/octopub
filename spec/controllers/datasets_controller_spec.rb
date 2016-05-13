@@ -153,8 +153,8 @@ describe DatasetsController, type: :controller do
           repo
         }
 
-        expect(repo).to receive(:html_url) { nil }
-        expect(repo).to receive(:name) { nil }
+        expect(repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
+        expect(repo).to receive(:name) { 'my-cool-repo' }
         expect(repo).to receive(:save)
 
         @files << {
@@ -180,7 +180,22 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(response.body).to eq Dataset.last.to_json
+        expect(response.body).to eq({
+          "id": Dataset.first.id,
+          "name":"My cool dataset",
+          "url": "https://github.com/user-mc-user/my-cool-repo",
+          "user_id":@user.id,
+          "created_at": Dataset.first.created_at,
+          "updated_at": Dataset.first.updated_at,
+          "repo":"my-cool-repo",
+          "description":"This is a description",
+          "publisher_name":"Cool inc",
+          "publisher_url":"http://example.com",
+          "license":"OGL-UK-3.0",
+          "frequency":"Monthly",
+          "datapackage_sha": nil,
+          "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
+        }.to_json)
       end
 
       it 'skips the authenticity token if creating via the API' do

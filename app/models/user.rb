@@ -29,6 +29,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def github_username
+    name.parameterize
+  end
+
   private
 
     def generate_api_key

@@ -110,11 +110,11 @@ class Dataset < ActiveRecord::Base
   end
 
   def gh_pages_url
-    "http://#{user.name}.github.io/#{repo}"
+    "http://#{user.github_username}.github.io/#{repo}"
   end
 
   def full_name
-    "#{user.name}/#{repo}"
+    "#{user.github_username}/#{repo}"
   end
 
   private
