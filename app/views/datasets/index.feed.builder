@@ -3,7 +3,7 @@ xml.feed :xmlns => "http://www.w3.org/2005/Atom", "xmlns:dc" => "http://purl.org
   xml.author do |author|
     author.name "Open Data Institute"
   end
-  xml.title "Git Data Publisher - All Datasets"
+  xml.title "Octopub - All Datasets"
   @datasets.each do |dataset|
     xml.entry do
       xml.title dataset.name

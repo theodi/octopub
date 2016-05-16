@@ -23,9 +23,9 @@ deploy:
     secure: YJnNMUmk/xpwehdo8uc3zaBwOY3LpmF1arjXQUIWE5cJ8a0XQ6CiyvccMKGIufKvqiyS5LX1ObQxbROZNyM2GLn5NB/Q6tBpGH8MuvVUVRELb1SUyirBLRjH6ojD7ObeEOkVs64FEXq/zYjOfi8/q+MOyxacK2ltt6VK8s0Nev4=
   run:
   - rake db:migrate
-  app: git-data-publisher
+  app: octopub
   on:
-    repo: theodi/git-data-publisher
+    repo: theodi/octopub
 env:
   global:
   - secure: Qyy4hRRC1BtmcGaipB3f8xX12eGMnwsvmDKTg2x/I2Jf17IevVG14hG6mDrk3DJ+27UiBj2YkABozIZA1rC/b7h2dFhnSJhaeaauAp2wHs2C1ndR/KYbrWOIon9B6SiNFFmqa8YmtYGHMvPHrWVfhkpQV8qqwbeRt5w8hRzpJMY=

@@ -5,7 +5,7 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://theodi.mit-license.org)
 [![Badges](http://img.shields.io/:badges-6/6-ff6799.svg)](https://github.com/badges/badgerbadgerbadger)
 
-# Git Data Publisher
+# Octopub
 
 A Rails app that provides a simple and frictionless way for users to publish data on Github.
 
