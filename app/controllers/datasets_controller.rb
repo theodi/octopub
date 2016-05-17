@@ -26,11 +26,15 @@ class DatasetsController < ApplicationController
     params["files"].each do |file|
       @dataset.dataset_files << DatasetFile.new_file(file)
     end
-    @dataset.save
 
     respond_to do |format|
       format.html do
-        redirect_to datasets_path, :notice => "Dataset created sucessfully"
+        if @dataset.save
+          redirect_to datasets_path, :notice => "Dataset created sucessfully"
+        else
+          generate_errors
+          render :new
+        end
       end
 
       format.json do

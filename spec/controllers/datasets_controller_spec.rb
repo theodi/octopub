@@ -137,6 +137,66 @@ describe DatasetsController, type: :controller do
       expect(@user.datasets.first.dataset_files.count).to eq(1)
     end
 
+    context('with a schema') do
+
+      before(:each) do
+        schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
+        @schema = Rack::Test::UploadedFile.new(schema_path, "text/csv")
+      end
+
+      it 'returns an error if the file does not match the schema' do
+        path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+        schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
+
+        @files << {
+          :title => 'My File',
+          :description => 'My Description',
+          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+        }
+
+        request = post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency,
+          schema: @schema
+        }, files: @files
+
+        expect(Dataset.count).to eq(0)
+        expect(request).to render_template(:new)
+        expect(flash[:notice]).to eq("Your file 'My File' does not match the schema you provided")
+      end
+
+      it 'creates sucessfully if the file matches the schema' do
+        path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+
+        @files << {
+          :title => 'My File',
+          :description => 'My Description',
+          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+        }
+
+        request = post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency,
+          schema: @schema
+        }, files: @files
+
+        expect(request).to redirect_to(datasets_path)
+        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+      end
+
+    end
+
     context 'via the API' do
 
       before(:each) do

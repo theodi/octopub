@@ -14,7 +14,10 @@
                                         "Half yearly",
                                         "Weekly"
                                       ], label: "Publication frequency", selected: @dataset.frequency %>
+
+  <%= f.file_field "files[][schema]", label: "Schema" %>
   <div id="files">
+    <h3>Data files</h3>
     <% if @dataset.dataset_files.count == 0 %>
       <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, f: f } %>
     <% else %>
