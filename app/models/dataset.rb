@@ -7,13 +7,28 @@ class Dataset < ActiveRecord::Base
 
   before_create :create_in_github
 
+  attr_accessor :schema
+  validate :check_schema
+
   def add_files(files_array)
+  #  if schema
+  #    add_schema schema
+  #  end
+
     files_array.each do |file|
       dataset_files << DatasetFile.new_file(file, self)
     end
     save
     create_files
     push_to_github
+  end
+
+  def check_schema
+    return nil unless schema
+    s = Csvlint::Schema.load_from_json schema.tempfile, false
+    unless s.fields.first
+      errors.add :schema, 'is invalid'
+    end
   end
 
   def update_files(files_array)

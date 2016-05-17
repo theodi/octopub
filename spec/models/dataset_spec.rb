@@ -293,4 +293,23 @@ describe Dataset do
     expect(config["update_frequency"]).to eq("weekly")
   end
 
+  context "schemata" do
+    it 'is unhappy with a duff schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be false
+      expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
+    end
+
+    it 'is happy with a good schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be true
+    end
+  end
+
 end
