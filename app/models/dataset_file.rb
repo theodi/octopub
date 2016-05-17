@@ -14,6 +14,10 @@ class DatasetFile < ActiveRecord::Base
     f
   end
 
+  def add_and_validate_file file, dataset
+    validation = Csvlint::validator.new file, nil, dataset.schema
+  end
+
   def self.update_file(file)
     f = find(file.delete("id"))
     f.update_file(file) unless f.nil?
