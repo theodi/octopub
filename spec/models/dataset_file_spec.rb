@@ -18,17 +18,18 @@ describe DatasetFile do
   context "add_to_github" do
 
     before(:each) do
-      @file = build(:dataset_file, filename: "example.csv")
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+      @file = build(:dataset_file, filename: "example.csv", file: @tempfile)
 
-      @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
+      @dataset = build(:dataset, repo: "my-repo", user: @user)
+      @dataset.dataset_files << @file
     end
 
     it "adds a file to Github" do
       expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
       expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
 
-      @file.send(:add_to_github, @tempfile)
+      @file.send(:add_to_github)
     end
   end
 
@@ -76,17 +77,7 @@ describe DatasetFile do
       }
     end
 
-    it "creates a file in github" do
-      created_file = create(:dataset_file)
-      expect(DatasetFile).to receive(:new) { created_file }
-      expect(created_file).to receive(:add_to_github).with(@tempfile)
-
-      DatasetFile.new_file(@file)
-    end
-
     it "creates a file" do
-      expect_any_instance_of(DatasetFile).to receive(:add_to_github) {}
-
       file = DatasetFile.new_file(@file)
 
       expect(file.title).to eq(@file["title"])

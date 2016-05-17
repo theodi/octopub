@@ -6,20 +6,12 @@ class Dataset < ActiveRecord::Base
   has_many :dataset_files
 
   before_create :create_in_github
+  after_save :commit
 
   attr_accessor :schema
-  
+
   validate :check_schema
   validates_associated :dataset_files
-
-  def add_files(files_array)
-    files_array.each do |file|
-      dataset_files << DatasetFile.new_file(file, self)
-    end
-    save
-    create_files
-    push_to_github
-  end
 
   def check_schema
     return nil unless schema
@@ -137,6 +129,12 @@ class Dataset < ActiveRecord::Base
       @repo = GitData.create(user.name, name, client: user.octokit_client)
       self.url = @repo.html_url
       self.repo = @repo.name
+    end
+
+    def commit
+      dataset_files.each { |d| d.add_to_github }
+      create_files
+      push_to_github
     end
 
     def push_to_github

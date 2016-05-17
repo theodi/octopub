@@ -6,15 +6,13 @@ class DatasetFile < ActiveRecord::Base
   attr_accessor :file
 
   def self.new_file(file, dataset = nil)
-    f = new(
+    new(
       dataset: dataset,
       title: file["title"],
       filename: file["file"].original_filename,
       description: file["description"],
       mediatype: get_content_type(file["file"].original_filename),
     )
-    f.add_to_github(file["file"])
-    f
   end
 
   def self.update_file(file)
@@ -54,10 +52,9 @@ class DatasetFile < ActiveRecord::Base
     end
   end
 
-  def add_to_github(tempfile)
-    dataset.create_contents("data/#{filename}", tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def add_to_github
+    dataset.create_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
     dataset.create_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-    save
   end
 
   def update_in_github(tempfile)

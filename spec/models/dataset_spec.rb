@@ -31,6 +31,8 @@ describe Dataset do
       obj
     }
 
+    expect(dataset).to receive(:commit)
+
     dataset.save
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
@@ -92,55 +94,6 @@ describe Dataset do
     expect(repo).to receive(:delete_file).with("my-file")
 
     dataset.delete_contents("my-file")
-  end
-
-  context "with files" do
-
-    before(:each) do
-      allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-      @name = 'Test Data'
-      @description = Faker::Company.bs
-      @file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      @files = [
-        {
-          "title" => @name,
-          "description" => @description,
-          "file" => @file
-        }
-      ]
-
-      @dataset = build(:dataset, user: @user)
-      @repo = @dataset.instance_variable_get(:@repo)
-
-      allow(@dataset).to receive(:create_files) { nil }
-      expect(@repo).to receive(:save)
-    end
-
-    it "adds a single file" do
-      @dataset.add_files(@files)
-
-      expect(@dataset.dataset_files.count).to eq(1)
-      expect(@dataset.dataset_files.first.title).to eq(@name)
-      expect(@dataset.dataset_files.first.filename).to eq(@file.original_filename)
-      expect(@dataset.dataset_files.first.description).to eq(@description)
-      expect(@dataset.dataset_files.first.mediatype).to eq("text/csv")
-    end
-
-    it "adds multiple files" do
-      @files << {
-        "title" => 'Test Data 2',
-        "description" => Faker::Company.bs,
-        "file" => @file
-      }
-
-      @dataset.add_files(@files)
-      expect(@dataset.dataset_files.count).to eq(2)
-    end
   end
 
   context "update_files" do

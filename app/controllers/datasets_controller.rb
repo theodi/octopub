@@ -23,8 +23,10 @@ class DatasetsController < ApplicationController
 
   def create
     @dataset = current_user.datasets.new(dataset_params)
+    params["files"].each do |file|
+      @dataset.dataset_files << params["files"]
+    end
     @dataset.save
-    @dataset.add_files(params["files"])
 
     respond_to do |format|
       format.html do
