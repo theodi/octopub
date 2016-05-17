@@ -11,6 +11,7 @@ class DatasetFile < ActiveRecord::Base
       filename: file["file"].original_filename,
       description: file["description"],
       mediatype: get_content_type(file["file"].original_filename),
+      file: file["file"]
     )
   end
 
