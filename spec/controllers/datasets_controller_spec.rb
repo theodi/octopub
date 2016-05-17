@@ -207,15 +207,11 @@ describe DatasetsController, type: :controller do
 
         Dataset.set_callback(:create, :after, :create_in_github)
 
-        repo = double(GitData)
+        @repo = double(GitData)
 
-        expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
-          repo
+        allow(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
         }
-
-        expect(repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
-        expect(repo).to receive(:name) { 'my-cool-repo' }
-        expect(repo).to receive(:save)
 
         @files << {
           :title => name,
@@ -225,6 +221,10 @@ describe DatasetsController, type: :controller do
       end
 
       it 'creates a dataset with JSON' do
+        expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
+        expect(@repo).to receive(:name) { 'my-cool-repo' }
+        expect(@repo).to receive(:save)
+
         post 'create', :format => :json, dataset: {
           name: @name,
           description: @description,
@@ -258,7 +258,78 @@ describe DatasetsController, type: :controller do
         }.to_json)
       end
 
+      context('with a schema') do
+
+        before(:each) do
+          schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
+          @schema = Rack::Test::UploadedFile.new(schema_path, "text/csv")
+        end
+
+        it 'creates a dataset sucessfully' do
+          expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
+          expect(@repo).to receive(:name) { 'my-cool-repo' }
+          expect(@repo).to receive(:save)
+
+          path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+
+          files = [{
+            :title => 'My File',
+            :description => 'My Description',
+            :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          }]
+
+          post 'create', :format => :json, dataset: {
+            name: @name,
+            description: @description,
+            publisher_name: @publisher_name,
+            publisher_url: @publisher_url,
+            license: @license,
+            frequency: @frequency,
+            schema: @schema
+          },
+          files: files,
+          api_key: @user.api_key
+
+          expect(Dataset.count).to eq(1)
+          expect(@user.datasets.count).to eq(1)
+          expect(@user.datasets.first.dataset_files.count).to eq(1)
+        end
+
+        it 'errors is a file does not match the schema' do
+          path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+
+          files = [{
+            :title => 'My File',
+            :description => 'My Description',
+            :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          }]
+
+          post 'create', :format => :json, dataset: {
+            name: @name,
+            description: @description,
+            publisher_name: @publisher_name,
+            publisher_url: @publisher_url,
+            license: @license,
+            frequency: @frequency,
+            schema: @schema
+          },
+          files: files,
+          api_key: @user.api_key
+
+          expect(Dataset.count).to eq(0)
+          expect(response.body).to eq({
+            "errors": [
+              "Your file 'My File' does not match the schema you provided"
+            ]
+          }.to_json)
+        end
+
+      end
+
       it 'skips the authenticity token if creating via the API' do
+        expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
+        expect(@repo).to receive(:name) { 'my-cool-repo' }
+        expect(@repo).to receive(:save)
         expect(controller).to_not receive(:verify_authenticity_token)
 
         post 'create', :format => :json, dataset: {

@@ -38,10 +38,16 @@ class DatasetsController < ApplicationController
       end
 
       format.json do
-        response = (@dataset.attributes).merge({
-          gh_pages_url: @dataset.gh_pages_url
-        })
-        render json: response.to_json
+        if @dataset.save
+          response = (@dataset.attributes).merge({
+            gh_pages_url: @dataset.gh_pages_url
+          })
+          render json: response.to_json
+        else
+          render json: {
+            errors: generate_errors
+          }.to_json
+        end
       end
     end
   end
@@ -108,11 +114,23 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency)
+    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
   end
 
   def check_signed_in?
     render_403 if current_user.nil?
+  end
+
+  def generate_errors
+    messages = []
+    @dataset.dataset_files.each do |file|
+      messages << "Your file '#{file.title}' does not match the schema you provided" unless file.valid?
+    end
+    if params["format"] == "json"
+      messages
+    else
+      flash[:notice] = messages.join('<br>')
+    end
   end
 
 end
