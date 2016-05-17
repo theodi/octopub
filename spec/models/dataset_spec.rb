@@ -97,7 +97,6 @@ describe Dataset do
   end
 
   context "update_files" do
-
     before(:each) do
       @dataset = create(:dataset, user: @user)
       @file = create(:dataset_file, dataset: @dataset, filename: 'test-data.csv')

@@ -4,14 +4,14 @@ describe DatasetsController, type: :controller do
 
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")
-    Dataset.skip_callback(:create, :before, :create_in_github)
+    Dataset.skip_callback(:create, :after, :create_in_github)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
   end
 
   after(:each) do
-    Dataset.set_callback(:create, :before, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_in_github)
   end
 
   describe 'index' do
@@ -103,7 +103,7 @@ describe DatasetsController, type: :controller do
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-      Dataset.set_callback(:create, :before, :create_in_github)
+      Dataset.set_callback(:create, :after, :create_in_github)
 
       repo = double(GitData)
 
@@ -145,7 +145,7 @@ describe DatasetsController, type: :controller do
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-        Dataset.set_callback(:create, :before, :create_in_github)
+        Dataset.set_callback(:create, :after, :create_in_github)
 
         repo = double(GitData)
 
@@ -317,16 +317,22 @@ describe DatasetsController, type: :controller do
     end
 
     it 'adds a new file in Github', :datapackage do
+      Dataset.skip_callback :update, :after, :update_in_github
+      @dataset.dataset_files << @file
+      @dataset.save
+      Dataset.set_callback :update, :after, :update_in_github
+
       filename = 'test-data.csv'
       path = File.join(Rails.root, 'spec', 'fixtures', filename)
       file = Rack::Test::UploadedFile.new(path, "text/csv")
 
-      new_file = create(:dataset_file, dataset: @dataset)
+      new_file = build(:dataset_file, dataset: @dataset)
 
-      expect(DatasetFile).to receive(:new) { new_file }
-      expect(new_file).to receive(:add_to_github).with(file)
+      expect(DatasetFile).to receive(:new_file) { new_file }
+      expect(new_file).to receive(:add_to_github)
 
-      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+        {
           id: @file.id,
           title: "New title",
           description: "New description"

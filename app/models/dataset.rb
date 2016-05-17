@@ -5,8 +5,8 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  before_create :create_in_github
-  after_save :commit
+  after_create :create_in_github
+  after_update :update_in_github
 
   attr_accessor :schema
 
@@ -19,19 +19,6 @@ class Dataset < ActiveRecord::Base
     unless s.fields.first
       errors.add :schema, 'is invalid'
     end
-  end
-
-  def update_files(files_array)
-    fetch_repo
-    files_array.each do |file|
-      if file["id"]
-        DatasetFile.update_file(file)
-      else
-        dataset_files << DatasetFile.new_file(file, self)
-      end
-    end
-    update_datapackage
-    push_to_github
   end
 
   def create_contents(filename, file)
@@ -123,12 +110,17 @@ class Dataset < ActiveRecord::Base
     "#{user.github_username}/#{repo}"
   end
 
+  def fetch_repo
+    @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+  end
+
   private
 
     def create_in_github
       @repo = GitData.create(user.name, name, client: user.octokit_client)
       self.url = @repo.html_url
       self.repo = @repo.name
+      commit
     end
 
     def commit
@@ -137,12 +129,13 @@ class Dataset < ActiveRecord::Base
       push_to_github
     end
 
-    def push_to_github
-      @repo.save
+    def update_in_github
+      update_datapackage
+      push_to_github
     end
 
-    def fetch_repo
-      @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+    def push_to_github
+      @repo.save
     end
 
 end

@@ -50,8 +50,20 @@ class DatasetsController < ApplicationController
   def update
     p = dataset_params
     p.delete(:name)
-    @dataset.update(p)
-    @dataset.update_files(params["files"])
+    @dataset.fetch_repo
+    @dataset.assign_attributes(p)
+
+    params[:files].each do |file|
+      if file["id"]
+        DatasetFile.update_file(file)
+      else
+        file = DatasetFile.new_file file
+        @dataset.dataset_files << file
+        file.add_to_github
+      end
+    end
+
+    @dataset.save
     redirect_to datasets_path, :notice => "Dataset updated sucessfully"
   end
 
