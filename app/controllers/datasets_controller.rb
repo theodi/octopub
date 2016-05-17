@@ -24,7 +24,7 @@ class DatasetsController < ApplicationController
   def create
     @dataset = current_user.datasets.new(dataset_params)
     params["files"].each do |file|
-      @dataset.dataset_files << params["files"]
+      @dataset.dataset_files << DatasetFile.new_file(file)
     end
     @dataset.save
 

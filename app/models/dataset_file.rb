@@ -5,9 +5,8 @@ class DatasetFile < ActiveRecord::Base
 
   attr_accessor :file
 
-  def self.new_file(file, dataset = nil)
+  def self.new_file(file)
     new(
-      dataset: dataset,
       title: file["title"],
       filename: file["file"].original_filename,
       description: file["description"],
