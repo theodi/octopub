@@ -310,6 +310,56 @@ describe Dataset do
 
       expect(dataset.valid?).to be true
     end
+
+    it 'adds the schema to the datapackage' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      file = create(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
+
+
+      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      datapackage = JSON.parse dataset.datapackage
+
+      expect(datapackage['resources'].first['schema']['fields']).to eq([
+        {
+          "name" => "Username",
+          "constraints" => {
+            "required"=>true,
+            "unique"=>true,
+            "minLength"=>5,
+            "maxLength"=>10,
+            "pattern"=>"^[A-Za-z0-9_]*$"
+          }
+        },
+        {
+          "name" => "Age",
+          "constraints" => {
+            "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+            "minimum"=>"13",
+            "maximum"=>"99"
+          }
+        },
+        {
+           "name"=>"Height",
+           "constraints" => {
+             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+             "minimum"=>"20"
+           }
+        },
+        {
+          "name"=>"Weight",
+          "constraints" => {
+            "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+           "maximum"=>"500"
+          }
+        },
+        {
+           "name"=>"Password"
+        }
+      ])
+    end
   end
 
 end

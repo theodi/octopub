@@ -11,10 +11,6 @@ class Dataset < ActiveRecord::Base
   validate :check_schema
 
   def add_files(files_array)
-  #  if schema
-  #    add_schema schema
-  #  end
-
     files_array.each do |file|
       dataset_files << DatasetFile.new_file(file, self)
     end
@@ -102,8 +98,9 @@ class Dataset < ActiveRecord::Base
         "name" => file.title,
         "mediatype" => file.mediatype,
         "description" => file.description,
-        "path" => "data/#{file.filename}"
-      }
+        "path" => "data/#{file.filename}",
+        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil?)
+      }.delete_if { |k,v| v.nil? }
     end
 
     datapackage.to_json
