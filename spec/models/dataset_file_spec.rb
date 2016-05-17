@@ -200,7 +200,7 @@ describe DatasetFile do
 
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      @dataset = create(:dataset, schema: Rack::Test::UploadedFile.new(schema_path, "application/json"))
+      @dataset = build(:dataset, schema: Rack::Test::UploadedFile.new(schema_path, "application/json"))
     end
 
     it 'validates against a schema with good data' do
@@ -211,8 +211,10 @@ describe DatasetFile do
                                    description: "My Awesome File Description",
                                    file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
                                    dataset: @dataset)
+      @dataset.dataset_files << file
 
       expect(file.valid?).to eq(true)
+      expect(@dataset.valid?).to eq(true)
     end
 
     it 'validates against a schema with bad data' do
@@ -224,7 +226,10 @@ describe DatasetFile do
                                    file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
                                    dataset: @dataset)
 
+      @dataset.dataset_files << file
+
       expect(file.valid?).to eq(false)
+      expect(@dataset.valid?).to eq(false)
     end
 
   end

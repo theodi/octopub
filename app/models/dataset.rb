@@ -8,7 +8,9 @@ class Dataset < ActiveRecord::Base
   before_create :create_in_github
 
   attr_accessor :schema
+  
   validate :check_schema
+  validates_associated :dataset_files
 
   def add_files(files_array)
     files_array.each do |file|
