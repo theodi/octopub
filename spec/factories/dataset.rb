@@ -16,7 +16,7 @@ FactoryGirl.define do
 
     trait :with_callback do
       after(:build) { |dataset|
-        dataset.class.set_callback(:create, :before, :create_in_github)
+        dataset.class.set_callback(:create, :after, :create_in_github)
       }
     end
   end
