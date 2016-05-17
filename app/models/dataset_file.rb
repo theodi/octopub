@@ -1,6 +1,9 @@
 class DatasetFile < ActiveRecord::Base
 
   belongs_to :dataset
+  validate :check_schema
+
+  attr_accessor :file
 
   def self.new_file(file, dataset = nil)
     f = new(
@@ -12,10 +15,6 @@ class DatasetFile < ActiveRecord::Base
     )
     f.add_to_github(file["file"])
     f
-  end
-
-  def add_and_validate_file file, dataset
-    validation = Csvlint::validator.new file, nil, dataset.schema
   end
 
   def self.update_file(file)
@@ -71,5 +70,15 @@ class DatasetFile < ActiveRecord::Base
     dataset.delete_contents(file.filename)
     dataset.delete_contents("#{File.basename(file.filename, '.*')}.md")
   end
+
+  private
+
+    def check_schema
+      if dataset && dataset.schema
+        schema = Csvlint::Schema.load_from_json(dataset.schema.tempfile)
+        validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
+        errors.add(:file, 'does not match schema') unless validation.valid?
+      end
+    end
 
 end

@@ -196,4 +196,37 @@ describe DatasetFile do
 
   end
 
+  context 'with schema' do
+
+    before(:each) do
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      @dataset = create(:dataset, schema: Rack::Test::UploadedFile.new(schema_path, "application/json"))
+    end
+
+    it 'validates against a schema with good data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+
+      expect(file.valid?).to eq(true)
+    end
+
+    it 'validates against a schema with bad data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+
+      expect(file.valid?).to eq(false)
+    end
+
+  end
+
 end
