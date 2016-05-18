@@ -65,7 +65,8 @@ class DatasetsController < ApplicationController
 
     params[:files].each do |file|
       if file["id"]
-        DatasetFile.update_file(file)
+        f = @dataset.dataset_files.find { |f| f.id == file["id"].to_i }
+        f.update_file(file)
       else
         file = DatasetFile.new_file file
         @dataset.dataset_files << file
