@@ -385,8 +385,12 @@ describe DatasetsController, type: :controller do
 
     before(:each) do
       sign_in @user
-      @dataset = create(:dataset, name: "Dataset", user: @user)
-      @file = create(:dataset_file, dataset: @dataset, filename: 'test-data.csv')
+      @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
+        create(:dataset_file, filename: 'test-data.csv')
+      ])
+      @dataset.save
+      @file = @dataset.dataset_files.first
+
       @dataset_hash = {
         name: "New name",
         description: "New description",
@@ -405,13 +409,12 @@ describe DatasetsController, type: :controller do
         expect(@dataset).to receive(:update_datapackage)
         expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
+        Dataset.set_callback(:update, :after, :update_in_github)
       end
 
       context('with schema') do
         context 'with schema-compliant csv' do
           before(:each) do
-            @schema_dataset = create(:dataset, name: "Dataset", user: @user)
-            @schema_file = create(:dataset_file, dataset: @dataset, filename: 'valid-schema.csv')
             expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
           end
 
@@ -420,11 +423,10 @@ describe DatasetsController, type: :controller do
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
             file = Rack::Test::UploadedFile.new(path, "text/csv")
 
-            expect(DatasetFile).to receive(:find).with(@schema_file.id.to_s) { @schema_file }
-            expect(@schema_file).to receive(:update_in_github).with(file)
+            expect(@file).to receive(:update_in_github)
 
             put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-                id: @schema_file.id,
+                id: @file.id,
                 file: file
             }]
           end
@@ -439,6 +441,8 @@ describe DatasetsController, type: :controller do
         end
 
         it 'updates a dataset' do
+          @file.file = nil
+
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
               title: "New title",
@@ -464,8 +468,7 @@ describe DatasetsController, type: :controller do
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = Rack::Test::UploadedFile.new(path, "text/csv")
 
-          expect(DatasetFile).to receive(:find).with(@file.id.to_s) { @file }
-          expect(@file).to receive(:update_in_github).with(file)
+          expect(@file).to receive(:update_in_github)
 
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
@@ -474,16 +477,13 @@ describe DatasetsController, type: :controller do
         end
 
         it 'adds a new file in Github' do
-          Dataset.skip_callback :update, :after, :update_in_github
-          @dataset.dataset_files << @file
-          @dataset.save
-          Dataset.set_callback :update, :after, :update_in_github
+          @file.file = nil
 
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = Rack::Test::UploadedFile.new(path, "text/csv")
 
-          new_file = build(:dataset_file, dataset: @dataset)
+          new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect(new_file).to receive(:add_to_github)
