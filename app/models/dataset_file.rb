@@ -36,6 +36,7 @@ class DatasetFile < ActiveRecord::Base
 
   def update_file(file)
     original_file = self.dup
+    require "pry" ; binding.pry
 
     update_hash = {
       title: file["title"],
