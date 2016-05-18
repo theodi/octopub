@@ -68,14 +68,20 @@ class DatasetsController < ApplicationController
         f = @dataset.dataset_files.find { |f| f.id == file["id"].to_i }
         f.update_file(file)
       else
-        file = DatasetFile.new_file file
-        @dataset.dataset_files << file
-        file.add_to_github
+        f = DatasetFile.new_file(file)
+        @dataset.dataset_files << f
+        if f.save
+          f.add_to_github
+        end
       end
     end
 
-    @dataset.save
-    redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+    if @dataset.save
+      redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+    else
+      generate_errors
+      render :edit
+    end
   end
 
   private

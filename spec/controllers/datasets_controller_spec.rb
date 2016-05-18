@@ -430,6 +430,34 @@ describe DatasetsController, type: :controller do
                 file: file
             }]
           end
+
+          it 'adds a new file in Github' do
+            @file.file = nil
+
+            filename = 'valid-schema.csv'
+            path = File.join(Rails.root, 'spec', 'fixtures', filename)
+            file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+            new_file = build(:dataset_file, dataset: @dataset, file: nil)
+
+            expect(DatasetFile).to receive(:new_file) { new_file }
+            expect(new_file).to receive(:add_to_github)
+
+            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+              {
+                id: @file.id,
+                title: "New title",
+                description: "New description"
+               },
+              {
+                title: "New file",
+                description: "New file description",
+                file: file
+              }
+            ]
+
+            expect(@dataset.dataset_files.count).to eq(2)
+          end
         end
 
       end
@@ -520,25 +548,54 @@ describe DatasetsController, type: :controller do
       context 'with non-compliant csv' do
         before(:each) do
           @repo = double(GitData)
-
-          @schema_dataset = create(:dataset, name: "Dataset", user: @user)
-          @schema_file = create(:dataset_file, dataset: @schema_dataset, filename: 'invalid-schema.csv')
-
-          expect(GitData).to receive(:find).with(@user.name, @schema_dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
           expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
         end
 
-        it 'updates a file in Github' do
+        it 'does not update a file in Github' do
+          @file.file = nil
           filename = 'invalid-schema.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = Rack::Test::UploadedFile.new(path, "text/csv")
 
-          expect(DatasetFile).to receive(:find).with(@schema_file.id.to_s) { @schema_file }
+          expect(@file).to_not receive(:update_in_github)
 
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-              id: @schema_file.id,
+              id: @file.id,
               file: file
           }]
+
+          expect(request).to render_template(:edit)
+          expect(flash[:notice]).to eq("Your file '#{@file.title}' does not match the schema you provided")
+        end
+
+        it 'does not add new file in Github' do
+          @file.file = nil
+
+          filename = 'invalid-schema.csv'
+          path = File.join(Rails.root, 'spec', 'fixtures', filename)
+          file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+          new_file = build(:dataset_file, dataset: @dataset, file: nil)
+
+          expect(new_file).to_not receive(:add_to_github)
+
+          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+            {
+              id: @file.id,
+              title: "New title",
+              description: "New description"
+             },
+            {
+              title: "New file",
+              description: "New file description",
+              file: file
+            }
+          ]
+
+          expect(@dataset.dataset_files.count).to eq(1)
+          expect(request).to render_template(:edit)
+          expect(flash[:notice]).to eq("Your file 'New file' does not match the schema you provided")
         end
       end
 
