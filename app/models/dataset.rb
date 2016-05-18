@@ -13,14 +13,6 @@ class Dataset < ActiveRecord::Base
   validate :check_schema
   validates_associated :dataset_files
 
-  def check_schema
-    return nil unless schema
-    s = Csvlint::Schema.load_from_json schema.tempfile, false
-    unless s.fields.first
-      errors.add :schema, 'is invalid'
-    end
-  end
-
   def create_contents(filename, file)
     @repo.add_file(filename, file)
   end
@@ -112,6 +104,19 @@ class Dataset < ActiveRecord::Base
 
   def fetch_repo
     @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+    check_for_schema
+  end
+
+  def check_for_schema
+    datapackage = JSON.parse @repo.get_file('datapackage.json')
+    schema_json = datapackage['resources'].first['schema']
+    unless schema_json.nil?
+      self.schema = OpenStruct.new
+      tempfile = Tempfile.new('schema')
+      tempfile.write(schema_json.to_json)
+      tempfile.rewind
+      schema.tempfile = tempfile
+    end
   end
 
   private
@@ -136,6 +141,14 @@ class Dataset < ActiveRecord::Base
 
     def push_to_github
       @repo.save
+    end
+
+    def check_schema
+      return nil unless schema
+      s = Csvlint::Schema.load_from_json schema.tempfile, false
+      unless s.fields.first
+        errors.add :schema, 'is invalid'
+      end
     end
 
 end

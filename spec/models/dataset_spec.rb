@@ -38,19 +38,87 @@ describe Dataset do
     expect(dataset.url).to eq(html_url)
   end
 
-  it "gets a repo from Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
-    dataset.save
+  context('#fetch_repo') do
 
-    double = double(GitData)
+    before(:each) do
+      dataset = build(:dataset, user: @user, repo: "repo")
+      dataset.save
 
-    expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
-      double
-    }
+      @double = double(GitData)
 
-    dataset = Dataset.last
-    dataset.send(:fetch_repo)
-    expect(dataset.instance_variable_get(:@repo)).to eq(double)
+      expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
+        @double
+      }
+    end
+
+    it "gets a repo from Github" do
+      dataset = Dataset.last
+
+      expect(dataset).to receive(:check_for_schema)
+      dataset.fetch_repo
+      expect(dataset.instance_variable_get(:@repo)).to eq(@double)
+    end
+
+    it "gets a schema" do
+      expect(@double).to receive(:get_file).with('datapackage.json') {
+        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json'))
+      }
+
+      dataset = Dataset.last
+      dataset.fetch_repo
+
+      expect(File.read(dataset.schema.tempfile)).to eq({
+        fields: [
+          {
+            name: "Username",
+            constraints: {
+              required: true,
+              unique: true,
+              minLength: 5,
+              maxLength: 10,
+              pattern: "^[A-Za-z0-9_]*$"
+            }
+          },
+          {
+            name: "Age",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              minimum: "13",
+              maximum: "99"
+            }
+          },
+          {
+            name: "Height",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              minimum: "20"
+            }
+          },
+          {
+            name: "Weight",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              maximum: "500"
+            }
+          },
+          {
+            name: "Password"
+          }
+        ]
+      }.to_json)
+    end
+
+    it 'returns nil if there is no schema present' do
+      expect(@double).to receive(:get_file).with('datapackage.json') {
+        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json'))
+      }
+
+      dataset = Dataset.last
+      dataset.fetch_repo
+
+      expect(dataset.schema).to be_nil
+    end
+
   end
 
   it "generates a path" do
