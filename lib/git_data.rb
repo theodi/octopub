@@ -52,6 +52,11 @@ class GitData
     @base_tree = false
   end
 
+  def get_file(filename)
+    file = @client.contents(full_name, path: filename)
+    Base64.decode64(file[:content])
+  end
+
   def save
     @client.update_ref(full_name, "heads/gh-pages", commit)
   end

@@ -141,6 +141,32 @@ describe GitData, :vcr do
 
   end
 
+  context '#get_file'  do
+
+    it 'gets a file' do
+      repo = GitData.create(@username, @name, client: @client)
+      repo.add_file('my-awesome-file.csv', "Well hi there!")
+      repo.save
+
+      @repo = GitData.find(@username, @name, client: @client)
+
+      expect(@repo.get_file('my-awesome-file.csv')).to eq("Well hi there!")
+    end
+
+    it 'gets a file in a folder' do
+      repo = GitData.create(@username, @name, client: @client)
+      repo.add_file('_data/my-awesome-file.csv', "I'm in a folder!")
+      repo.save
+
+      @repo = GitData.find(@username, @name, client: @client)
+
+      expect(@repo.get_file('_data/my-awesome-file.csv')).to eq("I'm in a folder!")
+    end
+
+  end
+
+
+
   context '#save'  do
 
     before(:each) do
