@@ -396,86 +396,101 @@ describe DatasetsController, type: :controller do
       }
     end
 
-    before(datapackage: true) do
-      repo = double(GitData)
+    context('successful update') do
+      before(:each) do
+        @repo = double(GitData)
 
-      expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
-      expect(@dataset).to receive(:update_datapackage)
-      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
-      expect(repo).to receive(:save)
+        expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
+        expect(@dataset).to receive(:update_datapackage)
+        expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+        expect(@repo).to receive(:save)
+      end
+
+      context('without schema') do
+
+        before(:each) do
+          expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json')) }
+        end
+
+        it 'updates a dataset', :datapackage do
+          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+              id: @file.id,
+              title: "New title",
+              description: "New description"
+             }]
+
+          expect(response).to redirect_to(datasets_path)
+          @dataset.reload
+
+          expect(@dataset.name).to eq("Dataset")
+          expect(@dataset.description).to eq("New description")
+          expect(@dataset.publisher_name).to eq("New Publisher")
+          expect(@dataset.publisher_url).to eq("http://new.publisher.com")
+          expect(@dataset.license).to eq("OGL-UK-3")
+          expect(@dataset.frequency).to eq("annual")
+          expect(@dataset.dataset_files.count).to eq(1)
+          expect(@dataset.dataset_files.first.title).to eq("New title")
+          expect(@dataset.dataset_files.first.description).to eq("New description")
+        end
+
+        it 'updates a file in Github', :datapackage do
+          filename = 'test-data.csv'
+          path = File.join(Rails.root, 'spec', 'fixtures', filename)
+          file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+          expect(DatasetFile).to receive(:find).with(@file.id.to_s) { @file }
+          expect(@file).to receive(:update_in_github).with(file)
+
+          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+              id: @file.id,
+              file: file
+          }]
+        end
+
+        it 'adds a new file in Github', :datapackage do
+          Dataset.skip_callback :update, :after, :update_in_github
+          @dataset.dataset_files << @file
+          @dataset.save
+          Dataset.set_callback :update, :after, :update_in_github
+
+          filename = 'test-data.csv'
+          path = File.join(Rails.root, 'spec', 'fixtures', filename)
+          file = Rack::Test::UploadedFile.new(path, "text/csv")
+
+          new_file = build(:dataset_file, dataset: @dataset)
+
+          expect(DatasetFile).to receive(:new_file) { new_file }
+          expect(new_file).to receive(:add_to_github)
+
+          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+            {
+              id: @file.id,
+              title: "New title",
+              description: "New description"
+             },
+            {
+              title: "New file",
+              description: "New file description",
+              file: file
+            }
+          ]
+
+          expect(@dataset.dataset_files.count).to eq(2)
+        end
+
+      end
+
     end
 
-    it 'updates a dataset', :datapackage do
-      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-          id: @file.id,
-          title: "New title",
-          description: "New description"
-         }]
+    context('unsucesful update') do
 
-      expect(response).to redirect_to(datasets_path)
-      @dataset.reload
+      it 'returns an error if there are no files' do
+        request = put 'update', id: @dataset.id, dataset: @dataset_hash, files: []
 
-      expect(@dataset.name).to eq("Dataset")
-      expect(@dataset.description).to eq("New description")
-      expect(@dataset.publisher_name).to eq("New Publisher")
-      expect(@dataset.publisher_url).to eq("http://new.publisher.com")
-      expect(@dataset.license).to eq("OGL-UK-3")
-      expect(@dataset.frequency).to eq("annual")
-      expect(@dataset.dataset_files.count).to eq(1)
-      expect(@dataset.dataset_files.first.title).to eq("New title")
-      expect(@dataset.dataset_files.first.description).to eq("New description")
-    end
+        expect(request).to render_template(:new)
+        expect(flash[:notice]).to eq("You must specify at least one dataset")
+      end
 
-    it 'returns an error if there are no files' do
-      request = put 'update', id: @dataset.id, dataset: @dataset_hash, files: []
-
-      expect(request).to render_template(:new)
-      expect(flash[:notice]).to eq("You must specify at least one dataset")
-    end
-
-    it 'updates a file in Github', :datapackage do
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
-      file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      expect(DatasetFile).to receive(:find).with(@file.id.to_s) { @file }
-      expect(@file).to receive(:update_in_github).with(file)
-
-      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-          id: @file.id,
-          file: file
-      }]
-    end
-
-    it 'adds a new file in Github', :datapackage do
-      Dataset.skip_callback :update, :after, :update_in_github
-      @dataset.dataset_files << @file
-      @dataset.save
-      Dataset.set_callback :update, :after, :update_in_github
-
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
-      file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      new_file = build(:dataset_file, dataset: @dataset)
-
-      expect(DatasetFile).to receive(:new_file) { new_file }
-      expect(new_file).to receive(:add_to_github)
-
-      put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
-        {
-          id: @file.id,
-          title: "New title",
-          description: "New description"
-         },
-        {
-          title: "New file",
-          description: "New file description",
-          file: file
-        }
-      ]
-
-      expect(@dataset.dataset_files.count).to eq(2)
     end
 
   end
