@@ -3,7 +3,7 @@ class DatasetsController < ApplicationController
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :get_dataset, only: [:edit, :update]
   before_filter :handle_files, only: [:create, :update]
-  before_filter :set_licenses, only: [:create, :new, :edit]
+  before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   skip_before_filter :verify_authenticity_token, only: :create, if: Proc.new { !current_user.nil? }
