@@ -6,7 +6,7 @@ class DatasetsController < ApplicationController
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
-  skip_before_filter :verify_authenticity_token, only: :create, if: Proc.new { !current_user.nil? }
+  skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
     @datasets = Dataset.all
@@ -76,11 +76,28 @@ class DatasetsController < ApplicationController
       end
     end
 
-    if @dataset.save
-      redirect_to datasets_path, :notice => "Dataset updated sucessfully"
-    else
-      generate_errors
-      render :edit
+    respond_to do |format|
+      format.html do
+        if @dataset.save
+          redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+        else
+          generate_errors
+          render :edit
+        end
+      end
+
+      format.json do
+        if @dataset.save
+          response = (@dataset.attributes).merge({
+            gh_pages_url: @dataset.gh_pages_url
+          })
+          render json: response.to_json
+        else
+          render json: {
+            errors: generate_errors
+          }.to_json
+        end
+      end
     end
   end
 
