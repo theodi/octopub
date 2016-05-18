@@ -431,32 +431,65 @@ describe DatasetsController, type: :controller do
             }]
           end
 
-          it 'adds a new file in Github' do
-            @file.file = nil
+          context 'adds a new file in Github' do
 
-            filename = 'valid-schema.csv'
-            path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = Rack::Test::UploadedFile.new(path, "text/csv")
+            before :each do
+              @file.file = nil
 
-            new_file = build(:dataset_file, dataset: @dataset, file: nil)
+              @filename = 'valid-schema.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
+              @new_file = Rack::Test::UploadedFile.new(@path, "text/csv")
 
-            expect(DatasetFile).to receive(:new_file) { new_file }
-            expect(new_file).to receive(:add_to_github)
+              file = build(:dataset_file, dataset: @dataset, file: nil)
 
-            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
-              {
-                id: @file.id,
-                title: "New title",
-                description: "New description"
-               },
-              {
-                title: "New file",
-                description: "New file description",
-                file: file
-              }
-            ]
+              expect(DatasetFile).to receive(:new_file) { file }
+              expect(file).to receive(:add_to_github)
+            end
 
-            expect(@dataset.dataset_files.count).to eq(2)
+            it 'via a browser' do
+              put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+                {
+                  id: @file.id,
+                  title: "New title",
+                  description: "New description"
+                 },
+                {
+                  title: "New file",
+                  description: "New file description",
+                  file: @new_file
+                }
+              ]
+
+              expect(@dataset.dataset_files.count).to eq(2)
+            end
+
+            it 'over the API' do
+              put 'update', format: :json, id: @dataset.id, dataset: @dataset_hash, files: [
+                {
+                  id: @file.id,
+                  title: "New title",
+                  description: "New description"
+                 },
+                {
+                  title: "New file",
+                  description: "New file description",
+                  file: @new_file
+                }
+              ]
+
+              expect(@dataset.dataset_files.count).to eq(2)
+              expect(JSON.parse(response.body)).to include (
+                {
+                  "name"=>"Dataset",
+                  "description"=>"New description",
+                  "publisher_name"=>"New Publisher",
+                  "publisher_url"=>"http://new.publisher.com",
+                  "license"=>"OGL-UK-3",
+                  "frequency"=>"annual",
+                  "gh_pages_url"=>"http://user-mcuser.github.io/"
+                }
+              )
+            end
           end
         end
 
@@ -537,13 +570,6 @@ describe DatasetsController, type: :controller do
     end
 
     context('unsucesful update') do
-
-      it 'returns an error if there are no files' do
-        request = put 'update', id: @dataset.id, dataset: @dataset_hash, files: []
-
-        expect(request).to render_template(:new)
-        expect(flash[:notice]).to eq("You must specify at least one dataset")
-      end
 
       context 'with non-compliant csv' do
         before(:each) do
