@@ -2,7 +2,8 @@ class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :get_dataset, only: [:edit, :update]
-  before_filter :handle_files, only: [:create, :update]
+  before_filter :clear_files, only: [:create, :update]
+  before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
@@ -105,11 +106,6 @@ class DatasetsController < ApplicationController
 
   def get_dataset
     @dataset = Dataset.where(id: params["id"], user_id: current_user.id).first
-  end
-
-  def handle_files
-    clear_files
-    check_files
   end
 
   def clear_files
