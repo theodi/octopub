@@ -11,12 +11,15 @@ FactoryGirl.define do
 
     after(:build) { |dataset|
       dataset.class.skip_callback(:create, :after, :create_in_github)
+      dataset.class.skip_callback(:update, :after, :update_in_github)
+
       dataset.instance_variable_set(:@repo, FakeData.new)
     }
 
     trait :with_callback do
       after(:build) { |dataset|
         dataset.class.set_callback(:create, :after, :create_in_github)
+        dataset.class.set_callback(:update, :after, :update_in_github)
       }
     end
   end
