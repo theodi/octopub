@@ -406,13 +406,20 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:save)
       end
 
+      context('with schema') do
+        before(:each) do
+          expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
+        end
+
+      end
+
       context('without schema') do
 
         before(:each) do
           expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json')) }
         end
 
-        it 'updates a dataset', :datapackage do
+        it 'updates a dataset' do
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
               title: "New title",
@@ -433,7 +440,7 @@ describe DatasetsController, type: :controller do
           expect(@dataset.dataset_files.first.description).to eq("New description")
         end
 
-        it 'updates a file in Github', :datapackage do
+        it 'updates a file in Github' do
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = Rack::Test::UploadedFile.new(path, "text/csv")
@@ -447,7 +454,7 @@ describe DatasetsController, type: :controller do
           }]
         end
 
-        it 'adds a new file in Github', :datapackage do
+        it 'adds a new file in Github' do
           Dataset.skip_callback :update, :after, :update_in_github
           @dataset.dataset_files << @file
           @dataset.save
