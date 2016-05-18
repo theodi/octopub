@@ -31,24 +31,94 @@ describe Dataset do
       obj
     }
 
+    expect(dataset).to receive(:commit)
+
     dataset.save
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
   end
 
-  it "gets a repo from Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
-    dataset.save
+  context('#fetch_repo') do
 
-    double = double(GitData)
+    before(:each) do
+      dataset = build(:dataset, user: @user, repo: "repo")
+      dataset.save
 
-    expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
-      double
-    }
+      @double = double(GitData)
 
-    dataset = Dataset.last
-    dataset.send(:fetch_repo)
-    expect(dataset.instance_variable_get(:@repo)).to eq(double)
+      expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
+        @double
+      }
+    end
+
+    it "gets a repo from Github" do
+      dataset = Dataset.last
+
+      expect(dataset).to receive(:check_for_schema)
+      dataset.fetch_repo
+      expect(dataset.instance_variable_get(:@repo)).to eq(@double)
+    end
+
+    it "gets a schema" do
+      expect(@double).to receive(:get_file).with('datapackage.json') {
+        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json'))
+      }
+
+      dataset = Dataset.last
+      dataset.fetch_repo
+
+      expect(File.read(dataset.schema.tempfile)).to eq({
+        fields: [
+          {
+            name: "Username",
+            constraints: {
+              required: true,
+              unique: true,
+              minLength: 5,
+              maxLength: 10,
+              pattern: "^[A-Za-z0-9_]*$"
+            }
+          },
+          {
+            name: "Age",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              minimum: "13",
+              maximum: "99"
+            }
+          },
+          {
+            name: "Height",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              minimum: "20"
+            }
+          },
+          {
+            name: "Weight",
+            constraints: {
+              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+              maximum: "500"
+            }
+          },
+          {
+            name: "Password"
+          }
+        ]
+      }.to_json)
+    end
+
+    it 'returns nil if there is no schema present' do
+      expect(@double).to receive(:get_file).with('datapackage.json') {
+        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json'))
+      }
+
+      dataset = Dataset.last
+      dataset.fetch_repo
+
+      expect(dataset.schema).to be_nil
+    end
+
   end
 
   it "generates a path" do
@@ -92,130 +162,6 @@ describe Dataset do
     expect(repo).to receive(:delete_file).with("my-file")
 
     dataset.delete_contents("my-file")
-  end
-
-  context "with files" do
-
-    before(:each) do
-      allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-      @name = 'Test Data'
-      @description = Faker::Company.bs
-      @file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      @files = [
-        {
-          "title" => @name,
-          "description" => @description,
-          "file" => @file
-        }
-      ]
-
-      @dataset = build(:dataset, user: @user)
-      @repo = @dataset.instance_variable_get(:@repo)
-
-      allow(@dataset).to receive(:create_files) { nil }
-      expect(@repo).to receive(:save)
-    end
-
-    it "adds a single file" do
-      @dataset.add_files(@files)
-
-      expect(@dataset.dataset_files.count).to eq(1)
-      expect(@dataset.dataset_files.first.title).to eq(@name)
-      expect(@dataset.dataset_files.first.filename).to eq(@file.original_filename)
-      expect(@dataset.dataset_files.first.description).to eq(@description)
-      expect(@dataset.dataset_files.first.mediatype).to eq("text/csv")
-    end
-
-    it "adds multiple files" do
-      @files << {
-        "title" => 'Test Data 2',
-        "description" => Faker::Company.bs,
-        "file" => @file
-      }
-
-      @dataset.add_files(@files)
-      expect(@dataset.dataset_files.count).to eq(2)
-    end
-  end
-
-  context "update_files" do
-
-    before(:each) do
-      @dataset = create(:dataset, user: @user)
-      @file = create(:dataset_file, dataset: @dataset, filename: 'test-data.csv')
-      @files = [{
-        "id" => @file.id,
-        "title" => "My super dataset",
-        "description" => "Another super dataset"
-      }]
-
-      repo = double(GitData)
-      expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { repo }
-      expect(repo).to receive(:save)
-
-      expect(@dataset).to receive(:update_datapackage)
-    end
-
-    it "updates the metadata of one file" do
-      @dataset.update_files(@files)
-
-      expect(@dataset.dataset_files.count).to eq(1)
-      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
-      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
-    end
-
-    it "updates the metadata of multiple files" do
-      file2 = create(:dataset_file, dataset: @dataset)
-
-      @files << {
-        "id" => file2.id,
-        "title" => "My super dataset 2",
-        "description" => "Another super dataset 2"
-      }
-
-      @dataset.update_files(@files)
-
-      expect(@dataset.dataset_files.count).to eq(2)
-      expect(@dataset.dataset_files.first.title).to eq("My super dataset")
-      expect(@dataset.dataset_files.first.description).to eq("Another super dataset")
-      expect(@dataset.dataset_files.last.title).to eq("My super dataset 2")
-      expect(@dataset.dataset_files.last.description).to eq("Another super dataset 2")
-    end
-
-    it "updates a file in github" do
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
-      file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      @files.first["file"] = file
-
-      expect(DatasetFile).to receive(:find) { @file }
-      expect(@file).to receive(:update_in_github).with(file)
-
-      @dataset.update_files(@files)
-    end
-
-    it "adds new files" do
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
-      file = Rack::Test::UploadedFile.new(path, "text/csv")
-
-      @files << {
-        "title" => "New shiny",
-        "description" => "Shiny new file",
-        "file" => file
-      }
-
-      expect(DatasetFile).to receive(:new_file) { create(:dataset_file, dataset: @dataset) }
-
-      @dataset.update_files(@files)
-
-      expect(@dataset.dataset_files.count).to eq(2)
-    end
-
   end
 
   it "sends the correct files to Github" do
@@ -291,6 +237,75 @@ describe Dataset do
     config = YAML.load dataset.config
 
     expect(config["update_frequency"]).to eq("weekly")
+  end
+
+  context "schemata" do
+    it 'is unhappy with a duff schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be false
+      expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
+    end
+
+    it 'is happy with a good schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be true
+    end
+
+    it 'adds the schema to the datapackage' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      file = create(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
+
+
+      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      datapackage = JSON.parse dataset.datapackage
+
+      expect(datapackage['resources'].first['schema']['fields']).to eq([
+        {
+          "name" => "Username",
+          "constraints" => {
+            "required"=>true,
+            "unique"=>true,
+            "minLength"=>5,
+            "maxLength"=>10,
+            "pattern"=>"^[A-Za-z0-9_]*$"
+          }
+        },
+        {
+          "name" => "Age",
+          "constraints" => {
+            "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+            "minimum"=>"13",
+            "maximum"=>"99"
+          }
+        },
+        {
+           "name"=>"Height",
+           "constraints" => {
+             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+             "minimum"=>"20"
+           }
+        },
+        {
+          "name"=>"Weight",
+          "constraints" => {
+            "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+           "maximum"=>"500"
+          }
+        },
+        {
+           "name"=>"Password"
+        }
+      ])
+    end
   end
 
 end

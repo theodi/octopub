@@ -6,6 +6,7 @@ FactoryGirl.define do
     mediatype 'text/csv'
     file_sha 'abc123'
     view_sha 'cba321'
+    file Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv'), "text/csv")
 
     after(:build) { |dataset_file|
       dataset_file.class.skip_callback(:create, :after, :add_to_github)

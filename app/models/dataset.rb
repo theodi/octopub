@@ -5,29 +5,13 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  before_create :create_in_github
+  after_create :create_in_github
+  after_update :update_in_github
 
-  def add_files(files_array)
-    files_array.each do |file|
-      dataset_files << DatasetFile.new_file(file, self)
-    end
-    save
-    create_files
-    push_to_github
-  end
+  attr_accessor :schema
 
-  def update_files(files_array)
-    fetch_repo
-    files_array.each do |file|
-      if file["id"]
-        DatasetFile.update_file(file)
-      else
-        dataset_files << DatasetFile.new_file(file, self)
-      end
-    end
-    update_datapackage
-    push_to_github
-  end
+  validate :check_schema
+  validates_associated :dataset_files
 
   def create_contents(filename, file)
     @repo.add_file(filename, file)
@@ -87,8 +71,9 @@ class Dataset < ActiveRecord::Base
         "name" => file.title,
         "mediatype" => file.mediatype,
         "description" => file.description,
-        "path" => "data/#{file.filename}"
-      }
+        "path" => "data/#{file.filename}",
+        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil?)
+      }.delete_if { |k,v| v.nil? }
     end
 
     datapackage.to_json
@@ -117,20 +102,54 @@ class Dataset < ActiveRecord::Base
     "#{user.github_username}/#{repo}"
   end
 
+  def fetch_repo
+    @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+    check_for_schema
+  end
+
+  def check_for_schema
+    datapackage = JSON.parse @repo.get_file('datapackage.json')
+    schema_json = datapackage['resources'].first['schema']
+    unless schema_json.nil?
+      self.schema = OpenStruct.new
+      tempfile = Tempfile.new('schema')
+      tempfile.write(schema_json.to_json)
+      tempfile.rewind
+      schema.tempfile = tempfile
+    end
+  end
+
   private
 
     def create_in_github
       @repo = GitData.create(user.name, name, client: user.octokit_client)
       self.url = @repo.html_url
       self.repo = @repo.name
+      commit
+    end
+
+    def commit
+      dataset_files.each { |d| d.add_to_github }
+      create_files
+      push_to_github
+    end
+
+    def update_in_github
+      dataset_files.each { |d| d.update_in_github if d.file }
+      update_datapackage
+      push_to_github
     end
 
     def push_to_github
       @repo.save
     end
 
-    def fetch_repo
-      @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+    def check_schema
+      return nil unless schema
+      s = Csvlint::Schema.load_from_json schema.tempfile, false
+      unless s.fields.first
+        errors.add :schema, 'is invalid'
+      end
     end
 
 end

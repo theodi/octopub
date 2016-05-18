@@ -18,25 +18,26 @@ describe DatasetFile do
   context "add_to_github" do
 
     before(:each) do
-      @file = build(:dataset_file, filename: "example.csv")
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+      @file = build(:dataset_file, filename: "example.csv", file: @tempfile)
 
-      @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
+      @dataset = build(:dataset, repo: "my-repo", user: @user)
+      @dataset.dataset_files << @file
     end
 
     it "adds a file to Github" do
       expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
       expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
 
-      @file.send(:add_to_github, @tempfile)
+      @file.send(:add_to_github)
     end
   end
 
   context "update_in_github" do
 
     before(:each) do
-      @file = create(:dataset_file, filename: "example.csv")
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+      @file = create(:dataset_file, filename: "example.csv", file: @tempfile)
 
       @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
     end
@@ -45,7 +46,7 @@ describe DatasetFile do
       expect(@dataset).to receive(:update_contents).with("data/example.csv", File.read(@path))
       expect(@dataset).to receive(:update_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
 
-      @file.send(:update_in_github, @tempfile)
+      @file.send(:update_in_github)
     end
   end
 
@@ -76,17 +77,7 @@ describe DatasetFile do
       }
     end
 
-    it "creates a file in github" do
-      created_file = create(:dataset_file)
-      expect(DatasetFile).to receive(:new) { created_file }
-      expect(created_file).to receive(:add_to_github).with(@tempfile)
-
-      DatasetFile.new_file(@file)
-    end
-
     it "creates a file" do
-      expect_any_instance_of(DatasetFile).to receive(:add_to_github) {}
-
       file = DatasetFile.new_file(@file)
 
       expect(file.title).to eq(@file["title"])
@@ -97,50 +88,12 @@ describe DatasetFile do
 
   end
 
-  context "self.update_file" do
-
-    before(:each) do
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
-      tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
-      @file = create(:dataset_file)
-
-      @new_file = {
-        "id" => @file.id,
-        "title" => 'My File',
-        "file" => tempfile,
-        "description" => 'A new description',
-      }
-    end
-
-    it "updates a file" do
-      expect(DatasetFile).to receive(:find) { @file }
-      expect(@file).to receive(:update_file).with(@new_file)
-
-      DatasetFile.update_file(@new_file)
-    end
-
-    it "returns nil if a file is not found" do
-      allow_message_expectations_on_nil
-      file = nil
-
-      expect(DatasetFile).to receive(:find) { file }
-      expect(file).to_not receive(:update_file)
-
-      @new_file["id"] = 123
-
-      file = DatasetFile.update_file(@new_file)
-
-      expect(file).to eq(nil)
-    end
-
-  end
-
   context "update_file" do
 
     it "updates a file" do
       file = create(:dataset_file, filename: 'test-data.csv')
 
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data0.csv')
       tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
 
       new_file = {
@@ -150,11 +103,10 @@ describe DatasetFile do
         "description" => 'A new description',
       }
 
-      expect(file).to receive(:update_in_github).with(tempfile)
       file.update_file(new_file)
 
       expect(file.title).to eq(new_file["title"])
-      expect(file.filename).to eq(tempfile.original_filename)
+      expect(file.filename).to eq('test-data.csv')
       expect(file.description).to eq(new_file["description"])
       expect(file.mediatype).to eq("text/csv")
     end
@@ -176,22 +128,42 @@ describe DatasetFile do
       expect(file.mediatype).to eq("text/csv")
     end
 
-    it "deletes the old file if the filenames are different" do
-      file = create(:dataset_file)
+  end
 
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data0.csv')
-      tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+  context 'with schema' do
 
-      new_file = {
-        "id" => file.id,
-        "title" => 'My File',
-        "file" => tempfile,
-        "description" => 'A new description',
-      }
+    before(:each) do
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      @dataset = build(:dataset, schema: Rack::Test::UploadedFile.new(schema_path, "application/json"))
+    end
 
-      expect(file).to receive(:update_in_github).with(tempfile)
-      expect(file).to receive(:delete_from_github)
-      file.update_file(new_file)
+    it 'validates against a schema with good data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(true)
+      expect(@dataset.valid?).to eq(true)
+    end
+
+    it 'validates against a schema with bad data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(false)
+      expect(@dataset.valid?).to eq(false)
     end
 
   end

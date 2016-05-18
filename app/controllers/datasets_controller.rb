@@ -3,7 +3,7 @@ class DatasetsController < ApplicationController
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :get_dataset, only: [:edit, :update]
   before_filter :handle_files, only: [:create, :update]
-  before_filter :set_licenses, only: [:create, :new, :edit]
+  before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   skip_before_filter :verify_authenticity_token, only: :create, if: Proc.new { !current_user.nil? }
@@ -23,19 +23,31 @@ class DatasetsController < ApplicationController
 
   def create
     @dataset = current_user.datasets.new(dataset_params)
-    @dataset.save
-    @dataset.add_files(params["files"])
+    params["files"].each do |file|
+      @dataset.dataset_files << DatasetFile.new_file(file)
+    end
 
     respond_to do |format|
       format.html do
-        redirect_to datasets_path, :notice => "Dataset created sucessfully"
+        if @dataset.save
+          redirect_to datasets_path, :notice => "Dataset created sucessfully"
+        else
+          generate_errors
+          render :new
+        end
       end
 
       format.json do
-        response = (@dataset.attributes).merge({
-          gh_pages_url: @dataset.gh_pages_url
-        })
-        render json: response.to_json
+        if @dataset.save
+          response = (@dataset.attributes).merge({
+            gh_pages_url: @dataset.gh_pages_url
+          })
+          render json: response.to_json
+        else
+          render json: {
+            errors: generate_errors
+          }.to_json
+        end
       end
     end
   end
@@ -48,9 +60,28 @@ class DatasetsController < ApplicationController
   def update
     p = dataset_params
     p.delete(:name)
-    @dataset.update(p)
-    @dataset.update_files(params["files"])
-    redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+    @dataset.fetch_repo
+    @dataset.assign_attributes(p)
+
+    params[:files].each do |file|
+      if file["id"]
+        f = @dataset.dataset_files.find { |f| f.id == file["id"].to_i }
+        f.update_file(file)
+      else
+        f = DatasetFile.new_file(file)
+        @dataset.dataset_files << f
+        if f.save
+          f.add_to_github
+        end
+      end
+    end
+
+    if @dataset.save
+      redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+    else
+      generate_errors
+      render :edit
+    end
   end
 
   private
@@ -90,11 +121,23 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency)
+    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
   end
 
   def check_signed_in?
     render_403 if current_user.nil?
+  end
+
+  def generate_errors
+    messages = []
+    @dataset.dataset_files.each do |file|
+      messages << "Your file '#{file.title}' does not match the schema you provided" unless file.valid?
+    end
+    if params["format"] == "json"
+      messages
+    else
+      flash[:notice] = messages.join('<br>')
+    end
   end
 
 end
