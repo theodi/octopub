@@ -44,10 +44,9 @@ class DatasetFile < ActiveRecord::Base
     dataset.create_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
-  def update_in_github(tempfile)
-    dataset.update_contents("data/#{filename}", tempfile.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def update_in_github
+    dataset.update_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
     dataset.update_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-    save
   end
 
   def delete_from_github(file)
