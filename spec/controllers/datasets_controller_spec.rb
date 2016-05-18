@@ -595,33 +595,55 @@ describe DatasetsController, type: :controller do
           expect(flash[:notice]).to eq("Your file '#{@file.title}' does not match the schema you provided")
         end
 
-        it 'does not add new file in Github' do
-          @file.file = nil
+        context 'does not add new file in Github' do
+          before :each do
+            @file.file = nil
 
-          filename = 'invalid-schema.csv'
-          path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = Rack::Test::UploadedFile.new(path, "text/csv")
+            @filename = 'invalid-schema.csv'
+            @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
+            @new_file = Rack::Test::UploadedFile.new(@path, "text/csv")
 
-          new_file = build(:dataset_file, dataset: @dataset, file: nil)
+            file = build(:dataset_file, dataset: @dataset, file: nil)
 
-          expect(new_file).to_not receive(:add_to_github)
+            expect(file).to_not receive(:add_to_github)
+          end
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
-            {
-              id: @file.id,
-              title: "New title",
-              description: "New description"
-             },
-            {
-              title: "New file",
-              description: "New file description",
-              file: file
-            }
-          ]
+          it 'with a browser' do
 
-          expect(@dataset.dataset_files.count).to eq(1)
-          expect(request).to render_template(:edit)
-          expect(flash[:notice]).to eq("Your file 'New file' does not match the schema you provided")
+            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+              {
+                id: @file.id,
+                title: "New title",
+                description: "New description"
+               },
+              {
+                title: "New file",
+                description: "New file description",
+                file: @new_file
+              }
+            ]
+
+            expect(@dataset.dataset_files.count).to eq(1)
+            expect(request).to render_template(:edit)
+            expect(flash[:notice]).to eq("Your file 'New file' does not match the schema you provided")
+          end
+
+          it 'over the API' do
+            put 'update', format: :json, id: @dataset.id, dataset: @dataset_hash, files: [
+              {
+                id: @file.id,
+                title: "New title",
+                description: "New description"
+               },
+              {
+                title: "New file",
+                description: "New file description",
+                file: @new_file
+              }
+            ]
+
+            expect(JSON.parse(response.body)['errors'].first).to eq "Your file 'New file' does not match the schema you provided"
+          end
         end
       end
 
