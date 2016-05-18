@@ -15,12 +15,6 @@ class DatasetFile < ActiveRecord::Base
     )
   end
 
-  def self.update_file(file)
-    f = find(file.delete("id"))
-    f.update_file(file) unless f.nil?
-    f
-  end
-
   def self.get_content_type(file)
     type = MIME::Types.type_for(file).first
     [(type.use_instead || type.content_type)].flatten.first
