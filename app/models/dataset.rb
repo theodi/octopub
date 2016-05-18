@@ -135,6 +135,7 @@ class Dataset < ActiveRecord::Base
     end
 
     def update_in_github
+      dataset_files.each { |d| d.update_in_github if d.file }
       update_datapackage
       push_to_github
     end

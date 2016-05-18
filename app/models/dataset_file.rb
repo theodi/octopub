@@ -29,22 +29,14 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def update_file(file)
-    original_file = self.dup
-    require "pry" ; binding.pry
-
     update_hash = {
       title: file["title"],
-      filename: file["file"].nil? ? nil : file["file"].original_filename,
       description: file["description"],
-      mediatype: file["file"].nil? ? nil : self.class.get_content_type(file["file"].original_filename)
+      mediatype: file["file"].nil? ? nil : self.class.get_content_type(file["file"].original_filename),
+      file: file["file"],
     }.delete_if { |k,v| v.nil? }
 
     self.update(update_hash)
-
-    if file["file"]
-      update_in_github(file["file"])
-      delete_from_github(original_file) unless file["file"].original_filename == original_file.filename
-    end
   end
 
   def add_to_github
