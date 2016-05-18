@@ -2,11 +2,12 @@ class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :get_dataset, only: [:edit, :update]
-  before_filter :handle_files, only: [:create, :update]
+  before_filter :clear_files, only: [:create, :update]
+  before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
-  skip_before_filter :verify_authenticity_token, only: :create, if: Proc.new { !current_user.nil? }
+  skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
     @datasets = Dataset.all
@@ -76,11 +77,28 @@ class DatasetsController < ApplicationController
       end
     end
 
-    if @dataset.save
-      redirect_to datasets_path, :notice => "Dataset updated sucessfully"
-    else
-      generate_errors
-      render :edit
+    respond_to do |format|
+      format.html do
+        if @dataset.save
+          redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+        else
+          generate_errors
+          render :edit
+        end
+      end
+
+      format.json do
+        if @dataset.save
+          response = (@dataset.attributes).merge({
+            gh_pages_url: @dataset.gh_pages_url
+          })
+          render json: response.to_json
+        else
+          render json: {
+            errors: generate_errors
+          }.to_json
+        end
+      end
     end
   end
 
@@ -88,11 +106,6 @@ class DatasetsController < ApplicationController
 
   def get_dataset
     @dataset = Dataset.where(id: params["id"], user_id: current_user.id).first
-  end
-
-  def handle_files
-    clear_files
-    check_files
   end
 
   def clear_files
