@@ -57,7 +57,7 @@ class DatasetFile < ActiveRecord::Base
   private
 
     def check_schema
-      if dataset && dataset.schema
+      if dataset && dataset.schema && file
         schema = Csvlint::Schema.load_from_json(dataset.schema.tempfile)
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
         errors.add(:file, 'does not match schema') unless validation.valid?
