@@ -16,6 +16,16 @@ class DatasetsController < ApplicationController
   def dashboard
     current_user.refresh_datasets if params[:refresh]
     @datasets = current_user.datasets
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        render json: {
+          datasets: @datasets
+        }.to_json
+      end
+    end
   end
 
   def new
