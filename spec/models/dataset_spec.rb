@@ -34,6 +34,8 @@ describe Dataset do
     expect(dataset).to receive(:commit)
 
     dataset.save
+    dataset.reload
+    
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
   end

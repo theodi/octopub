@@ -123,8 +123,7 @@ class Dataset < ActiveRecord::Base
 
     def create_in_github
       @repo = GitData.create(user.name, name, client: user.octokit_client)
-      self.url = @repo.html_url
-      self.repo = @repo.name
+      self.update_columns(url: @repo.html_url, repo: @repo.name)
       commit
     end
 
