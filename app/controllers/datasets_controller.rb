@@ -69,10 +69,8 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    p = dataset_params
-    p.delete(:name)
     @dataset.fetch_repo
-    @dataset.assign_attributes(p)
+    @dataset.assign_attributes(dataset_update_params) if dataset_update_params
 
     params[:files].each do |file|
       if file["id"]
@@ -145,6 +143,10 @@ class DatasetsController < ApplicationController
 
   def dataset_params
     params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
+  end
+
+  def dataset_update_params
+    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema])
   end
 
   def check_signed_in?

@@ -476,7 +476,7 @@ describe DatasetsController, type: :controller do
             end
 
             it 'over the API' do
-              put 'update', format: :json, id: @dataset.id, dataset: @dataset_hash, files: [
+              put 'update', format: :json, id: @dataset.id, files: [
                 {
                   id: @file.id,
                   title: "New title",
@@ -493,11 +493,6 @@ describe DatasetsController, type: :controller do
               expect(JSON.parse(response.body)).to include (
                 {
                   "name"=>"Dataset",
-                  "description"=>"New description",
-                  "publisher_name"=>"New Publisher",
-                  "publisher_url"=>"http://new.publisher.com",
-                  "license"=>"OGL-UK-3",
-                  "frequency"=>"annual",
                   "gh_pages_url"=>"http://user-mcuser.github.io/"
                 }
               )
