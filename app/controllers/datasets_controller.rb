@@ -81,6 +81,7 @@ class DatasetsController < ApplicationController
         @dataset.dataset_files << f
         if f.save
           f.add_to_github
+          f.file = nil
         end
       end
     end
