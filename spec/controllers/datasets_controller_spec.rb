@@ -58,6 +58,15 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(1)
       expect(assigns(:datasets).first).to eq(dataset1)
     end
+
+    it 'gets a JSON dashboard' do
+      5.times { |i| create(:dataset, name: "Dataset #{i}") }
+
+      create(:dataset, user: @user)
+      get 'dashboard', format: :json, api_key: @user.api_key
+
+      expect(assigns(:datasets).count).to eq(1)
+    end
   end
 
   describe 'new dataset' do
