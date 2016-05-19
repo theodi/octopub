@@ -21,7 +21,9 @@ class DatasetsController < ApplicationController
       format.html
 
       format.json do
-        render json: @datasets.to_json
+        render json: {
+          datasets: @datasets
+        }.to_json
       end
     end
   end
