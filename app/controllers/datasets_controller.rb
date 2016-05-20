@@ -92,7 +92,7 @@ class DatasetsController < ApplicationController
           redirect_to datasets_path, :notice => "Dataset updated sucessfully"
         else
           generate_errors
-          render :edit
+          render :edit, status: 400
         end
       end
 
@@ -101,11 +101,11 @@ class DatasetsController < ApplicationController
           response = (@dataset.attributes).merge({
             gh_pages_url: @dataset.gh_pages_url
           })
-          render json: response.to_json
+          render json: response.to_json, status: 201
         else
           render json: {
             errors: generate_errors
-          }.to_json
+          }.to_json, status: 400
         end
       end
     end

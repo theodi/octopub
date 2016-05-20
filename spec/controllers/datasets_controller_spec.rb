@@ -496,6 +496,7 @@ describe DatasetsController, type: :controller do
                   "gh_pages_url"=>"http://user-mcuser.github.io/"
                 }
               )
+              expect(response.code).to eq '201'
             end
           end
         end
@@ -576,7 +577,7 @@ describe DatasetsController, type: :controller do
 
     end
 
-    context('unsucesful update') do
+    context('unsuccessful update') do
 
       context 'with non-compliant csv' do
         before(:each) do
@@ -600,6 +601,7 @@ describe DatasetsController, type: :controller do
 
           expect(request).to render_template(:edit)
           expect(flash[:notice]).to eq("Your file '#{@file.title}' does not match the schema you provided")
+          expect(response.code).to eq '400'
         end
 
         context 'does not add new file in Github' do
