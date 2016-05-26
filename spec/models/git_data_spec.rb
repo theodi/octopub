@@ -200,8 +200,6 @@ describe GitData, :vcr do
 
   end
 
-
-
   context '#save'  do
 
     before(:each) do
@@ -283,6 +281,17 @@ describe GitData, :vcr do
       tree = GitData.find(@username, @name, client: @client).send(:tree)
       expect(tree.count).to eq(2)
       expect(tree.last['path']).to eq('my-awesome-file.csv')
+    end
+  end
+
+  context '#delete' do
+    it 'deletes a repo' do
+      @repo = GitData.create(@username, @name, client: @client)
+      expect(@client.repository?(@repo_name)).to eq(true)
+
+      @repo.delete
+
+      expect(@client.repository?(@repo_name)).to eq(false)
     end
   end
 

@@ -65,6 +65,10 @@ class GitData
     @client.update_ref(full_name, "heads/gh-pages", commit)
   end
 
+  def delete
+    @client.delete_repository(@full_name)
+  end
+
   private
 
     def commit
