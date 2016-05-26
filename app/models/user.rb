@@ -33,6 +33,10 @@ class User < ActiveRecord::Base
     name.parameterize
   end
 
+  def organizations
+    octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+  end
+
   private
 
     def generate_api_key
