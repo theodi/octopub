@@ -65,7 +65,7 @@ describe ApplicationHelper do
     expect(helper.user_option).to eq(
       [
         'user',
-        'user',
+        nil,
         { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
       ]
     )
@@ -75,7 +75,7 @@ describe ApplicationHelper do
     expect(helper.organization_select_options).to eq([
       [
         'user',
-        'user',
+        nil,
         { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
       ],
       [
