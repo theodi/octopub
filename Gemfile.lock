@@ -40,6 +40,7 @@ GEM
       execjs
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
+    bootstrap-select-rails (1.6.3)
     bootstrap_form (2.3.0)
     builder (3.2.2)
     capybara (2.7.1)
@@ -294,6 +295,7 @@ DEPENDENCIES
   alternate_rails!
   autoprefixer-rails
   bootstrap-sass (~> 3.2.0)
+  bootstrap-select-rails
   bootstrap_form
   coffee-rails (~> 4.0.0)
   coveralls
