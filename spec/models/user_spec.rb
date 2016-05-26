@@ -57,6 +57,14 @@ describe User do
       expect(orgs.first[:name]).to eq("org1")
     end
 
+    it "gets a user's github user details" do
+      user = User.find_for_github_oauth(@auth)
+
+      expect(user.octokit_client).to receive(:user).with('user-mcuser')
+
+      user.github_user
+    end
+
   end
 
 end
