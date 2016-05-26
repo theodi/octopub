@@ -10,4 +10,7 @@ class FakeData
 
   def delete_file(filename)
   end
+
+  def delete
+  end
 end

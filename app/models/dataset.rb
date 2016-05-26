@@ -143,6 +143,10 @@ class Dataset < ActiveRecord::Base
       push_to_github
     end
 
+    def delete_in_github
+      @repo.delete if @repo
+    end
+
     def push_to_github
       @repo.save
     end

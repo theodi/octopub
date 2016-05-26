@@ -56,6 +56,15 @@ describe Dataset do
     dataset.save
   end
 
+  it "deletes a repo in github" do
+    dataset = create(:dataset, user: @user, owner: "foo-bar")
+    repo = dataset.instance_variable_get(:@repo)
+
+    expect(repo).to receive(:delete)
+
+    dataset.destroy
+  end
+
   context('#fetch_repo') do
 
     before(:each) do
