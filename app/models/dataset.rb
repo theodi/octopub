@@ -7,6 +7,7 @@ class Dataset < ActiveRecord::Base
 
   after_create :create_in_github
   after_update :update_in_github
+  after_destroy :delete_in_github
 
   attr_accessor :schema
 
@@ -103,7 +104,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def repo_owner
-    owner || user.github_username
+    owner.presence || user.github_username
   end
 
   def fetch_repo
