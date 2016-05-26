@@ -103,7 +103,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def repo_owner
-    owner || user.github_username
+    owner.presence || user.github_username
   end
 
   def fetch_repo
