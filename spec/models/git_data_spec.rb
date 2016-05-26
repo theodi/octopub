@@ -7,6 +7,9 @@ describe GitData, :vcr do
     @client = Octokit::Client.new :access_token => ENV['GITHUB_TOKEN']
     @name = 'My Awesome Repo'
     @username = ENV['GITHUB_USER']
+  end
+
+  before(:each) do
     @repo_name = "#{ENV['GITHUB_USER']}/my-awesome-repo"
   end
 
@@ -15,37 +18,69 @@ describe GitData, :vcr do
   end
 
   context '#create'  do
-    before(:each) do
-      @repo = GitData.create(@username, @name, client: @client)
+    context 'with a user' do
+      before(:each) do
+        @repo = GitData.create(@username, @name, client: @client)
+      end
+
+      it 'creates a repo' do
+        expect(@client.repository?(@repo_name)).to eq(true)
+      end
+
+      it 'sets gh-pages as the default branch' do
+        expect(@client.repository(@repo_name).default_branch).to eq('gh-pages')
+      end
+
+      it 'sets the relevant instance variables' do
+        expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
+        expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
+      end
     end
 
-    it 'creates a repo' do
-      expect(@client.repository?(@repo_name)).to eq(true)
-    end
+    context 'with an organization' do
+      before(:each) do
+        @repo = GitData.create('octopub-data', @name, client: @client)
+        @repo_name = 'octopub-data/my-awesome-repo'
+      end
 
-    it 'sets gh-pages as the default branch' do
-      expect(@client.repository(@repo_name).default_branch).to eq('gh-pages')
-    end
+      it 'creates a repo' do
+        expect(@client.repository?(@repo_name)).to eq(true)
+      end
 
-    it 'sets the relevant instance variables' do
-      expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
-      expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
+      it 'sets the relevant instance variables' do
+        expect(@repo.html_url).to eq('https://github.com/octopub-data/my-awesome-repo')
+        expect(@repo.full_name).to eq('octopub-data/my-awesome-repo')
+      end
     end
   end
 
   context '#find'  do
-    before(:each) do
-      GitData.create(@username, @name, client: @client)
-      @repo = GitData.find(@username, @name, client: @client)
+    context 'with a user' do
+      before(:each) do
+        GitData.create(@username, @name, client: @client)
+        @repo = GitData.find(@username, @name, client: @client)
+      end
+
+      it 'finds the repo' do
+        expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
+        expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
+      end
+
+      it 'builds a base tree' do
+        expect(@repo.instance_variable_get(:@tree).count).to eq(1)
+      end
     end
 
-    it 'finds the repo' do
-      expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
-      expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
-    end
+    context 'with an organisation' do
+      before(:each) do
+        GitData.create('octopub-data', @name, client: @client)
+        @repo = GitData.find('octopub-data', @name, client: @client)
+      end
 
-    it 'builds a base tree' do
-      expect(@repo.instance_variable_get(:@tree).count).to eq(1)
+      it 'finds the repo' do
+        expect(@repo.full_name).to eq('octopub-data/my-awesome-repo')
+        expect(@repo.html_url).to eq('https://github.com/octopub-data/my-awesome-repo')
+      end
     end
   end
 
