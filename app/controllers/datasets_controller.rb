@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
-  before_filter :get_dataset, only: [:edit, :update]
+  before_filter :get_dataset, only: [:edit, :update, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
@@ -109,6 +109,12 @@ class DatasetsController < ApplicationController
         end
       end
     end
+  end
+
+  def destroy
+    @dataset.fetch_repo
+    @dataset.destroy
+    redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
   end
 
   private
