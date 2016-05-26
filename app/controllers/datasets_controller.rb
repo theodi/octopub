@@ -143,7 +143,7 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
   end
 
   def dataset_update_params
