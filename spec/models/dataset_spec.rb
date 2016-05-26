@@ -24,7 +24,7 @@ describe Dataset do
 
     dataset = build(:dataset, :with_callback, user: @user, name: name)
 
-    expect(GitData).to receive(:create).with(@user.name, name, client: a_kind_of(Octokit::Client)) {
+    expect(GitData).to receive(:create).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
@@ -35,9 +35,25 @@ describe Dataset do
 
     dataset.save
     dataset.reload
-    
+
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
+  end
+
+  it "creates a repo with an organization" do
+    name = "My Awesome Dataset"
+    dataset = build(:dataset, :with_callback, user: @user, name: name, owner: "my-cool-organization")
+
+    expect(GitData).to receive(:create).with('my-cool-organization', name, client: a_kind_of(Octokit::Client)) {
+      obj = double(GitData)
+      expect(obj).to receive(:html_url) { nil }
+      expect(obj).to receive(:name) { name.parameterize }
+      obj
+    }
+
+    expect(dataset).to receive(:commit)
+
+    dataset.save
   end
 
   context('#fetch_repo') do
@@ -48,7 +64,7 @@ describe Dataset do
 
       @double = double(GitData)
 
-      expect(GitData).to receive(:find).with(@user.name, dataset.name, client: a_kind_of(Octokit::Client)) {
+      expect(GitData).to receive(:find).with(@user.github_username, dataset.name, client: a_kind_of(Octokit::Client)) {
         @double
       }
     end

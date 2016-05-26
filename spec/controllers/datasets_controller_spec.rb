@@ -110,44 +110,74 @@ describe DatasetsController, type: :controller do
       expect(flash[:notice]).to eq("You must specify at least one dataset")
     end
 
-    it 'creates a dataset with one file' do
-      name = 'Test Data'
-      description = Faker::Company.bs
-      filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+    context 'with one file' do
 
-      Dataset.set_callback(:create, :after, :create_in_github)
+      before(:each) do
+        name = 'Test Data'
+        description = Faker::Company.bs
+        filename = 'test-data.csv'
+        path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-      repo = double(GitData)
+        Dataset.set_callback(:create, :after, :create_in_github)
 
-      expect(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
-        repo
-      }
+        @files << {
+          :title => name,
+          :description => description,
+          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+        }
 
-      expect(repo).to receive(:html_url) { nil }
-      expect(repo).to receive(:name) { nil }
-      expect(repo).to receive(:save)
+        @repo = double(GitData)
 
-      @files << {
-        :title => name,
-        :description => description,
-        :file => Rack::Test::UploadedFile.new(path, "text/csv")
-      }
+        expect(@repo).to receive(:html_url) { nil }
+        expect(@repo).to receive(:name) { nil }
+        expect(@repo).to receive(:save)
+      end
 
-      request = post 'create', dataset: {
-        name: @name,
-        description: @description,
-        publisher_name: @publisher_name,
-        publisher_url: @publisher_url,
-        license: @license,
-        frequency: @frequency
-      }, files: @files
+      it 'creates a dataset with one file' do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
 
-      expect(request).to redirect_to(datasets_path)
-      expect(flash[:notice]).to eq("Dataset created sucessfully")
-      expect(Dataset.count).to eq(1)
-      expect(@user.datasets.count).to eq(1)
-      expect(@user.datasets.first.dataset_files.count).to eq(1)
+        request = post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        }, files: @files
+
+        expect(request).to redirect_to(datasets_path)
+        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+      end
+
+      it 'creates a dataset in an organization' do
+        organization = 'my-cool-organization'
+
+        expect(GitData).to receive(:create).with(organization, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+
+        request = post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency,
+          owner: organization
+        }, files: @files
+
+        expect(request).to redirect_to(datasets_path)
+        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+      end
+
     end
 
     context('with a schema') do
@@ -222,7 +252,7 @@ describe DatasetsController, type: :controller do
 
         @repo = double(GitData)
 
-        allow(GitData).to receive(:create).with(@user.name, @name, client: a_kind_of(Octokit::Client)) {
+        allow(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -267,6 +297,7 @@ describe DatasetsController, type: :controller do
           "license":"OGL-UK-3.0",
           "frequency":"Monthly",
           "datapackage_sha": nil,
+          "owner": nil,
           "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
         }.to_json)
       end
@@ -419,7 +450,7 @@ describe DatasetsController, type: :controller do
 
         expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
         expect(@dataset).to receive(:update_datapackage)
-        expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+        expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
         Dataset.set_callback(:update, :after, :update_in_github)
       end
@@ -582,7 +613,7 @@ describe DatasetsController, type: :controller do
       context 'with non-compliant csv' do
         before(:each) do
           @repo = double(GitData)
-          expect(GitData).to receive(:find).with(@user.name, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
           expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
         end
 

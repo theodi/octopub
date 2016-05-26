@@ -35,6 +35,40 @@ describe User do
       expect(found_user).to eq(user)
     end
 
+    it "lists a user's organizations" do
+      user = User.find_for_github_oauth(@auth)
+
+      expect(user.octokit_client).to receive(:org_memberships) {
+        [
+          {
+            name: "org1",
+            role: "admin"
+          },
+          {
+            name: "org2",
+            role: "member"
+          },
+        ]
+      }.once
+
+      orgs = user.organizations
+      user.organizations
+
+      expect(orgs.count).to eq(1)
+      expect(orgs.first[:name]).to eq("org1")
+    end
+
+    it "gets a user's github user details" do
+      user = User.find_for_github_oauth(@auth)
+
+      expect(user.octokit_client).to receive(:user).with('user-mcuser') {
+        {}
+      }.once
+
+      user.github_user
+      user.github_user
+    end
+
   end
 
 end

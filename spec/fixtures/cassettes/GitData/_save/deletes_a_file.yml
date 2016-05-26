@@ -1,6 +1,85 @@
 ---
 http_interactions:
 - request:
+    method: get
+    uri: https://api.github.com/user
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 26 May 2016 13:07:58 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4762'
+      X-Ratelimit-Reset:
+      - '1464269351'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - W/"1255555d275d433c926c270b4fc3a401"
+      Last-Modified:
+      - Thu, 26 May 2016 12:32:18 GMT
+      X-Oauth-Scopes:
+      - delete_repo, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Oauth-Client-Id:
+      - 5a928d2c36588bef4f4c
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - 474556b853193c38f1b14328ce2d1b7d
+      X-Github-Request-Id:
+      - 3EFEF783:7F92:E8983C7:5746F52C
+    body:
+      encoding: ASCII-8BIT
+      string: '{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false,"name":null,"company":null,"blog":null,"location":null,"email":null,"hireable":null,"bio":null,"public_repos":3,"public_gists":0,"followers":0,"following":0,"created_at":"2014-10-10T08:16:33Z","updated_at":"2016-05-26T12:32:18Z"}'
+    http_version: 
+  recorded_at: Thu, 26 May 2016 13:07:59 GMT
+- request:
     method: post
     uri: https://api.github.com/user/repos
     body:
@@ -25,7 +104,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:24 GMT
+      - Thu, 26 May 2016 13:08:00 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -35,16 +114,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3382'
+      - '4761'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - '"ca1c27c837fc2df80b915e1875e1302e"'
+      - '"b8280afc85ddc4b8529efe6b05808167"'
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -71,14 +150,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - a474937f3b2fa272558fa6dc951018ad
+      - e724c57ebb9961c772a91e2dd7421c8d
       X-Github-Request-Id:
-      - 56A82ECA:CA12:DF81DE2:57344AD7
+      - 3EFEF783:7F8C:58DE998:5746F52F
     body:
       encoding: UTF-8
-      string: '{"id":58627015,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-12T09:20:23Z","updated_at":"2016-05-12T09:20:23Z","pushed_at":"2016-05-12T09:20:24Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"master","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
+      string: '{"id":59751116,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-26T13:07:59Z","updated_at":"2016-05-26T13:07:59Z","pushed_at":"2016-05-26T13:08:00Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"master","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:06 GMT
+  recorded_at: Thu, 26 May 2016 13:08:01 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/master
@@ -104,7 +183,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:25 GMT
+      - Thu, 26 May 2016 13:08:01 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -114,16 +193,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3381'
+      - '4760'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"0ae63efcdba3601303040b7b2b7376ae"
+      - W/"ad75f8e32d9c3ee75c2f1dfc30499437"
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -148,21 +227,21 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 13d09b732ebe76f892093130dc088652
+      - 593010132f82159af0ded24b4932e109
       X-Github-Request-Id:
-      - 56A82ECA:CA0F:6F8286F:57344AD8
+      - 3EFEF783:7F8A:2B56B2D:5746F530
     body:
       encoding: ASCII-8BIT
-      string: '{"name":"master","commit":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:24Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:24Z"},"message":"Initial
-        commit","tree":{"sha":"c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/master","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/master"}}'
+      string: '{"name":"master","commit":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:00Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:00Z"},"message":"Initial
+        commit","tree":{"sha":"c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/36d0575bf97eaa5e501f5e31228456f50dc35f4a","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/master","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/master"}}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:06 GMT
+  recorded_at: Thu, 26 May 2016 13:08:01 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs
     body:
       encoding: UTF-8
-      string: '{"ref":"refs/heads/gh-pages","sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}'
+      string: '{"ref":"refs/heads/gh-pages","sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a"}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -182,7 +261,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:25 GMT
+      - Thu, 26 May 2016 13:08:01 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -192,16 +271,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3380'
+      - '4759'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - '"7902653b25271cb5338d7733aa84554e"'
+      - '"c012030fd72e54c183260f15bc6a570b"'
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -228,14 +307,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 7b641bda7ec2ca7cd9df72d2578baf75
+      - bd82876e9bf04990f289ba22f246ee9b
       X-Github-Request-Id:
-      - 56A82ECA:CA11:C23C4D0:57344AD9
+      - 3EFEF783:7F8F:FA38EE1:5746F531
     body:
       encoding: UTF-8
-      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}}'
+      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:07 GMT
+  recorded_at: Thu, 26 May 2016 13:08:02 GMT
 - request:
     method: patch
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo
@@ -261,7 +340,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:25 GMT
+      - Thu, 26 May 2016 13:08:02 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -271,251 +350,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3379'
+      - '4758'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"77b39e53dbb136a5abf74f5fc6450dbe"
-      X-Oauth-Scopes:
-      - delete_repo, repo, user:email
-      X-Accepted-Oauth-Scopes:
-      - ''
-      X-Oauth-Client-Id:
-      - 5a928d2c36588bef4f4c
-      X-Github-Media-Type:
-      - github.v3; format=json
-      Access-Control-Expose-Headers:
-      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
-        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Security-Policy:
-      - default-src 'none'
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubdomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - deny
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Served-By:
-      - 2811da37fbdda4367181b328b22b2499
-      X-Github-Request-Id:
-      - 56A82ECA:CA12:DF821F2:57344AD9
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":58627015,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-12T09:20:23Z","updated_at":"2016-05-12T09:20:23Z","pushed_at":"2016-05-12T09:20:25Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":false,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
-    http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:07 GMT
-- request:
-    method: post
-    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
-    body:
-      encoding: UTF-8
-      string: '{"content":"1,2,3\n\"Foo\",\"Bar\",\"Baz\"\n","encoding":"utf-8"}'
-    headers:
-      Accept:
-      - application/vnd.github.v3+json
-      User-Agent:
-      - Octokit Ruby Gem 4.3.0
-      Content-Type:
-      - application/json
-      Authorization:
-      - token <GITHUB_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Thu, 12 May 2016 09:20:26 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Content-Length:
-      - '173'
-      Status:
-      - 201 Created
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '3378'
-      X-Ratelimit-Reset:
-      - '1463046077'
-      Cache-Control:
-      - private, max-age=60, s-maxage=60
-      Vary:
-      - Accept, Authorization, Cookie, X-GitHub-OTP
-      - Accept-Encoding
-      Etag:
-      - '"f85d1b6fddd7e4c0c32f342611abe465"'
-      X-Oauth-Scopes:
-      - delete_repo, repo, user:email
-      X-Accepted-Oauth-Scopes:
-      - ''
-      X-Oauth-Client-Id:
-      - 5a928d2c36588bef4f4c
-      Location:
-      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08
-      X-Github-Media-Type:
-      - github.v3; format=json
-      Access-Control-Expose-Headers:
-      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
-        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Security-Policy:
-      - default-src 'none'
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubdomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - deny
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Served-By:
-      - 065b43cd9674091fec48a221b420fbb3
-      X-Github-Request-Id:
-      - 56A82ECA:CA11:C23C67E:57344ADA
-    body:
-      encoding: UTF-8
-      string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
-    http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:08 GMT
-- request:
-    method: post
-    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
-    body:
-      encoding: UTF-8
-      string: '{"content":"1,2,3\n\"Foo\",\"Bar\",\"Baz\"\n","encoding":"utf-8"}'
-    headers:
-      Accept:
-      - application/vnd.github.v3+json
-      User-Agent:
-      - Octokit Ruby Gem 4.3.0
-      Content-Type:
-      - application/json
-      Authorization:
-      - token <GITHUB_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Thu, 12 May 2016 09:20:26 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Content-Length:
-      - '173'
-      Status:
-      - 201 Created
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '3377'
-      X-Ratelimit-Reset:
-      - '1463046077'
-      Cache-Control:
-      - private, max-age=60, s-maxage=60
-      Vary:
-      - Accept, Authorization, Cookie, X-GitHub-OTP
-      - Accept-Encoding
-      Etag:
-      - '"f85d1b6fddd7e4c0c32f342611abe465"'
-      X-Oauth-Scopes:
-      - delete_repo, repo, user:email
-      X-Accepted-Oauth-Scopes:
-      - ''
-      X-Oauth-Client-Id:
-      - 5a928d2c36588bef4f4c
-      Location:
-      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08
-      X-Github-Media-Type:
-      - github.v3; format=json
-      Access-Control-Expose-Headers:
-      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
-        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-      Access-Control-Allow-Origin:
-      - "*"
-      Content-Security-Policy:
-      - default-src 'none'
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubdomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - deny
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Served-By:
-      - dc1ce2bfb41810a06c705e83b388572d
-      X-Github-Request-Id:
-      - 56A82ECA:CA12:DF8235A:57344ADA
-    body:
-      encoding: UTF-8
-      string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
-    http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:08 GMT
-- request:
-    method: get
-    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - application/vnd.github.v3+json
-      User-Agent:
-      - Octokit Ruby Gem 4.3.0
-      Content-Type:
-      - application/json
-      Authorization:
-      - token <GITHUB_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - GitHub.com
-      Date:
-      - Thu, 12 May 2016 09:20:27 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Status:
-      - 200 OK
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '3375'
-      X-Ratelimit-Reset:
-      - '1463046077'
-      Cache-Control:
-      - private, max-age=60, s-maxage=60
-      Vary:
-      - Accept, Authorization, Cookie, X-GitHub-OTP
-      - Accept-Encoding
-      Etag:
-      - W/"bbe75dadde03bd872cf44f00943a9266"
+      - W/"f663100994db3be26c5268f2be3c935e"
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -542,13 +386,248 @@ http_interactions:
       X-Served-By:
       - 139317cebd6caf9cd03889139437f00b
       X-Github-Request-Id:
-      - 56A82ECA:CA13:90512E5:57344ADA
+      - 3EFEF783:7F92:E8988B8:5746F531
     body:
       encoding: ASCII-8BIT
-      string: '{"name":"gh-pages","commit":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:24Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:24Z"},"message":"Initial
-        commit","tree":{"sha":"c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/gh-pages"}}'
+      string: '{"id":59751116,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-26T13:07:59Z","updated_at":"2016-05-26T13:07:59Z","pushed_at":"2016-05-26T13:08:01Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":true,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:08 GMT
+  recorded_at: Thu, 26 May 2016 13:08:02 GMT
+- request:
+    method: post
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
+    body:
+      encoding: UTF-8
+      string: '{"content":"1,2,3\n\"Foo\",\"Bar\",\"Baz\"\n","encoding":"utf-8"}'
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 26 May 2016 13:08:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '173'
+      Status:
+      - 201 Created
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4757'
+      X-Ratelimit-Reset:
+      - '1464269351'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - '"f85d1b6fddd7e4c0c32f342611abe465"'
+      X-Oauth-Scopes:
+      - delete_repo, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Oauth-Client-Id:
+      - 5a928d2c36588bef4f4c
+      Location:
+      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - 2811da37fbdda4367181b328b22b2499
+      X-Github-Request-Id:
+      - 3EFEF783:7F8D:814D6A9:5746F532
+    body:
+      encoding: UTF-8
+      string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
+    http_version: 
+  recorded_at: Thu, 26 May 2016 13:08:03 GMT
+- request:
+    method: post
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs
+    body:
+      encoding: UTF-8
+      string: '{"content":"1,2,3\n\"Foo\",\"Bar\",\"Baz\"\n","encoding":"utf-8"}'
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 26 May 2016 13:08:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '173'
+      Status:
+      - 201 Created
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4755'
+      X-Ratelimit-Reset:
+      - '1464269351'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - '"f85d1b6fddd7e4c0c32f342611abe465"'
+      X-Oauth-Scopes:
+      - delete_repo, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Oauth-Client-Id:
+      - 5a928d2c36588bef4f4c
+      Location:
+      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - 8a5c38021a5cd7cef7b8f49a296fee40
+      X-Github-Request-Id:
+      - 3EFEF783:7F90:13F9DC02:5746F532
+    body:
+      encoding: UTF-8
+      string: '{"sha":"c46d38c374cd81824aeb74476abc53293db77b08","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}'
+    http_version: 
+  recorded_at: Thu, 26 May 2016 13:08:03 GMT
+- request:
+    method: get
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 26 May 2016 13:08:03 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4754'
+      X-Ratelimit-Reset:
+      - '1464269351'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - W/"fcbb6c192564983ff941275535aff7e6"
+      X-Oauth-Scopes:
+      - delete_repo, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Oauth-Client-Id:
+      - 5a928d2c36588bef4f4c
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - 474556b853193c38f1b14328ce2d1b7d
+      X-Github-Request-Id:
+      - 3EFEF783:7F8F:FA39164:5746F533
+    body:
+      encoding: ASCII-8BIT
+      string: '{"name":"gh-pages","commit":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:00Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:00Z"},"message":"Initial
+        commit","tree":{"sha":"c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/c028dbbdc73e274b5ef646cc63bf5c0bd0ca18ff"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/36d0575bf97eaa5e501f5e31228456f50dc35f4a","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/gh-pages"}}'
+    http_version: 
+  recorded_at: Thu, 26 May 2016 13:08:03 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs
@@ -574,7 +653,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:27 GMT
+      - Thu, 26 May 2016 13:08:03 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -584,18 +663,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3373'
+      - '4753'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"113053fa679eb70b7b90c2af601df875"
+      - W/"5744701189d0e3ed153d32c8fc11cee1"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Poll-Interval:
       - '300'
       X-Oauth-Scopes:
@@ -622,20 +701,20 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - a51acaae89a7607fd7ee967627be18e4
+      - a30e6f9aa7cf5731b87dfb3b9992202d
       X-Github-Request-Id:
-      - 56A82ECA:CA11:C23C8F6:57344ADB
+      - 3EFEF783:7F90:13F9DD79:5746F533
     body:
       encoding: ASCII-8BIT
-      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}}]'
+      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}}]'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:09 GMT
+  recorded_at: Thu, 26 May 2016 13:08:04 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees
     body:
       encoding: UTF-8
-      string: '{"base_tree":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","tree":[{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08"},{"path":"my-other-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08"}]}'
+      string: '{"base_tree":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","tree":[{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08"},{"path":"my-other-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08"}]}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -655,7 +734,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:28 GMT
+      - Thu, 26 May 2016 13:08:04 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -665,9 +744,9 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3372'
+      - '4752'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
@@ -701,20 +780,20 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - bd82876e9bf04990f289ba22f246ee9b
+      - e724c57ebb9961c772a91e2dd7421c8d
       X-Github-Request-Id:
-      - 56A82ECA:CA11:C23C9D0:57344ADB
+      - 3EFEF783:7F8F:FA392A2:5746F534
     body:
       encoding: UTF-8
       string: '{"sha":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/ed12d7407cdd8ca80833298b7df1c0d39d0939d3","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"},{"path":"my-other-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:09 GMT
+  recorded_at: Thu, 26 May 2016 13:08:04 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits
     body:
       encoding: UTF-8
-      string: '{"message":"Update 2016-05-12T10:21:08+01:00 [ci skip]","tree":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","parents":["04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"]}'
+      string: '{"message":"Update 2016-05-26T14:08:04+01:00 [ci skip]","tree":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","parents":["36d0575bf97eaa5e501f5e31228456f50dc35f4a"]}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -734,7 +813,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:28 GMT
+      - Thu, 26 May 2016 13:08:04 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -744,16 +823,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3371'
+      - '4750'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - '"b212ba7b7761f48adfbd1f53df9c89c2"'
+      - '"aee9a59c5c82e51b87e6d25ce6d0fca5"'
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -761,7 +840,7 @@ http_interactions:
       X-Oauth-Client-Id:
       - 5a928d2c36588bef4f4c
       Location:
-      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95
+      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1
       X-Github-Media-Type:
       - github.v3; format=json
       Access-Control-Expose-Headers:
@@ -780,21 +859,21 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 593010132f82159af0ded24b4932e109
+      - 8dd185e423974a7e13abbbe6e060031e
       X-Github-Request-Id:
-      - 56A82ECA:CA12:DF826A1:57344ADC
+      - 3EFEF783:7F91:16FB9891:5746F534
     body:
       encoding: UTF-8
-      string: '{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/0a3b5bb4d027e6cc6480584502093d7ee7063b95","author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:28Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:28Z"},"tree":{"sha":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/ed12d7407cdd8ca80833298b7df1c0d39d0939d3"},"message":"Update
-        2016-05-12T10:21:08+01:00 [ci skip]","parents":[{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}]}'
+      string: '{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/be4b85e5f071784f3cf131d751449ecc353d36a1","author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:04Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:04Z"},"tree":{"sha":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/ed12d7407cdd8ca80833298b7df1c0d39d0939d3"},"message":"Update
+        2016-05-26T14:08:04+01:00 [ci skip]","parents":[{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}]}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:10 GMT
+  recorded_at: Thu, 26 May 2016 13:08:05 GMT
 - request:
     method: patch
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages
     body:
       encoding: UTF-8
-      string: '{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","force":true}'
+      string: '{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","force":true}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -814,7 +893,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:28 GMT
+      - Thu, 26 May 2016 13:08:05 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -824,16 +903,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3367'
+      - '4749'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"407337c4885fa66e0281e529cc8adc7e"
+      - W/"59933923be96b5945b4331aa49fb7e72"
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -858,14 +937,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 474556b853193c38f1b14328ce2d1b7d
+      - a51acaae89a7607fd7ee967627be18e4
       X-Github-Request-Id:
-      - 56A82ECA:CA13:90514A2:57344ADC
+      - 3EFEF783:7F91:16FB9951:5746F535
     body:
       encoding: ASCII-8BIT
-      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95"}}'
+      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1"}}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:10 GMT
+  recorded_at: Thu, 26 May 2016 13:08:05 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo
@@ -891,7 +970,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:29 GMT
+      - Thu, 26 May 2016 13:08:05 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -901,18 +980,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3366'
+      - '4748'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"314d910f112ba3f20cf33316d09894ee"
+      - W/"a634b07924c7e6c5663849be3dd1bd52"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -937,14 +1016,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - b0ef53392caa42315c6206737946d931
+      - 07ff1c8a09e44b62e277fae50a1b1dc4
       X-Github-Request-Id:
-      - 56A82ECA:CA0D:359A3D5:57344ADD
+      - 3EFEF783:7F92:E898C12:5746F535
     body:
       encoding: ASCII-8BIT
-      string: '{"id":58627015,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-12T09:20:23Z","updated_at":"2016-05-12T09:20:23Z","pushed_at":"2016-05-12T09:20:26Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":true,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
+      string: '{"id":59751116,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-26T13:07:59Z","updated_at":"2016-05-26T13:07:59Z","pushed_at":"2016-05-26T13:08:05Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":true,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:11 GMT
+  recorded_at: Thu, 26 May 2016 13:08:06 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs
@@ -970,7 +1049,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:29 GMT
+      - Thu, 26 May 2016 13:08:06 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -980,18 +1059,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3365'
+      - '4744'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"a42b9de56ad0033885f417e9ad206283"
+      - W/"4063fe02320671ae1f8b556a0076da75"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Poll-Interval:
       - '300'
       X-Oauth-Scopes:
@@ -1018,17 +1097,17 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - a30e6f9aa7cf5731b87dfb3b9992202d
+      - 7b641bda7ec2ca7cd9df72d2578baf75
       X-Github-Request-Id:
-      - 56A82ECA:CA12:DF82907:57344ADD
+      - 3EFEF783:7F91:16FB9B0B:5746F535
     body:
       encoding: ASCII-8BIT
-      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}}]'
+      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}}]'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:11 GMT
+  recorded_at: Thu, 26 May 2016 13:08:06 GMT
 - request:
     method: get
-    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/0a3b5bb4d027e6cc6480584502093d7ee7063b95?recursive=true
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/be4b85e5f071784f3cf131d751449ecc353d36a1?recursive=true
     body:
       encoding: US-ASCII
       string: ''
@@ -1051,7 +1130,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:30 GMT
+      - Thu, 26 May 2016 13:08:06 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1061,18 +1140,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3364'
+      - '4743'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"f45a951cfc0ab40f29a60dffdee037e6"
+      - W/"b5d1785cae98e1c3dc2f49e32a906f75"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1097,14 +1176,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 2d7a5e35115884240089368322196939
+      - a30e6f9aa7cf5731b87dfb3b9992202d
       X-Github-Request-Id:
-      - 56A82ECA:CA0E:4E8DDB0:57344ADD
+      - 3EFEF783:7F8F:FA394F4:5746F536
     body:
       encoding: ASCII-8BIT
-      string: '{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/0a3b5bb4d027e6cc6480584502093d7ee7063b95","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"},{"path":"my-other-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
+      string: '{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/be4b85e5f071784f3cf131d751449ecc353d36a1","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"},{"path":"my-other-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:11 GMT
+  recorded_at: Thu, 26 May 2016 13:08:07 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages
@@ -1130,7 +1209,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:30 GMT
+      - Thu, 26 May 2016 13:08:07 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1140,16 +1219,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3362'
+      - '4742'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"f424df9644bac018b53f2ca7b2fa0510"
+      - W/"6b1301097f1b29ca534faf2c3c8e69e4"
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1174,15 +1253,15 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - bd82876e9bf04990f289ba22f246ee9b
+      - a7f8a126c9ed3f1c4715a34c0ddc7290
       X-Github-Request-Id:
-      - 56A82ECA:FD16:651738B:57344ADE
+      - 3EFEF783:7F8F:FA3958A:5746F536
     body:
       encoding: ASCII-8BIT
-      string: '{"name":"gh-pages","commit":{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:28Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:28Z"},"message":"Update
-        2016-05-12T10:21:08+01:00 [ci skip]","tree":{"sha":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/ed12d7407cdd8ca80833298b7df1c0d39d0939d3"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/0a3b5bb4d027e6cc6480584502093d7ee7063b95","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/gh-pages"}}'
+      string: '{"name":"gh-pages","commit":{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","commit":{"author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:04Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:04Z"},"message":"Update
+        2016-05-26T14:08:04+01:00 [ci skip]","tree":{"sha":"ed12d7407cdd8ca80833298b7df1c0d39d0939d3","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/ed12d7407cdd8ca80833298b7df1c0d39d0939d3"},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1","comment_count":0},"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/be4b85e5f071784f3cf131d751449ecc353d36a1","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/be4b85e5f071784f3cf131d751449ecc353d36a1","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/be4b85e5f071784f3cf131d751449ecc353d36a1/comments","author":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"committer":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"parents":[{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}]},"_links":{"self":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches/gh-pages","html":"https://github.com/git-data-publisher/my-awesome-repo/tree/gh-pages"}}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:12 GMT
+  recorded_at: Thu, 26 May 2016 13:08:07 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees
@@ -1208,7 +1287,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:30 GMT
+      - Thu, 26 May 2016 13:08:07 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -1218,9 +1297,9 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3360'
+      - '4741'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
@@ -1254,20 +1333,20 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - d0b3c2c33a23690498aa8e70a435a259
+      - 76d9828c7e4f1d910f7ba069e90ce976
       X-Github-Request-Id:
-      - 56A82ECA:FD19:CF83F70:57344ADE
+      - 3EFEF783:7F8D:814DA2D:5746F537
     body:
       encoding: UTF-8
       string: '{"sha":"89ab3406ce18db1cf77949a1de53756dda66d66e","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/89ab3406ce18db1cf77949a1de53756dda66d66e","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:12 GMT
+  recorded_at: Thu, 26 May 2016 13:08:08 GMT
 - request:
     method: post
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits
     body:
       encoding: UTF-8
-      string: '{"message":"Update 2016-05-12T10:21:12+01:00 [ci skip]","tree":"89ab3406ce18db1cf77949a1de53756dda66d66e","parents":["0a3b5bb4d027e6cc6480584502093d7ee7063b95"]}'
+      string: '{"message":"Update 2016-05-26T14:08:07+01:00 [ci skip]","tree":"89ab3406ce18db1cf77949a1de53756dda66d66e","parents":["be4b85e5f071784f3cf131d751449ecc353d36a1"]}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -1287,7 +1366,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:31 GMT
+      - Thu, 26 May 2016 13:08:08 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -1297,16 +1376,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3359'
+      - '4738'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - '"4b43e90d0e88e1883b908175f6ccb644"'
+      - '"28dcde295deb0c32cfda2c9e68aab3a5"'
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1314,7 +1393,7 @@ http_interactions:
       X-Oauth-Client-Id:
       - 5a928d2c36588bef4f4c
       Location:
-      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2
+      - https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/5e63483978b56c49f64655a7495334851115e75a
       X-Github-Media-Type:
       - github.v3; format=json
       Access-Control-Expose-Headers:
@@ -1333,21 +1412,21 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 07ff1c8a09e44b62e277fae50a1b1dc4
+      - a30e6f9aa7cf5731b87dfb3b9992202d
       X-Github-Request-Id:
-      - 56A82ECA:FD17:893CD38:57344ADF
+      - 3EFEF783:7F8B:3C992DF:5746F537
     body:
       encoding: UTF-8
-      string: '{"sha":"b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:31Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-12T09:20:31Z"},"tree":{"sha":"89ab3406ce18db1cf77949a1de53756dda66d66e","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/89ab3406ce18db1cf77949a1de53756dda66d66e"},"message":"Update
-        2016-05-12T10:21:12+01:00 [ci skip]","parents":[{"sha":"0a3b5bb4d027e6cc6480584502093d7ee7063b95","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/0a3b5bb4d027e6cc6480584502093d7ee7063b95","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/0a3b5bb4d027e6cc6480584502093d7ee7063b95"}]}'
+      string: '{"sha":"5e63483978b56c49f64655a7495334851115e75a","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/5e63483978b56c49f64655a7495334851115e75a","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/5e63483978b56c49f64655a7495334851115e75a","author":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:08Z"},"committer":{"name":"git-data-publisher","email":"pezholio+git-data-publisher@gmail.com","date":"2016-05-26T13:08:08Z"},"tree":{"sha":"89ab3406ce18db1cf77949a1de53756dda66d66e","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/89ab3406ce18db1cf77949a1de53756dda66d66e"},"message":"Update
+        2016-05-26T14:08:07+01:00 [ci skip]","parents":[{"sha":"be4b85e5f071784f3cf131d751449ecc353d36a1","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/be4b85e5f071784f3cf131d751449ecc353d36a1","html_url":"https://github.com/git-data-publisher/my-awesome-repo/commit/be4b85e5f071784f3cf131d751449ecc353d36a1"}]}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:13 GMT
+  recorded_at: Thu, 26 May 2016 13:08:08 GMT
 - request:
     method: patch
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages
     body:
       encoding: UTF-8
-      string: '{"sha":"b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","force":true}'
+      string: '{"sha":"5e63483978b56c49f64655a7495334851115e75a","force":true}'
     headers:
       Accept:
       - application/vnd.github.v3+json
@@ -1367,7 +1446,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:31 GMT
+      - Thu, 26 May 2016 13:08:08 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1377,16 +1456,16 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3357'
+      - '4737'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"b885295fd84ea6ee708ff1c699b3f912"
+      - W/"0164b70937baa84c712ce21791cc6656"
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1411,14 +1490,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - a51acaae89a7607fd7ee967627be18e4
+      - 8a5c38021a5cd7cef7b8f49a296fee40
       X-Github-Request-Id:
-      - 56A82ECA:FD1A:BCE4B4C:57344ADF
+      - 3EFEF783:7F92:E898F56:5746F538
     body:
       encoding: ASCII-8BIT
-      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2"}}'
+      string: '{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"5e63483978b56c49f64655a7495334851115e75a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/5e63483978b56c49f64655a7495334851115e75a"}}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:13 GMT
+  recorded_at: Thu, 26 May 2016 13:08:09 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo
@@ -1444,7 +1523,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:32 GMT
+      - Thu, 26 May 2016 13:08:09 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1454,18 +1533,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3354'
+      - '4736'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"e7a23825a31938b263d414a0d546a90c"
+      - W/"a634b07924c7e6c5663849be3dd1bd52"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1490,14 +1569,14 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 7b641bda7ec2ca7cd9df72d2578baf75
+      - 76d9828c7e4f1d910f7ba069e90ce976
       X-Github-Request-Id:
-      - 56A82ECA:FD14:35AEDE5:57344AE0
+      - 3EFEF783:7F8F:FA397CA:5746F538
     body:
       encoding: ASCII-8BIT
-      string: '{"id":58627015,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-12T09:20:23Z","updated_at":"2016-05-12T09:20:23Z","pushed_at":"2016-05-12T09:20:29Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":true,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
+      string: '{"id":59751116,"name":"my-awesome-repo","full_name":"git-data-publisher/my-awesome-repo","owner":{"login":"git-data-publisher","id":9130479,"avatar_url":"https://avatars.githubusercontent.com/u/9130479?v=3","gravatar_id":"","url":"https://api.github.com/users/git-data-publisher","html_url":"https://github.com/git-data-publisher","followers_url":"https://api.github.com/users/git-data-publisher/followers","following_url":"https://api.github.com/users/git-data-publisher/following{/other_user}","gists_url":"https://api.github.com/users/git-data-publisher/gists{/gist_id}","starred_url":"https://api.github.com/users/git-data-publisher/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/git-data-publisher/subscriptions","organizations_url":"https://api.github.com/users/git-data-publisher/orgs","repos_url":"https://api.github.com/users/git-data-publisher/repos","events_url":"https://api.github.com/users/git-data-publisher/events{/privacy}","received_events_url":"https://api.github.com/users/git-data-publisher/received_events","type":"User","site_admin":false},"private":false,"html_url":"https://github.com/git-data-publisher/my-awesome-repo","description":null,"fork":false,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo","forks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/forks","keys_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/keys{/key_id}","collaborators_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/teams","hooks_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/hooks","issue_events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/events{/number}","events_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/events","assignees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/assignees{/user}","branches_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/branches{/branch}","tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/tags","blobs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs{/sha}","trees_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees{/sha}","statuses_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/statuses/{sha}","languages_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/languages","stargazers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/stargazers","contributors_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contributors","subscribers_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscribers","subscription_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/subscription","commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/commits{/sha}","git_commits_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits{/sha}","comments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/comments{/number}","issue_comment_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues/comments{/number}","contents_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/contents/{+path}","compare_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/compare/{base}...{head}","merges_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/merges","archive_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/downloads","issues_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/issues{/number}","pulls_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/pulls{/number}","milestones_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/milestones{/number}","notifications_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/labels{/name}","releases_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/releases{/id}","deployments_url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/deployments","created_at":"2016-05-26T13:07:59Z","updated_at":"2016-05-26T13:07:59Z","pushed_at":"2016-05-26T13:08:05Z","git_url":"git://github.com/git-data-publisher/my-awesome-repo.git","ssh_url":"git@github.com:git-data-publisher/my-awesome-repo.git","clone_url":"https://github.com/git-data-publisher/my-awesome-repo.git","svn_url":"https://github.com/git-data-publisher/my-awesome-repo","homepage":null,"size":0,"stargazers_count":0,"watchers_count":0,"language":null,"has_issues":true,"has_downloads":true,"has_wiki":true,"has_pages":true,"forks_count":0,"mirror_url":null,"open_issues_count":0,"forks":0,"open_issues":0,"watchers":0,"default_branch":"gh-pages","permissions":{"admin":true,"push":true,"pull":true},"network_count":0,"subscribers_count":0}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:14 GMT
+  recorded_at: Thu, 26 May 2016 13:08:09 GMT
 - request:
     method: get
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs
@@ -1523,7 +1602,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:32 GMT
+      - Thu, 26 May 2016 13:08:09 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1533,18 +1612,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3353'
+      - '4732'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"0275731638492dc1383c28ca44de159c"
+      - W/"3e4d4bf232e6607849af63ed7f99b8c0"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Poll-Interval:
       - '300'
       X-Oauth-Scopes:
@@ -1571,17 +1650,17 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Served-By:
-      - 318e55760cf7cdb40e61175a4d36cd32
+      - ef96c2e493b28ffea49b891b085ed2dd
       X-Github-Request-Id:
-      - 56A82ECA:FD16:65174D4:57344AE0
+      - 3EFEF783:7F8B:3C99325:5746F539
     body:
       encoding: ASCII-8BIT
-      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"04ae9ec7fe86b337b7ac5ce41179aefa529fdb31","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/04ae9ec7fe86b337b7ac5ce41179aefa529fdb31"}}]'
+      string: '[{"ref":"refs/heads/gh-pages","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/gh-pages","object":{"sha":"5e63483978b56c49f64655a7495334851115e75a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/5e63483978b56c49f64655a7495334851115e75a"}},{"ref":"refs/heads/master","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/refs/heads/master","object":{"sha":"36d0575bf97eaa5e501f5e31228456f50dc35f4a","type":"commit","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/commits/36d0575bf97eaa5e501f5e31228456f50dc35f4a"}}]'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:14 GMT
+  recorded_at: Thu, 26 May 2016 13:08:09 GMT
 - request:
     method: get
-    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2?recursive=true
+    uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/5e63483978b56c49f64655a7495334851115e75a?recursive=true
     body:
       encoding: US-ASCII
       string: ''
@@ -1604,7 +1683,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:33 GMT
+      - Thu, 26 May 2016 13:08:14 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -1614,18 +1693,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3352'
+      - '4726'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
       - Accept, Authorization, Cookie, X-GitHub-OTP
       - Accept-Encoding
       Etag:
-      - W/"311b9baf96a3e9af02e744664e309e73"
+      - W/"a84f65b5ddc7004e39e3fad6639b7125"
       Last-Modified:
-      - Thu, 12 May 2016 09:20:23 GMT
+      - Thu, 26 May 2016 13:07:59 GMT
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1652,12 +1731,12 @@ http_interactions:
       X-Served-By:
       - 8dd185e423974a7e13abbbe6e060031e
       X-Github-Request-Id:
-      - 56A82ECA:FD19:CF84232:57344AE1
+      - 3EFEF783:7F8A:2B56C9E:5746F539
     body:
       encoding: ASCII-8BIT
-      string: '{"sha":"b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/b22fb71a7c126155eb6bd33cc7b7edc2f14fe7d2","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
+      string: '{"sha":"5e63483978b56c49f64655a7495334851115e75a","url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/trees/5e63483978b56c49f64655a7495334851115e75a","tree":[{"path":"README.md","mode":"100644","type":"blob","sha":"98b86d075133bc45f0a96ce008175bb5a4f6567a","size":17,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/98b86d075133bc45f0a96ce008175bb5a4f6567a"},{"path":"my-awesome-file.csv","mode":"100644","type":"blob","sha":"c46d38c374cd81824aeb74476abc53293db77b08","size":24,"url":"https://api.github.com/repos/git-data-publisher/my-awesome-repo/git/blobs/c46d38c374cd81824aeb74476abc53293db77b08"}],"truncated":false}'
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:14 GMT
+  recorded_at: Thu, 26 May 2016 13:08:15 GMT
 - request:
     method: delete
     uri: https://api.github.com/repos/git-data-publisher/my-awesome-repo
@@ -1683,15 +1762,15 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Thu, 12 May 2016 09:20:33 GMT
+      - Thu, 26 May 2016 13:08:15 GMT
       Status:
       - 204 No Content
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '3351'
+      - '4725'
       X-Ratelimit-Reset:
-      - '1463046077'
+      - '1464269351'
       X-Oauth-Scopes:
       - delete_repo, repo, user:email
       X-Accepted-Oauth-Scopes:
@@ -1718,12 +1797,12 @@ http_interactions:
       Vary:
       - Accept-Encoding
       X-Served-By:
-      - 7b641bda7ec2ca7cd9df72d2578baf75
+      - d594a23ec74671eba905bf91ef329026
       X-Github-Request-Id:
-      - 56A82ECA:FD19:CF842A7:57344AE1
+      - 3EFEF783:1C0C5:154D3EE4:5746F53F
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Thu, 12 May 2016 09:21:15 GMT
-recorded_with: VCR 3.0.0
+  recorded_at: Thu, 26 May 2016 13:08:16 GMT
+recorded_with: VCR 3.0.1

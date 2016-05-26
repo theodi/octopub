@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require_tree .
+ *= require bootstrap-select
  *= require_self
  */
 
@@ -37,4 +38,12 @@ footer {
   padding-top: 20px;
   padding-bottom: 20px;
   border-top: 1px solid #e5e5e5;
+}
+
+.bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
+  left: 15px;
+}
+
+.dropdown-menu > li > a {
+  padding: 3px 40px;
 }

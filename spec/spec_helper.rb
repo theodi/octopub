@@ -37,6 +37,14 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  config.around(:each, type: :helper) do |ex|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      ex.run
+      mocks.verify_partial_doubles = true
+    end
+  end
+
   config.infer_spec_type_from_file_location!
 end
 
