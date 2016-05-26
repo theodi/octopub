@@ -95,15 +95,19 @@ class Dataset < ActiveRecord::Base
   end
 
   def gh_pages_url
-    "http://#{user.github_username}.github.io/#{repo}"
+    "http://#{repo_owner}.github.io/#{repo}"
   end
 
   def full_name
-    "#{user.github_username}/#{repo}"
+    "#{repo_owner}/#{repo}"
+  end
+
+  def repo_owner
+    owner || user.github_username
   end
 
   def fetch_repo
-    @repo = GitData.find(user.name, self.name, client: user.octokit_client)
+    @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
     check_for_schema
   end
 
@@ -122,7 +126,7 @@ class Dataset < ActiveRecord::Base
   private
 
     def create_in_github
-      @repo = GitData.create(user.name, name, client: user.octokit_client)
+      @repo = GitData.create(repo_owner, name, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name)
       commit
     end
