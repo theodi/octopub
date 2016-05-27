@@ -65,6 +65,34 @@ describe Dataset do
     dataset.destroy
   end
 
+  it "sets the user's avatar" do
+    dataset = build(:dataset, :with_avatar_callback, user: @user)
+
+    expect(@user).to receive(:avatar) {
+      'http://example.com/avatar.png'
+    }
+
+    dataset.save
+
+    expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
+  end
+
+  it "sets the owner's avatar" do
+    dataset = build(:dataset, :with_avatar_callback, user: @user, owner: 'my-cool-organization')
+
+    expect(Rails.configuration.octopub_admin).to receive(:organization).with('my-cool-organization') {
+      double = double(Sawyer::Resource)
+      expect(double).to receive(:avatar_url) {
+        'http://example.com/my-cool-organization.png'
+      }
+      double
+    }
+
+    dataset.save
+
+    expect(dataset.owner_avatar).to eq('http://example.com/my-cool-organization.png')
+  end
+
   context('#fetch_repo') do
 
     before(:each) do

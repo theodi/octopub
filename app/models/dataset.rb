@@ -5,7 +5,7 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github
+  after_create :create_in_github, :set_owner_avatar
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -107,14 +107,6 @@ class Dataset < ActiveRecord::Base
     owner.presence || user.github_username
   end
 
-  def owner_avatar
-    if owner.blank?
-      user.avatar
-    else
-      Rails.configuration.octopub_admin.organization(owner).avatar_url
-    end
-  end
-
   def fetch_repo
     begin
       @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
@@ -172,4 +164,11 @@ class Dataset < ActiveRecord::Base
       end
     end
 
+    def set_owner_avatar
+      if owner.blank?
+        update_column :owner_avatar, user.avatar
+      else
+        update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
+      end
+    end
 end

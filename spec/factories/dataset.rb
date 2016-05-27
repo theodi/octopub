@@ -12,6 +12,7 @@ FactoryGirl.define do
     after(:build) { |dataset|
       dataset.class.skip_callback(:create, :after, :create_in_github)
       dataset.class.skip_callback(:update, :after, :update_in_github)
+      dataset.class.skip_callback(:create, :after, :set_owner_avatar)
 
       dataset.instance_variable_set(:@repo, FakeData.new)
     }
@@ -20,6 +21,12 @@ FactoryGirl.define do
       after(:build) { |dataset|
         dataset.class.set_callback(:create, :after, :create_in_github)
         dataset.class.set_callback(:update, :after, :update_in_github)
+      }
+    end
+
+    trait :with_avatar_callback do
+      after(:build) { |dataset|
+        dataset.class.set_callback(:create, :after, :set_owner_avatar)
       }
     end
   end
