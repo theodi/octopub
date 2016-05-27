@@ -14,3 +14,7 @@
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>
+
+<div class="text-center">
+  <%= will_paginate @collection, renderer: BootstrapPagination::Rails %>
+</div>
