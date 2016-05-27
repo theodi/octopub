@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   end
 
   def github_user
-    @github_user ||= octokit_client.user(github_username)
+    @github_user ||= Rails.configuration.octopub_admin.user(github_username)
   end
 
   def avatar

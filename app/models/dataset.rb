@@ -111,7 +111,7 @@ class Dataset < ActiveRecord::Base
     if owner.blank?
       user.avatar
     else
-      user.octokit_client.organization(owner).avatar_url
+      Rails.configuration.octopub_admin.organization(owner).avatar_url
     end
   end
 
