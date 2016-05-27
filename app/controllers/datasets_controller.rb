@@ -10,18 +10,29 @@ class DatasetsController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
-    @datasets = Dataset.all
+    respond_to do |format|
+      format.html do
+        @datasets = Dataset.paginate(page: params[:page], per_page: 7).order(created_at: :desc)
+      end
+
+      format.json do
+        @datasets = Dataset.all.order(created_at: :desc)
+      end
+    end
   end
 
   def dashboard
     current_user.refresh_datasets if params[:refresh]
-    @datasets = current_user.datasets
     @dashboard = true
 
     respond_to do |format|
-      format.html
+      format.html do
+        @datasets = current_user.datasets.paginate(page: params[:page])
+      end
 
       format.json do
+        @datasets = current_user.datasets
+
         render json: {
           datasets: @datasets
         }.to_json
