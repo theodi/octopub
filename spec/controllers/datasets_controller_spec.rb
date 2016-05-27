@@ -147,7 +147,7 @@ describe DatasetsController, type: :controller do
           frequency: @frequency
         }, files: @files
 
-        expect(request).to redirect_to(datasets_path)
+        expect(request).to redirect_to(dashboard_path)
         expect(flash[:notice]).to eq("Dataset created sucessfully")
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
@@ -171,7 +171,7 @@ describe DatasetsController, type: :controller do
           owner: organization
         }, files: @files
 
-        expect(request).to redirect_to(datasets_path)
+        expect(request).to redirect_to(dashboard_path)
         expect(flash[:notice]).to eq("Dataset created sucessfully")
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
@@ -231,7 +231,7 @@ describe DatasetsController, type: :controller do
           schema: @schema
         }, files: @files
 
-        expect(request).to redirect_to(datasets_path)
+        expect(request).to redirect_to(dashboard_path)
         expect(flash[:notice]).to eq("Dataset created sucessfully")
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
@@ -549,7 +549,7 @@ describe DatasetsController, type: :controller do
               description: "New description"
              }]
 
-          expect(response).to redirect_to(datasets_path)
+          expect(response).to redirect_to(dashboard_path)
           @dataset.reload
 
           expect(@dataset.name).to eq("Dataset")

@@ -42,7 +42,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       format.html do
         if @dataset.save
-          redirect_to datasets_path, :notice => "Dataset created sucessfully"
+          redirect_to dashboard_path, :notice => "Dataset created sucessfully"
         else
           generate_errors
           render :new
@@ -90,7 +90,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       format.html do
         if @dataset.save
-          redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+          redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
         else
           generate_errors
           render :edit, status: 400
