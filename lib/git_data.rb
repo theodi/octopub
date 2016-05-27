@@ -20,14 +20,14 @@ class GitData
     new(client, repo)
   end
 
-  def self.find(username, repo_name, options = {})
+  def self.find(owner, repo_name, options = {})
     client = options[:client]
-    repo = client.repository(full_name(username, repo_name))
+    repo = client.repository(full_name(owner, repo_name))
     new(client, repo, true)
   end
 
-  def self.full_name(username, repo_name)
-    "#{username.parameterize}/#{repo_name.parameterize}"
+  def self.full_name(owner, repo_name)
+    "#{owner.parameterize}/#{repo_name.parameterize}"
   end
 
   def initialize(client, repo, build_base = false)
@@ -63,6 +63,10 @@ class GitData
 
   def save
     @client.update_ref(full_name, "heads/gh-pages", commit)
+  end
+
+  def delete
+    @client.delete_repository(@full_name)
   end
 
   private

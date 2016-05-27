@@ -7,6 +7,7 @@ class Dataset < ActiveRecord::Base
 
   after_create :create_in_github
   after_update :update_in_github
+  after_destroy :delete_in_github
 
   attr_accessor :schema
 
@@ -106,9 +107,21 @@ class Dataset < ActiveRecord::Base
     owner.presence || user.github_username
   end
 
+  def owner_avatar
+    if owner.blank?
+      user.avatar
+    else
+      user.octokit_client.organization(owner).avatar_url
+    end
+  end
+
   def fetch_repo
-    @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
-    check_for_schema
+    begin
+      @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
+      check_for_schema
+    rescue Octokit::NotFound
+      @repo = nil
+    end
   end
 
   def check_for_schema
@@ -141,6 +154,10 @@ class Dataset < ActiveRecord::Base
       dataset_files.each { |d| d.update_in_github if d.file }
       update_datapackage
       push_to_github
+    end
+
+    def delete_in_github
+      @repo.delete if @repo
     end
 
     def push_to_github

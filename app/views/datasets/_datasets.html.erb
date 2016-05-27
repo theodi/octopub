@@ -1,3 +1,16 @@
-<ul>
-  <%= render(partial: "dataset", collection: @datasets) || "<p class='text-center lead'>You currently have no datasets, why not #{link_to 'add one', new_dataset_path}?</p>".html_safe %>
-</ul>
+<% if @datasets.count > 0 %>
+  <table class="table">
+    <tr>
+      <th>Owner</th>
+      <th>Name</th>
+      <th>Link</th>
+      <% if @dashboard %>
+        <th></th>
+        <th></th>
+      <% end %>
+    </tr>
+    <%= render(partial: "dataset", collection: @datasets) %>
+  </table>
+<% else %>
+  <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
+<% end %>

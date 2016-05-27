@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
-  before_filter :get_dataset, only: [:edit, :update]
+  before_filter :get_dataset, only: [:edit, :update, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
@@ -16,6 +16,7 @@ class DatasetsController < ApplicationController
   def dashboard
     current_user.refresh_datasets if params[:refresh]
     @datasets = current_user.datasets
+    @dashboard = true
 
     respond_to do |format|
       format.html
@@ -41,7 +42,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       format.html do
         if @dataset.save
-          redirect_to datasets_path, :notice => "Dataset created sucessfully"
+          redirect_to dashboard_path, :notice => "Dataset created sucessfully"
         else
           generate_errors
           render :new
@@ -89,7 +90,7 @@ class DatasetsController < ApplicationController
     respond_to do |format|
       format.html do
         if @dataset.save
-          redirect_to datasets_path, :notice => "Dataset updated sucessfully"
+          redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
         else
           generate_errors
           render :edit, status: 400
@@ -109,6 +110,12 @@ class DatasetsController < ApplicationController
         end
       end
     end
+  end
+
+  def destroy
+    @dataset.fetch_repo
+    @dataset.destroy
+    redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
   end
 
   private
