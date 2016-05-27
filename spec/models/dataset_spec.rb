@@ -265,7 +265,6 @@ describe Dataset do
       "web" => "http://www.example.com"
     })
     expect(datapackage["resources"].first).to eq({
-      "url" => "http://user-mcuser.github.io/repo/data/example.csv",
       "name" => "My Awesome File",
       "mediatype" => "text/csv",
       "description" => "My Awesome File Description",

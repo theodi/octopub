@@ -52,7 +52,6 @@ class Dataset < ActiveRecord::Base
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
-    datapackage["datapackage-version"] = ""
     datapackage["title"] = name
     datapackage["description"] = description
     datapackage["licenses"] = [{
@@ -68,7 +67,6 @@ class Dataset < ActiveRecord::Base
 
     dataset_files.each do |file|
       datapackage["resources"] << {
-        "url" => file.gh_pages_url,
         "name" => file.title,
         "mediatype" => file.mediatype,
         "description" => file.description,
