@@ -1,4 +1,12 @@
-<li>
-  <%= link_to dataset.name, dataset.gh_pages_url %>
-  <%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-xs btn-warning") if request.env['PATH_INFO'] == "/dashboard" %>
-</li>
+<tr>
+  <td>
+    <%= image_tag dataset.owner_avatar, height: 20, width: 20 %>
+    <%= dataset.repo_owner %>
+  </td>
+  <td><%= dataset.name %></td>
+  <td><%= link_to dataset.gh_pages_url, dataset.gh_pages_url %></td>
+  <% if @dashboard %>
+    <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
+    <td><%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %></td>
+  <% end %>
+</tr>

@@ -37,6 +37,10 @@ class User < ActiveRecord::Base
     @github_user ||= octokit_client.user(github_username)
   end
 
+  def avatar
+    github_user.avatar_url
+  end
+
   def organizations
     @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
   end

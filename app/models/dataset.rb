@@ -107,9 +107,21 @@ class Dataset < ActiveRecord::Base
     owner.presence || user.github_username
   end
 
+  def owner_avatar
+    if owner.blank?
+      user.avatar
+    else
+      user.octokit_client.organization(owner).avatar_url
+    end
+  end
+
   def fetch_repo
-    @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
-    check_for_schema
+    begin
+      @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
+      check_for_schema
+    rescue Octokit::NotFound
+      @repo = nil
+    end
   end
 
   def check_for_schema
