@@ -175,7 +175,11 @@ class DatasetsController < ApplicationController
   def generate_errors
     messages = []
     @dataset.dataset_files.each do |file|
-      messages << "Your file '#{file.title}' does not match the schema you provided" unless file.valid?
+      unless file.valid?
+        file.errors.messages[:file].each do |message|
+          messages << "Your file '#{file.title}' #{message}"
+        end
+      end
     end
     if params["format"] == "json"
       messages

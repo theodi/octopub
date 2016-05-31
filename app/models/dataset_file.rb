@@ -1,7 +1,7 @@
 class DatasetFile < ActiveRecord::Base
 
   belongs_to :dataset
-  validate :check_schema
+  validate :check_schema, :check_csv
 
   attr_accessor :file
 
@@ -60,7 +60,21 @@ class DatasetFile < ActiveRecord::Base
       if dataset && dataset.schema && file
         schema = Csvlint::Schema.load_from_json(dataset.schema.tempfile)
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
-        errors.add(:file, 'does not match schema') unless validation.valid?
+        errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      end
+    end
+
+    def check_csv
+      if dataset && file
+        begin
+          CSV.parse(file.tempfile.read)
+        rescue CSV::MalformedCSVError
+          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+        rescue
+          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+        ensure
+          file.tempfile.rewind
+        end
       end
     end
 

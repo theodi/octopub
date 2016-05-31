@@ -168,4 +168,47 @@ describe DatasetFile do
 
   end
 
+  context 'with a non-csv file' do
+    before(:each) do
+      @dataset = build(:dataset)
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      @file = Rack::Test::UploadedFile.new(path, "text/csv")
+    end
+
+    it 'errors on create' do
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: @file,
+                                   dataset: @dataset)
+
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(false)
+      expect(file.errors.messages[:file].first).to eq('does not appear to be a valid CSV. Please check your file and try again.')
+      expect(@dataset.valid?).to eq(false)
+    end
+
+    it 'errors on update' do
+      file = create(:dataset_file, filename: "example.csv")
+
+      @dataset.dataset_files << file
+      @dataset.save
+
+      new_file = {
+        "id" => file.id,
+        "file" => @file,
+        "description" => 'A new description',
+      }
+
+      file.update_file(new_file)
+      @dataset.save
+
+      expect(file.valid?).to eq(false)
+      expect(file.errors.messages[:file].first).to eq('does not appear to be a valid CSV. Please check your file and try again.')
+      expect(@dataset.valid?).to eq(false)
+    end
+
+  end
+
 end
