@@ -1,0 +1,38 @@
+{
+  "@context": "http://www.w3.org/ns/csvw",
+  "dialect": {
+    "encoding": "utf-8"
+  },
+  "tables": [
+    {
+      "url": "shoes.csv",
+      "tableSchema": {
+        "columns": [
+          {
+            "titles": "shoe"
+          },
+          {
+            "titles": "size",
+            "name": "size",
+            "datatype": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "url": "hats.csv",
+      "tableSchema": {
+        "columns": [
+          {
+            "titles": "hat"
+          },
+          {
+            "titles": "size",
+            "name": "size",
+            "datatype": "float"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -204,6 +204,43 @@ describe DatasetFile do
     end
   end
 
+  context 'with multiple csv-on-the-web files' do
+    before :each do
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
+      @dataset = build(:dataset, schema: Rack::Test::UploadedFile.new(schema_path, "application/json"))
+    end
+
+    it 'validates with good data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'shoes-cotw.csv')
+
+      file = build(:dataset_file, filename: "shoes.csv",
+                                   title: "Shoes",
+                                   description: "Shoes and glasses",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(true)
+      expect(@dataset.valid?).to eq(true)
+    end
+
+    it 'does not validate with duff data' do
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'hats-cotw.csv')
+
+      file = build(:dataset_file, filename: "hats.csv",
+                                   title: "Hats",
+                                   description: "All around my hat",
+                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                   dataset: @dataset)
+
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(false)
+      expect(@dataset.valid?).to eq(false)
+    end
+
+  end
+
   context 'with a non-csv file' do
     before(:each) do
       @dataset = build(:dataset)
