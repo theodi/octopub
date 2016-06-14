@@ -1,0 +1,23 @@
+{
+  "@context": "http://www.w3.org/ns/csvw",
+  "dialect": {
+    "encoding": "utf-8"
+  },
+  "tables": [
+    {
+      "url": "people.csv",
+      "tableSchema": {
+        "columns": [
+          {
+            "titles": "person"
+          },
+          {
+            "titles": "age",
+            "name": "age",
+            "datatype": "integer"
+          }
+        ]
+      }
+    }
+  ]
+}
