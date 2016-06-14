@@ -157,8 +157,15 @@ class Dataset < ActiveRecord::Base
     def check_schema
       return nil unless schema
       s = Csvlint::Schema.load_from_json schema.tempfile, false
-      unless s.fields.first
-        errors.add :schema, 'is invalid'
+
+      if s.respond_to? :tables
+        unless s.tables[s.tables.keys.first].columns.first
+          errors.add :schema, 'is invalid'
+        end
+      else
+        unless s.fields.first
+          errors.add :schema, 'is invalid'
+        end
       end
     end
 
