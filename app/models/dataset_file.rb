@@ -60,10 +60,7 @@ class DatasetFile < ActiveRecord::Base
       if dataset && dataset.schema && file
         schema = Csvlint::Schema.load_from_json(dataset.schema.tempfile)
 
-        if schema.respond_to? :tables
-          schema.tables["file:#{file.tempfile.path}"] = schema.tables[schema.tables.keys.first]
-          schema.tables.delete_if { |k| k =~ /\.csv$/ }
-        end
+        schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
