@@ -1,4 +1,4 @@
-<%= bootstrap_form_tag url: url, method: method do |f| %>
+<%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
   <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil? %>
   <% if @dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
@@ -50,6 +50,58 @@
     $('#clone').click(function(e) {
       e.preventDefault();
       $(file).clone().appendTo('#files');
+    });
+
+    $('.bg-upload').each(function(i, elem) {
+      var fileInput = $(elem);
+      var form         = $(fileInput.parents('form:first'));
+      var submitButton = form.find('input[type="submit"]');
+      var progressBar  = $("<div class='bar'></div>");
+      var barContainer = $("<div class='progress'></div>").append(progressBar);
+      fileInput.after(barContainer);
+      fileInput.fileupload({
+        fileInput:       fileInput,
+        url:             form.data('url'),
+        type:            'POST',
+        autoUpload:       true,
+        formData:         form.data('form-data'),
+        paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+        dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+        replaceFileInput: false,
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          progressBar.css('width', progress + '%')
+        },
+        start: function (e) {
+          submitButton.prop('disabled', true);
+
+          progressBar.
+            css('background', 'green').
+            css('display', 'block').
+            css('width', '0%').
+            text("Loading...");
+        },
+        done: function(e, data) {
+          submitButton.prop('disabled', false);
+          progressBar.text("Uploading done");
+
+          // extract key and generate URL from response
+          var key   = $(data.jqXHR.responseXML).find("Key").text();
+          var url   = '//' + form.data('host') + '/' + key;
+
+          // create hidden field
+          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
+          form.append(input);
+        },
+        fail: function(e, data) {
+          debugger;
+          submitButton.prop('disabled', false);
+
+          progressBar.
+            css("background", "red").
+            text("Failed");
+        }
+      });
     });
 
   });

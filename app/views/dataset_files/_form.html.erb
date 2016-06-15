@@ -12,7 +12,7 @@
         </div>
       </div>
     <% else %>
-      <%= f.file_field "files[][file]", label: "File" %>
+      <%= f.file_field "files[][file]", label: "File", class: "bg-upload" %>
     <% end %>
     <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
   </div>
@@ -26,6 +26,6 @@
     container = $(this).closest('.file')
 
     container.find('.current-file').addClass('hidden');
-    container.find('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File" %>');
+    container.find('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File",  class: "bg-upload" %>');
   })
 </script>
