@@ -32,7 +32,7 @@ describe DatasetsController, type: :controller do
       get 'index', format: :json
 
       expect(assigns(:datasets).count).to eq(5)
-      expect(response.content_type).to eq("application/json") 
+      expect(response.content_type).to eq("application/json")
     end
   end
 
@@ -131,7 +131,8 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          #:file => Rack::Test::UploadedFile.new(path, "text/csv")
+          :file => fake_file(path)
         }
 
         @repo = double(GitData)
@@ -396,6 +397,10 @@ describe DatasetsController, type: :controller do
         files: @files,
         api_key: @user.api_key
       end
+
+    end
+
+    context 'when uploaded via S3' do
 
     end
 
