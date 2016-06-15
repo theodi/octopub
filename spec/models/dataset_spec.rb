@@ -362,4 +362,28 @@ describe Dataset do
     end
   end
 
+  context 'csv-on-the-web schema' do
+    it 'is unhappy with a duff schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be false
+      expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
+    end
+
+    it 'does not add the schema to the datapackage' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      file = create(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
+
+      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      datapackage = JSON.parse dataset.datapackage
+
+      expect(datapackage['resources'].first['schema']).to eq(nil)
+    end
+  end
+
 end

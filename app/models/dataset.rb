@@ -71,7 +71,7 @@ class Dataset < ActiveRecord::Base
         "mediatype" => file.mediatype,
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil?)
+        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil? || is_csv_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -156,10 +156,33 @@ class Dataset < ActiveRecord::Base
 
     def check_schema
       return nil unless schema
-      s = Csvlint::Schema.load_from_json schema.tempfile, false
-      unless s.fields.first
-        errors.add :schema, 'is invalid'
+
+      if is_csv_otw?
+        unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
+          errors.add :schema, 'is invalid'
+        end
+      else
+        unless parsed_schema.fields.first
+          errors.add :schema, 'is invalid'
+        end
       end
+    end
+
+    def parse_schema!
+      if schema.instance_variable_get("@parsed_schema").nil?
+        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema.tempfile, false))
+      end
+    end
+
+    def parsed_schema
+      return nil if schema.nil?
+      parse_schema!
+      schema.instance_variable_get("@parsed_schema")
+    end
+
+    def is_csv_otw?
+      return false if schema.nil?
+      parsed_schema.class == Csvlint::Csvw::TableGroup
     end
 
     def set_owner_avatar
