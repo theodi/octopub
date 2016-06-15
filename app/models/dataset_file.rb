@@ -6,6 +6,18 @@ class DatasetFile < ActiveRecord::Base
   attr_accessor :file
 
   def self.new_file(file)
+
+    if file["file"].class == String
+      tempfile = Tempfile.new 'uploaded'
+      tempfile.write open("https:#{file['file']}").read
+      tempfile.rewind
+
+      file['file'] = ActionDispatch::Http::UploadedFile.new filename: File.basename(tempfile.path),
+                                                            content_type: 'text/csv',
+                                                            tempfile: tempfile
+
+    end
+
     new(
       title: file["title"],
       filename: file["file"].original_filename,
@@ -16,8 +28,10 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def self.get_content_type(file)
-    type = MIME::Types.type_for(file).first
-    [(type.use_instead || type.content_type)].flatten.first
+  #  type = MIME::Types.type_for(file).first
+  #  [(type.use_instead || type.content_type)].flatten.first
+
+    return 'text/csv'
   end
 
   def github_url
