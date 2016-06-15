@@ -38,6 +38,12 @@ GEM
     arel (5.0.1.20140414130214)
     autoprefixer-rails (6.3.6.2)
       execjs
+    aws-sdk (2.3.14)
+      aws-sdk-resources (= 2.3.14)
+    aws-sdk-core (2.3.14)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.3.14)
+      aws-sdk-core (= 2.3.14)
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bootstrap-select-rails (1.6.3)
@@ -131,10 +137,13 @@ GEM
     jbuilder (2.5.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
+    jmespath (1.2.4)
+      json_pure (>= 1.8.1)
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
+    json_pure (1.8.3)
     jwt (1.5.1)
     kgio (2.10.0)
     mail (2.6.4)
@@ -297,6 +306,7 @@ PLATFORMS
 DEPENDENCIES
   alternate_rails!
   autoprefixer-rails
+  aws-sdk (~> 2)
   bootstrap-sass (~> 3.2.0)
   bootstrap-select-rails
   bootstrap_form
@@ -333,4 +343,4 @@ DEPENDENCIES
   will_paginate-bootstrap
 
 BUNDLED WITH
-   1.12.1
+   1.12.3
