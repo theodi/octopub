@@ -362,4 +362,15 @@ describe Dataset do
     end
   end
 
+  context 'csv-on-the-web schema' do
+    it 'is unhappy with a duff schema' do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      dataset = build(:dataset, schema: schema)
+
+      expect(dataset.valid?).to be false
+      expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
+    end
+  end
+
 end
