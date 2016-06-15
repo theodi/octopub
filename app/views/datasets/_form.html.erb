@@ -49,10 +49,16 @@
 
     $('#clone').click(function(e) {
       e.preventDefault();
-      $(file).clone().appendTo('#files');
+      clone = $(file).clone()
+      clone.appendTo('#files');
+      bgUpload(clone.find('.bg-upload'))
     });
 
     $('.bg-upload').each(function(i, elem) {
+      bgUpload(elem)
+    });
+
+    function bgUpload(elem) {
       var fileInput = $(elem);
       var form         = $(fileInput.parents('form:first'));
       var submitButton = form.find('input[type="submit"]');
@@ -94,7 +100,6 @@
           form.append(input);
         },
         fail: function(e, data) {
-          debugger;
           submitButton.prop('disabled', false);
 
           progressBar.
@@ -102,7 +107,7 @@
             text("Failed");
         }
       });
-    });
+    }
 
   });
 </script>
