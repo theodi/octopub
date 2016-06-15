@@ -62,8 +62,8 @@
       var fileInput = $(elem);
       var form         = $(fileInput.parents('form:first'));
       var submitButton = form.find('input[type="submit"]');
-      var progressBar  = $("<div class='bar'></div>");
-      var barContainer = $("<div class='progress'></div>").append(progressBar);
+      var progressBar  = $("<div class='progress-bar progress-bar-success progress-bar-striped active' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>");
+      var barContainer = $("<div class='progress hidden'></div>").append(progressBar);
       fileInput.after(barContainer);
       fileInput.fileupload({
         fileInput:       fileInput,
@@ -77,20 +77,21 @@
         progressall: function (e, data) {
           var progress = parseInt(data.loaded / data.total * 100, 10);
           progressBar.css('width', progress + '%')
+          progressBar.attr('aria-valuenow', progress)
+          progressBar.text(progress + '%')
         },
         start: function (e) {
           submitButton.prop('disabled', true);
 
+          barContainer.removeClass('hidden')
+
           progressBar.
-            css('background', 'green').
-            css('display', 'block').
-            css('width', '0%').
-            text("Loading...");
+            css('width', '0%')
         },
         done: function(e, data) {
           submitButton.prop('disabled', false);
-          progressBar.text("Uploading done");
-
+          progressBar.text("Done");
+          progressBar.removeClass('active')
           // extract key and generate URL from response
           var key   = $(data.jqXHR.responseXML).find("Key").text();
           var url   = '//' + form.data('host') + '/' + key;
@@ -101,10 +102,12 @@
         },
         fail: function(e, data) {
           submitButton.prop('disabled', false);
+          progressBar.removeClass('progress-bar-success')
+          progressBar.addClass('progress-bar-danger')
 
           progressBar.
             css("background", "red").
-            text("Failed");
+            text("Upload Failed");
         }
       });
     }
