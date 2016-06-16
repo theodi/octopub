@@ -1,6 +1,7 @@
 {
   "name": "octopub",
   "scripts": {
+    "rake db:migrate"
   },
   "env": {
     "GITHUB_KEY": {
@@ -11,7 +12,16 @@
     },
     "GITHUB_TOKEN": {
       "required": true
-    }
+    },
+    "S3_BUCKET": {
+      "required": true
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
   },
   "formation": {
     "worker": {
