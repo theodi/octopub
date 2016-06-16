@@ -1,7 +1,7 @@
 <fieldset class="file">
   <div class="well bg-info">
-    <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title %>
-    <%= f.text_field "files[][description]", label: "Description", class: "description", value: file.description %>
+    <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name') %>
+    <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
     <% if file.filename %>
       <div class="form-group filename-wrapper">
         <div class="current-file">
