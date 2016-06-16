@@ -14,6 +14,14 @@ class Dataset < ActiveRecord::Base
   validate :check_schema
   validates_associated :dataset_files
 
+  def self.create_dataset(dataset, files, user)
+    dataset = user.datasets.new(dataset)
+    files.each do |file|
+      dataset.dataset_files << DatasetFile.new_file(file)
+    end
+    dataset
+  end
+
   def create_contents(filename, file)
     @repo.add_file(filename, file)
   end
