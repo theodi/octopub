@@ -1,5 +1,6 @@
 WebsocketRails.setup do |config|
 
+  config.log_level = :debug
   # Uncomment to override the default log level. The log level can be
   # any of the standard Logger log levels. By default it will mirror the
   # current Rails environment log level.
