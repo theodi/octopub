@@ -2,6 +2,7 @@
   <%= f.hidden_field "user", value: current_user.id %>
 
   <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil? %>
+
   <% if @dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <% end %>
@@ -61,6 +62,31 @@
     $('.bg-upload').each(function(i, elem) {
       bgUpload(elem)
     });
+
+    $('form').submit(function(e) {
+      $('#spinner').removeClass('hidden')
+      var dispatcher = new WebSocketRails('localhost:3001/websocket')
+      var params = $(this).serialize()
+
+      dispatcher.trigger('datasets.create', params);
+
+      var channel = dispatcher.subscribe('my_awesome_channel');
+
+      channel.bind('dataset_created', function(data) {
+        window.location = '/dashboard?success=true'
+      })
+
+      channel.bind('dataset_failed', function(data) {
+        $('#spinner').addClass('hidden')
+        $('body').scrollTop(0)
+        $(data).each(function(i, message) {
+          alert = $('<div class="alert alert-danger" role="alert">').text(message)
+          $('#main').prepend(alert)
+        })
+      })
+
+      e.preventDefault();
+    })
 
     function bgUpload(elem) {
       var fileInput = $(elem);
