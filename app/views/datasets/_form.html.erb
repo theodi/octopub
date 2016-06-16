@@ -1,4 +1,6 @@
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+  <%= f.hidden_field "user", value: current_user.id %>
+
   <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil? %>
   <% if @dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
