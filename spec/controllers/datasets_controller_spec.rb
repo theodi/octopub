@@ -126,12 +126,12 @@ describe DatasetsController, type: :controller do
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
+        Dataset.skip_callback(:create, :after, :set_owner_avatar)
         Dataset.set_callback(:create, :after, :create_in_github)
 
         @files << {
           :title => name,
           :description => description,
-          #:file => Rack::Test::UploadedFile.new(path, "text/csv")
           :file => fake_file(path)
         }
 
@@ -140,6 +140,10 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:html_url) { nil }
         expect(@repo).to receive(:name) { nil }
         expect(@repo).to receive(:save)
+      end
+
+      after(:each) do
+        Dataset.set_callback(:create, :after, :set_owner_avatar)
       end
 
       it 'creates a dataset with one file' do
@@ -194,6 +198,11 @@ describe DatasetsController, type: :controller do
       before(:each) do
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
         @schema = Rack::Test::UploadedFile.new(schema_path, "text/csv")
+        Dataset.skip_callback(:create, :after, :set_owner_avatar)
+      end
+
+      after(:each) do
+        Dataset.set_callback(:create, :after, :set_owner_avatar)
       end
 
       it 'returns an error if the file does not match the schema' do
@@ -203,7 +212,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => 'My File',
           :description => 'My Description',
-          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          :file => fake_file(path)
         }
 
         request = post 'create', dataset: {
@@ -227,7 +236,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => 'My File',
           :description => 'My Description',
-          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          :file => fake_file(path)
         }
 
         request = post 'create', dataset: {
@@ -270,6 +279,11 @@ describe DatasetsController, type: :controller do
           :description => description,
           :file => Rack::Test::UploadedFile.new(path, "text/csv")
         }
+        Dataset.skip_callback(:create, :after, :set_owner_avatar)
+      end
+
+      after(:each) do
+        Dataset.set_callback(:create, :after, :set_owner_avatar)
       end
 
       it 'creates a dataset with JSON' do
@@ -400,10 +414,6 @@ describe DatasetsController, type: :controller do
 
     end
 
-    context 'when uploaded via S3' do
-
-    end
-
   end
 
   describe 'edit' do
@@ -495,7 +505,7 @@ describe DatasetsController, type: :controller do
 
               @filename = 'valid-schema.csv'
               @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-              @new_file = Rack::Test::UploadedFile.new(@path, "text/csv")
+              @new_file = fake_file(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -580,7 +590,7 @@ describe DatasetsController, type: :controller do
         it 'updates a file in Github' do
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = Rack::Test::UploadedFile.new(path, "text/csv")
+          file = fake_file(path)
 
           expect(@file).to receive(:update_in_github)
 
@@ -595,7 +605,7 @@ describe DatasetsController, type: :controller do
 
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = Rack::Test::UploadedFile.new(path, "text/csv")
+          file = fake_file(path)
 
           new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -635,7 +645,7 @@ describe DatasetsController, type: :controller do
           @file.file = nil
           filename = 'invalid-schema.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = Rack::Test::UploadedFile.new(path, "text/csv")
+          file = fake_file(path)
 
           expect(@file).to_not receive(:update_in_github)
 
@@ -655,7 +665,7 @@ describe DatasetsController, type: :controller do
 
             @filename = 'invalid-schema.csv'
             @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-            @new_file = Rack::Test::UploadedFile.new(@path, "text/csv")
+            @new_file = fake_file(@path)
 
             file = build(:dataset_file, dataset: @dataset, file: nil)
 
