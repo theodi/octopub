@@ -14,12 +14,28 @@ class Dataset < ActiveRecord::Base
   validate :check_schema
   validates_associated :dataset_files
 
-  def self.create_dataset(dataset, files, user)
+  def self.create_dataset(dataset, files, user, options)
     dataset = user.datasets.new(dataset)
     files.each do |file|
       dataset.dataset_files << DatasetFile.new_file(file)
     end
-    dataset
+    if options[:perform_async] === true
+      if dataset.save
+        WebsocketRails[:my_awesome_channel].trigger :dataset_created, dataset
+      else
+        messages = []
+        dataset.dataset_files.each do |file|
+          unless file.valid?
+            file.errors.messages[:file].each do |message|
+              messages << "Your file '#{file.title}' #{message}"
+            end
+          end
+        end
+        WebsocketRails[:my_awesome_channel].trigger :dataset_failed, messages
+      end
+    else
+      dataset
+    end
   end
 
   def create_contents(filename, file)
