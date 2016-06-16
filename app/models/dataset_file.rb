@@ -9,7 +9,7 @@ class DatasetFile < ActiveRecord::Base
     tempfile = Tempfile.new 'uploaded'
     tempfile.write open("https:#{file}").read
     tempfile.rewind
-    ActionDispatch::Http::UploadedFile.new filename: File.basename(tempfile.path),
+    ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
                                            content_type: 'text/csv',
                                            tempfile: tempfile
   end
