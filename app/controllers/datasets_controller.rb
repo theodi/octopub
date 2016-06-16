@@ -23,6 +23,7 @@ class DatasetsController < ApplicationController
   end
 
   def dashboard
+    flash.notice = "Dataset created sucessfully" if params[:success]
     current_user.refresh_datasets if params[:refresh]
     @dashboard = true
 
