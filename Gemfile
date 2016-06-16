@@ -25,6 +25,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'spring',        group: :development
 
 gem 'csvlint'
+gem 'websocket-rails'
 
 group :test do
   gem 'cucumber-rails', :require => false
@@ -63,6 +64,5 @@ gem 'alternate_rails', github: 'theodi/alternate-rails'
 gem 'git'
 gem 'will_paginate-bootstrap'
 gem 'aws-sdk', '~> 2'
-gem 'websocket-rails'
 gem 'faye-websocket', '0.10.0'
 gem 'sidekiq'
