@@ -65,7 +65,7 @@
 
     $('form').submit(function(e) {
       $('#spinner').removeClass('hidden')
-      var dispatcher = new WebSocketRails('localhost:3001/websocket')
+      var dispatcher = new WebSocketRails('<%= ENV['WEBSOCKET_ENDPOINT'] || request.host %>/websocket')
       var params = $(this).serialize()
 
       dispatcher.trigger('datasets.create', params);
