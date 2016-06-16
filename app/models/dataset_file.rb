@@ -5,18 +5,17 @@ class DatasetFile < ActiveRecord::Base
 
   attr_accessor :file
 
+  def self.file_from_url(file)
+    tempfile = Tempfile.new 'uploaded'
+    tempfile.write open("https:#{file}").read
+    tempfile.rewind
+    ActionDispatch::Http::UploadedFile.new filename: File.basename(tempfile.path),
+                                           content_type: 'text/csv',
+                                           tempfile: tempfile
+  end
+
   def self.new_file(file)
-
-    if file["file"].class == String
-      tempfile = Tempfile.new 'uploaded'
-      tempfile.write open("https:#{file['file']}").read
-      tempfile.rewind
-
-      file['file'] = ActionDispatch::Http::UploadedFile.new filename: File.basename(tempfile.path),
-                                                            content_type: 'text/csv',
-                                                            tempfile: tempfile
-
-    end
+    file['file'] = file_from_url(file['file']) if file["file"].class == String
 
     new(
       title: file["title"],
@@ -43,6 +42,8 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def update_file(file)
+    file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
+
     update_hash = {
       title: file["title"],
       description: file["description"],
