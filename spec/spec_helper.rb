@@ -55,7 +55,6 @@ end
 
 def fake_file path
   url = "//example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
-  stub_request(:get, "https:#{url}").to_return(body: File.open(path))
-
+  stub_request(:get, "https:#{url}").to_return(body: File.read(path))
   url
 end
