@@ -15,3 +15,5 @@
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require_tree .
+//= require websocket_rails/main
+

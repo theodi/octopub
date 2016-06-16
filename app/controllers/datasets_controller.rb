@@ -5,6 +5,7 @@ class DatasetsController < ApplicationController
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
+  before_filter :set_direct_post, only: [:create, :new]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
@@ -22,6 +23,7 @@ class DatasetsController < ApplicationController
   end
 
   def dashboard
+    flash.notice = "Dataset created sucessfully" if params[:success]
     current_user.refresh_datasets if params[:refresh]
     @dashboard = true
 
@@ -45,10 +47,7 @@ class DatasetsController < ApplicationController
   end
 
   def create
-    @dataset = current_user.datasets.new(dataset_params)
-    params["files"].each do |file|
-      @dataset.dataset_files << DatasetFile.new_file(file)
-    end
+    @dataset = Dataset.create_dataset(dataset_params, params["files"], current_user)
 
     respond_to do |format|
       format.html do
@@ -186,6 +185,10 @@ class DatasetsController < ApplicationController
     else
       flash[:notice] = messages.join('<br>')
     end
+  end
+
+  def set_direct_post
+    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
   end
 
 end

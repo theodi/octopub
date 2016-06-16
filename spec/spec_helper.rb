@@ -12,6 +12,7 @@ require 'factory_girl'
 require 'omniauth'
 require 'support/vcr_helper'
 require 'support/fake_data'
+require 'webmock/rspec'
 
 DatabaseCleaner.strategy = :truncation
 OmniAuth.config.test_mode = true
@@ -50,4 +51,10 @@ end
 
 def sign_in(user)
   allow_any_instance_of(ApplicationController).to receive(:current_user) { user }
+end
+
+def fake_file path
+  url = "//example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, "https:#{url}").to_return(body: File.read(path))
+  url
 end

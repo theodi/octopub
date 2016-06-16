@@ -25,6 +25,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'spring',        group: :development
 
 gem 'csvlint'
+gem 'websocket-rails', github: 'moaa/websocket-rails', branch: 'threadsocket-rails'
+gem 'websocket-rails-js', github: 'websocket-rails/websocket-rails-js', branch: 'sub_protocols'
 
 group :test do
   gem 'cucumber-rails', :require => false
@@ -41,7 +43,7 @@ end
 
 group :production do
   gem 'rails_12factor'
-  gem 'unicorn'
+  gem 'puma'
 end
 
 group :development do
@@ -62,3 +64,6 @@ gem 'odlifier'
 gem 'alternate_rails', github: 'theodi/alternate-rails'
 gem 'git'
 gem 'will_paginate-bootstrap'
+gem 'aws-sdk', '~> 2'
+gem 'faye-websocket', '0.10.0'
+gem 'sidekiq'
