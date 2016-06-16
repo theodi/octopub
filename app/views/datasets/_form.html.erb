@@ -42,7 +42,9 @@
   <p class="text-right" id="wut">
     <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
-  <%= f.submit "Submit", class: "btn btn-primary btn-lg btn-block" %>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
 <% end %>
 
 <script>
@@ -63,7 +65,7 @@
     function bgUpload(elem) {
       var fileInput = $(elem);
       var form         = $(fileInput.parents('form:first'));
-      var submitButton = form.find('input[type="submit"]');
+      var submitButton = form.find('button[type="submit"]');
       var progressBar  = $("<div class='progress-bar progress-bar-success progress-bar-striped active' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>");
       var barContainer = $("<div class='progress hidden'></div>").append(progressBar);
       fileInput.after(barContainer);
