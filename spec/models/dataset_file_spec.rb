@@ -65,27 +65,54 @@ describe DatasetFile do
   end
 
   context "self.new_file" do
+    
+    context "with uploaded file" do
 
-    before(:each) do
-      path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
-      @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
+      before(:each) do
+        path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+        @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
 
-      @file = {
-        "title" => 'My File',
-        "file" => @tempfile,
-        "description" => 'A description',
-      }
+        @file = {
+          "title" => 'My File',
+          "file" => @tempfile,
+          "description" => 'A description',
+        }
+      end
+
+      it "creates a file" do
+        file = DatasetFile.new_file(@file)
+
+        expect(file.title).to eq(@file["title"])
+        expect(file.filename).to eq(@tempfile.original_filename)
+        expect(file.description).to eq(@file["description"])
+        expect(file.mediatype).to eq("text/csv")
+      end
+
     end
+    
+    context "with file at the end of a URL" do
 
-    it "creates a file" do
-      file = DatasetFile.new_file(@file)
+      before(:each) do
+        @url = "//cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
 
-      expect(file.title).to eq(@file["title"])
-      expect(file.filename).to eq(@tempfile.original_filename)
-      expect(file.description).to eq(@file["description"])
-      expect(file.mediatype).to eq("text/csv")
+        @file = {
+          "title" => 'Hot Drinks',
+          "file" => @url,
+          "description" => 'WARNING: Contents may be hot',
+        }
+      end
+
+      it "creates a file" do
+        file = DatasetFile.new_file(@file)
+
+        expect(file.title).to eq(@file["title"])
+        expect(file.filename).to eq("hot-drinks.csv")
+        expect(file.description).to eq(@file["description"])
+        expect(file.mediatype).to eq("text/csv")
+      end
+
     end
-
+    
   end
 
   context "update_file" do
