@@ -1,8 +1,8 @@
 require 'pusher'
 
-Pusher.app_id = 217221
-Pusher.key = "02492f349df2587f0f31"
-Pusher.secret = "912edbf224b0b236a167"
+Pusher.app_id = ENV['PUSHER_APP_ID']
+Pusher.key = ENV['PUSHER_KEY']
+Pusher.secret = ENV['PUSHER_SECRET']
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
