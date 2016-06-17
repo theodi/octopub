@@ -16,6 +16,8 @@ class Dataset < ActiveRecord::Base
   validates_associated :dataset_files
 
   def self.create_dataset(dataset, files, user, options = {})
+    dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
+
     dataset = user.datasets.new(dataset)
     files.each do |file|
       dataset.dataset_files << DatasetFile.new_file(file)
@@ -28,6 +30,8 @@ class Dataset < ActiveRecord::Base
   end
 
   def self.update_dataset(id, user_id, dataset_params, files, options = {})
+    dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
+
     dataset = Dataset.where(id: id, user_id: user_id).first
     dataset.fetch_repo
     dataset.assign_attributes(dataset_params) if dataset_params
