@@ -21,7 +21,7 @@ class Dataset < ActiveRecord::Base
     end
     if options[:perform_async] === true
       if dataset.save
-        # Send a pusher notification to the frontend
+        Pusher['my_awesome_channel'].trigger('dataset_created', dataset)
       else
         messages = []
         dataset.dataset_files.each do |file|
@@ -31,7 +31,7 @@ class Dataset < ActiveRecord::Base
             end
           end
         end
-        # Send a pusher notification to the frontend
+        Pusher['my_awesome_channel'].trigger('dataset_failed', messages)
       end
     else
       dataset
