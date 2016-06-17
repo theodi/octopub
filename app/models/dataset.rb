@@ -20,7 +20,7 @@ class Dataset < ActiveRecord::Base
       dataset.dataset_files << DatasetFile.new_file(file)
     end
     if options[:perform_async] === true
-      report_status(dataset)
+      report_status(dataset, options[:channel_id])
     else
       dataset
     end
@@ -46,15 +46,15 @@ class Dataset < ActiveRecord::Base
     end
 
     if options[:perform_async] === true
-      report_status(dataset)
+      report_status(dataset, options[:channel_id])
     else
       dataset
     end
   end
 
-  def self.report_status(dataset)
+  def self.report_status(dataset, channel_id)
     if dataset.save
-      Pusher['my_awesome_channel'].trigger('dataset_created', dataset)
+      Pusher[channel_id].trigger('dataset_created', dataset)
     else
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
@@ -64,7 +64,7 @@ class Dataset < ActiveRecord::Base
           end
         end
       end
-      Pusher['my_awesome_channel'].trigger('dataset_failed', messages)
+      Pusher[channel_id].trigger('dataset_failed', messages)
     end
   end
 

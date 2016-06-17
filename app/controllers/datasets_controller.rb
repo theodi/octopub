@@ -47,7 +47,7 @@ class DatasetsController < ApplicationController
 
   def create
     if params[:async]
-      Dataset.delay.create_dataset(dataset_params, params["files"], current_user, perform_async: true)
+      Dataset.delay.create_dataset(dataset_params, params["files"], current_user, perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
       @dataset = Dataset.create_dataset(dataset_params, params["files"], current_user)
@@ -85,7 +85,7 @@ class DatasetsController < ApplicationController
 
   def update
     if params[:async]
-      Dataset.delay.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true)
+      Dataset.delay.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
       @dataset = Dataset.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files])

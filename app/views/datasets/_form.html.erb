@@ -65,16 +65,18 @@
       $('form').submit(function(e) {
         $('#spinner').removeClass('hidden')
 
+        var channelID = '<%= SecureRandom.uuid %>'
+
         $.ajax({
           type: $(this).attr('method'),
           url: $(this).attr('action'),
-          data: $(this).serialize() + '&async=true',
+          data: $(this).serialize() + '&async=true&channel_id=' + channelID,
           success: function() {
             Pusher.host = 'ws-eu.pusher.com';
             Pusher.sockjs_host = 'sockjs-eu.pusher.com';
 
             var pusher = new Pusher('<%= Pusher.key %>');
-            var channel = pusher.subscribe('my_awesome_channel');
+            var channel = pusher.subscribe(channelID);
 
             channel.bind('dataset_created', function(data) {
               window.location = '/dashboard?success=true'
