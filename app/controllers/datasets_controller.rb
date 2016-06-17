@@ -5,7 +5,7 @@ class DatasetsController < ApplicationController
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
-  before_filter :set_direct_post, only: [:create, :new]
+  before_filter :set_direct_post, only: [:edit, :new]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
