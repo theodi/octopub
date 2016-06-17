@@ -6,6 +6,8 @@ Coveralls.wear!('rails')
 require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+require 'git_data'
+
 require 'rspec/rails'
 require 'database_cleaner'
 require 'factory_girl'
@@ -33,6 +35,11 @@ RSpec.configure do |config|
   end
 
   config.order = :random
+
+  config.before(:each) do |example|
+    # Stub out repository checking for all tests apart from GitData
+    allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+  end
 
   config.after(:each) do
     DatabaseCleaner.clean

@@ -11,7 +11,7 @@ class Dataset < ActiveRecord::Base
 
   attr_accessor :schema
 
-  validate :check_schema
+  validate :check_schema, :check_repo
   validates_associated :dataset_files
 
   def self.create_dataset(dataset, files, user, options = {})
@@ -56,7 +56,7 @@ class Dataset < ActiveRecord::Base
     if dataset.save
       Pusher['my_awesome_channel'].trigger('dataset_created', dataset)
     else
-      messages = []
+      messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
         unless file.valid?
           file.errors.messages[:file].each do |message|
@@ -219,6 +219,13 @@ class Dataset < ActiveRecord::Base
         unless parsed_schema.fields.first
           errors.add :schema, 'is invalid'
         end
+      end
+    end
+
+    def check_repo
+      repo_name = "#{repo_owner}/#{name.parameterize}"
+      if user.octokit_client.repository?(repo_name)
+        errors.add :repository_name, 'already exists'
       end
     end
 

@@ -4,6 +4,7 @@ describe Dataset do
 
   before(:each) do
     @user = create(:user, name: "user-mcuser", email: "user@user.com")
+    allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
   end
 
   it "creates a valid dataset" do
@@ -16,6 +17,20 @@ describe Dataset do
                      user: @user)
 
     expect(dataset).to be_valid
+  end
+
+  it "returns an error if the repo already exists" do
+    expect_any_instance_of(Octokit::Client).to receive(:repository?).with("user-mcuser/my-awesome-dataset") { true }
+
+    dataset = build(:dataset, name: "My Awesome Dataset",
+                     description: "An awesome dataset",
+                     publisher_name: "Awesome Inc",
+                     publisher_url: "http://awesome.com",
+                     license: "OGL-UK-3.0",
+                     frequency: "One-off",
+                     user: @user)
+
+    expect(dataset).to_not be_valid
   end
 
   it "creates a repo in Github" do

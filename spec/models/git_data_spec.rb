@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'git_data'
 
 describe GitData, :vcr do
 
