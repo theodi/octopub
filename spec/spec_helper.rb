@@ -66,3 +66,9 @@ def fake_file path
   stub_request(:get, "https:#{url}").to_return(body: File.read(path))
   url
 end
+
+def mock_pusher(channel_id)
+  mock_client = double(Pusher::Channel)
+  expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
+  mock_client
+end
