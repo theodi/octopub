@@ -20,21 +20,51 @@ class Dataset < ActiveRecord::Base
       dataset.dataset_files << DatasetFile.new_file(file)
     end
     if options[:perform_async] === true
-      if dataset.save
-        Pusher['my_awesome_channel'].trigger('dataset_created', dataset)
-      else
-        messages = []
-        dataset.dataset_files.each do |file|
-          unless file.valid?
-            file.errors.messages[:file].each do |message|
-              messages << "Your file '#{file.title}' #{message}"
-            end
-          end
-        end
-        Pusher['my_awesome_channel'].trigger('dataset_failed', messages)
-      end
+      report_status(dataset)
     else
       dataset
+    end
+  end
+
+  def self.update_dataset(id, user_id, dataset_params, files, options = {})
+    dataset = Dataset.where(id: id, user_id: user_id).first
+    dataset.fetch_repo
+    dataset.assign_attributes(dataset_params) if dataset_params
+
+    files.each do |file|
+      if file["id"]
+        f = dataset.dataset_files.find { |f| f.id == file["id"].to_i }
+        f.update_file(file)
+      else
+        f = DatasetFile.new_file(file)
+        dataset.dataset_files << f
+        if f.save
+          f.add_to_github
+          f.file = nil
+        end
+      end
+    end
+
+    if options[:perform_async] === true
+      report_status(dataset)
+    else
+      dataset
+    end
+  end
+
+  def self.report_status(dataset)
+    if dataset.save
+      Pusher['my_awesome_channel'].trigger('dataset_created', dataset)
+    else
+      messages = []
+      dataset.dataset_files.each do |file|
+        unless file.valid?
+          file.errors.messages[:file].each do |message|
+            messages << "Your file '#{file.title}' #{message}"
+          end
+        end
+      end
+      Pusher['my_awesome_channel'].trigger('dataset_failed', messages)
     end
   end
 

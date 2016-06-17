@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
-  before_filter :get_dataset, only: [:edit, :update, :destroy]
+  before_filter :get_dataset, only: [:edit, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
@@ -84,43 +84,33 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    @dataset.fetch_repo
-    @dataset.assign_attributes(dataset_update_params) if dataset_update_params
+    if params[:async]
+      Dataset.delay.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true)
+      head :accepted
+    else
+      @dataset = Dataset.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files])
 
-    params[:files].each do |file|
-      if file["id"]
-        f = @dataset.dataset_files.find { |f| f.id == file["id"].to_i }
-        f.update_file(file)
-      else
-        f = DatasetFile.new_file(file)
-        @dataset.dataset_files << f
-        if f.save
-          f.add_to_github
-          f.file = nil
+      respond_to do |format|
+        format.html do
+          if @dataset.save
+            redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
+          else
+            generate_errors
+            render :edit, status: 400
+          end
         end
-      end
-    end
 
-    respond_to do |format|
-      format.html do
-        if @dataset.save
-          redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
-        else
-          generate_errors
-          render :edit, status: 400
-        end
-      end
-
-      format.json do
-        if @dataset.save
-          response = (@dataset.attributes).merge({
-            gh_pages_url: @dataset.gh_pages_url
-          })
-          render json: response.to_json, status: 201
-        else
-          render json: {
-            errors: generate_errors
-          }.to_json, status: 400
+        format.json do
+          if @dataset.save
+            response = (@dataset.attributes).merge({
+              gh_pages_url: @dataset.gh_pages_url
+            })
+            render json: response.to_json, status: 201
+          else
+            render json: {
+              errors: generate_errors
+            }.to_json, status: 400
+          end
         end
       end
     end
