@@ -1,5 +1,5 @@
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil? %>
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil?, required: true %>
   <% if @dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <% end %>
@@ -54,7 +54,7 @@
       e.preventDefault();
       clone = $(file).clone()
       clone.appendTo('#files');
-      bgUpload(clone.find('.bg-upload'))
+      bgUpload(clone)
     });
 
     $('.bg-upload').each(function(i, elem) {
@@ -86,6 +86,13 @@
               alert = $('<div class="alert alert-danger" role="alert">').text(message)
               $('#main').prepend(alert)
             })
+
+            $('.bg-upload').each(function(i, elem) {
+              bgUpload(elem)
+            });
+
+            // Destroy any existing progress bars
+            $('.progress').addClass('hidden')
           })
         }
       })
@@ -94,12 +101,15 @@
     })
 
     function bgUpload(elem) {
-      var fileInput = $(elem);
+      var container    = $(elem)
+      var fileInput    = $(elem).find('input[type="file"]');
       var form         = $(fileInput.parents('form:first'));
       var submitButton = form.find('button[type="submit"]');
       var progressBar  = $("<div class='progress-bar progress-bar-success progress-bar-striped active' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>");
       var barContainer = $("<div class='progress hidden'></div>").append(progressBar);
       fileInput.after(barContainer);
+      // Remove existing hidden fields
+      container.find('.s3-file').remove()
       fileInput.fileupload({
         fileInput:       fileInput,
         url:             form.data('url'),
@@ -132,8 +142,8 @@
           var url   = '//' + form.data('host') + '/' + key;
 
           // create hidden field
-          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url })
-          form.append(input);
+          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, class: 's3-file' })
+          container.append(input);
         },
         fail: function(e, data) {
           submitButton.prop('disabled', false);

@@ -1,4 +1,4 @@
-<fieldset class="file">
+<fieldset class="file bg-upload">
   <div class="well bg-info">
     <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title %>
     <%= f.text_field "files[][description]", label: "Description", class: "description", value: file.description %>
@@ -12,7 +12,7 @@
         </div>
       </div>
     <% else %>
-      <%= f.file_field "files[][file]", label: "File", class: "bg-upload" %>
+      <%= f.file_field "files[][file]", label: "File" %>
     <% end %>
     <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
   </div>
