@@ -24,6 +24,9 @@
   "addons": [
     "scheduler",
     "heroku-postgresql"
+    "heroku-postgresql",
+    "redis-to-go",
+    "pusher"
   ],
   "buildpacks": [
     {
