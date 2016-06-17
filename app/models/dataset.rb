@@ -11,7 +11,8 @@ class Dataset < ActiveRecord::Base
 
   attr_accessor :schema
 
-  validate :check_schema, :check_repo
+  validate :check_schema
+  validate :check_repo, on: :create
   validates_associated :dataset_files
 
   def self.create_dataset(dataset, files, user, options = {})
