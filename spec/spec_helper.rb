@@ -15,6 +15,7 @@ require 'omniauth'
 require 'support/vcr_helper'
 require 'support/fake_data'
 require 'webmock/rspec'
+require 'sidekiq/testing'
 
 DatabaseCleaner.strategy = :truncation
 OmniAuth.config.test_mode = true

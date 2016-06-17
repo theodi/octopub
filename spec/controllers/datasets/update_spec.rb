@@ -34,6 +34,18 @@ describe DatasetsController, type: :controller do
       }
     end
 
+    it 'queues a job when async is set to true' do
+      expect {
+        put 'update', id: @dataset.id, dataset: @dataset_hash, async: true, files: [{
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+        }]
+      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
+
+      expect(response.code).to eq("202")
+    end
+
     context('successful update') do
       before(:each) do
         @repo = double(GitData)
