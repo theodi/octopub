@@ -45,6 +45,7 @@
   </button>
 <% end %>
 
+<script src="//js.pusher.com/2.2/pusher.min.js"></script>
 <script>
   $(document).ready(function() {
     var file = $('.file:first').clone();
@@ -68,7 +69,24 @@
         url: $(this).attr('action'),
         data: $(this).serialize() + '&async=true',
         success: function() {
-          console.log('Worked!')
+          Pusher.host = 'ws-eu.pusher.com';
+          Pusher.sockjs_host = 'sockjs-eu.pusher.com';
+
+          var pusher = new Pusher('<%= Pusher.key %>');
+          var channel = pusher.subscribe('my_awesome_channel');
+
+          channel.bind('dataset_created', function(data) {
+            window.location = '/dashboard?success=true'
+          })
+
+          channel.bind('dataset_failed', function(data) {
+            $('#spinner').addClass('hidden')
+            $('body').scrollTop(0)
+            $(data).each(function(i, message) {
+              alert = $('<div class="alert alert-danger" role="alert">').text(message)
+              $('#main').prepend(alert)
+            })
+          })
         }
       })
 
