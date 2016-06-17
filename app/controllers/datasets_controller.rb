@@ -46,31 +46,33 @@ class DatasetsController < ApplicationController
   end
 
   def create
-    @dataset = current_user.datasets.new(dataset_params)
-    params["files"].each do |file|
-      @dataset.dataset_files << DatasetFile.new_file(file)
-    end
+    if params[:async]
+      Dataset.delay.create_dataset(dataset_params, params["files"], current_user, perform_async: true)
+      head :accepted
+    else
+      @dataset = Dataset.create_dataset(dataset_params, params["files"], current_user)
 
-    respond_to do |format|
-      format.html do
-        if @dataset.save
-          redirect_to dashboard_path, :notice => "Dataset created sucessfully"
-        else
-          generate_errors
-          render :new
+      respond_to do |format|
+        format.html do
+          if @dataset.save
+            redirect_to dashboard_path, :notice => "Dataset created sucessfully"
+          else
+            generate_errors
+            render :new
+          end
         end
-      end
 
-      format.json do
-        if @dataset.save
-          response = (@dataset.attributes).merge({
-            gh_pages_url: @dataset.gh_pages_url
-          })
-          render json: response.to_json
-        else
-          render json: {
-            errors: generate_errors
-          }.to_json
+        format.json do
+          if @dataset.save
+            response = (@dataset.attributes).merge({
+              gh_pages_url: @dataset.gh_pages_url
+            })
+            render json: response.to_json
+          else
+            render json: {
+              errors: generate_errors
+            }.to_json
+          end
         end
       end
     end
