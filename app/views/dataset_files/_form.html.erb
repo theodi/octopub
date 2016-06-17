@@ -12,7 +12,7 @@
         </div>
       </div>
     <% else %>
-      <%= f.file_field "files[][file]", label: "File" %>
+      <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
     <% end %>
     <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
   </div>
