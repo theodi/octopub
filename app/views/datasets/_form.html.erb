@@ -65,40 +65,47 @@
       $('form').submit(function(e) {
         $('#spinner').removeClass('hidden')
 
-        var channelID = '<%= SecureRandom.uuid %>'
+        if ($('.s3-file').length > 0) {
+          var channelID = '<%= SecureRandom.uuid %>'
 
-        $.ajax({
-          type: $(this).attr('method'),
-          url: $(this).attr('action'),
-          data: $(this).serialize() + '&async=true&channel_id=' + channelID,
-          success: function() {
-            Pusher.host = 'ws-eu.pusher.com';
-            Pusher.sockjs_host = 'sockjs-eu.pusher.com';
+          $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: $(this).serialize() + '&async=true&channel_id=' + channelID,
+            success: function() {
+              Pusher.host = 'ws-eu.pusher.com';
+              Pusher.sockjs_host = 'sockjs-eu.pusher.com';
 
-            var pusher = new Pusher('<%= Pusher.key %>');
-            var channel = pusher.subscribe(channelID);
+              var pusher = new Pusher('<%= Pusher.key %>');
+              var channel = pusher.subscribe(channelID);
 
-            channel.bind('dataset_created', function(data) {
-              window.location = '/dashboard?success=true'
-            })
-
-            channel.bind('dataset_failed', function(data) {
-              $('#spinner').addClass('hidden')
-              $('body').scrollTop(0)
-              $(data).each(function(i, message) {
-                alert = $('<div class="alert alert-danger" role="alert">').text(message)
-                $('#main').prepend(alert)
+              channel.bind('dataset_created', function(data) {
+                window.location = '/dashboard?success=true'
               })
 
-              $('.bg-upload').each(function(i, elem) {
-                bgUpload(elem)
-              });
+              channel.bind('dataset_failed', function(data) {
+                $('#spinner').addClass('hidden')
+                $('body').scrollTop(0)
+                $(data).each(function(i, message) {
+                  alert = $('<div class="alert alert-danger" role="alert">').text(message)
+                  $('#main').prepend(alert)
+                })
 
-              // Destroy any existing progress bars
-              $('.progress').addClass('hidden')
-            })
-          }
-        })
+                $('.bg-upload').each(function(i, elem) {
+                  bgUpload(elem)
+                });
+
+                // Destroy any existing progress bars
+                $('.progress').addClass('hidden')
+              })
+            }
+          })
+        } else {
+          $('body').scrollTop(0)
+          alert = $('<div class="alert alert-danger" role="alert">').text('You must add at least one file')
+          $('#main').prepend(alert)
+          $('#spinner').addClass('hidden')
+        }
 
         e.preventDefault();
       })
