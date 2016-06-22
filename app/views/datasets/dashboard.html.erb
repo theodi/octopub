@@ -6,3 +6,28 @@
 </h1>
 
 <%= render partial: "datasets" %>
+
+<% content_for :extra_js do %>
+  <script src="//js.pusher.com/2.2/pusher.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      Pusher.host = 'ws-eu.pusher.com';
+      Pusher.sockjs_host = 'sockjs-eu.pusher.com';
+
+      var pusher = new Pusher('<%= Pusher.key %>');
+
+      $('tr').each(function(i, r) {
+        row = $(r)
+        if (row.data('build-status') == "building") {
+          channelID = "buildStatus" + row.data('dataset-id')
+          channel = pusher.subscribe(channelID);
+
+          channel.bind('dataset_built', function(data) {
+            row.find('.build-message').addClass('hidden')
+            row.find('.dataset-link').removeClass('hidden')
+          })
+        }
+      })
+    })
+  </script>
+<% end %>
