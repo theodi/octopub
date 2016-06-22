@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527105414) do
+ActiveRecord::Schema.define(version: 20160622094152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20160527105414) do
     t.text     "datapackage_sha"
     t.string   "owner"
     t.string   "owner_avatar"
+    t.string   "build_status"
   end
 
   create_table "users", force: true do |t|
