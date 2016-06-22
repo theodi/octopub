@@ -79,7 +79,13 @@ class DatasetFile < ActiveRecord::Base
 
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+
+        do_rest_stuff schema
       end
+    end
+
+    def do_rest_stuff schema
+      require "pry" ; binding.pry
     end
 
     def check_csv
