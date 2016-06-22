@@ -1,10 +1,11 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
-  before_filter :get_dataset, only: [:edit, :update, :destroy]
+  before_filter :get_dataset, only: [:edit, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
+  before_filter :set_direct_post, only: [:edit, :new]
   before_filter(only: :index) { alternate_formats [:json, :feed] }
 
   skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
@@ -45,31 +46,33 @@ class DatasetsController < ApplicationController
   end
 
   def create
-    @dataset = current_user.datasets.new(dataset_params)
-    params["files"].each do |file|
-      @dataset.dataset_files << DatasetFile.new_file(file)
-    end
+    if params[:async]
+      Dataset.delay.create_dataset(dataset_params, params["files"], current_user, perform_async: true, channel_id: params[:channel_id])
+      head :accepted
+    else
+      @dataset = Dataset.create_dataset(dataset_params, params["files"], current_user)
 
-    respond_to do |format|
-      format.html do
-        if @dataset.save
-          redirect_to dashboard_path, :notice => "Dataset created sucessfully"
-        else
-          generate_errors
-          render :new
+      respond_to do |format|
+        format.html do
+          if @dataset.save
+            redirect_to dashboard_path, :notice => "Dataset created sucessfully"
+          else
+            generate_errors
+            render :new
+          end
         end
-      end
 
-      format.json do
-        if @dataset.save
-          response = (@dataset.attributes).merge({
-            gh_pages_url: @dataset.gh_pages_url
-          })
-          render json: response.to_json
-        else
-          render json: {
-            errors: generate_errors
-          }.to_json
+        format.json do
+          if @dataset.save
+            response = (@dataset.attributes).merge({
+              gh_pages_url: @dataset.gh_pages_url
+            })
+            render json: response.to_json
+          else
+            render json: {
+              errors: generate_errors
+            }.to_json
+          end
         end
       end
     end
@@ -81,43 +84,33 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    @dataset.fetch_repo
-    @dataset.assign_attributes(dataset_update_params) if dataset_update_params
+    if params[:async]
+      Dataset.delay.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
+      head :accepted
+    else
+      @dataset = Dataset.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files])
 
-    params[:files].each do |file|
-      if file["id"]
-        f = @dataset.dataset_files.find { |f| f.id == file["id"].to_i }
-        f.update_file(file)
-      else
-        f = DatasetFile.new_file(file)
-        @dataset.dataset_files << f
-        if f.save
-          f.add_to_github
-          f.file = nil
+      respond_to do |format|
+        format.html do
+          if @dataset.save
+            redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
+          else
+            generate_errors
+            render :edit, status: 400
+          end
         end
-      end
-    end
 
-    respond_to do |format|
-      format.html do
-        if @dataset.save
-          redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
-        else
-          generate_errors
-          render :edit, status: 400
-        end
-      end
-
-      format.json do
-        if @dataset.save
-          response = (@dataset.attributes).merge({
-            gh_pages_url: @dataset.gh_pages_url
-          })
-          render json: response.to_json, status: 201
-        else
-          render json: {
-            errors: generate_errors
-          }.to_json, status: 400
+        format.json do
+          if @dataset.save
+            response = (@dataset.attributes).merge({
+              gh_pages_url: @dataset.gh_pages_url
+            })
+            render json: response.to_json, status: 201
+          else
+            render json: {
+              errors: generate_errors
+            }.to_json, status: 400
+          end
         end
       end
     end
@@ -186,6 +179,10 @@ class DatasetsController < ApplicationController
     else
       flash[:notice] = messages.join('<br>')
     end
+  end
+
+  def set_direct_post
+    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
   end
 
 end

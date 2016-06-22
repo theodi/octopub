@@ -1,4 +1,4 @@
-<fieldset class="file">
+<fieldset class="file bg-upload">
   <div class="well bg-info">
     <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name') %>
     <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
@@ -8,24 +8,12 @@
           <label class="control-label">
             Current file
           </label>
-          <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file", class: "change-file" %> </p>
+          <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
         </div>
       </div>
     <% else %>
-      <%= f.file_field "files[][file]", label: "File" %>
+      <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
     <% end %>
     <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
   </div>
 </fieldset>
-
-<script>
-  var container
-
-  $('input.change-file').on('click', function(e) {
-    e.stopImmediatePropagation();
-    container = $(this).closest('.file')
-
-    container.find('.current-file').addClass('hidden');
-    container.find('.filename-wrapper').append('<%= f.file_field "files[][file]", label: "File" %>');
-  })
-</script>
