@@ -73,6 +73,16 @@ class Dataset < ActiveRecord::Base
     end
   end
 
+  def self.check_build_status(dataset)
+    status = Rails.configuration.octopub_admin.pages(dataset.full_name).status
+    if status == "built"
+      dataset.update_column(:build_status, "built")
+    else
+      dataset.update_column(:build_status, nil)
+      Dataset.delay.get_build_status(dataset)
+    end
+  end
+
   def create_contents(filename, file)
     @repo.add_file(filename, file)
   end
@@ -258,4 +268,5 @@ class Dataset < ActiveRecord::Base
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
       end
     end
+
 end

@@ -545,4 +545,33 @@ describe Dataset do
     end
   end
 
+  context 'checks the build status of a dataset', :vcr do
+
+    before(:each) do
+      @dataset = create(:dataset)
+      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
+    end
+
+    it 'returns straight away on built' do
+      Dataset.check_build_status(@dataset)
+
+      expect(@dataset.build_status).to eq('built')
+    end
+
+    it 'requeues if dataset is not built yet' do
+      expect(Rails.configuration.octopub_admin).to receive(:pages).with(@dataset.full_name) {
+        stub = double(Sawyer::Resource)
+        expect(stub).to receive(:status) { "building" }
+        stub
+      }
+
+      expect {
+        Dataset.check_build_status(@dataset)
+      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
+      
+      expect(@dataset.build_status).to eq(nil)
+    end
+
+  end
+
 end
