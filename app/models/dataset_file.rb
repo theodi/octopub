@@ -7,7 +7,7 @@ class DatasetFile < ActiveRecord::Base
 
   def self.file_from_url(file)
     tempfile = Tempfile.new 'uploaded'
-    tempfile.write open("https:#{file}").read
+    tempfile.write open("https:#{URI.escape(file)}").read.force_encoding("UTF-8")
     tempfile.rewind
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
                                            content_type: 'text/csv',
