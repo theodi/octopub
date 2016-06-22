@@ -1,11 +1,11 @@
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil?, required: true %>
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: @dataset.name, disabled: !@dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
   <% if @dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <% end %>
-  <%= f.text_area "dataset[description]", label: "Dataset description", value: @dataset.description  %>
-  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: @dataset.publisher_name %>
-  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: @dataset.publisher_url %>
+  <%= f.text_area "dataset[description]", label: "Dataset description", value: @dataset.description, placeholder: t(:'dataset.description')  %>
+  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: @dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
+  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: @dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
   <%= f.select "dataset[license]", @licenses, label: "License", selected: @dataset.license %>
   <%= f.select "dataset[frequency]", [
                                         "One-off",

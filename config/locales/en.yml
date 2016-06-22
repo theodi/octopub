@@ -20,4 +20,16 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  dataset:
+    name: A descriptive name for this dataset
+    description: >
+      A detailed description of the dataset. Try including things like what the dataset
+      covers, what it means, and how it should be interpreted.
+    publisher_name: The name of the organisation or individual that publishes the data
+    publisher_url: A URL for the publisher
+  dataset_file:
+    name: A descriptive name for this particular file
+    description: >
+      A detailed description of this particular file. Perhaps explain why someone would
+      want this file instead of any other, what any unusual fields mean, and so on.
+    
