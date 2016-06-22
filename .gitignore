@@ -6,3 +6,4 @@ log/test.log
 tmp
 coverage
 .bundle
+dump.rdb
