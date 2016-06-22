@@ -569,6 +569,9 @@ describe Dataset do
     end
 
     it 'returns straight away on built' do
+      mock_client = mock_pusher("buildStatus#{@dataset.id}")
+      expect(mock_client).to receive(:trigger).with('dataset_built', {})
+
       Dataset.check_build_status(@dataset)
 
       expect(@dataset.build_status).to eq('built')
