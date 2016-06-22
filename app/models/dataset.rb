@@ -78,6 +78,7 @@ class Dataset < ActiveRecord::Base
     status = Rails.configuration.octopub_admin.pages(dataset.full_name).status
     if status == "built"
       dataset.update_column(:build_status, "built")
+      Pusher["buildStatus#{dataset.id}"].trigger('dataset_built', {})
     else
       dataset.update_column(:build_status, nil)
       Dataset.delay.check_build_status(dataset)
