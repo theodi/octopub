@@ -51,17 +51,21 @@ describe Dataset do
 
     context 'asynchronously' do
 
-      it 'reports success' do
+      before(:each) do
         Dataset.skip_callback(:create, :after, :create_in_github)
         Dataset.skip_callback(:create, :after, :set_owner_avatar)
+      end
 
+      after(:each) do
+        Dataset.set_callback(:create, :after, :create_in_github)
+        Dataset.set_callback(:create, :after, :set_owner_avatar)
+      end
+
+      it 'reports success' do
         mock_client = mock_pusher('beep-beep')
         expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
 
         Dataset.create_dataset(@dataset, @files, @user, perform_async: true, channel_id: "beep-beep")
-
-        Dataset.set_callback(:create, :after, :create_in_github)
-        Dataset.set_callback(:create, :after, :set_owner_avatar)
       end
 
       it 'reports errors' do
@@ -80,6 +84,12 @@ describe Dataset do
         expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
 
         Dataset.create_dataset(@dataset, files, @user, perform_async: true, channel_id: "beep-beep")
+      end
+
+      it "queues to check the build status" do
+        expect {
+          Dataset.create_dataset(@dataset, @files, @user, perform_async: true, channel_id: "beep-beep")
+        }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
       end
 
     end
@@ -157,6 +167,12 @@ describe Dataset do
         expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
 
         dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
+      end
+
+      it "queues to check the build status" do
+        expect {
+           Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
+        }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
       end
 
     end
@@ -543,6 +559,38 @@ describe Dataset do
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
+  end
+
+  context 'checks the build status of a dataset', :vcr do
+
+    before(:each) do
+      @dataset = create(:dataset)
+      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
+    end
+
+    it 'returns straight away on built' do
+      mock_client = mock_pusher("buildStatus#{@dataset.id}")
+      expect(mock_client).to receive(:trigger).with('dataset_built', {})
+
+      Dataset.check_build_status(@dataset)
+
+      expect(@dataset.build_status).to eq('built')
+    end
+
+    it 'requeues if dataset is not built yet' do
+      expect(Rails.configuration.octopub_admin).to receive(:pages).with(@dataset.full_name) {
+        stub = double(Sawyer::Resource)
+        expect(stub).to receive(:status) { "building" }
+        stub
+      }
+
+      expect {
+        Dataset.check_build_status(@dataset)
+      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
+
+      expect(@dataset.build_status).to eq(nil)
+    end
+
   end
 
 end

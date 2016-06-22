@@ -248,6 +248,7 @@ describe DatasetsController, type: :controller do
           "datapackage_sha": nil,
           "owner": nil,
           "owner_avatar": nil,
+          "build_status": nil,
           "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
         }.to_json)
       end
