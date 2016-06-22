@@ -80,7 +80,7 @@ class Dataset < ActiveRecord::Base
       dataset.update_column(:build_status, "built")
     else
       dataset.update_column(:build_status, nil)
-      Dataset.delay.get_build_status(dataset)
+      Dataset.delay.check_build_status(dataset)
     end
   end
 
