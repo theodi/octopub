@@ -85,7 +85,7 @@ class DatasetFile < ActiveRecord::Base
     def check_csv
       if dataset && file
         begin
-          CSV.parse(file.tempfile.read)
+          CSV.parse(file.tempfile.read.encode("UTF-8", invalid: :replace))
         rescue CSV::MalformedCSVError
           errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
         rescue
