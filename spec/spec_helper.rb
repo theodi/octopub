@@ -6,6 +6,8 @@ Coveralls.wear!('rails')
 require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+require 'git_data'
+
 require 'rspec/rails'
 require 'database_cleaner'
 require 'factory_girl'
@@ -13,6 +15,7 @@ require 'omniauth'
 require 'support/vcr_helper'
 require 'support/fake_data'
 require 'webmock/rspec'
+require 'sidekiq/testing'
 
 DatabaseCleaner.strategy = :truncation
 OmniAuth.config.test_mode = true
@@ -33,6 +36,11 @@ RSpec.configure do |config|
   end
 
   config.order = :random
+
+  config.before(:each) do |example|
+    # Stub out repository checking for all tests apart from GitData
+    allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+  end
 
   config.after(:each) do
     DatabaseCleaner.clean
@@ -57,4 +65,10 @@ def fake_file path
   url = "//example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, "https:#{url}").to_return(body: File.read(path))
   url
+end
+
+def mock_pusher(channel_id)
+  mock_client = double(Pusher::Channel)
+  expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
+  mock_client
 end

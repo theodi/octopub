@@ -12,7 +12,66 @@ class Dataset < ActiveRecord::Base
   attr_accessor :schema
 
   validate :check_schema
+  validate :check_repo, on: :create
   validates_associated :dataset_files
+
+  def self.create_dataset(dataset, files, user, options = {})
+    dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
+
+    dataset = user.datasets.new(dataset)
+    files.each do |file|
+      dataset.dataset_files << DatasetFile.new_file(file)
+    end
+    if options[:perform_async] === true
+      report_status(dataset, options[:channel_id])
+    else
+      dataset
+    end
+  end
+
+  def self.update_dataset(id, user_id, dataset_params, files, options = {})
+    dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
+
+    dataset = Dataset.where(id: id, user_id: user_id).first
+    dataset.fetch_repo
+    dataset.assign_attributes(dataset_params) if dataset_params
+
+    files.each do |file|
+      if file["id"]
+        f = dataset.dataset_files.find { |f| f.id == file["id"].to_i }
+        f.update_file(file)
+      else
+        f = DatasetFile.new_file(file)
+        dataset.dataset_files << f
+        if f.save
+          f.add_to_github
+          f.file = nil
+        end
+      end
+    end
+
+    if options[:perform_async] === true
+      report_status(dataset, options[:channel_id])
+    else
+      dataset
+    end
+  end
+
+  def self.report_status(dataset, channel_id)
+    if dataset.save
+      Pusher[channel_id].trigger('dataset_created', dataset)
+    else
+      messages = dataset.errors.full_messages
+      dataset.dataset_files.each do |file|
+        unless file.valid?
+          file.errors.messages[:file].each do |message|
+            messages << "Your file '#{file.title}' #{message}"
+          end
+        end
+      end
+      Pusher[channel_id].trigger('dataset_failed', messages)
+    end
+  end
 
   def create_contents(filename, file)
     @repo.add_file(filename, file)
@@ -165,6 +224,13 @@ class Dataset < ActiveRecord::Base
         unless parsed_schema.fields.first
           errors.add :schema, 'is invalid'
         end
+      end
+    end
+
+    def check_repo
+      repo_name = "#{repo_owner}/#{name.parameterize}"
+      if user.octokit_client.repository?(repo_name)
+        errors.add :repository_name, 'already exists'
       end
     end
 

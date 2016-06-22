@@ -47,7 +47,7 @@
       </nav>
 
       <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 col-md-offset-1" id="main">
           <% flash.each do |name, msg| %>
             <% if msg.is_a?(String) %>
               <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
@@ -66,4 +66,5 @@
 
 
   </body>
+  <%= yield :extra_js %>
 </html>
