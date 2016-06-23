@@ -51,6 +51,15 @@ describe GitData, :vcr do
         expect(@repo.full_name).to eq('octopub-data/my-awesome-repo')
       end
     end
+
+    context 'case insensitive' do
+      it 'creates a repo with the user' do
+        GitData.create(@username.upcase, @name, client: @client)
+
+        expect(@client.repository?(@repo_name)).to eq(true)
+        expect(@client.repository(@repo_name).owner[:login]).to eq(@username)
+      end
+    end
   end
 
   context '#find'  do
