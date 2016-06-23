@@ -83,7 +83,7 @@ describe DatasetFile do
         file = DatasetFile.new_file(@file)
 
         expect(file.title).to eq(@file["title"])
-        expect(file.filename).to eq(@tempfile.original_filename)
+        expect(file.filename).to eq("my-file.csv")
         expect(file.description).to eq(@file["description"])
         expect(file.mediatype).to eq("text/csv")
       end

@@ -19,7 +19,7 @@ class DatasetFile < ActiveRecord::Base
 
     new(
       title: file["title"],
-      filename: file["file"].original_filename,
+      filename: "#{file["title"].parameterize}.csv",
       description: file["description"],
       mediatype: get_content_type(file["file"].original_filename),
       file: file["file"]
