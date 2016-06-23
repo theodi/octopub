@@ -412,8 +412,7 @@ describe Dataset do
   end
 
   it "generates the correct datapackage contents" do
-    file = create(:dataset_file, filename: "example.csv",
-                                 title: "My Awesome File",
+    file = create(:dataset_file, title: "My Awesome File",
                                  description: "My Awesome File Description")
     dataset = build(:dataset, name: "My Awesome Dataset",
                               description: "My Awesome Description",
@@ -443,7 +442,7 @@ describe Dataset do
       "name" => "My Awesome File",
       "mediatype" => "text/csv",
       "description" => "My Awesome File Description",
-      "path" => "data/example.csv"
+      "path" => "data/my-awesome-file.csv"
     })
   end
 
