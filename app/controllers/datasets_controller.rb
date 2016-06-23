@@ -130,10 +130,11 @@ class DatasetsController < ApplicationController
 
   def clear_files
     if action_name == "update"
-      params["files"].map do |f|
+      params["files"].map! do |f|
         if f["id"]
           f
         else
+          require "pry" ; binding.pry
           unless f["file"].blank? && f["title"].blank?
             f
           end

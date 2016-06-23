@@ -25,7 +25,7 @@ describe DatasetsController, type: :controller do
       @file = @dataset.dataset_files.first
 
       @dataset_hash = {
-        name: "New name",
+      #  name: "New name",
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
@@ -286,6 +286,42 @@ describe DatasetsController, type: :controller do
           end
         end
       end
+
+    end
+
+    it 'filters out empty file params' do
+
+      files = [
+        {
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+        },
+        {
+          title: "New file",
+          description: "New file description",
+          file: @new_file
+        },
+        {
+          title: "This should get binned"
+        }
+      ]
+
+      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user.id, @dataset_hash, [
+        {
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+        },
+        {
+          title: "New file",
+          description: "New file description",
+          file: @new_file
+        }
+      ]
+      )
+
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: files
 
     end
 
