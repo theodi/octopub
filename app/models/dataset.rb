@@ -65,7 +65,7 @@ class Dataset < ActiveRecord::Base
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
         unless file.valid?
-          file.errors.messages[:file].each do |message|
+          (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
           end
         end
