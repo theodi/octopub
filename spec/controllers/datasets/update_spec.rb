@@ -147,7 +147,6 @@ describe DatasetsController, type: :controller do
 
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
-              title: "New title",
               description: "New description"
              }]
 
@@ -161,7 +160,6 @@ describe DatasetsController, type: :controller do
           expect(@dataset.license).to eq("OGL-UK-3")
           expect(@dataset.frequency).to eq("annual")
           expect(@dataset.dataset_files.count).to eq(1)
-          expect(@dataset.dataset_files.first.title).to eq("New title")
           expect(@dataset.dataset_files.first.description).to eq("New description")
         end
 

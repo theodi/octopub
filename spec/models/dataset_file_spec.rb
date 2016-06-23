@@ -65,7 +65,7 @@ describe DatasetFile do
   end
 
   context "self.new_file" do
-    
+
     context "with uploaded file" do
 
       before(:each) do
@@ -89,7 +89,7 @@ describe DatasetFile do
       end
 
     end
-    
+
     context "with file at the end of a URL" do
 
       before(:each) do
@@ -112,7 +112,7 @@ describe DatasetFile do
       end
 
     end
-    
+
   end
 
   context "update_file" do
@@ -125,14 +125,12 @@ describe DatasetFile do
 
       new_file = {
         "id" => file.id,
-        "title" => 'My File',
         "file" => tempfile,
         "description" => 'A new description',
       }
 
       file.update_file(new_file)
 
-      expect(file.title).to eq(new_file["title"])
       expect(file.filename).to eq('test-data.csv')
       expect(file.description).to eq(new_file["description"])
       expect(file.mediatype).to eq("text/csv")
@@ -150,7 +148,6 @@ describe DatasetFile do
       expect(file).to_not receive(:update_in_github)
       file.update_file(new_file)
 
-      expect(file.title).to eq(new_file["title"])
       expect(file.description).to eq(new_file["description"])
       expect(file.mediatype).to eq("text/csv")
     end
