@@ -577,7 +577,7 @@ describe Dataset do
     end
 
     it 'requeues if dataset is not built yet' do
-      expect(Rails.configuration.octopub_admin).to receive(:pages).with(@dataset.full_name) {
+      expect(@dataset.user.octokit_client).to receive(:pages).with(@dataset.full_name) {
         stub = double(Sawyer::Resource)
         expect(stub).to receive(:status) { "building" }
         stub
