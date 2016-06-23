@@ -44,11 +44,21 @@ describe GitData, :vcr do
 
       it 'creates a repo' do
         expect(@client.repository?(@repo_name)).to eq(true)
+        expect(@client.repository(@repo_name).owner[:login]).to eq('octopub-data')
       end
 
       it 'sets the relevant instance variables' do
         expect(@repo.html_url).to eq('https://github.com/octopub-data/my-awesome-repo')
         expect(@repo.full_name).to eq('octopub-data/my-awesome-repo')
+      end
+    end
+
+    context 'case insensitive' do
+      it 'creates a repo with the user' do
+        GitData.create(@username.upcase, @name, client: @client)
+
+        expect(@client.repository?(@repo_name)).to eq(true)
+        expect(@client.repository(@repo_name).owner[:login]).to eq(@username)
       end
     end
   end

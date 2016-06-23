@@ -4,7 +4,7 @@ class GitData
 
   def self.create(owner, repo_name, options = {})
     client = options[:client]
-    if client.user[:login] == owner
+    if client.user[:login].downcase == owner.downcase
       repo = client.create_repository(repo_name.parameterize, auto_init: true)
     else
       repo = client.create_repository(repo_name.parameterize, auto_init: true, organization: owner)
