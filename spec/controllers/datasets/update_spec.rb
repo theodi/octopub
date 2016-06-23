@@ -146,9 +146,9 @@ describe DatasetsController, type: :controller do
           @file.file = nil
 
           put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-              id: @file.id,
-              description: "New description"
-             }]
+            id: @file.id,
+            description: "New description"
+          }]
 
           expect(response).to redirect_to(dashboard_path)
           @dataset.reload
@@ -300,30 +300,31 @@ describe DatasetsController, type: :controller do
         {
           title: "New file",
           description: "New file description",
-          file: @new_file
+          file: "http://example.com/new-file.csv"
         },
         {
           title: "This should get binned"
         }
       ]
 
-      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user.id, @dataset_hash, [
-        {
-          id: @file.id,
-          title: "New title",
-          description: "New description"
-        },
-        {
-          title: "New file",
-          description: "New file description",
-          file: @new_file
-        }
-      ]
-      )
+      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
+          {
+            "id" => @file.id.to_s,
+            "title" => "New title",
+            "description" => "New description"
+          },
+          {
+            "title" => "New file",
+            "description" => "New file description",
+            "file" => "http://example.com/new-file.csv"
+          }
+        ]
+      ) { build(:dataset) }
 
       put 'update', id: @dataset.id, dataset: @dataset_hash, files: files
 
     end
 
   end
+
 end
