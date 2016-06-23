@@ -129,7 +129,19 @@ class DatasetsController < ApplicationController
   end
 
   def clear_files
-    params["files"].delete_if { |f| f["file"].blank? && f["title"].blank? }
+    if action_name == "update"
+      params["files"].map do |f|
+        if f["id"]
+          f
+        else
+          unless f["file"].blank? && f["title"].blank?
+            f
+          end
+        end
+      end.delete_if { |f| f.blank? }
+    else
+      params["files"].delete_if { |f| f["file"].blank? && f["title"].blank? }
+    end
   end
 
   def check_files
