@@ -44,6 +44,7 @@ describe GitData, :vcr do
 
       it 'creates a repo' do
         expect(@client.repository?(@repo_name)).to eq(true)
+        expect(@client.repository(@repo_name).owner[:login]).to eq('octopub-data')
       end
 
       it 'sets the relevant instance variables' do
