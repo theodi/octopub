@@ -1,6 +1,6 @@
 <fieldset class="file bg-upload">
   <div class="well bg-info">
-    <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name') %>
+    <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), disabled: !file.id.nil? %>
     <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
     <% if file.filename %>
       <div class="form-group filename-wrapper">
