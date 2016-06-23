@@ -8,18 +8,28 @@ describe DatasetFile do
   end
 
   it "generates the correct urls" do
-    file = create(:dataset_file, filename: "example.csv")
+    file = create(:dataset_file, title: "Example")
     dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
 
     expect(file.github_url).to eq("http://github.com/user-mcuser/my-repo/data/example.csv")
     expect(file.gh_pages_url).to eq("http://user-mcuser.github.io/my-repo/data/example.csv")
   end
 
+  it "generates a filename" do
+    file = create(:dataset_file, title: "Something Terrible")
+    expect(file.filename).to eq("something-terrible.csv")
+  end
+
+  it "errors without a title" do
+    file = build(:dataset_file, title: nil)
+    expect(file.valid?).to eq(false)
+  end
+
   context "add_to_github" do
 
     before(:each) do
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
-      @file = build(:dataset_file, filename: "example.csv", file: @tempfile)
+      @file = create(:dataset_file, title: "Example", file: @tempfile)
 
       @dataset = build(:dataset, repo: "my-repo", user: @user)
       @dataset.dataset_files << @file
@@ -37,7 +47,7 @@ describe DatasetFile do
 
     before(:each) do
       @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
-      @file = create(:dataset_file, filename: "example.csv", file: @tempfile)
+      @file = create(:dataset_file, title: "Example", file: @tempfile)
 
       @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
     end
@@ -53,7 +63,7 @@ describe DatasetFile do
   context "delete_from_github" do
 
     it "deletes a file from github" do
-      file = create(:dataset_file, filename: "example.csv")
+      file = create(:dataset_file, title: "Example")
       dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
 
       expect(dataset).to receive(:delete_contents).with("example.csv")
@@ -118,7 +128,7 @@ describe DatasetFile do
   context "update_file" do
 
     it "updates a file" do
-      file = create(:dataset_file, filename: 'test-data.csv')
+      file = create(:dataset_file, title: 'Test Data')
 
       path = File.join(Rails.root, 'spec', 'fixtures', 'test-data0.csv')
       tempfile = Rack::Test::UploadedFile.new(path, "text/csv")

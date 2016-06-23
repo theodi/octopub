@@ -1,7 +1,11 @@
 class DatasetFile < ActiveRecord::Base
 
   belongs_to :dataset
+
   validate :check_schema, :check_csv
+  validates_presence_of :title
+
+  after_validation :set_filename
 
   attr_accessor :file
 
@@ -17,9 +21,8 @@ class DatasetFile < ActiveRecord::Base
   def self.new_file(file)
     file['file'] = file_from_url(file['file']) if file["file"].class == String
 
-    new(
+    create(
       title: file["title"],
-      filename: "#{file["title"].parameterize}.csv",
       description: file["description"],
       mediatype: get_content_type(file["file"].original_filename),
       file: file["file"]
@@ -92,6 +95,10 @@ class DatasetFile < ActiveRecord::Base
           file.tempfile.rewind
         end
       end
+    end
+
+    def set_filename
+      self.filename = "#{title.parameterize}.csv" rescue nil
     end
 
 end
