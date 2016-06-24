@@ -4,10 +4,10 @@ class User < ActiveRecord::Base
 
   before_create :generate_api_key
 
-  def self.refresh_datasets id, channel_id
+  def self.refresh_datasets id, channel_id = nil
     user = User.find id
     user.send(:get_user_repos)
-    Pusher[channel_id].trigger("refreshed", {})
+    Pusher[channel_id].trigger("refreshed", {}) if channel_id
   end
 
   def self.find_for_github_oauth(auth)
