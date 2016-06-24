@@ -28,11 +28,11 @@ class DatasetsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @datasets = current_user.datasets.paginate(page: params[:page])
+        @datasets = current_user.all_datasets.paginate(page: params[:page])
       end
 
       format.json do
-        @datasets = current_user.datasets
+        @datasets = current_user.all_datasets
 
         render json: {
           datasets: @datasets
