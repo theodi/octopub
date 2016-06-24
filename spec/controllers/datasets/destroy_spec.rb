@@ -12,10 +12,8 @@ describe DatasetsController, type: :controller do
 
       @dataset = create(:dataset, user: @user)
 
-      expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) {
-        [
-          @dataset
-        ]
+      expect(Dataset).to receive(:find).with(@dataset.id.to_s) {
+        @dataset
       }
 
       expect(@dataset).to receive(:fetch_repo)

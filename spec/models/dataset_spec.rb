@@ -128,8 +128,8 @@ describe Dataset do
          }
        ]
 
-       expect(Dataset).to receive(:where).with(id: @dataset.id, user_id: @user.id) { [@dataset] }
-       allow(@dataset).to receive(:fetch_repo) { nil }
+       expect(Dataset).to receive(:find).with(@dataset.id) { @dataset }
+       allow(@dataset).to receive(:fetch_repo).with(@user.octokit_client) { nil }
     end
 
     after(:each) do
@@ -137,7 +137,7 @@ describe Dataset do
     end
 
     it 'inline' do
-      dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files)
+      dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files)
 
       expect(dataset).to be_valid
     end
@@ -148,7 +148,7 @@ describe Dataset do
         mock_client = mock_pusher('beep-beep')
         expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
 
-        dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
+        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
       end
 
       it 'reports errors' do
@@ -166,12 +166,12 @@ describe Dataset do
         mock_client = mock_pusher('beep-beep')
         expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
 
-        dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
+        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
       end
 
       it "queues to check the build status" do
         expect {
-           Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
+           Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
         }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
       end
 

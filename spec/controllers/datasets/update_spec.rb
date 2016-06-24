@@ -50,7 +50,7 @@ describe DatasetsController, type: :controller do
       before(:each) do
         @repo = double(GitData)
 
-        expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
+        expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
         expect(@dataset).to receive(:update_datapackage)
         expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
@@ -145,13 +145,12 @@ describe DatasetsController, type: :controller do
         it 'updates a dataset' do
           @file.file = nil
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @file.id,
             description: "New description"
           }]
 
           expect(response).to redirect_to(dashboard_path)
-          @dataset.reload
 
           expect(@dataset.name).to eq("Dataset")
           expect(@dataset.description).to eq("New description")
@@ -307,7 +306,7 @@ describe DatasetsController, type: :controller do
         }
       ]
 
-      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
+      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user, @dataset_hash.stringify_keys!, [
           {
             "id" => @file.id.to_s,
             "title" => "New title",

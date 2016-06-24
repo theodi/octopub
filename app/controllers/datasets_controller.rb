@@ -90,10 +90,10 @@ class DatasetsController < ApplicationController
 
   def update
     if params[:async]
-      Dataset.delay(retry: false).update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
+      Dataset.delay(retry: false).update_dataset(params["id"], current_user, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
-      @dataset = Dataset.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files])
+      @dataset = Dataset.update_dataset(params["id"], current_user, dataset_update_params, params[:files])
 
       respond_to do |format|
         format.html do
