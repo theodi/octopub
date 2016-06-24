@@ -43,6 +43,7 @@ class DatasetsController < ApplicationController
 
   def refresh
     User.delay.refresh_datasets(current_user.id)
+    head :accepted
   end
 
   def new

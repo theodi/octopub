@@ -7,8 +7,6 @@ class User < ActiveRecord::Base
   def self.refresh_datasets id
     user = User.find id
     user.send(:get_user_repos)
-
-    head :accepted
   end
 
   def self.find_for_github_oauth(auth)
