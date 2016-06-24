@@ -1,6 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
+  before_filter :check_permissions, only: [:edit, :update, :delete]
   before_filter :get_dataset, only: [:edit, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
@@ -23,22 +24,27 @@ class DatasetsController < ApplicationController
   end
 
   def dashboard
-    current_user.refresh_datasets if params[:refresh]
     @dashboard = true
 
     respond_to do |format|
       format.html do
-        @datasets = current_user.datasets.paginate(page: params[:page])
+        @datasets = current_user.all_datasets.paginate(page: params[:page])
       end
 
       format.json do
-        @datasets = current_user.datasets
+        @datasets = current_user.all_datasets
 
         render json: {
           datasets: @datasets
         }.to_json
       end
     end
+  end
+
+  def refresh
+    User.delay.refresh_datasets(current_user.id, params[:channel_id])
+
+    head :accepted
   end
 
   def new
@@ -79,16 +85,15 @@ class DatasetsController < ApplicationController
   end
 
   def edit
-    @dataset = current_user.datasets.where(id: params["id"]).first
     render_404 and return if @dataset.nil?
   end
 
   def update
     if params[:async]
-      Dataset.delay(retry: false).update_dataset(params["id"], current_user.id, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
+      Dataset.delay(retry: false).update_dataset(params["id"], current_user, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
-      @dataset = Dataset.update_dataset(params["id"], current_user.id, dataset_update_params, params[:files])
+      @dataset = Dataset.update_dataset(params["id"], current_user, dataset_update_params, params[:files])
 
       respond_to do |format|
         format.html do
@@ -125,7 +130,7 @@ class DatasetsController < ApplicationController
   private
 
   def get_dataset
-    @dataset = Dataset.where(id: params["id"], user_id: current_user.id).first
+    @dataset = Dataset.find(params["id"])
   end
 
   def clear_files
@@ -183,6 +188,10 @@ class DatasetsController < ApplicationController
 
   def set_direct_post
     @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+  end
+
+  def check_permissions
+    render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
   end
 
 end

@@ -158,6 +158,7 @@
       $('#clone').click(function(e) {
         e.preventDefault();
         clone = $(file).clone()
+        clone.find('.title').attr('required', 'required')
         clone.appendTo('#files');
         bgUpload(clone)
       });

@@ -64,6 +64,7 @@ describe DatasetsController, type: :controller do
 
         expect(@repo).to receive(:html_url) { nil }
         expect(@repo).to receive(:name) { nil }
+        expect(@repo).to receive(:full_name) { nil }
         expect(@repo).to receive(:save)
       end
 
@@ -215,6 +216,7 @@ describe DatasetsController, type: :controller do
       it 'creates a dataset with JSON' do
         expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
         expect(@repo).to receive(:name) { 'my-cool-repo' }
+        expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
         expect(@repo).to receive(:save)
 
         post 'create', :format => :json, dataset: {
@@ -249,6 +251,7 @@ describe DatasetsController, type: :controller do
           "owner": nil,
           "owner_avatar": nil,
           "build_status": nil,
+          "full_name":"user-mc-user/my-cool-repo",
           "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
         }.to_json)
       end
@@ -263,6 +266,7 @@ describe DatasetsController, type: :controller do
         it 'creates a dataset sucessfully' do
           expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
           expect(@repo).to receive(:name) { 'my-cool-repo' }
+          expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
           expect(@repo).to receive(:save)
 
           path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
@@ -324,6 +328,7 @@ describe DatasetsController, type: :controller do
       it 'skips the authenticity token if creating via the API' do
         expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
         expect(@repo).to receive(:name) { 'my-cool-repo' }
+        expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
         expect(@repo).to receive(:save)
         expect(controller).to_not receive(:verify_authenticity_token)
 
