@@ -203,6 +203,7 @@ describe Dataset do
       obj = double(GitData)
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
+      expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
       obj
     }
 
@@ -223,6 +224,7 @@ describe Dataset do
       obj = double(GitData)
       expect(obj).to receive(:html_url) { nil }
       expect(obj).to receive(:name) { name.parameterize }
+      expect(obj).to receive(:full_name) { "my-cool-organization/#{name.parameterize}" }
       obj
     }
 
