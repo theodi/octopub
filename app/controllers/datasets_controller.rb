@@ -23,7 +23,6 @@ class DatasetsController < ApplicationController
   end
 
   def dashboard
-    current_user.refresh_datasets if params[:refresh]
     @dashboard = true
 
     respond_to do |format|

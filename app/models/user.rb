@@ -24,16 +24,6 @@ class User < ActiveRecord::Base
     @client
   end
 
-  def refresh_datasets
-    datasets.all.each do |dataset|
-      begin
-        octokit_client.repository(dataset.full_name)
-      rescue Octokit::NotFound
-        dataset.delete
-      end
-    end
-  end
-
   def github_username
     name.parameterize
   end

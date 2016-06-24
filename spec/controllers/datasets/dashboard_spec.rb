@@ -35,23 +35,6 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(2)
     end
 
-    it "refreshes datasets" do
-      # This dataset exists
-      dataset1 = create(:dataset, user: @user, repo: "dataset-1")
-      allow_any_instance_of(Octokit::Client).to receive(:repository).with(dataset1.full_name)
-
-      # This dataset has gone away
-      dataset2 = create(:dataset, user: @user, repo: "dataset-2")
-      allow_any_instance_of(Octokit::Client).to receive(:repository).with(dataset2.full_name) { raise Octokit::NotFound }
-
-      sign_in @user
-
-      get 'dashboard', refresh: true
-
-      expect(assigns(:datasets).count).to eq(1)
-      expect(assigns(:datasets).first).to eq(dataset1)
-    end
-
     it 'gets a JSON dashboard' do
       5.times { |i| create(:dataset, name: "Dataset #{i}") }
 
