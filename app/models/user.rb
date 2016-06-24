@@ -46,7 +46,11 @@ class User < ActiveRecord::Base
   end
 
   def all_datasets
-    Dataset.where(id: org_dataset_ids.concat(dataset_ids))
+    Dataset.where(id: all_dataset_ids)
+  end
+
+  def all_dataset_ids
+    org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
 
   private

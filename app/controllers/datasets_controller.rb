@@ -1,6 +1,7 @@
 class DatasetsController < ApplicationController
 
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
+  before_filter :check_permissions, only: [:edit, :update, :delete]
   before_filter :get_dataset, only: [:edit, :destroy]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
@@ -84,7 +85,6 @@ class DatasetsController < ApplicationController
   end
 
   def edit
-    @dataset = current_user.datasets.where(id: params["id"]).first
     render_404 and return if @dataset.nil?
   end
 
@@ -130,7 +130,7 @@ class DatasetsController < ApplicationController
   private
 
   def get_dataset
-    @dataset = Dataset.where(id: params["id"], user_id: current_user.id).first
+    @dataset = Dataset.find(params["id"])
   end
 
   def clear_files
@@ -188,6 +188,10 @@ class DatasetsController < ApplicationController
 
   def set_direct_post
     @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+  end
+
+  def check_permissions
+    render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
   end
 
 end
