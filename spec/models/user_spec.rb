@@ -100,6 +100,17 @@ describe User do
       expect(@user.all_datasets).to eq([@dataset1, @dataset2, dataset3])
     end
 
+    it "refreshes datasets and notifies Pusher" do
+      mock_client = mock_pusher('beep-beep')
+      expect(mock_client).to receive(:trigger).with('refreshed', {})
+
+      User.refresh_datasets(@user.id, 'beep-beep')
+
+      @user.reload
+
+      expect(@user.org_dataset_ids).to eq([@dataset1.id.to_s, @dataset2.id.to_s])
+    end
+
   end
 
 end
