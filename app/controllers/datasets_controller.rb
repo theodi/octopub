@@ -41,7 +41,8 @@ class DatasetsController < ApplicationController
   end
 
   def refresh
-    User.delay.refresh_datasets(current_user.id)
+    User.delay.refresh_datasets(current_user.id, params[:channel_id])
+
     head :accepted
   end
 
