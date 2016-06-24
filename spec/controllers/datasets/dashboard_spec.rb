@@ -20,6 +20,21 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(1)
     end
 
+    it 'gets all user and org repos', :vcr do
+      request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:github]
+
+      @user = create(:user, token: ENV['GITHUB_TOKEN'])
+
+      @dataset1 = create(:dataset, full_name: 'git-data-publisher/api-sandbox', user: @user)
+      @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
+
+      sign_in @user
+      @user.send(:get_user_repos)
+      get 'dashboard', refresh: true
+
+      expect(assigns(:datasets).count).to eq(2)
+    end
+
     it "refreshes datasets" do
       # This dataset exists
       dataset1 = create(:dataset, user: @user, repo: "dataset-1")
