@@ -4,6 +4,13 @@ class User < ActiveRecord::Base
 
   before_create :generate_api_key
 
+  def self.refresh_datasets id
+    user = User.find id
+    user.send(:get_user_repos)
+
+    head :accepted
+  end
+
   def self.find_for_github_oauth(auth)
     user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
     user.update_attributes(
@@ -64,7 +71,7 @@ class User < ActiveRecord::Base
       repos = octokit_client.repos.map do |r|
         Dataset.find_by_full_name(r.full_name).try(:id)
       end
-      repos.compact
+      repos.compact!
     end
 
     def generate_api_key

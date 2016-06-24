@@ -41,6 +41,10 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def refresh
+    User.delay.refresh_datasets(current_user.id)
+  end
+
   def new
     @dataset = Dataset.new
   end
