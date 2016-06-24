@@ -71,4 +71,35 @@ describe User do
 
   end
 
+  context "fetching datasets from other users", :vcr do
+
+    before(:each) do
+      @user = create(:user, token: ENV['GITHUB_TOKEN'])
+
+      @dataset1 = create(:dataset, full_name: 'git-data-publisher/api-sandbox', user: @user)
+      @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
+    end
+
+    it "gets all datasets for a user's orgs" do
+      expect(@user.send(:user_repos)).to eq([@dataset1.id, @dataset2.id])
+    end
+
+    it "caches dataset ids" do
+      @user.send :get_user_repos
+      expect(@user.org_dataset_ids).to eq([@dataset1.id, @dataset2.id])
+    end
+
+    it "lists datasets" do
+      @user.send :get_user_repos
+      expect(@user.org_datasets).to eq([@dataset1, @dataset2])
+    end
+
+    it "gets all datasets" do
+      @user.send :get_user_repos
+      dataset3 = create(:dataset, user: @user)
+      expect(@user.all_datasets).to eq([@dataset1, @dataset2, dataset3])
+    end
+
+  end
+
 end

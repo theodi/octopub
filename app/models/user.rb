@@ -45,7 +45,27 @@ class User < ActiveRecord::Base
     @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
   end
 
+  def org_datasets
+    Dataset.where(id: org_dataset_ids)
+  end
+
+  def all_datasets
+    Dataset.where(id: org_dataset_ids.concat(dataset_ids))
+  end
+
   private
+
+    def get_user_repos
+      self.update_column(:org_dataset_ids, user_repos)
+    end
+
+    def user_repos
+      octokit_client.auto_paginate = true
+      repos = octokit_client.repos.map do |r|
+        Dataset.find_by_full_name(r.full_name).try(:id)
+      end
+      repos.compact
+    end
 
     def generate_api_key
       self.api_key = SecureRandom.hex(10)
