@@ -30,7 +30,7 @@ describe DatasetsController, type: :controller do
 
       sign_in @user
       @user.send(:get_user_repos)
-      get 'dashboard', refresh: true
+      get 'dashboard'
 
       expect(assigns(:datasets).count).to eq(2)
     end
