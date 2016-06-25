@@ -559,6 +559,35 @@ describe Dataset do
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
+    
+    it "creates JSON files on GitHub when using a CSVW schema" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
+      schema = Rack::Test::UploadedFile.new(path, "application/json")
+      dataset = build :dataset, schema: schema
+
+      # These specs are wrong, the file: prefixes shouldn't be there
+      expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"file:/people/sam","person":"sam","age":42,"@type":"file:/people"}')
+      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"file:/people/sam","url":"/people/sam"},{"@id":"file:/people/stu","url":"/people/stu"}]')
+      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"file:/people","url":"/people"}]')
+      expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"file:/people/stu","person":"stu","age":34,"@type":"file:/people"}')
+
+      expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
+      expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
+      expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      
+      file = create(:dataset_file, dataset: dataset, 
+                                   file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
+                                   filename: "valid-cotw.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
+
+      dataset.create_files
+    end
+    
   end
 
   context 'checks the build status of a dataset', :vcr do

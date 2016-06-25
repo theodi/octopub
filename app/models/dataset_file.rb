@@ -80,12 +80,23 @@ class DatasetFile < ActiveRecord::Base
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
 
-        do_rest_stuff schema
+        create_json_api_files schema
       end
     end
 
-    def do_rest_stuff schema
-      require "pry" ; binding.pry
+    def create_json_api_files schema
+      return unless schema.class == Csvlint::Csvw::TableGroup
+      # Generate JSON outputs
+      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0].gsub("file:",""))
+      # Add individual files to dataset
+      files.each do |filename, content|
+        # Strip leading slash and create filename with extension
+        filename = filename[1..-1]
+        filename = "index" if filename == ""
+        filename += ".json"
+        # Store data as JSON in file
+        dataset.create_contents(filename, content.to_json)
+      end
     end
 
     def check_csv
