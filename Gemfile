@@ -39,6 +39,7 @@ group :test do
   gem 'coveralls', require: false
   gem 'vcr'
   gem 'webmock', '~> 1.24'
+  gem 'foreman'
 end
 
 group :production do
