@@ -6,6 +6,7 @@ class SessionsController < ApplicationController
       redirect_to redirect_url(api_key: user.api_key)
     else
       session[:user_id] = user.id
+      User.delay.refresh_datasets(user.id)
       redirect_to root_url, :notice => "Signed in!"
     end
   end

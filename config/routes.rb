@@ -6,7 +6,11 @@ Rails.application.routes.draw do
   get "/signout" => "sessions#destroy", :as => :signout
   get "/redirect" => "sessions#redirect", :as => :redirect
 
-  resources :datasets
+  resources :datasets do
+    collection do
+      get "/refresh", action: 'refresh'
+    end
+  end
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
 

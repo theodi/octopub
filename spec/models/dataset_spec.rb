@@ -128,8 +128,8 @@ describe Dataset do
          }
        ]
 
-       expect(Dataset).to receive(:where).with(id: @dataset.id, user_id: @user.id) { [@dataset] }
-       allow(@dataset).to receive(:fetch_repo) { nil }
+       expect(Dataset).to receive(:find).with(@dataset.id) { @dataset }
+       allow(@dataset).to receive(:fetch_repo).with(@user.octokit_client) { nil }
     end
 
     after(:each) do
@@ -137,7 +137,7 @@ describe Dataset do
     end
 
     it 'inline' do
-      dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files)
+      dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files)
 
       expect(dataset).to be_valid
     end
@@ -148,7 +148,7 @@ describe Dataset do
         mock_client = mock_pusher('beep-beep')
         expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
 
-        dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
+        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
       end
 
       it 'reports errors' do
@@ -166,12 +166,12 @@ describe Dataset do
         mock_client = mock_pusher('beep-beep')
         expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
 
-        dataset = Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
+        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
       end
 
       it "queues to check the build status" do
         expect {
-           Dataset.update_dataset(@dataset.id, @user.id, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
+           Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
         }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
       end
 
@@ -203,6 +203,7 @@ describe Dataset do
       obj = double(GitData)
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
+      expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
       obj
     }
 
@@ -223,6 +224,7 @@ describe Dataset do
       obj = double(GitData)
       expect(obj).to receive(:html_url) { nil }
       expect(obj).to receive(:name) { name.parameterize }
+      expect(obj).to receive(:full_name) { "my-cool-organization/#{name.parameterize}" }
       obj
     }
 
@@ -412,8 +414,7 @@ describe Dataset do
   end
 
   it "generates the correct datapackage contents" do
-    file = create(:dataset_file, filename: "example.csv",
-                                 title: "My Awesome File",
+    file = create(:dataset_file, title: "My Awesome File",
                                  description: "My Awesome File Description")
     dataset = build(:dataset, name: "My Awesome Dataset",
                               description: "My Awesome Description",
@@ -443,7 +444,7 @@ describe Dataset do
       "name" => "My Awesome File",
       "mediatype" => "text/csv",
       "description" => "My Awesome File Description",
-      "path" => "data/example.csv"
+      "path" => "data/my-awesome-file.csv"
     })
   end
 
@@ -607,7 +608,7 @@ describe Dataset do
     end
 
     it 'requeues if dataset is not built yet' do
-      expect(Rails.configuration.octopub_admin).to receive(:pages).with(@dataset.full_name) {
+      expect(@dataset.user.octokit_client).to receive(:pages).with(@dataset.full_name) {
         stub = double(Sawyer::Resource)
         expect(stub).to receive(:status) { "building" }
         stub

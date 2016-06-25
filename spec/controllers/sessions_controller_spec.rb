@@ -28,6 +28,12 @@ describe SessionsController, type: :controller do
       expect(controller.session[:user_id]).to eq(@user.id)
     end
 
+    it 'queues up a dataset refresh' do
+      expect {
+        get :create, provider: 'github'
+      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
+    end
+
     it 'returns an API key' do
       allow(controller).to receive(:referer) { 'comma-chameleon' }
 

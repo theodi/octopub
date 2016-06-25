@@ -4,6 +4,12 @@ class User < ActiveRecord::Base
 
   before_create :generate_api_key
 
+  def self.refresh_datasets id, channel_id = nil
+    user = User.find id
+    user.send(:get_user_repos)
+    Pusher[channel_id].trigger("refreshed", {}) if channel_id
+  end
+
   def self.find_for_github_oauth(auth)
     user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
     user.update_attributes(
@@ -17,16 +23,6 @@ class User < ActiveRecord::Base
   def octokit_client
     @client ||= Octokit::Client.new :access_token => token
     @client
-  end
-
-  def refresh_datasets
-    datasets.all.each do |dataset|
-      begin
-        octokit_client.repository(dataset.full_name)
-      rescue Octokit::NotFound
-        dataset.delete
-      end
-    end
   end
 
   def github_username
@@ -45,7 +41,31 @@ class User < ActiveRecord::Base
     @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
   end
 
+  def org_datasets
+    Dataset.where(id: org_dataset_ids)
+  end
+
+  def all_datasets
+    Dataset.where(id: all_dataset_ids)
+  end
+
+  def all_dataset_ids
+    org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
+  end
+
   private
+
+    def get_user_repos
+      self.update_column(:org_dataset_ids, user_repos)
+    end
+
+    def user_repos
+      octokit_client.auto_paginate = true
+      repos = octokit_client.repos.map do |r|
+        Dataset.find_by_full_name(r.full_name).try(:id)
+      end
+      repos.compact!
+    end
 
     def generate_api_key
       self.api_key = SecureRandom.hex(10)

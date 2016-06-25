@@ -29,11 +29,11 @@ class Dataset < ActiveRecord::Base
     end
   end
 
-  def self.update_dataset(id, user_id, dataset_params, files, options = {})
+  def self.update_dataset(id, user, dataset_params, files, options = {})
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
 
-    dataset = Dataset.where(id: id, user_id: user_id).first
-    dataset.fetch_repo
+    dataset = Dataset.find(id)
+    dataset.fetch_repo(user.octokit_client)
     dataset.assign_attributes(dataset_params) if dataset_params
 
     files.each do |file|
@@ -65,7 +65,7 @@ class Dataset < ActiveRecord::Base
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
         unless file.valid?
-          file.errors.messages[:file].each do |message|
+          (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
           end
         end
@@ -75,7 +75,7 @@ class Dataset < ActiveRecord::Base
   end
 
   def self.check_build_status(dataset)
-    status = Rails.configuration.octopub_admin.pages(dataset.full_name).status
+    status = dataset.user.octokit_client.pages(dataset.full_name).status
     if status == "built"
       dataset.update_column(:build_status, "built")
       Pusher["buildStatus#{dataset.id}"].trigger('dataset_built', {})
@@ -176,9 +176,9 @@ class Dataset < ActiveRecord::Base
     owner.presence || user.github_username
   end
 
-  def fetch_repo
+  def fetch_repo(client = user.octokit_client)
     begin
-      @repo = GitData.find(repo_owner, self.name, client: user.octokit_client)
+      @repo = GitData.find(repo_owner, self.name, client: client)
       check_for_schema
     rescue Octokit::NotFound
       @repo = nil
@@ -201,7 +201,7 @@ class Dataset < ActiveRecord::Base
 
     def create_in_github
       @repo = GitData.create(repo_owner, name, client: user.octokit_client)
-      self.update_columns(url: @repo.html_url, repo: @repo.name)
+      self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       commit
     end
 

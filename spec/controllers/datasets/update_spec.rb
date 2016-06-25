@@ -25,7 +25,7 @@ describe DatasetsController, type: :controller do
       @file = @dataset.dataset_files.first
 
       @dataset_hash = {
-        name: "New name",
+      #  name: "New name",
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
@@ -50,7 +50,7 @@ describe DatasetsController, type: :controller do
       before(:each) do
         @repo = double(GitData)
 
-        expect(Dataset).to receive(:where).with(id: @dataset.id.to_s, user_id: @user.id) { [@dataset] }
+        expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
         expect(@dataset).to receive(:update_datapackage)
         expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
@@ -145,14 +145,12 @@ describe DatasetsController, type: :controller do
         it 'updates a dataset' do
           @file.file = nil
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
-              id: @file.id,
-              title: "New title",
-              description: "New description"
-             }]
+          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
+            id: @file.id,
+            description: "New description"
+          }]
 
           expect(response).to redirect_to(dashboard_path)
-          @dataset.reload
 
           expect(@dataset.name).to eq("Dataset")
           expect(@dataset.description).to eq("New description")
@@ -161,7 +159,6 @@ describe DatasetsController, type: :controller do
           expect(@dataset.license).to eq("OGL-UK-3")
           expect(@dataset.frequency).to eq("annual")
           expect(@dataset.dataset_files.count).to eq(1)
-          expect(@dataset.dataset_files.first.title).to eq("New title")
           expect(@dataset.dataset_files.first.description).to eq("New description")
         end
 
@@ -291,5 +288,42 @@ describe DatasetsController, type: :controller do
 
     end
 
+    it 'filters out empty file params' do
+
+      files = [
+        {
+          id: @file.id,
+          title: "New title",
+          description: "New description"
+        },
+        {
+          title: "New file",
+          description: "New file description",
+          file: "http://example.com/new-file.csv"
+        },
+        {
+          title: "This should get binned"
+        }
+      ]
+
+      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user, @dataset_hash.stringify_keys!, [
+          {
+            "id" => @file.id.to_s,
+            "title" => "New title",
+            "description" => "New description"
+          },
+          {
+            "title" => "New file",
+            "description" => "New file description",
+            "file" => "http://example.com/new-file.csv"
+          }
+        ]
+      ) { build(:dataset) }
+
+      put 'update', id: @dataset.id, dataset: @dataset_hash, files: files
+
+    end
+
   end
+
 end
