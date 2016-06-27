@@ -187,15 +187,16 @@ class Dataset < ActiveRecord::Base
   end
 
   def check_for_schema
-    datapackage = JSON.parse @repo.get_file('datapackage.json')
-    schema_json = datapackage['resources'].first['schema']
-    unless schema_json.nil?
-      self.schema = OpenStruct.new
-      tempfile = Tempfile.new('schema')
-      tempfile.write(schema_json.to_json)
-      tempfile.rewind
-      schema.tempfile = tempfile
+    uri = URI.parse(schema_url)
+    result = Net::HTTP.start(uri.host, uri.port) { |http| http.get(uri.path) }
+
+    if result.code.to_i < 400
+      self.schema = schema_url.gsub("http:", "")
     end
+  end
+
+  def schema_url
+    "#{gh_pages_url}/schema.json"
   end
 
   def parsed_schema
