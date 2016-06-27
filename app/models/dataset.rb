@@ -109,6 +109,7 @@ class Dataset < ActiveRecord::Base
     create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
     create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    create_contents("schema.json", open("https:#{schema}").read) if !schema.nil?
   end
 
   def create_datapackage
