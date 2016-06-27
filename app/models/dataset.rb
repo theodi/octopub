@@ -142,7 +142,7 @@ class Dataset < ActiveRecord::Base
         "mediatype" => file.mediatype,
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(open("https:#{schema}").read) unless schema.nil? || is_csv_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -197,6 +197,11 @@ class Dataset < ActiveRecord::Base
     end
   end
 
+  def parsed_schema
+    return nil if schema.nil?
+    schema.instance_variable_get("@parsed_schema") || parse_schema!
+  end
+
   private
 
     def create_in_github
@@ -248,14 +253,8 @@ class Dataset < ActiveRecord::Base
 
     def parse_schema!
       if schema.instance_variable_get("@parsed_schema").nil?
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema.tempfile, false))
+        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json("https:#{schema}"))
       end
-    end
-
-    def parsed_schema
-      return nil if schema.nil?
-      parse_schema!
-      schema.instance_variable_get("@parsed_schema")
     end
 
     def is_csv_otw?

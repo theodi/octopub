@@ -66,7 +66,7 @@ describe DatasetsController, type: :controller do
           it 'updates a file in Github' do
             filename = 'valid-schema.csv'
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = Rack::Test::UploadedFile.new(path, "text/csv")
+            file = fake_file(path)
 
             expect(@file).to receive(:update_in_github)
 

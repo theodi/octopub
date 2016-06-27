@@ -472,7 +472,7 @@ describe Dataset do
   context "schemata" do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -481,7 +481,7 @@ describe Dataset do
 
     it 'is happy with a good schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be true
@@ -489,7 +489,7 @@ describe Dataset do
 
     it 'adds the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -541,7 +541,7 @@ describe Dataset do
   context 'csv-on-the-web schema' do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -550,7 +550,7 @@ describe Dataset do
 
     it 'does not add the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -560,10 +560,10 @@ describe Dataset do
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
-    
+
     it "creates JSON files on GitHub when using a CSVW schema" do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "application/json")
+      schema = fake_file(path)
       dataset = build :dataset, schema: schema
 
       # These specs are wrong, the file: prefixes shouldn't be there
@@ -579,8 +579,8 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
       expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-      
-      file = create(:dataset_file, dataset: dataset, 
+
+      file = create(:dataset_file, dataset: dataset,
                                    file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
                                    filename: "valid-cotw.csv",
                                    title: "My Awesome File",
@@ -588,7 +588,7 @@ describe Dataset do
 
       dataset.create_files
     end
-    
+
   end
 
   context 'checks the build status of a dataset', :vcr do
