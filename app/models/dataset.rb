@@ -111,7 +111,7 @@ class Dataset < ActiveRecord::Base
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     if !schema.nil?
       create_contents("schema.json", open("https:#{schema}").read)
-      dataset_files.each { |f| f.send(:create_json_api_files, @parsed_schema) }
+      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
   end
 
