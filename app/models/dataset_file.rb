@@ -81,8 +81,6 @@ class DatasetFile < ActiveRecord::Base
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
 
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-
-        create_json_api_files schema
       end
     end
 
