@@ -88,7 +88,7 @@ class DatasetFile < ActiveRecord::Base
       return unless schema.class == Csvlint::Csvw::TableGroup
       # Generate JSON outputs
       schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0].gsub("file:",""))
+      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
       # Add individual files to dataset
       (files || []).each do |filename, content|
         # Strip leading slash and create filename with extension
