@@ -95,7 +95,16 @@ class DatasetFile < ActiveRecord::Base
         filename = filename[1..-1]
         filename = "index" if filename == ""
         filename += ".json"
+        # Strip leading slashes from urls and add json
+        ([content].flatten).each do |content_item|            
+          if content_item["url"]
+            content_item["url"] = content_item["url"].gsub(/^\//,"")
+            content_item["url"] += ".json"
+          end
+        end
+        
         # Store data as JSON in file
+        
         dataset.create_contents(filename, content.to_json)
       end
     end

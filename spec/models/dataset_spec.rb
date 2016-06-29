@@ -558,8 +558,8 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(path).read)
 
       expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
-      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"/people/sam","url":"/people/sam"},{"@id":"/people/stu","url":"/people/stu"}]')
-      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"/people","url":"/people"}]')
+      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
+      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"/people","url":"people.json"}]')
       expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"/people/stu","person":"stu","age":34,"@type":"/people"}')
 
       dataset.create_files
