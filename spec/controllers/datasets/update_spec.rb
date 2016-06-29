@@ -10,6 +10,10 @@ describe DatasetsController, type: :controller do
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
   end
 
+  before(:each, schema: true) do
+    stub_request(:get, /schema\.json/).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+  end
+
   after(:each) do
     Dataset.set_callback(:create, :after, :create_in_github)
   end
@@ -57,16 +61,13 @@ describe DatasetsController, type: :controller do
         Dataset.set_callback(:update, :after, :update_in_github)
       end
 
-      context('with schema') do
+      context('with schema', :schema) do
         context 'with schema-compliant csv' do
-          before(:each) do
-            expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
-          end
 
           it 'updates a file in Github' do
             filename = 'valid-schema.csv'
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = Rack::Test::UploadedFile.new(path, "text/csv")
+            file = fake_file(path)
 
             expect(@file).to receive(:update_in_github)
 
@@ -136,11 +137,7 @@ describe DatasetsController, type: :controller do
 
       end
 
-      context('without schema') do
-
-        before(:each) do
-          expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json')) }
-        end
+      context('without schema', schema: false) do
 
         it 'updates a dataset' do
           @file.file = nil
@@ -209,11 +206,10 @@ describe DatasetsController, type: :controller do
 
     context('unsuccessful update') do
 
-      context 'with non-compliant csv' do
+      context 'with non-compliant csv', :schema do
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-          expect(@repo).to receive(:get_file) { File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json')) }
         end
 
         it 'does not update a file in Github' do

@@ -31,11 +31,13 @@
     <% end %>
   </div>
   <% if current_page?(action: 'new') %>
-    <%=
-      f.file_field "dataset[schema]",
-      label: "Schema",
-      help: 'Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to'.html_safe
-    %>
+    <div class="bg-upload">
+      <%=
+        f.file_field "dataset[schema]",
+        label: "Schema",
+        help: 'Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to'.html_safe
+      %>
+    </div>
   <% end %>
   <p class="text-right" id="wut">
     <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>

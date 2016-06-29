@@ -74,12 +74,38 @@ class DatasetFile < ActiveRecord::Base
 
     def check_schema
       if dataset && dataset.schema && file
-        schema = Csvlint::Schema.load_from_json(dataset.schema.tempfile)
+        schema = Csvlint::Schema.load_from_json("https:#{dataset.schema}")
 
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
+
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      end
+    end
+
+    def create_json_api_files schema
+      return unless schema.class == Csvlint::Csvw::TableGroup
+      # Generate JSON outputs
+      schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
+      # Add individual files to dataset
+      (files || []).each do |filename, content|
+        # Strip leading slash and create filename with extension
+        filename = filename[1..-1]
+        filename = "index" if filename == ""
+        filename += ".json"
+        # Strip leading slashes from urls and add json
+        ([content].flatten).each do |content_item|            
+          if content_item["url"]
+            content_item["url"] = content_item["url"].gsub(/^\//,"")
+            content_item["url"] += ".json"
+          end
+        end
+        
+        # Store data as JSON in file
+        
+        dataset.create_contents(filename, content.to_json)
       end
     end
 
