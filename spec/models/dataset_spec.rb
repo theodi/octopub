@@ -540,12 +540,15 @@ describe Dataset do
       schema = fake_file(path)
       dataset = build :dataset, schema: schema
 
-      # These specs are wrong, the file: prefixes shouldn't be there
-      expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"file:/people/sam","person":"sam","age":42,"@type":"file:/people"}')
-      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"file:/people/sam","url":"/people/sam"},{"@id":"file:/people/stu","url":"/people/stu"}]')
-      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"file:/people","url":"/people"}]')
-      expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"file:/people/stu","person":"stu","age":34,"@type":"file:/people"}')
+      file = create(:dataset_file, dataset: dataset,
+                                   file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
+                                   filename: "valid-cotw.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
 
+      dataset.dataset_files << file
+
+      # These specs are wrong, the file: prefixes shouldn't be there
       expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
       expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
       expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
@@ -555,11 +558,10 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(path).read)
 
-      file = create(:dataset_file, dataset: dataset,
-                                   file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
-                                   filename: "valid-cotw.csv",
-                                   title: "My Awesome File",
-                                   description: "My Awesome File Description")
+      expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"file:/people/sam","person":"sam","age":42,"@type":"file:/people"}')
+      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"file:/people/sam","url":"/people/sam"},{"@id":"file:/people/stu","url":"/people/stu"}]')
+      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"file:/people","url":"/people"}]')
+      expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"file:/people/stu","person":"stu","age":34,"@type":"file:/people"}')
 
       dataset.create_files
     end
