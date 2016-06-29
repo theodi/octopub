@@ -87,7 +87,7 @@ class DatasetFile < ActiveRecord::Base
     def create_json_api_files schema
       return unless schema.class == Csvlint::Csvw::TableGroup
       # Generate JSON outputs
-      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0].gsub("file:","")) rescue nil
+      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0].gsub("file:",""))
       # Add individual files to dataset
       (files || []).each do |filename, content|
         # Strip leading slash and create filename with extension
