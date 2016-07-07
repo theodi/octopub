@@ -1,4 +1,6 @@
 require 'git_data'
+require 'open-uri'
+require 'open_uri_redirections'
 
 class Dataset < ActiveRecord::Base
 
@@ -190,11 +192,11 @@ class Dataset < ActiveRecord::Base
   end
 
   def check_for_schema
-    uri = URI.parse(schema_url)
-    result = Net::HTTP.start(uri.host, uri.port) { |http| http.get(uri.path) }
-
-    if result.code.to_i < 400
+    begin
+      open(schema_url, allow_redirections: :safe)
       self.schema = schema_url.gsub("http:", "")
+    rescue OpenURI::HTTPError
+      nil
     end
   end
 
