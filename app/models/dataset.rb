@@ -110,6 +110,8 @@ class Dataset < ActiveRecord::Base
     create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
     create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
     create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+    create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     if !schema.nil?
       create_contents("schema.json", open("https:#{schema}").read)
