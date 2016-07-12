@@ -21,6 +21,10 @@
 @import "font-awesome-sprockets";
 @import "font-awesome";
 
+$fsa-mid-green: #6CB33F;
+$fsa-dark-green: #006F51;
+$fsa-orange: #F15D22;
+
 body {
   padding: 20px 0;
 }
@@ -54,4 +58,32 @@ td.owner {
 
 .progress {
   margin-top: 15px;
+}
+
+img.logo {
+  height: 20px;
+}
+
+.navbar {
+  background-color: $fsa-mid-green;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+
+p.navbar-text {
+  color: white !important;
+}
+
+.btn-primary {
+  background-color: $fsa-dark-green;
+
+  &:hover {
+    background-color: $fsa-mid-green;
+  }
+}
+
+.btn-success {
+  background-color: $fsa-orange;
 }
