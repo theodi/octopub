@@ -69,6 +69,22 @@ layout: default
     </tbody>
   </table>
 
+  {% assign index_length = 0 %}
+
+  {% for item in site.data.index %}
+    {% assign index_length = forloop.length %}
+  {% endfor %}
+
+  {% if index_length > 0 %}
+    <h2>API</h2>
+
+    <ul>
+      {% for item in site.data.index %}
+        <li><a href="{{ item['url'] | | remove: '.json'}}.html">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
   <h2>Support</h2>
 
     <p>If you have support queries, suggestions or corrections to the data, please <a href="{{ site.github.issues_url }}" target="_blank">file a new issue</a> in our GitHub repository.</p>
