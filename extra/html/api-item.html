@@ -1,0 +1,76 @@
+---
+layout: default
+---
+
+{% assign type = page.dir | remove: '/' %}
+{% assign id = page.name | remove: '.md' %}
+{% assign data = site.data[type][id] %}
+{% assign hashes = "" | split:"|" %}
+{% assign keys = "" | split:"|" %}
+{% assign exclude_keys = '@id,@type' | split:',' %}
+
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        {{ site.data.datapackage.title }}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<h2>{{ data['@id'] }}</h2>
+
+<p class="lead">An <a href="{{ site.github.url }}/{{ type }}.html">{{ type | capitalize }}</a> record in <a href="{{ site.github.url }}">{{ site.data.datapackage.title }}</a></p>
+
+<table class="table table-striped table-bordered api-item">
+  <thead>
+    <tr>
+      <th scope="col">Field</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+{% for hash in data %}
+  {% unless exclude_keys contains hash[0] %}
+    <tr>
+    {% if hash[1].first ==  %}
+      <th scope="row"><strong>{{ hash[0] }}</strong></th>
+      <td>{{ hash[1]}}</td>
+    {% else %}
+      {% assign keys = keys | push: hash[0] %}
+      {% assign hashes = hashes | push: hash[1] %}
+    {% endif %}
+    </tr>
+  {% endunless %}
+{% endfor %}
+</table>
+
+{% assign count = 0 %}
+
+{% for h in hashes %}
+  <hr />
+  <h2>{{ keys[count] | capitalize }}</h2>
+  {{ increment count }}
+  <table class="table table-striped table-bordered table-condensed api-item">
+    <thead>
+      <tr>
+      {% for keys in h.first %}
+        <th scope="col">{{ keys[0] }}</th>
+      {% endfor %}
+      </tr>
+    </thead>
+  {% for items in h %}
+    <tr>
+    {% for i in items %}
+      <td>{{ i[1] }}</td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </table>
+{% endfor %}
+
+<hr />
+
+<p class="text-right" id="download">
+  Download record as <a href="{{ site.github.url }}/{{ type }}/{{ id }}.json">JSON</a>
+</p>
