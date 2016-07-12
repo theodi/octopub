@@ -24,6 +24,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
+gem 'csv2json', github: 'theodi/csv2json'
+gem 'csv2rest', github: 'theodi/csv2rest'
 gem 'csvlint'
 
 group :test do
@@ -37,6 +39,7 @@ group :test do
   gem 'coveralls', require: false
   gem 'vcr'
   gem 'webmock', '~> 1.24'
+  gem 'foreman'
 end
 
 group :production do
@@ -65,3 +68,4 @@ gem 'will_paginate-bootstrap'
 gem 'aws-sdk', '~> 2'
 gem 'pusher'
 gem 'sidekiq'
+gem 'open_uri_redirections'

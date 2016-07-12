@@ -1,0 +1,63 @@
+---
+layout: default
+---
+
+{% assign datatype = page.name | remove: '.md' %}
+
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        {{ site.data.datapackage.title }}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<h2>{{ datatype | capitalize }}</h2>
+
+{% if site.data.datapackage.publishers[0].name != '' %}
+  <h4>Published by:</h4>
+  <p>
+    <a href="{{ site.data.datapackage.publishers.first.['web'] }}">
+      {{ site.data.datapackage.publishers.first['name'] }}
+    </a>
+  </p>
+{% endif %}
+
+<table id="data-view" class="display" cellspacing="0" width="100%" class="table">
+</table>
+
+<script>
+$(document).ready(function() {
+    $('#data-view').DataTable( {
+        ajax: {
+          url: "{{ site.github.url }}/{{ datatype }}.json",
+          dataSrc: ''
+        },
+        columns: [
+          { data: '@id' }
+        ],
+        aoColumns: [
+          {
+            "mRender": function (data, type, row) {
+              return '<a href="{{ site.github.url }}'+ row['@id'] +'.html">' + row['@id'] + '</a>';
+            }
+          }
+        ],
+        searching: false,
+        ordering:  false,
+        bLengthChange: false,
+        iDisplayLength: 25,
+        dom: "<'row'<'col-sm-6'i><'col-sm-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row text-center'p>"
+    } );
+} );
+</script>
+
+<hr />
+
+<p class="text-right" id="download">
+  Download data as <a href="{{ site.github.url }}/{{ datatype }}.json">JSON</a>
+</p>

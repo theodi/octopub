@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   def all_datasets
-    Dataset.where(id: all_dataset_ids)
+    Dataset.where(id: all_dataset_ids) || []
   end
 
   def all_dataset_ids

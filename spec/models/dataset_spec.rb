@@ -273,82 +273,33 @@ describe Dataset do
   context('#fetch_repo') do
 
     before(:each) do
-      dataset = build(:dataset, user: @user, repo: "repo")
-      dataset.save
+      @dataset = create(:dataset, user: @user, repo: "repo")
 
       @double = double(GitData)
 
-      expect(GitData).to receive(:find).with(@user.github_username, dataset.name, client: a_kind_of(Octokit::Client)) {
+      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
         @double
       }
     end
 
     it "gets a repo from Github" do
-      dataset = Dataset.last
-
-      expect(dataset).to receive(:check_for_schema)
-      dataset.fetch_repo
-      expect(dataset.instance_variable_get(:@repo)).to eq(@double)
+      expect(@dataset).to receive(:check_for_schema)
+      @dataset.fetch_repo
+      expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
     end
 
     it "gets a schema" do
-      expect(@double).to receive(:get_file).with('datapackage.json') {
-        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage.json'))
-      }
+      stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
 
-      dataset = Dataset.last
-      dataset.fetch_repo
+      @dataset.fetch_repo
 
-      expect(File.read(dataset.schema.tempfile)).to eq({
-        fields: [
-          {
-            name: "Username",
-            constraints: {
-              required: true,
-              unique: true,
-              minLength: 5,
-              maxLength: 10,
-              pattern: "^[A-Za-z0-9_]*$"
-            }
-          },
-          {
-            name: "Age",
-            constraints: {
-              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-              minimum: "13",
-              maximum: "99"
-            }
-          },
-          {
-            name: "Height",
-            constraints: {
-              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-              minimum: "20"
-            }
-          },
-          {
-            name: "Weight",
-            constraints: {
-              type: "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-              maximum: "500"
-            }
-          },
-          {
-            name: "Password"
-          }
-        ]
-      }.to_json)
+      expect(@dataset.schema).to eq('//user-mcuser.github.io/repo/schema.json')
     end
 
     it 'returns nil if there is no schema present' do
-      expect(@double).to receive(:get_file).with('datapackage.json') {
-        File.read(File.join(Rails.root, 'spec', 'fixtures', 'datapackage-without-schema.json'))
-      }
+      @dataset.fetch_repo
 
-      dataset = Dataset.last
-      dataset.fetch_repo
-
-      expect(dataset.schema).to be_nil
+      expect(@dataset.schema).to be_nil
     end
 
   end
@@ -396,21 +347,48 @@ describe Dataset do
     dataset.delete_contents("my-file")
   end
 
-  it "sends the correct files to Github" do
-    dataset = build :dataset, user: @user,
-                              dataset_files: [
-                                create(:dataset_file)
-                              ]
+  context "sends the correct files to Github" do
+    it "without a schema" do
+      dataset = build :dataset, user: @user,
+                                dataset_files: [
+                                  create(:dataset_file)
+                                ]
 
-    expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
-    expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-    expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
-    expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-    expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-    expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-    expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
+      expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
+      expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+      expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
 
-    dataset.create_files
+      dataset.create_files
+    end
+
+    it "with a schema" do
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+
+      dataset = build :dataset, user: @user,
+                                dataset_files: [
+                                  create(:dataset_file)
+                                ],
+                                schema: fake_file(schema_path)
+
+      expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
+      expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
+      expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+      expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(dataset).to receive(:create_contents).with("schema.json", File.open(schema_path).read)
+
+      dataset.create_files
+    end
   end
 
   it "generates the correct datapackage contents" do
@@ -472,7 +450,7 @@ describe Dataset do
   context "schemata" do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -481,7 +459,7 @@ describe Dataset do
 
     it 'is happy with a good schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be true
@@ -489,7 +467,7 @@ describe Dataset do
 
     it 'adds the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -541,7 +519,7 @@ describe Dataset do
   context 'csv-on-the-web schema' do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -550,7 +528,7 @@ describe Dataset do
 
     it 'does not add the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      schema = Rack::Test::UploadedFile.new(path, "text/csv")
+      schema = fake_file(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -560,6 +538,42 @@ describe Dataset do
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
+
+    it "creates JSON files on GitHub when using a CSVW schema" do
+      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
+      schema = fake_file(path)
+      dataset = build :dataset, schema: schema
+
+      file = create(:dataset_file, dataset: dataset,
+                                   file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
+                                   filename: "valid-cotw.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description")
+
+      dataset.dataset_files << file
+
+      expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
+      expect(dataset).to receive(:create_contents).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(dataset).to receive(:create_contents).with("_config.yml", dataset.config)
+      expect(dataset).to receive(:create_contents).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+      expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+      expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(dataset).to receive(:create_contents).with("schema.json", File.open(path).read)
+
+      expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
+      expect(dataset).to receive(:create_contents).with("people/sam.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+      expect(dataset).to receive(:create_contents).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
+      expect(dataset).to receive(:create_contents).with("people.md", File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+      expect(dataset).to receive(:create_contents).with("index.json", '[{"@type":"/people","url":"people.json"}]')
+      expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"/people/stu","person":"stu","age":34,"@type":"/people"}')
+      expect(dataset).to receive(:create_contents).with("people/stu.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+
+      dataset.create_files
+    end
+
   end
 
   context 'checks the build status of a dataset', :vcr do

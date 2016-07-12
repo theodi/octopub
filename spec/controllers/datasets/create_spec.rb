@@ -134,7 +134,7 @@ describe DatasetsController, type: :controller do
 
       before(:each) do
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-        @schema = Rack::Test::UploadedFile.new(schema_path, "text/csv")
+        @schema = fake_file(schema_path)
       end
 
       it 'returns an error if the file does not match the schema' do
@@ -260,7 +260,7 @@ describe DatasetsController, type: :controller do
 
         before(:each) do
           schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-          @schema = Rack::Test::UploadedFile.new(schema_path, "text/csv")
+          @schema = fake_file(schema_path)
         end
 
         it 'creates a dataset sucessfully' do

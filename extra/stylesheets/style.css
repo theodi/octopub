@@ -2,6 +2,7 @@
   background-color: #f5f5f5;
   padding: 15px 0 7px 0;
   margin-top: 20px;
+  padding: 30px 0 20px 0;
 }
 
 .table-container {
@@ -9,4 +10,28 @@
   overflow: scroll;
   height: 400px;
   margin: 20px 5px;
+}
+
+.dataTables_info {
+  font-size: 1.2em;
+  margin: 15px 0 20px 0;
+}
+
+#data-view td {
+  font-size: 1.1em;
+  padding: 4px 0;
+}
+
+dt, dd {
+  font-size: 1.1em;
+  padding-bottom: 4px;
+}
+
+.table.api-item {
+  width: 90%;
+  margin: 30px auto;
+}
+
+#download {
+  font-size: 1.2em;
 }

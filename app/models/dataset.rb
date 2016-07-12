@@ -1,4 +1,6 @@
 require 'git_data'
+require 'open-uri'
+require 'open_uri_redirections'
 
 class Dataset < ActiveRecord::Base
 
@@ -108,7 +110,13 @@ class Dataset < ActiveRecord::Base
     create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
     create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
     create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+    create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    if !schema.nil?
+      create_contents("schema.json", open("https:#{schema}").read)
+      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+    end
   end
 
   def create_datapackage
@@ -142,7 +150,7 @@ class Dataset < ActiveRecord::Base
         "mediatype" => file.mediatype,
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(File.read(schema.tempfile)) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(open("https:#{schema}").read) unless schema.nil? || is_csv_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -186,15 +194,21 @@ class Dataset < ActiveRecord::Base
   end
 
   def check_for_schema
-    datapackage = JSON.parse @repo.get_file('datapackage.json')
-    schema_json = datapackage['resources'].first['schema']
-    unless schema_json.nil?
-      self.schema = OpenStruct.new
-      tempfile = Tempfile.new('schema')
-      tempfile.write(schema_json.to_json)
-      tempfile.rewind
-      schema.tempfile = tempfile
+    begin
+      open(schema_url, allow_redirections: :safe)
+      self.schema = schema_url.gsub("http:", "")
+    rescue OpenURI::HTTPError
+      nil
     end
+  end
+
+  def schema_url
+    "#{gh_pages_url}/schema.json"
+  end
+
+  def parsed_schema
+    return nil if schema.nil?
+    schema.instance_variable_get("@parsed_schema") || parse_schema!
   end
 
   private
@@ -248,14 +262,8 @@ class Dataset < ActiveRecord::Base
 
     def parse_schema!
       if schema.instance_variable_get("@parsed_schema").nil?
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema.tempfile, false))
+        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json("https:#{schema}"))
       end
-    end
-
-    def parsed_schema
-      return nil if schema.nil?
-      parse_schema!
-      schema.instance_variable_get("@parsed_schema")
     end
 
     def is_csv_otw?
