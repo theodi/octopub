@@ -4,9 +4,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   helper_method :current_user
 
-  def index
-  end
+  layout ENV['LAYOUT'] || 'application'
 
+  def index
+    render "#{ENV['INDEX_TEMPLATE'] || 'index'}.html.erb"
+  end
 
   private
 
