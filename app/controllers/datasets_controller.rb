@@ -203,7 +203,8 @@ class DatasetsController < ApplicationController
       logger.info params["files"]
 
       data["files"].each_with_index do |f, i|
-        params["files"][i] = f
+        params["files"][i]["title"] = f["title"]
+        params["files"][i]["description"] = f["description"]
       end
       logger.info params
     end
