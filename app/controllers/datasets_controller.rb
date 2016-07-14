@@ -197,10 +197,14 @@ class DatasetsController < ApplicationController
 
   def get_multipart
     if params["data"]
-      logger.info JSON.parse(params["data"])
+      temp = JSON.parse(params["data"])
+      params["dataset"] = temp["dataset"]
+
+      temp["files"].each_with_index do |f, i|
+        params["files"][i] = f
+      end
       logger.info params
-      data = JSON.parse(params["data"])
-      params = data
+
     end
   end
 
