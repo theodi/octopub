@@ -196,8 +196,9 @@ class DatasetsController < ApplicationController
   end
 
   def get_multipart
-    if params[:data]
-      params = JSON.parse(params[:data])
+    if params["data"]
+      logger.info params["data"]
+      params = JSON.parse(params["data"])
     end
   end
 
