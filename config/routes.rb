@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
   
   get "/me" => "users#edit", as: :me
+  put "/me" => "users#update"
 end
