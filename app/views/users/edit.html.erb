@@ -1,0 +1,15 @@
+<h1 class="page-header">My Details</h1>
+
+<%= bootstrap_form_tag url: me_path, method: :put do |f| %>
+
+  <%= f.email_field "user[name]", label: "Username", value: current_user.name, required: true, disabled: true %>
+
+  <%= f.email_field "user[email]", label: "Email", value: current_user.email, required: true %>
+
+  <%= f.email_field "user[api_key]", label: "API Key", value: current_user.api_key, required: true, disabled: true %>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit
+  </button>
+
+<% end %>
