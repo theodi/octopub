@@ -200,6 +200,8 @@ class DatasetsController < ApplicationController
       data = ActiveSupport::HashWithIndifferentAccess.new JSON.parse(params.delete("data"))
       params["dataset"] = data["dataset"]
 
+      logger.info params["files"]
+
       data["files"].each_with_index do |f, i|
         params["files"][i] = f
       end
