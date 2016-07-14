@@ -128,6 +128,38 @@ describe DatasetsController, type: :controller do
         expect(response.code).to eq("202")
       end
 
+      it 'extracts from data params', async: false do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+
+        data = {
+          dataset: {
+            name: @name,
+            description: @description,
+            publisher_name: @publisher_name,
+            publisher_url: @publisher_url,
+            license: @license,
+            frequency: @frequency
+          },
+          files: [
+            {
+              title: @files[0][:title],
+              description: @files[0][:description],
+            }
+          ]
+        }.to_json
+
+        request = post 'create', data: data,
+          files: [
+            {
+              file: @files[0][:file]
+            }
+          ]
+
+        expect(request).to redirect_to(dashboard_path)
+        expect(flash[:notice]).to eq("Dataset created sucessfully")
+      end
     end
 
     context('with a schema') do
