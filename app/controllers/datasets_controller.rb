@@ -3,6 +3,7 @@ class DatasetsController < ApplicationController
   before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
   before_filter :check_permissions, only: [:edit, :update, :delete]
   before_filter :get_dataset, only: [:edit, :destroy]
+  before_filter :get_multipart, only: [:create, :update]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
@@ -192,6 +193,12 @@ class DatasetsController < ApplicationController
 
   def check_permissions
     render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
+  end
+
+  def get_multipart
+    if params[:data]
+      params = JSON.parse(params[:data])
+    end
   end
 
 end
