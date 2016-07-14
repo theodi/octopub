@@ -197,14 +197,13 @@ class DatasetsController < ApplicationController
 
   def get_multipart
     if params["data"]
-      temp = JSON.parse(params["data"])
-      params["dataset"] = temp["dataset"]
+      data = ActiveSupport::HashWithIndifferentAccess.new JSON.parse(params["data"].delete)
+      params["dataset"] = data["dataset"]
 
-      temp["files"].each_with_index do |f, i|
+      data["files"].each_with_index do |f, i|
         params["files"][i] = f
       end
       logger.info params
-
     end
   end
 
