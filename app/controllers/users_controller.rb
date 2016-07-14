@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_filter :check_signed_in?, only: [:edit, :update]
+  before_filter :check_signed_in?, only: [:edit, :update, :organizations]
 
   def new
   end
@@ -11,6 +11,12 @@ class UsersController < ApplicationController
   def update
     current_user.update(user_params)
     redirect_to root_path, notice: "User details updated"
+  end
+
+  def organizations
+    render json: {
+      organizations: current_user.organizations
+    }.to_json
   end
 
   private

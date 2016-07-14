@@ -33,4 +33,28 @@ describe UsersController, type: :controller do
     expect(@user.email).to eq('newemail@example.com')
   end
 
+  it "lists a user's organizations" do
+    sign_in @user
+    orgs = [
+      {
+        name: "org1",
+        role: "admin"
+      },
+      {
+        name: "org2",
+        role: "admin"
+      },
+    ]
+
+    expect(@user.octokit_client).to receive(:org_memberships) {
+      orgs
+    }.once
+
+    get :organizations
+
+    expect(response.body).to eq({
+      organizations: orgs
+    }.to_json)
+  end
+
 end
