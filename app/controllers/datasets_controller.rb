@@ -1,8 +1,8 @@
 class DatasetsController < ApplicationController
 
-  before_filter :check_signed_in?, only: [:edit, :dashboard, :update, :create, :new]
-  before_filter :check_permissions, only: [:edit, :update, :delete]
-  before_filter :get_dataset, only: [:edit, :destroy]
+  before_filter :check_signed_in?, only: [:show, :edit, :dashboard, :update, :create, :new]
+  before_filter :check_permissions, only: [:show, :edit, :update, :delete]
+  before_filter :get_dataset, only: [:show, :edit, :destroy]
   before_filter :get_multipart, only: [:create, :update]
   before_filter :clear_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
@@ -87,6 +87,16 @@ class DatasetsController < ApplicationController
 
   def edit
     render_404 and return if @dataset.nil?
+  end
+
+  def show
+    render_404 and return if @dataset.nil?
+
+    respond_to do |format|
+      format.json do
+        render json: @dataset.to_json(include: :dataset_files)
+      end
+    end
   end
 
   def update
