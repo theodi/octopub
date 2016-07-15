@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
   def organizations
     render json: {
-      organizations: current_user.organizations
+      organizations: current_user.organizations.map { |o| o.organization.login }
     }.to_json
   end
 
