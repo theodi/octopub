@@ -62,9 +62,15 @@ describe UsersController, type: :controller do
 
     expect(response.body).to eq({
       organizations: [
-        'org1',
-        'org2',
-        'org3'
+        {
+          login: 'org1'
+        },
+        {
+          login: 'org2'
+        },
+        {
+          login: 'org3'
+        }
       ]
     }.to_json)
   end
