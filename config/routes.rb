@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     collection do
       get "/refresh", action: 'refresh'
     end
+    member do
+      get "/files", action: :files
+    end
   end
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
