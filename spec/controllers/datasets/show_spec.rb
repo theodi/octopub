@@ -16,8 +16,6 @@ describe DatasetsController, type: :controller do
 
       get 'show', id: dataset.id, format: :json
 
-      require "pry" ; binding.pry
-
       json = JSON.parse(response.body)
 
       expect(json['id']).to eq(dataset.id)
