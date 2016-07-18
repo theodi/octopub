@@ -17,6 +17,17 @@ class Dataset < ActiveRecord::Base
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
+  def self.create_certificate url
+    cert = CertificateFactory::Certificate.new url
+    gen = cert.generate
+
+    if gen[:success] == 'pending'
+      result = cert.result
+    end
+
+    result
+  end
+
   def self.create_dataset(dataset, files, user, options = {})
     dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
 
@@ -81,6 +92,7 @@ class Dataset < ActiveRecord::Base
     if status == "built"
       dataset.update_column(:build_status, "built")
       Pusher["buildStatus#{dataset.id}"].trigger('dataset_built', {})
+      Dataset.delay.create_certificate dataset.gh_pages_url
     else
       dataset.update_column(:build_status, nil)
       Dataset.delay.check_build_status(dataset)
