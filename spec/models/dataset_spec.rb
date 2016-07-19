@@ -664,7 +664,7 @@ describe Dataset do
 
       expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
 
-      Dataset.create_certificate(@dataset.id)
+      @dataset.create_certificate 
     end
 
     it 'adds the badge url to the repo' do

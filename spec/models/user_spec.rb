@@ -75,7 +75,6 @@ describe User do
 
     before(:each) do
       @user = create(:user, token: ENV['GITHUB_TOKEN'])
-
       @dataset1 = create(:dataset, full_name: 'git-data-publisher/api-sandbox', user: @user)
       @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
     end

@@ -11,6 +11,8 @@ FactoryGirl.define do
 
     after(:build) { |dataset|
       dataset.class.skip_callback(:create, :after, :create_in_github)
+      dataset.class.skip_callback(:create, :after, :build_certificate)
+      dataset.class.skip_callback(:create, :after, :send_success_email)
       dataset.class.skip_callback(:update, :after, :update_in_github)
       dataset.class.skip_callback(:create, :after, :set_owner_avatar)
 

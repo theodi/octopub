@@ -16,6 +16,8 @@ describe DatasetsController, type: :controller do
 
     Dataset.skip_callback(:create, :after, :create_in_github)
     Dataset.skip_callback(:create, :after, :set_owner_avatar)
+    Dataset.skip_callback(:create, :after, :build_certificate)
+    Dataset.skip_callback(:create, :after, :send_success_email)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
@@ -24,6 +26,8 @@ describe DatasetsController, type: :controller do
   after(:each) do
     Dataset.set_callback(:create, :after, :create_in_github)
     Dataset.set_callback(:create, :after, :set_owner_avatar)
+    Dataset.set_callback(:create, :after, :build_certificate)
+    Dataset.set_callback(:create, :after, :send_success_email)
   end
 
   describe 'create dataset' do
@@ -284,8 +288,8 @@ describe DatasetsController, type: :controller do
           "owner_avatar": nil,
           "build_status": nil,
           "full_name":"user-mc-user/my-cool-repo",
-          "certificate_url": nil,
-          "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
+          "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo",
+          "certificate_url": nil
         }.to_json)
       end
 
