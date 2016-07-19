@@ -16,19 +16,6 @@
 
       var pusher = new Pusher('<%= Pusher.key %>');
 
-      $('tr').each(function(i, r) {
-        row = $(r)
-        if (row.data('build-status') == "building") {
-          channelID = "buildStatus" + row.data('dataset-id')
-          channel = pusher.subscribe(channelID);
-
-          channel.bind('dataset_built', function(data) {
-            row.find('.build-message').addClass('hidden')
-            row.find('.dataset-link').removeClass('hidden')
-          })
-        }
-      })
-
       $('#refresh').click(function(e) {
 
         var channelID = 'datasetRefresh<%= current_user.id %>'
