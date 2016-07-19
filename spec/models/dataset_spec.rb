@@ -576,20 +576,43 @@ describe Dataset do
 
   end
 
-  context 'checks the build status of a dataset', :vcr do
+  context 'checks the build status of a dataset' do
 
     before(:each) do
       @dataset = create(:dataset)
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
     end
 
-    it 'returns straight away on built' do
-      mock_client = mock_pusher("buildStatus#{@dataset.id}")
-      expect(mock_client).to receive(:trigger).with('dataset_built', {})
+    after(:each) do
+      Sidekiq::Extensions::DelayedClass.jobs.clear
+    end
 
-      Dataset.check_build_status(@dataset)
+    context 'when built' do
+      before(:each) do
+        expect(@dataset.user.octokit_client).to receive(:pages).with(@dataset.full_name) {
+          stub = double(Sawyer::Resource)
+          expect(stub).to receive(:status) { "built" }
+          stub
+        }
 
-      expect(@dataset.build_status).to eq('built')
+        mock_client = mock_pusher("buildStatus#{@dataset.id}")
+        expect(mock_client).to receive(:trigger).with('dataset_built', {})
+      end
+
+      it 'returns straight away' do
+        Dataset.check_build_status(@dataset)
+
+        expect(@dataset.build_status).to eq('built')
+      end
+
+      it 'queues up a certificate creation' do
+        Dataset.check_build_status(@dataset)
+
+        expect(Sidekiq::Extensions::DelayedClass.jobs.count).to eq(1)
+        expect(Sidekiq::Extensions::DelayedClass.jobs[0]["args"][0]).to match(/create_certificate/)
+        expect(Sidekiq::Extensions::DelayedClass.jobs[0]["args"][0]).to match(/#{@dataset.id}/)
+      end
+
     end
 
     it 'requeues if dataset is not built yet' do
@@ -604,6 +627,58 @@ describe Dataset do
       }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
 
       expect(@dataset.build_status).to eq(nil)
+    end
+
+  end
+
+  context 'creating certificates' do
+
+    before(:each) do
+      @dataset = create(:dataset)
+      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
+      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
+      allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
+      allow(Dataset).to receive(:find).with(@dataset.id) {
+        @dataset
+      }
+    end
+
+    it 'creates a certificate' do
+      factory = double(CertificateFactory::Certificate)
+
+      expect(CertificateFactory::Certificate).to receive(:new).with(@dataset.gh_pages_url) {
+        factory
+      }
+
+      expect(factory).to receive(:generate) {
+        {
+          success: 'pending'
+        }
+      }
+
+      expect(factory).to receive(:result) {
+        {
+          certificate_url: @certificate_url
+        }
+      }
+
+      expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
+
+      Dataset.create_certificate(@dataset.id)
+    end
+
+    it 'adds the badge url to the repo' do
+      expect(@dataset).to receive(:fetch_repo)
+      expect(@dataset).to receive(:update_contents).with('_config.yml', {
+        "data_source" => ".",
+        "update_frequency" => "One-off",
+        "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
+      }.to_yaml)
+      expect(@dataset).to receive(:push_to_github)
+
+      @dataset.add_certificate_url(@certificate_url)
+
+      expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
 
   end
