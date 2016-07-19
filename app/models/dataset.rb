@@ -31,10 +31,13 @@ class Dataset < ActiveRecord::Base
   end
 
   def add_certificate_url(url)
+    url = url.gsub('.json', '')
+    update_column(:certificate_url, url)
+
     config = {
       "data_source" => ".",
       "update_frequency" => frequency,
-      "certificate_url" => url.gsub('.json', '/badge.js')
+      "certificate_url" => "#{certificate_url}/badge.js"
     }.to_yaml
 
     fetch_repo(user.octokit_client)

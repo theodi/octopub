@@ -677,6 +677,8 @@ describe Dataset do
       expect(@dataset).to receive(:push_to_github)
 
       @dataset.add_certificate_url(@certificate_url)
+
+      expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
 
   end
