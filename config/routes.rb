@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :datasets do
     collection do
       get "/refresh", action: 'refresh'
+      get "/created", action: 'created'
     end
     member do
       get "/files", action: :files

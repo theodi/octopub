@@ -127,7 +127,7 @@
       var channel = pusher.subscribe(channelID);
 
       channel.bind('dataset_created', function(data) {
-        window.location = '/dashboard?success=true'
+        window.location = '/datasets/created'
       })
       channel.bind('dataset_failed', function(data) {
         addErrors(data)

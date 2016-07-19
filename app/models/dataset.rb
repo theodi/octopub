@@ -100,8 +100,9 @@ class Dataset < ActiveRecord::Base
   end
 
   def self.report_status(dataset, channel_id)
-    if dataset.save
+    if dataset.valid?
       Pusher[channel_id].trigger('dataset_created', dataset)
+      dataset.save
     else
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|

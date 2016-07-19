@@ -48,6 +48,9 @@ class DatasetsController < ApplicationController
     head :accepted
   end
 
+  def created
+  end
+
   def new
     @dataset = Dataset.new
   end
