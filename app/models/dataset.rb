@@ -17,46 +17,6 @@ class Dataset < ActiveRecord::Base
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def send_success_email
-    DatasetMailer.success(self).deliver
-  end
-
-  def build_certificate
-    status = user.octokit_client.pages(full_name).status
-    if status == "built"
-      create_certificate
-    else
-      sleep 5
-      build_certificate
-    end
-  end
-
-  def create_certificate
-    cert = CertificateFactory::Certificate.new gh_pages_url
-
-    gen = cert.generate
-
-    if gen[:success] == 'pending'
-      result = cert.result
-      add_certificate_url(result[:certificate_url])
-    end
-  end
-
-  def add_certificate_url(url)
-    url = url.gsub('.json', '')
-    update_column(:certificate_url, url)
-
-    config = {
-      "data_source" => ".",
-      "update_frequency" => frequency,
-      "certificate_url" => "#{certificate_url}/badge.js"
-    }.to_yaml
-
-    fetch_repo(user.octokit_client)
-    update_contents('_config.yml', config)
-    push_to_github
-  end
-
   def self.create_dataset(dataset, files, user, options = {})
     dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
 
@@ -306,6 +266,46 @@ class Dataset < ActiveRecord::Base
       else
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
       end
+    end
+
+    def send_success_email
+      DatasetMailer.success(self).deliver
+    end
+
+    def build_certificate
+      status = user.octokit_client.pages(full_name).status
+      if status == "built"
+        create_certificate
+      else
+        sleep 5
+        build_certificate
+      end
+    end
+
+    def create_certificate
+      cert = CertificateFactory::Certificate.new gh_pages_url
+
+      gen = cert.generate
+
+      if gen[:success] == 'pending'
+        result = cert.result
+        add_certificate_url(result[:certificate_url])
+      end
+    end
+
+    def add_certificate_url(url)
+      url = url.gsub('.json', '')
+      update_column(:certificate_url, url)
+
+      config = {
+        "data_source" => ".",
+        "update_frequency" => frequency,
+        "certificate_url" => "#{certificate_url}/badge.js"
+      }.to_yaml
+
+      fetch_repo(user.octokit_client)
+      update_contents('_config.yml', config)
+      push_to_github
     end
 
 end
