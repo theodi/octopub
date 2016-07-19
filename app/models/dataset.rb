@@ -102,7 +102,6 @@ class Dataset < ActiveRecord::Base
   def self.report_status(dataset, channel_id)
     if dataset.save
       Pusher[channel_id].trigger('dataset_created', dataset)
-      Dataset.delay_for(5.seconds).check_build_status(dataset)
     else
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
@@ -113,18 +112,6 @@ class Dataset < ActiveRecord::Base
         end
       end
       Pusher[channel_id].trigger('dataset_failed', messages)
-    end
-  end
-
-  def self.check_build_status(dataset)
-    status = dataset.user.octokit_client.pages(dataset.full_name).status
-    if status == "built"
-      dataset.update_column(:build_status, "built")
-      Pusher["buildStatus#{dataset.id}"].trigger('dataset_built', {})
-      Dataset.delay.create_certificate dataset.id
-    else
-      dataset.update_column(:build_status, nil)
-      Dataset.delay.check_build_status(dataset)
     end
   end
 

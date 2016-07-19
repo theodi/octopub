@@ -6,14 +6,7 @@
   <td><%= dataset.name %></td>
   <td>
     <% if @dashboard %>
-      <% if dataset.build_status == nil %>
-        <p class="text-muted build-message">
-          <i class="fa fa-refresh fa-spin"></i> Building...
-        </p>
-        <%= link_to dataset.gh_pages_url, dataset.gh_pages_url, class: "hidden dataset-link", id: "link_#{dataset.id}" %>
-      <% else %>
-        <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
-      <% end %>
+      <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
     <% else %>
       <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
     <% end %>
