@@ -270,7 +270,7 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(response.body).to eq(@dataset.to_json)
+        expect(response.body).to match /#{Dataset.first.name}/
       end
 
       context('with a schema') do
