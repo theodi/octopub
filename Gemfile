@@ -49,6 +49,7 @@ end
 
 group :development do
   gem 'pry-remote'
+  gem 'letter_opener'
 end
 
 gem 'omniauth-github'
