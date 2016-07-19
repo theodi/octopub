@@ -27,6 +27,7 @@ class Dataset < ActiveRecord::Base
     if gen[:success] == 'pending'
       result = cert.result
       dataset.add_certificate_url(result[:certificate_url])
+      DatasetMailer.success(dataset).deliver
     end
   end
 
