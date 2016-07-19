@@ -270,27 +270,7 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(response.body).to eq({
-          "id": Dataset.first.id,
-          "name":"My cool dataset",
-          "url": "https://github.com/user-mc-user/my-cool-repo",
-          "user_id":@user.id,
-          "created_at": Dataset.first.created_at,
-          "updated_at": Dataset.first.updated_at,
-          "repo":"my-cool-repo",
-          "description":"This is a description",
-          "publisher_name":"Cool inc",
-          "publisher_url":"http://example.com",
-          "license":"OGL-UK-3.0",
-          "frequency":"Monthly",
-          "datapackage_sha": nil,
-          "owner": nil,
-          "owner_avatar": nil,
-          "build_status": nil,
-          "full_name":"user-mc-user/my-cool-repo",
-          "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo",
-          "certificate_url": nil
-        }.to_json)
+        expect(response.body).to eq(@dataset.to_json)
       end
 
       context('with a schema') do
