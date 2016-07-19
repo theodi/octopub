@@ -284,6 +284,7 @@ describe DatasetsController, type: :controller do
           "owner_avatar": nil,
           "build_status": nil,
           "full_name":"user-mc-user/my-cool-repo",
+          "certificate_url": nil,
           "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
         }.to_json)
       end
