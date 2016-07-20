@@ -109,7 +109,9 @@
     }
 
     function postForm(form) {
-      var channelID = '<%= SecureRandom.uuid %>'
+      var channelID = form.attr('method') + '-<%= SecureRandom.uuid %>'
+
+      console.log(channelID)
 
       $.ajax({
         type: form.attr('method'),
@@ -127,7 +129,11 @@
       var channel = pusher.subscribe(channelID);
 
       channel.bind('dataset_created', function(data) {
-        window.location = '/dashboard?success=true'
+        if (channelID.match(/post/)) {
+          window.location = '/datasets/created'
+        } else {
+          window.location = '/datasets/edited'
+        }
       })
       channel.bind('dataset_failed', function(data) {
         addErrors(data)

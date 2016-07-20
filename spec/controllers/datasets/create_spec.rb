@@ -16,6 +16,8 @@ describe DatasetsController, type: :controller do
 
     Dataset.skip_callback(:create, :after, :create_in_github)
     Dataset.skip_callback(:create, :after, :set_owner_avatar)
+    Dataset.skip_callback(:create, :after, :build_certificate)
+    Dataset.skip_callback(:create, :after, :send_success_email)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
@@ -24,6 +26,8 @@ describe DatasetsController, type: :controller do
   after(:each) do
     Dataset.set_callback(:create, :after, :create_in_github)
     Dataset.set_callback(:create, :after, :set_owner_avatar)
+    Dataset.set_callback(:create, :after, :build_certificate)
+    Dataset.set_callback(:create, :after, :send_success_email)
   end
 
   describe 'create dataset' do
@@ -266,27 +270,7 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(response.body).to eq({
-          "id": Dataset.first.id,
-          "name":"My cool dataset",
-          "url": "https://github.com/user-mc-user/my-cool-repo",
-          "user_id":@user.id,
-          "created_at": Dataset.first.created_at,
-          "updated_at": Dataset.first.updated_at,
-          "repo":"my-cool-repo",
-          "description":"This is a description",
-          "publisher_name":"Cool inc",
-          "publisher_url":"http://example.com",
-          "license":"OGL-UK-3.0",
-          "frequency":"Monthly",
-          "datapackage_sha": nil,
-          "owner": nil,
-          "owner_avatar": nil,
-          "build_status": nil,
-          "full_name":"user-mc-user/my-cool-repo",
-          "certificate_url": nil,
-          "gh_pages_url":"http://user-mcuser.github.io/my-cool-repo"
-        }.to_json)
+        expect(response.body).to match /#{Dataset.first.name}/
       end
 
       context('with a schema') do

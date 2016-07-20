@@ -168,6 +168,10 @@ GEM
     json (1.8.3)
     jwt (1.5.4)
     kgio (2.10.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     method_source (0.8.2)
@@ -364,6 +368,7 @@ DEPENDENCIES
   git
   jbuilder (~> 2.0)
   jquery-rails
+  letter_opener
   octokit
   odlifier
   omniauth-github

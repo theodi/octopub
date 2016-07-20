@@ -45,7 +45,6 @@ ActiveRecord::Schema.define(version: 20160719122740) do
     t.string   "owner_avatar"
     t.string   "build_status"
     t.string   "full_name"
-    t.string   "gh_pages_url"
     t.string   "certificate_url"
   end
 

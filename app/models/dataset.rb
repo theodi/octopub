@@ -7,7 +7,7 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar
+  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -16,34 +16,6 @@ class Dataset < ActiveRecord::Base
   validate :check_schema
   validate :check_repo, on: :create
   validates_associated :dataset_files
-
-  def self.create_certificate id
-    dataset = Dataset.find(id)
-
-    cert = CertificateFactory::Certificate.new dataset.gh_pages_url
-
-    gen = cert.generate
-
-    if gen[:success] == 'pending'
-      result = cert.result
-      dataset.add_certificate_url(result[:certificate_url])
-    end
-  end
-
-  def add_certificate_url(url)
-    url = url.gsub('.json', '')
-    update_column(:certificate_url, url)
-
-    config = {
-      "data_source" => ".",
-      "update_frequency" => frequency,
-      "certificate_url" => "#{certificate_url}/badge.js"
-    }.to_yaml
-
-    fetch_repo(user.octokit_client)
-    update_contents('_config.yml', config)
-    push_to_github
-  end
 
   def self.create_dataset(dataset, files, user, options = {})
     dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
@@ -88,9 +60,9 @@ class Dataset < ActiveRecord::Base
   end
 
   def self.report_status(dataset, channel_id)
-    if dataset.save
+    if dataset.valid?
       Pusher[channel_id].trigger('dataset_created', dataset)
-      Dataset.delay_for(5.seconds).check_build_status(dataset)
+      dataset.save
     else
       messages = dataset.errors.full_messages
       dataset.dataset_files.each do |file|
@@ -101,18 +73,6 @@ class Dataset < ActiveRecord::Base
         end
       end
       Pusher[channel_id].trigger('dataset_failed', messages)
-    end
-  end
-
-  def self.check_build_status(dataset)
-    status = dataset.user.octokit_client.pages(dataset.full_name).status
-    if status == "built"
-      dataset.update_column(:build_status, "built")
-      Pusher["buildStatus#{dataset.id}"].trigger('dataset_built', {})
-      Dataset.delay.create_certificate dataset.id
-    else
-      dataset.update_column(:build_status, nil)
-      Dataset.delay.check_build_status(dataset)
     end
   end
 
@@ -306,6 +266,46 @@ class Dataset < ActiveRecord::Base
       else
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
       end
+    end
+
+    def send_success_email
+      DatasetMailer.success(self).deliver
+    end
+
+    def build_certificate
+      status = user.octokit_client.pages(full_name).status
+      if status == "built"
+        create_certificate
+      else
+        sleep 5
+        build_certificate
+      end
+    end
+
+    def create_certificate
+      cert = CertificateFactory::Certificate.new gh_pages_url
+
+      gen = cert.generate
+
+      if gen[:success] == 'pending'
+        result = cert.result
+        add_certificate_url(result[:certificate_url])
+      end
+    end
+
+    def add_certificate_url(url)
+      url = url.gsub('.json', '')
+      update_column(:certificate_url, url)
+
+      config = {
+        "data_source" => ".",
+        "update_frequency" => frequency,
+        "certificate_url" => "#{certificate_url}/badge.js"
+      }.to_yaml
+
+      fetch_repo(user.octokit_client)
+      update_contents('_config.yml', config)
+      push_to_github
     end
 
 end

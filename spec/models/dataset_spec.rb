@@ -85,13 +85,6 @@ describe Dataset do
 
         Dataset.create_dataset(@dataset, files, @user, perform_async: true, channel_id: "beep-beep")
       end
-
-      it "queues to check the build status" do
-        expect {
-          Dataset.create_dataset(@dataset, @files, @user, perform_async: true, channel_id: "beep-beep")
-        }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-      end
-
     end
 
   end
@@ -168,13 +161,6 @@ describe Dataset do
 
         dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
       end
-
-      it "queues to check the build status" do
-        expect {
-           Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
-        }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-      end
-
     end
 
   end
@@ -576,61 +562,6 @@ describe Dataset do
 
   end
 
-  context 'checks the build status of a dataset' do
-
-    before(:each) do
-      @dataset = create(:dataset)
-      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
-    end
-
-    after(:each) do
-      Sidekiq::Extensions::DelayedClass.jobs.clear
-    end
-
-    context 'when built' do
-      before(:each) do
-        expect(@dataset.user.octokit_client).to receive(:pages).with(@dataset.full_name) {
-          stub = double(Sawyer::Resource)
-          expect(stub).to receive(:status) { "built" }
-          stub
-        }
-
-        mock_client = mock_pusher("buildStatus#{@dataset.id}")
-        expect(mock_client).to receive(:trigger).with('dataset_built', {})
-      end
-
-      it 'returns straight away' do
-        Dataset.check_build_status(@dataset)
-
-        expect(@dataset.build_status).to eq('built')
-      end
-
-      it 'queues up a certificate creation' do
-        Dataset.check_build_status(@dataset)
-
-        expect(Sidekiq::Extensions::DelayedClass.jobs.count).to eq(1)
-        expect(Sidekiq::Extensions::DelayedClass.jobs[0]["args"][0]).to match(/create_certificate/)
-        expect(Sidekiq::Extensions::DelayedClass.jobs[0]["args"][0]).to match(/#{@dataset.id}/)
-      end
-
-    end
-
-    it 'requeues if dataset is not built yet' do
-      expect(@dataset.user.octokit_client).to receive(:pages).with(@dataset.full_name) {
-        stub = double(Sawyer::Resource)
-        expect(stub).to receive(:status) { "building" }
-        stub
-      }
-
-      expect {
-        Dataset.check_build_status(@dataset)
-      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-
-      expect(@dataset.build_status).to eq(nil)
-    end
-
-  end
-
   context 'creating certificates' do
 
     before(:each) do
@@ -638,9 +569,34 @@ describe Dataset do
       @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
-      allow(Dataset).to receive(:find).with(@dataset.id) {
-        @dataset
+    end
+
+    it 'waits for the page build to finish' do
+      allow_any_instance_of(User).to receive(:octokit_client) {
+        client = double(Octokit::Client)
+        allow(client).to receive(:pages).with(@dataset.full_name) {
+          OpenStruct.new(status: 'pending')
+        }
+        client
       }
+
+      expect(@dataset).to receive(:build_certificate)
+
+      @dataset.send :build_certificate
+    end
+
+    it 'creates the certificate when build is complete' do
+      allow_any_instance_of(User).to receive(:octokit_client) {
+        client = double(Octokit::Client)
+        allow(client).to receive(:pages).with(@dataset.full_name) {
+          OpenStruct.new(status: 'built')
+        }
+        client
+      }
+
+      expect(@dataset).to receive(:create_certificate)
+
+      @dataset.send :build_certificate
     end
 
     it 'creates a certificate' do
@@ -664,7 +620,7 @@ describe Dataset do
 
       expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
 
-      Dataset.create_certificate(@dataset.id)
+      @dataset.send(:create_certificate)
     end
 
     it 'adds the badge url to the repo' do
@@ -676,7 +632,7 @@ describe Dataset do
       }.to_yaml)
       expect(@dataset).to receive(:push_to_github)
 
-      @dataset.add_certificate_url(@certificate_url)
+      @dataset.send(:add_certificate_url, @certificate_url)
 
       expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
