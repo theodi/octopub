@@ -2,8 +2,13 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style type="text/css">
+    .emailContent{
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    </style>
   </head>
-  <body>
+  <body class="emailContent">
     <h1>Your dataset has been created</h1>
     <p>
       Hi <%= @user.name %>,
@@ -26,7 +31,7 @@
     </p>
 
     <p>
-      Thanks,<br />
+      Thanks,<br /><br />
       The Octopub Team.
     </p>
 
