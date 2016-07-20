@@ -24,11 +24,8 @@ class Dataset < ActiveRecord::Base
     files.each do |file|
       dataset.dataset_files << DatasetFile.new_file(file)
     end
-    if options[:perform_async] === true
-      report_status(dataset, options[:channel_id])
-    else
-      dataset
-    end
+
+    report_status(dataset, options[:channel_id])
   end
 
   def self.update_dataset(id, user, dataset_params, files, options = {})
@@ -59,13 +56,13 @@ class Dataset < ActiveRecord::Base
     end
   end
 
-  def self.report_status(dataset, channel_id)
-    if dataset.valid?
-      Pusher[channel_id].trigger('dataset_created', dataset)
-      dataset.save
+  def report_status(channel_id)
+    if valid?
+      Pusher[channel_id].trigger('dataset_created', self)
+      save
     else
-      messages = dataset.errors.full_messages
-      dataset.dataset_files.each do |file|
+      messages = errors.full_messages
+      dataset_files.each do |file|
         unless file.valid?
           (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
