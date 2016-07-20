@@ -571,6 +571,34 @@ describe Dataset do
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
 
+    it 'waits for the page build to finish' do
+      allow_any_instance_of(User).to receive(:octokit_client) {
+        client = double(Octokit::Client)
+        allow(client).to receive(:pages).with(@dataset.full_name) {
+          OpenStruct.new(status: 'pending')
+        }
+        client
+      }
+
+      expect(@dataset).to receive(:build_certificate)
+
+      @dataset.send :build_certificate
+    end
+
+    it 'creates the certificate when build is complete' do
+      allow_any_instance_of(User).to receive(:octokit_client) {
+        client = double(Octokit::Client)
+        allow(client).to receive(:pages).with(@dataset.full_name) {
+          OpenStruct.new(status: 'built')
+        }
+        client
+      }
+
+      expect(@dataset).to receive(:create_certificate)
+
+      @dataset.send :build_certificate
+    end
+
     it 'creates a certificate' do
       factory = double(CertificateFactory::Certificate)
 
