@@ -51,6 +51,9 @@ class DatasetsController < ApplicationController
   def created
   end
 
+  def edited
+  end
+
   def new
     @dataset = Dataset.new
   end
