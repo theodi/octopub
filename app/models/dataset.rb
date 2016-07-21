@@ -17,34 +17,6 @@ class Dataset < ActiveRecord::Base
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def self.update_dataset(id, user, dataset_params, files, options = {})
-    dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
-
-    dataset = Dataset.find(id)
-    dataset.fetch_repo(user.octokit_client)
-    dataset.assign_attributes(dataset_params) if dataset_params
-
-    files.each do |file|
-      if file["id"]
-        f = dataset.dataset_files.find { |f| f.id == file["id"].to_i }
-        f.update_file(file)
-      else
-        f = DatasetFile.new_file(file)
-        dataset.dataset_files << f
-        if f.save
-          f.add_to_github
-          f.file = nil
-        end
-      end
-    end
-
-    if options[:perform_async] === true
-      dataset.report_status(options[:channel_id])
-    else
-      dataset
-    end
-  end
-
   def report_status(channel_id)
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
