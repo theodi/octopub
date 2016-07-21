@@ -97,7 +97,6 @@ describe CreateDataset do
     expect(error).to_not eq(nil)
     expect(error.messages).to eq([
       "Dataset files is invalid",
-      "Dataset files is invalid",
       "Your file 'My File' does not appear to be a valid CSV. Please check your file and try again."
     ])
   end

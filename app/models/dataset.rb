@@ -59,9 +59,9 @@ class Dataset < ActiveRecord::Base
         end
       end
       if channel_id
-        Pusher[channel_id].trigger('dataset_failed', messages)
+        Pusher[channel_id].trigger('dataset_failed', messages.uniq!)
       else
-        Error.create(job_id: self.job_id, messages: messages)
+        Error.create(job_id: self.job_id, messages: messages.uniq!)
       end
     end
   end
