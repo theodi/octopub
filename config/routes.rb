@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :jobs, only: [:show]
+
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
 
   get "/me" => "users#edit", as: :me
