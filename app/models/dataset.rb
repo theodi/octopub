@@ -233,6 +233,17 @@ class Dataset < ActiveRecord::Base
 
     def send_success_email
       DatasetMailer.success(self).deliver
+
+      #TwitterNotifier.success(self).tweet
+
+      twitter_client = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+        config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
+        config.access_token        = ENV["TWITTER_TOKEN"]
+        config.access_token_secret = ENV["TWITTER_SECRET"]
+      end
+
+      twitter_client.update("Hi @pikesley, your dataset \"#{self.name}\" is now published at #{self.gh_pages_url}")
     end
 
     def build_certificate
