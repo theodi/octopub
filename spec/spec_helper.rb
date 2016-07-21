@@ -72,3 +72,17 @@ def mock_pusher(channel_id)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
   mock_client
 end
+
+def skip_dataset_callbacks!
+  Dataset.skip_callback(:create, :after, :create_in_github)
+  Dataset.skip_callback(:create, :after, :set_owner_avatar)
+  Dataset.skip_callback(:create, :after, :build_certificate)
+  Dataset.skip_callback(:create, :after, :send_success_email)
+end
+
+def set_dataset_callbacks!
+  Dataset.set_callback(:create, :after, :create_in_github)
+  Dataset.set_callback(:create, :after, :set_owner_avatar)
+  Dataset.set_callback(:create, :after, :build_certificate)
+  Dataset.set_callback(:create, :after, :send_success_email)
+end
