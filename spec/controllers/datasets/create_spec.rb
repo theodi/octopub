@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe DatasetsController, type: :controller do
+  Sidekiq::Testing.inline!
 
   before(:each) do
+    skip_dataset_callbacks!
+
     @user = create(:user, name: "User McUser", email: "user@user.com")
     sign_in @user
 
@@ -14,20 +17,12 @@ describe DatasetsController, type: :controller do
     @frequency = "Monthly"
     @files ||= []
 
-    Dataset.skip_callback(:create, :after, :create_in_github)
-    Dataset.skip_callback(:create, :after, :set_owner_avatar)
-    Dataset.skip_callback(:create, :after, :build_certificate)
-    Dataset.skip_callback(:create, :after, :send_success_email)
-
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
   end
 
   after(:each) do
-    Dataset.set_callback(:create, :after, :create_in_github)
-    Dataset.set_callback(:create, :after, :set_owner_avatar)
-    Dataset.set_callback(:create, :after, :build_certificate)
-    Dataset.set_callback(:create, :after, :send_success_email)
+    set_dataset_callbacks!
   end
 
   describe 'create dataset' do
@@ -86,8 +81,7 @@ describe DatasetsController, type: :controller do
           frequency: @frequency
         }, files: @files
 
-        expect(request).to redirect_to(dashboard_path)
-        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
@@ -110,29 +104,14 @@ describe DatasetsController, type: :controller do
           owner: organization
         }, files: @files
 
-        expect(request).to redirect_to(dashboard_path)
-        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
 
-      it 'queues a job when async is set to true', :async do
-        expect {
-          post 'create', dataset: {
-            name: @name,
-            description: @description,
-            publisher_name: @publisher_name,
-            publisher_url: @publisher_url,
-            license: @license,
-            frequency: @frequency,
-          }, files: @files, async: true
-        }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-
-        expect(response.code).to eq("202")
-      end
-
       it 'extracts from data params', async: false do
+        # This is a special Zapier thing, it sends the data in a hash called 'data'
         expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
           @repo
         }
@@ -161,8 +140,10 @@ describe DatasetsController, type: :controller do
             }
           ]
 
-        expect(request).to redirect_to(dashboard_path)
-        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
     end
 
@@ -194,8 +175,11 @@ describe DatasetsController, type: :controller do
         }, files: @files
 
         expect(Dataset.count).to eq(0)
-        expect(request).to render_template(:new)
-        expect(flash[:notice]).to eq("Your file 'My File' does not match the schema you provided")
+        expect(Error.count).to eq(1)
+        expect(Error.first.messages).to eq([
+          "Dataset files is invalid",
+          "Your file 'My File' does not match the schema you provided"
+        ])
       end
 
       it 'creates sucessfully if the file matches the schema' do
@@ -217,8 +201,7 @@ describe DatasetsController, type: :controller do
           schema: @schema
         }, files: @files
 
-        expect(request).to redirect_to(dashboard_path)
-        expect(flash[:notice]).to eq("Dataset created sucessfully")
+        expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
@@ -245,11 +228,11 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => Rack::Test::UploadedFile.new(path, "text/csv")
+          :file => fake_file(path)
         }
       end
 
-      it 'creates a dataset with JSON' do
+      it 'returns a job ID' do
         expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
         expect(@repo).to receive(:name) { 'my-cool-repo' }
         expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
@@ -270,7 +253,7 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(response.body).to match /#{Dataset.first.name}/
+        expect(response.body).to match /"job_url":"http:\/\/test\.host\/jobs\//
       end
 
       context('with a schema') do
@@ -291,7 +274,7 @@ describe DatasetsController, type: :controller do
           files = [{
             :title => 'My File',
             :description => 'My Description',
-            :file => Rack::Test::UploadedFile.new(path, "text/csv")
+            :file => fake_file(path)
           }]
 
           post 'create', :format => :json, dataset: {
@@ -317,7 +300,7 @@ describe DatasetsController, type: :controller do
           files = [{
             :title => 'My File',
             :description => 'My Description',
-            :file => Rack::Test::UploadedFile.new(path, "text/csv")
+            :file => fake_file(path)
           }]
 
           post 'create', :format => :json, dataset: {
@@ -333,11 +316,11 @@ describe DatasetsController, type: :controller do
           api_key: @user.api_key
 
           expect(Dataset.count).to eq(0)
-          expect(response.body).to eq({
-            "errors": [
-              "Your file 'My File' does not match the schema you provided"
-            ]
-          }.to_json)
+          expect(Error.count).to eq(1)
+          expect(Error.first.messages).to eq([
+            "Dataset files is invalid",
+            "Your file 'My File' does not match the schema you provided"
+          ])
         end
 
       end

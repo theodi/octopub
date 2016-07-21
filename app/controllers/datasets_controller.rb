@@ -59,33 +59,20 @@ class DatasetsController < ApplicationController
   end
 
   def create
+    job = CreateDataset.perform_async(dataset_params, params["files"], current_user.id, channel_id: params[:channel_id])
+
     if params[:async]
-      Dataset.delay(retry: false).create_dataset(dataset_params, params["files"], current_user, perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
-      @dataset = Dataset.create_dataset(dataset_params, params["files"], current_user)
-
       respond_to do |format|
         format.html do
-          if @dataset.save
-            redirect_to dashboard_path, :notice => "Dataset created sucessfully"
-          else
-            generate_errors
-            render :new
-          end
+          redirect_to created_datasets_path
         end
 
         format.json do
-          if @dataset.save
-            response = (@dataset.attributes).merge({
-              gh_pages_url: @dataset.gh_pages_url
-            })
-            render json: response.to_json
-          else
-            render json: {
-              errors: generate_errors
-            }.to_json
-          end
+          render json: {
+            job_url: job_url(job)
+          }, status: 202
         end
       end
     end
