@@ -17,17 +17,6 @@ class Dataset < ActiveRecord::Base
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def self.create_dataset(dataset, files, user, options = {})
-    dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
-
-    dataset = user.datasets.new(dataset)
-    files.each do |file|
-      dataset.dataset_files << DatasetFile.new_file(file)
-    end
-
-    report_status(dataset, options[:channel_id])
-  end
-
   def self.update_dataset(id, user, dataset_params, files, options = {})
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
 
@@ -50,7 +39,7 @@ class Dataset < ActiveRecord::Base
     end
 
     if options[:perform_async] === true
-      report_status(dataset, options[:channel_id])
+      dataset.report_status(options[:channel_id])
     else
       dataset
     end
@@ -58,7 +47,7 @@ class Dataset < ActiveRecord::Base
 
   def report_status(channel_id)
     if valid?
-      Pusher[channel_id].trigger('dataset_created', self)
+      Pusher[channel_id].trigger('dataset_created', self) if channel_id
       save
     else
       messages = errors.full_messages
@@ -69,7 +58,11 @@ class Dataset < ActiveRecord::Base
           end
         end
       end
-      Pusher[channel_id].trigger('dataset_failed', messages)
+      if channel_id
+        Pusher[channel_id].trigger('dataset_failed', messages)
+      else
+        Error.create(job_id: self.job_id, messages: messages)
+      end
     end
   end
 
