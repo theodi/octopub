@@ -1,5 +1,6 @@
 class CreateDataset
   include Sidekiq::Worker
+  sidekiq_options retry: false
 
   def perform(dataset_params, files, user_id, options = {})
     @user_id = user_id

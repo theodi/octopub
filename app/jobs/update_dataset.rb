@@ -1,5 +1,6 @@
 class UpdateDataset
   include Sidekiq::Worker
+  sidekiq_options retry: false
 
   def perform(id, user_id, dataset_params, files, options = {})
     user = User.find(user_id)
