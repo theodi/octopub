@@ -2,25 +2,39 @@
 
 <%= bootstrap_form_tag url: me_path, method: :put do |f| %>
 
-  <%= f.email_field "user[name]", label: "Username", value: current_user.name, required: true, disabled: true %>
+  <%= f.text_field "user[name]", label: "Username", value: current_user.name, required: true, disabled: true %>
 
   <%= f.email_field "user[email]", label: "Email", value: current_user.email, required: true %>
 
   <%= f.text_field "user[api_key]", label: "API Key", value: current_user.api_key, required: true, disabled: true %>
 
-  <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: current_user.twitter_handle, required: false, prepend: '@' %>
+  <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: current_user.twitter_handle, required: false, prepend: '@', onkeyup: 'showPrefsField()' %>
 
-  <%= f.select(
-    "user[notification_preference]",
-    User.notification_preferences.keys.map { |pref|
-      [pref, pref]
-    },
-    label: 'Notify me by',
-    selected: current_user.notification_preference
-  ) %>
+  <div id='notification-preference' class='hidden'>
+    <%= f.select(
+      "user[notification_preference]",
+      User.notification_preferences.keys.map { |pref|
+        [pref, pref]
+      },
+      label: 'Notify me by',
+      selected: current_user.notification_preference
+    ) %>
+  </div>
 
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit
   </button>
 
 <% end %>
+
+<script>
+  function showPrefsField() {
+    if($('#user\\5b twitter_handle\\5d')[0].value == '') {
+      $('#notification-preference').addClass('hidden')
+    } else {
+      $('#notification-preference').removeClass('hidden')
+    }
+  }
+
+  showPrefsField()
+</script>
