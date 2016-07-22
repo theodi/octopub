@@ -434,9 +434,16 @@ describe Dataset do
         client
       }
 
-      expect(@dataset).to receive(:build_certificate)
+      expect(@dataset).to receive(:retry_certificate)
 
       @dataset.send :build_certificate
+    end
+
+    it 'retries a certificate' do
+      expect_any_instance_of(Object).to receive(:sleep).with(5)
+      expect(@dataset).to receive(:build_certificate)
+
+      @dataset.send :retry_certificate
     end
 
     it 'creates the certificate when build is complete' do

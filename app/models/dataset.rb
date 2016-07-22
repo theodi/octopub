@@ -236,12 +236,17 @@ class Dataset < ActiveRecord::Base
 
     def build_certificate
       status = user.octokit_client.pages(full_name).status
+
       if status == "built"
         create_certificate
       else
-        sleep 5
-        build_certificate
+        retry_certificate
       end
+    end
+
+    def retry_certificate
+      sleep 5
+      build_certificate
     end
 
     def create_certificate
