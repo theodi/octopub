@@ -270,7 +270,7 @@ class Dataset < ActiveRecord::Base
     end
 
     def send_success_message
-      if user.notification_preference == 'twitter'
+      if user.notification_preference == 'twitter' && user.twitter_handle?
         TwitterNotifier.success(self, user)
       else
         DatasetMailer.success(self).deliver
