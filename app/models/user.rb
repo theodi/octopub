@@ -1,4 +1,8 @@
 class User < ActiveRecord::Base
+  enum notification_preference: {
+    email: 0,
+    twitter: 1
+  }
 
   has_many :datasets
 
