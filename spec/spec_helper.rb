@@ -62,8 +62,8 @@ def sign_in(user)
 end
 
 def fake_file path
-  url = "//example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
-  stub_request(:get, "https:#{url}").to_return(body: File.read(path))
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, url).to_return(body: File.read(path))
   url
 end
 

@@ -65,7 +65,7 @@ class Dataset < ActiveRecord::Base
     create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     if !schema.nil?
-      create_contents("schema.json", open("https:#{schema}").read)
+      create_contents("schema.json", open(schema).read)
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
   end
@@ -101,7 +101,7 @@ class Dataset < ActiveRecord::Base
         "mediatype" => file.mediatype,
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(open("https:#{schema}").read) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(open(schema).read) unless schema.nil? || is_csv_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -147,7 +147,7 @@ class Dataset < ActiveRecord::Base
   def check_for_schema
     begin
       open(schema_url, allow_redirections: :safe)
-      self.schema = schema_url.gsub("http:", "")
+      self.schema = schema_url
     rescue OpenURI::HTTPError
       nil
     end
@@ -213,7 +213,7 @@ class Dataset < ActiveRecord::Base
 
     def parse_schema!
       if schema.instance_variable_get("@parsed_schema").nil?
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json("https:#{schema}"))
+        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
       end
     end
 

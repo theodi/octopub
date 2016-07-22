@@ -103,7 +103,7 @@ describe DatasetFile do
     context "with file at the end of a URL" do
 
       before(:each) do
-        @url = "//cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
+        @url = "https://cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
 
         @file = {
           "title" => 'Hot Drinks',

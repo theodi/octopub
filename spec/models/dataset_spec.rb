@@ -133,7 +133,7 @@ describe Dataset do
 
       @dataset.fetch_repo
 
-      expect(@dataset.schema).to eq('//user-mcuser.github.io/repo/schema.json')
+      expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
     end
 
     it 'returns nil if there is no schema present' do
