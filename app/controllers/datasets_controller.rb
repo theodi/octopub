@@ -103,33 +103,20 @@ class DatasetsController < ApplicationController
   end
 
   def update
+    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params, params[:files], channel_id: params[:channel_id])
+
     if params[:async]
-      Dataset.delay(retry: false).update_dataset(params["id"], current_user, dataset_update_params, params[:files], perform_async: true, channel_id: params[:channel_id])
       head :accepted
     else
-      @dataset = Dataset.update_dataset(params["id"], current_user, dataset_update_params, params[:files])
-
       respond_to do |format|
         format.html do
-          if @dataset.save
-            redirect_to dashboard_path, :notice => "Dataset updated sucessfully"
-          else
-            generate_errors
-            render :edit, status: 400
-          end
+          redirect_to edited_datasets_path
         end
 
         format.json do
-          if @dataset.save
-            response = (@dataset.attributes).merge({
-              gh_pages_url: @dataset.gh_pages_url
-            })
-            render json: response.to_json, status: 201
-          else
-            render json: {
-              errors: generate_errors
-            }.to_json, status: 400
-          end
+          render json: {
+            job_url: job_url(job)
+          }, status: 202
         end
       end
     end
