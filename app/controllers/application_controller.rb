@@ -10,6 +10,9 @@ class ApplicationController < ActionController::Base
     render "#{ENV['INDEX_TEMPLATE'] || 'index'}.html.erb"
   end
 
+  def api
+  end
+
   private
 
     def current_user

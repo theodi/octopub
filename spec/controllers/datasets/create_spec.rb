@@ -57,9 +57,7 @@ describe DatasetsController, type: :controller do
           :description => description,
           :file => fake_file(path)
         }
-      end
 
-      before(:each, async: false) do
         @repo = double(GitData)
 
         expect(@repo).to receive(:html_url) { nil }
@@ -68,7 +66,7 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:save)
       end
 
-      it 'creates a dataset with one file', async: false do
+      it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
           @repo
         }
@@ -88,7 +86,7 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
 
-      it 'creates a dataset in an organization', async: false do
+      it 'creates a dataset in an organization' do
         organization = 'my-cool-organization'
 
         expect(GitData).to receive(:create).with(organization, @name, client: a_kind_of(Octokit::Client)) {
@@ -111,20 +109,22 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
 
-      # it 'queues a job when async is set to true', :async do
-      #   expect {
-      #     post 'create', dataset: {
-      #       name: @name,
-      #       description: @description,
-      #       publisher_name: @publisher_name,
-      #       publisher_url: @publisher_url,
-      #       license: @license,
-      #       frequency: @frequency,
-      #     }, files: @files, async: true
-      #   }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-      #
-      #   expect(response.code).to eq("202")
-      # end
+      it 'returns 202 when async is set to true' do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+
+        post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency,
+        }, files: @files, async: true
+
+        expect(response.code).to eq("202")
+      end
 
       it 'extracts from data params', async: false do
         # This is a special Zapier thing, it sends the data in a hash called 'data'

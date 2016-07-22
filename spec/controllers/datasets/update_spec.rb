@@ -145,6 +145,17 @@ describe DatasetsController, type: :controller do
           expect(@dataset.dataset_files.first.description).to eq("New description")
         end
 
+        it 'returns 202 when async is set to true' do
+          @file.file = nil
+
+          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
+            id: @file.id,
+            description: "New description"
+          }], async: true
+
+          expect(response.code).to eq("202")
+        end
+
         it 'updates a file in Github' do
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
