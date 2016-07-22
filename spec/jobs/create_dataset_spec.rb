@@ -44,7 +44,7 @@ describe CreateDataset do
 
     expect(@dataset).to receive(:report_status).with('foo-bar')
 
-    @worker.perform(@dataset_params, @files, @user.id, channel_id: 'foo-bar')
+    @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'foo-bar')
 
     expect(@dataset.job_id).to eq("84855ffe6a7e1d6dacf6685e")
   end
@@ -53,7 +53,7 @@ describe CreateDataset do
     mock_client = mock_pusher('beep-beep')
     expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
 
-    @worker.perform(@dataset_params, @files, @user.id, channel_id: 'beep-beep')
+    @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
   end
 
   it 'reports errors' do
@@ -71,7 +71,7 @@ describe CreateDataset do
     mock_client = mock_pusher('beep-beep')
     expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
 
-    @worker.perform(@dataset_params, files, @user.id, channel_id: 'beep-beep')
+    @worker.perform(@dataset_params, files, @user.id, "channel_id" => 'beep-beep')
   end
 
   it 'saves errors to the database' do

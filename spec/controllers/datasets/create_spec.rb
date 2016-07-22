@@ -170,32 +170,51 @@ describe DatasetsController, type: :controller do
         @schema = fake_file(schema_path)
       end
 
-      it 'returns an error if the file does not match the schema' do
-        path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
-        schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
+      context 'returns an error if the file does not match the schema' do
 
-        @files << {
-          :title => 'My File',
-          :description => 'My Description',
-          :file => fake_file(path)
-        }
+        before(:each) do
+          path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+          schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
 
-        request = post 'create', dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
-          schema: @schema
-        }, files: @files
+          @files << {
+            :title => 'My File',
+            :description => 'My Description',
+            :file => fake_file(path)
+          }
 
-        expect(Dataset.count).to eq(0)
-        expect(Error.count).to eq(1)
-        expect(Error.first.messages).to eq([
-          "Dataset files is invalid",
-          "Your file 'My File' does not match the schema you provided"
-        ])
+          @dataset = {
+            name: @name,
+            description: @description,
+            publisher_name: @publisher_name,
+            publisher_url: @publisher_url,
+            license: @license,
+            frequency: @frequency,
+            schema: @schema
+          }
+        end
+
+        it 'without websockets' do
+          post 'create', dataset: @dataset, files: @files
+
+          expect(Dataset.count).to eq(0)
+          expect(Error.count).to eq(1)
+          expect(Error.first.messages).to eq([
+            "Dataset files is invalid",
+            "Your file 'My File' does not match the schema you provided"
+          ])
+        end
+
+        it 'with websockets' do
+          mock_client = mock_pusher('foo-bar')
+
+          expect(mock_client).to receive(:trigger).with('dataset_failed', [
+            "Dataset files is invalid",
+            "Your file 'My File' does not match the schema you provided"
+          ])
+
+          post 'create', dataset: @dataset, files: @files, channel_id: 'foo-bar'
+        end
+
       end
 
       it 'creates sucessfully if the file matches the schema' do

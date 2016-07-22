@@ -13,7 +13,7 @@ class CreateDataset
       @dataset.dataset_files << DatasetFile.new_file(file)
     end
 
-    @dataset.report_status(options[:channel_id])
+    @dataset.report_status(options["channel_id"])
   end
 
   def user
