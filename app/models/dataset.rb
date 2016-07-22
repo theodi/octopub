@@ -8,7 +8,7 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email
+  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_message
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -269,9 +269,12 @@ class Dataset < ActiveRecord::Base
       end
     end
 
-    def send_success_email
-      DatasetMailer.success(self).deliver
-      TwitterNotifier.success(self, user) if user.twitter_handle
+    def send_success_message
+      if user.notification_preference == 'twitter'
+        TwitterNotifier.success(self, user)
+      else
+        DatasetMailer.success(self).deliver
+      end
     end
 
     def build_certificate
