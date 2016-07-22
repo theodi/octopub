@@ -171,22 +171,6 @@ class DatasetsController < ApplicationController
     render_403 if current_user.nil?
   end
 
-  def generate_errors
-    messages = []
-    @dataset.dataset_files.each do |file|
-      unless file.valid?
-        file.errors.messages[:file].each do |message|
-          messages << "Your file '#{file.title}' #{message}"
-        end
-      end
-    end
-    if params["format"] == "json"
-      messages
-    else
-      flash[:notice] = messages.join('<br>')
-    end
-  end
-
   def set_direct_post
     @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
   end
