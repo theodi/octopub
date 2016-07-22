@@ -161,6 +161,30 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
+
+      it 'handles non-url files' do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+
+        path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+
+        @files.first["file"] = fixture_file_upload('test-data.csv')
+
+        request = post 'create', dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        }, files: @files
+
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+      end
     end
 
     context('with a schema') do

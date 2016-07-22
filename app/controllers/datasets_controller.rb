@@ -5,6 +5,7 @@ class DatasetsController < ApplicationController
   before_filter :get_dataset, only: [:show, :files, :edit, :destroy]
   before_filter :get_multipart, only: [:create, :update]
   before_filter :clear_files, only: [:create, :update]
+  before_filter :process_files, only: [:create, :update]
   before_filter :check_files, only: [:create]
   before_filter :set_licenses, only: [:create, :new, :edit, :update]
   before_filter :set_direct_post, only: [:edit, :new]
@@ -142,6 +143,17 @@ class DatasetsController < ApplicationController
     if params["files"].count == 0
       flash[:notice] = "You must specify at least one dataset"
       render "new"
+    end
+  end
+
+  def process_files
+    params["files"].each do |f|
+      if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
+        key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
+        obj = S3_BUCKET.object(key)
+        obj.put(body: f["file"].read, acl: 'public-read')
+        f["file"] = obj.public_url
+      end
     end
   end
 
