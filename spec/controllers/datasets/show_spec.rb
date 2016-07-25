@@ -18,9 +18,9 @@ describe DatasetsController, type: :controller do
 
       json = JSON.parse(response.body)
 
-      expect(json['id']).to eq(dataset.id)
+      expect(json['url']).to eq(dataset_url(dataset.id))
       expect(json['name']).to eq(dataset.name)
-      expect(json['dataset_files'].count).to eq(1)
+      expect(json['files'].count).to eq(1)
     end
 
     it 'returns 403 if the user does not own a particular dataset' do

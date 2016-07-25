@@ -37,8 +37,8 @@ class DatasetsController < ApplicationController
         @datasets = current_user.all_datasets
 
         render json: {
-          datasets: @datasets
-        }.to_json
+          datasets: @datasets.map { |d| dataset_presenter(d) }
+        }
       end
     end
   end
@@ -88,7 +88,7 @@ class DatasetsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: @dataset.to_json(include: :dataset_files)
+        render json: dataset_presenter(@dataset)
       end
     end
   end
@@ -98,7 +98,7 @@ class DatasetsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: @dataset.dataset_files.to_json
+        render json: @dataset.dataset_files.map { |f| file_presenter(f) }
       end
     end
   end
@@ -187,6 +187,41 @@ class DatasetsController < ApplicationController
         params["files"][i]["description"] = f["description"]
       end
     end
+  end
+
+  def dataset_presenter(dataset)
+    license = Odlifier::License.define(dataset.license)
+    {
+      id: dataset.id,
+      url: dataset_url(dataset),
+      name: dataset.name,
+      description: dataset.description,
+      publisher: {
+        name: dataset.publisher_name,
+        url: dataset.publisher_url
+      },
+      license: {
+        id: license.id,
+        title: license.title,
+        url: license.url
+      },
+      frequency: dataset.frequency,
+      owner: dataset.owner,
+      github_url: dataset.url,
+      gh_pages_url: dataset.gh_pages_url,
+      certificate_url: dataset.certificate_url,
+      files: dataset.dataset_files.map { |f| file_presenter(f) }
+    }
+  end
+
+  def file_presenter(file)
+    {
+      id: file.id,
+      title: file.title,
+      description: file.description,
+      filename: file.filename,
+      github_url: file.github_url
+    }
   end
 
 end
