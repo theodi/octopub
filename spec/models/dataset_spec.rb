@@ -114,32 +114,40 @@ describe Dataset do
 
     before(:each) do
       @dataset = create(:dataset, user: @user, repo: "repo")
-
-      @double = double(GitData)
-
-      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
-        @double
-      }
     end
 
-    it "gets a repo from Github" do
-      expect(@dataset).to receive(:check_for_schema)
-      @dataset.fetch_repo
-      expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
-    end
+    context('when repo exists') do
 
-    it "gets a schema" do
-      stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+      before(:each) do
+        @double = double(GitData)
 
-      @dataset.fetch_repo
+        expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
+          @double
+        }
+      end
 
-      expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+      it "gets a repo from Github" do
+        expect(@dataset).to receive(:check_for_schema)
+        @dataset.fetch_repo
+        expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
+      end
+
+      it "gets a schema" do
+        stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+
+        @dataset.fetch_repo
+
+        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+      end
+
     end
 
     it 'returns nil if there is no schema present' do
+      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)).and_raise(Octokit::NotFound)
+
       @dataset.fetch_repo
 
-      expect(@dataset.schema).to be_nil
+      expect(@dataset.instance_variable_get(:@repo)).to be_nil
     end
 
   end
