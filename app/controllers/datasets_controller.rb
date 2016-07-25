@@ -157,20 +157,6 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def set_licenses
-    @licenses = [
-                  "cc-by",
-                  "cc-by-sa",
-                  "cc0",
-                  "OGL-UK-3.0",
-                  "odc-by",
-                  "odc-pddl"
-                ].map do |id|
-                  license = Odlifier::License.define(id)
-                  [license.title, license.id]
-                end
-  end
-
   def dataset_params
     params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema)
   end
