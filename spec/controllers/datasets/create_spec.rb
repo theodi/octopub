@@ -271,6 +271,8 @@ describe DatasetsController, type: :controller do
     context 'via the API' do
 
       before(:each) do
+        set_api_key(@user)
+
         name = 'Test Data'
         description = Faker::Company.bs
         filename = 'test-data.csv'
@@ -305,8 +307,7 @@ describe DatasetsController, type: :controller do
           license: @license,
           frequency: @frequency
         },
-        files: @files,
-        api_key: @user.api_key
+        files: @files
 
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
@@ -345,8 +346,7 @@ describe DatasetsController, type: :controller do
             frequency: @frequency,
             schema: @schema
           },
-          files: files,
-          api_key: @user.api_key
+          files: files
 
           expect(Dataset.count).to eq(1)
           expect(@user.datasets.count).to eq(1)
@@ -371,8 +371,7 @@ describe DatasetsController, type: :controller do
             frequency: @frequency,
             schema: @schema
           },
-          files: files,
-          api_key: @user.api_key
+          files: files
 
           expect(Dataset.count).to eq(0)
           expect(Error.count).to eq(1)
@@ -399,8 +398,7 @@ describe DatasetsController, type: :controller do
           license: @license,
           frequency: @frequency
         },
-        files: @files,
-        api_key: @user.api_key
+        files: @files
       end
 
     end

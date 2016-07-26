@@ -19,6 +19,7 @@ describe DatasetsController, type: :controller do
 
     it 'allows a user to get a dataset that belongs to one of their organizations' do
       sign_in @user
+      expect(User).to receive(:find) { @user }
 
       dataset1 = create(:dataset, name: "Dataset", user: @user)
       dataset2 = create(:dataset, name: "Dataset")

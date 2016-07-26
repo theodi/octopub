@@ -30,11 +30,18 @@ describe UsersController, type: :controller do
       email: 'newemail@example.com'
     }
 
+    @user.reload
+
     expect(@user.email).to eq('newemail@example.com')
   end
 
   it "lists a user's organizations" do
-    sign_in @user
+    set_api_key @user
+
+    allow(User).to receive(:find_by_api_key) {
+      @user
+    }
+
     allow(@user).to receive(:organizations) {
       [
         OpenStruct.new(

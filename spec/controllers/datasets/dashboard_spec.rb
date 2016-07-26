@@ -39,7 +39,9 @@ describe DatasetsController, type: :controller do
       5.times { |i| create(:dataset, name: "Dataset #{i}") }
 
       dataset = create(:dataset, user: @user)
-      get 'dashboard', format: :json, api_key: @user.api_key
+
+      request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(@user.api_key)
+      get 'dashboard', format: :json
 
       json = JSON.parse(response.body)
 

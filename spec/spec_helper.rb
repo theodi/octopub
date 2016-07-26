@@ -58,7 +58,16 @@ RSpec.configure do |config|
 end
 
 def sign_in(user)
-  allow_any_instance_of(ApplicationController).to receive(:current_user) { user }
+  allow_any_instance_of(ApplicationController).to receive(:session) { {user_id: user.id} }
+end
+
+def sign_out
+  allow_any_instance_of(ApplicationController).to receive(:session) { {} }
+end
+
+def set_api_key(user)
+  sign_out # Make sure we haven't got any sessions hanging around
+  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
 def fake_file path

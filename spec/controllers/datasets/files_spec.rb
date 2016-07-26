@@ -9,7 +9,8 @@ describe DatasetsController, type: :controller do
   describe 'files' do
 
     it 'gets files for a dataset with a particular id' do
-      sign_in @user
+      set_api_key(@user)
+
       dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv'),
         create(:dataset_file, filename: 'test-data-2.csv')
@@ -26,7 +27,7 @@ describe DatasetsController, type: :controller do
       other_user = create(:user, name: "User 2", email: "other-user@user.com")
       dataset = create(:dataset, name: "Dataset", user: other_user)
 
-      sign_in @user
+      set_api_key(@user)
 
       get 'files', id: dataset.id
 

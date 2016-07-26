@@ -19,7 +19,7 @@ describe ApplicationController, type: :controller do
 
      it "gets the current user from an api key" do
        user = create(:user, id: 456)
-       controller.params[:api_key] = user.api_key
+       controller.request.headers['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
        controller.instance_eval{ current_user }
 
        expect(controller.instance_eval{ @current_user }).to eq(user)

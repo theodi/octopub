@@ -102,6 +102,8 @@ describe DatasetsController, type: :controller do
             end
 
             it 'over the API' do
+              set_api_key(@user)
+
               put 'update', format: :json, id: @dataset.id, dataset: {}, files: [
                 {
                   id: @file.id,

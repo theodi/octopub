@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   helper_method :current_user
 
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+
   layout ENV['LAYOUT'] || 'application'
 
   def index
@@ -32,8 +34,10 @@ class ApplicationController < ActionController::Base
       @current_user ||= begin
         if session[:user_id]
           User.find(session[:user_id])
-        elsif params[:api_key]
-          User.find_by_api_key params[:api_key]
+        elsif request.headers['HTTP_AUTHORIZATION']
+          authenticate_or_request_with_http_token do |token, options|
+            User.find_by_api_key token
+          end
         end
       end
     end
