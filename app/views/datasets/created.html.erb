@@ -1,10 +1,20 @@
 <h1 class="page-header">Thank you!</h1>
 
+<% messaging = 'an email' %>
+<% show_spam_note = true %>
+
+<% if @user.notification_preference == 'twitter' %>
+  <% messaging = 'a Tweet' %>
+  <% show_spam_note = false %>
+<% end %>
+
 <p class="lead">
-  Your dataset has been queued for creation, and you should receive an email with
-  a link to your dataset on Github shortly.
+  Your dataset has been queued for creation, and you should shortly receive <%= messaging %> containing
+  a link to your dataset on Github.
 </p>
 
-<p>
-  If you haven't had an email after about five minutes, please check your spam filters.
-</p>
+<% if show_spam_note %>
+  <p>
+    If you haven't had an email after about five minutes, please check your spam filters.
+  </p>
+<% end %>
