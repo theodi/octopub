@@ -9,6 +9,6 @@ class TwitterNotifier
   end
 
   def self.success(dataset, user)
-    self.client.update("Hi @#{user.twitter_handle}, your dataset \"#{dataset.name}\" is now published at #{dataset.gh_pages_url} #octopub")
+    self.client.update("Hi @#{user.twitter_handle}, your dataset \"#{dataset.name}\" is now published at #{dataset.gh_pages_url} #octopub http://octopub.io")
   end
 end
