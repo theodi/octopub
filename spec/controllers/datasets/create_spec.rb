@@ -17,7 +17,7 @@ describe DatasetsController, type: :controller do
     Dataset.skip_callback(:create, :after, :create_in_github)
     Dataset.skip_callback(:create, :after, :set_owner_avatar)
     Dataset.skip_callback(:create, :after, :build_certificate)
-    Dataset.skip_callback(:create, :after, :send_success_email)
+    Dataset.skip_callback(:create, :after, :send_success_message)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
@@ -27,7 +27,7 @@ describe DatasetsController, type: :controller do
     Dataset.set_callback(:create, :after, :create_in_github)
     Dataset.set_callback(:create, :after, :set_owner_avatar)
     Dataset.set_callback(:create, :after, :build_certificate)
-    Dataset.set_callback(:create, :after, :send_success_email)
+    Dataset.set_callback(:create, :after, :send_success_message)
   end
 
   describe 'create dataset' do

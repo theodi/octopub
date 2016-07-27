@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160719122740) do
+ActiveRecord::Schema.define(version: 20160721152900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,7 +57,9 @@ ActiveRecord::Schema.define(version: 20160719122740) do
     t.string   "name"
     t.string   "token"
     t.string   "api_key"
-    t.text     "org_dataset_ids", default: [], array: true
+    t.text     "org_dataset_ids",         default: [], array: true
+    t.string   "twitter_handle"
+    t.integer  "notification_preference", default: 0
   end
 
 end

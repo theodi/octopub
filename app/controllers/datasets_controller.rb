@@ -49,6 +49,7 @@ class DatasetsController < ApplicationController
   end
 
   def created
+    @user = current_user
   end
 
   def edited
