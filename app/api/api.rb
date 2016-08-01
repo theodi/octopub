@@ -1,3 +1,5 @@
+require 'grape-swagger'
+
 class API < Grape::API
   prefix 'api'
   version 'v1', using: :accept_version_header
@@ -84,4 +86,6 @@ class API < Grape::API
 
   mount Octopub::Dashboard
   mount Octopub::Jobs
+
+  add_swagger_documentation
 end
