@@ -1,5 +1,6 @@
 class DatasetsController < ApplicationController
 
+  before_filter :redirect_to_api, only: [:index, :show, :files, :dashboard]
   before_filter :check_signed_in?, only: [:show, :files, :edit, :dashboard, :update, :create, :new]
   before_filter :check_permissions, only: [:show, :files, :edit, :update, :delete]
   before_filter :get_dataset, only: [:show, :files, :edit, :destroy]
@@ -14,33 +15,12 @@ class DatasetsController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
-    respond_to do |format|
-      format.html do
-        @datasets = Dataset.paginate(page: params[:page], per_page: 7).order(created_at: :desc)
-      end
-
-      format.json do
-        @datasets = Dataset.all.order(created_at: :desc)
-      end
-    end
+    @datasets = Dataset.paginate(page: params[:page], per_page: 7).order(created_at: :desc)
   end
 
   def dashboard
     @dashboard = true
-
-    respond_to do |format|
-      format.html do
-        @datasets = current_user.all_datasets.paginate(page: params[:page])
-      end
-
-      format.json do
-        @datasets = current_user.all_datasets
-
-        render json: {
-          datasets: @datasets.map { |d| dataset_presenter(d) }
-        }
-      end
-    end
+    @datasets = current_user.all_datasets.paginate(page: params[:page])
   end
 
   def refresh
@@ -65,17 +45,7 @@ class DatasetsController < ApplicationController
     if params[:async]
       head :accepted
     else
-      respond_to do |format|
-        format.html do
-          redirect_to created_datasets_path
-        end
-
-        format.json do
-          render json: {
-            job_url: job_url(job)
-          }, status: 202
-        end
-      end
+      redirect_to created_datasets_path
     end
   end
 
@@ -84,23 +54,6 @@ class DatasetsController < ApplicationController
   end
 
   def show
-    render_404 and return if @dataset.nil?
-
-    respond_to do |format|
-      format.json do
-        render json: dataset_presenter(@dataset)
-      end
-    end
-  end
-
-  def files
-    render_404 and return if @dataset.nil?
-
-    respond_to do |format|
-      format.json do
-        render json: @dataset.dataset_files.map { |f| file_presenter(f) }
-      end
-    end
   end
 
   def update
@@ -109,17 +62,7 @@ class DatasetsController < ApplicationController
     if params[:async]
       head :accepted
     else
-      respond_to do |format|
-        format.html do
-          redirect_to edited_datasets_path
-        end
-
-        format.json do
-          render json: {
-            job_url: job_url(job)
-          }, status: 202
-        end
-      end
+      redirect_to edited_datasets_path
     end
   end
 
@@ -189,6 +132,18 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def redirect_to_api
+    if params[:format] == 'json'
+      api_routes = {
+        "index" => "/api/datasets",
+        "dashboard" => "/api/dashboard",
+        "show" => "/api/datasets/#{params[:id]}",
+        "files" => "/api/datasets/#{params[:id]}/files"
+      }
+
+      route = api_routes[params[:action]]
+      redirect_to(route) if route.present?
+    end
   end
 
 end
