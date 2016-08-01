@@ -8,38 +8,12 @@ describe DatasetsController, type: :controller do
 
   describe 'show' do
 
-    it 'gets a file with a particular id' do
-      sign_in @user
+    it 'redirects to the api' do
       dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      get 'show', id: dataset.id, format: :json
-
-      json = JSON.parse(response.body)
-
-      expect(json['url']).to eq(dataset_url(dataset.id))
-      expect(json['name']).to eq(dataset.name)
-      expect(json['files'].count).to eq(1)
-    end
-
-    it 'returns 403 if the user does not own a particular dataset' do
-      other_user = create(:user, name: "User 2", email: "other-user@user.com")
-      dataset = create(:dataset, name: "Dataset", user: other_user)
-
-      sign_in @user
-
-      get 'show', id: dataset.id
-
-      expect(response.code).to eq("403")
-    end
-
-    it 'returns 404 if the user is not signed in' do
-      dataset = create(:dataset, name: "Dataset", user: @user)
-
-      get 'show', id: dataset.id
-
-      expect(response.code).to eq("403")
+      expect(get 'show', id: dataset.id, format: :json).to redirect_to("/api/datasets/#{dataset.id}")
     end
 
   end

@@ -14,12 +14,8 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(5)
     end
 
-    it "lists the json" do
-      5.times { |i| create(:dataset, name: "Dataset #{i}") }
-      get 'index', format: :json
-
-      expect(assigns(:datasets).count).to eq(5)
-      expect(response.content_type).to eq("application/json")
+    it "redirects to API for json version" do
+      expect(get 'index', format: :json).to redirect_to('/api/datasets')
     end
   end
 

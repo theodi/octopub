@@ -100,26 +100,6 @@ describe DatasetsController, type: :controller do
 
               expect(@dataset.dataset_files.count).to eq(2)
             end
-
-            it 'over the API' do
-              set_api_key(@user)
-
-              put 'update', format: :json, id: @dataset.id, dataset: {}, files: [
-                {
-                  id: @file.id,
-                  title: "New title",
-                  description: "New description"
-                 },
-                {
-                  title: "New file",
-                  description: "New file description",
-                  file: @new_file
-                }
-              ]
-
-              expect(@dataset.dataset_files.count).to eq(2)
-              expect(response.code).to eq '202'
-            end
           end
         end
 
@@ -275,7 +255,7 @@ describe DatasetsController, type: :controller do
               "Your file 'New file' does not match the schema you provided"
             ])
 
-            put 'update', format: :json, id: @dataset.id, dataset: @dataset_hash, files: [
+            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
               {
                 id: @file.id,
                 title: "New title",

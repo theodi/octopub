@@ -35,18 +35,8 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(2)
     end
 
-    it 'gets a JSON dashboard' do
-      5.times { |i| create(:dataset, name: "Dataset #{i}") }
-
-      dataset = create(:dataset, user: @user)
-
-      request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(@user.api_key)
-      get 'dashboard', format: :json
-
-      json = JSON.parse(response.body)
-
-      expect(json['datasets'].count).to eq(1)
-      expect(json['datasets'].first['name']).to eq(dataset.name)
+    it 'redirects to the API' do
+      expect(get 'dashboard', format: :json).to redirect_to('/api/dashboard')
     end
   end
 end
