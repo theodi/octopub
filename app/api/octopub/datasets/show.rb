@@ -10,7 +10,7 @@ module Octopub
         authenticate!
         find_dataset
 
-        dataset_presenter(@dataset)
+        Octopub::Entities::Dataset.represent(@dataset).as_json
       end
 
     end

@@ -5,10 +5,7 @@ module Octopub
       get :datasets do
         {
           datasets: ::Dataset.all.order(created_at: :desc).map { |d|
-            {
-              name: d.name,
-              github_url: d.github_url
-            }
+            Octopub::Entities::Dataset.represent(d, only: [:name, :gh_pages_url])
           }
         }
       end

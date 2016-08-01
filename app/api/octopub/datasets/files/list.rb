@@ -11,9 +11,9 @@ module Octopub
           authenticate!
           find_dataset
 
-          @dataset.dataset_files.map { |f| file_presenter(f) }
+          @dataset.dataset_files.map { |f| Octopub::Entities::File.represent(f) }
         end
-        
+
       end
     end
   end

@@ -1,5 +1,8 @@
 require 'grape-swagger'
 
+require 'entities/file'
+require 'entities/dataset'
+
 class API < Grape::API
   prefix 'api'
   version 'v1', using: :accept_version_header
@@ -28,41 +31,6 @@ class API < Grape::API
       error!('403 Forbidden', 403) unless current_user.all_dataset_ids.include?(@dataset.id)
     end
 
-    def dataset_presenter(dataset)
-      license = Odlifier::License.define(dataset.license)
-      {
-        id: dataset.id,
-        url: api_datasets_path(id: dataset.id),
-        name: dataset.name,
-        description: dataset.description,
-        publisher: {
-          name: dataset.publisher_name,
-          url: dataset.publisher_url
-        },
-        license: {
-          id: license.id,
-          title: license.title,
-          url: license.url
-        },
-        frequency: dataset.frequency,
-        owner: dataset.owner,
-        github_url: dataset.url,
-        gh_pages_url: dataset.gh_pages_url,
-        certificate_url: dataset.certificate_url,
-        files: dataset.dataset_files.map { |f| file_presenter(f) }
-      }
-    end
-
-    def file_presenter(file)
-      {
-        id: file.id,
-        title: file.title,
-        description: file.description,
-        filename: file.filename,
-        github_url: file.github_url
-      }
-    end
-
     def process_files(files)
       files.each do |f|
         if f["file"]
@@ -87,5 +55,8 @@ class API < Grape::API
   mount Octopub::Dashboard
   mount Octopub::Jobs
 
-  add_swagger_documentation
+  add_swagger_documentation models: [
+    Octopub::Entities::Dataset,
+    Octopub::Entities::File
+  ]
 end

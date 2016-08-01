@@ -7,7 +7,7 @@ module Octopub
       datasets = current_user.all_datasets
 
       {
-        datasets: datasets.map { |d| dataset_presenter(d) }
+        datasets: datasets.map { |d| Octopub::Entities::Dataset.represent(d) }
       }
     end
   end
