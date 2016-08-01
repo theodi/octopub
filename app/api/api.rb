@@ -77,7 +77,10 @@ class API < Grape::API
   mount Octopub::Datasets::Show
   mount Octopub::Datasets::Create
   mount Octopub::Datasets::Update
-  mount Octopub::Datasets::Files
+
+  mount Octopub::Datasets::Files::List
+  mount Octopub::Datasets::Files::Create
+  mount Octopub::Datasets::Files::Update
 
   mount Octopub::Dashboard
   mount Octopub::Jobs
