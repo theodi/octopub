@@ -21,7 +21,7 @@ class API < Grape::API
     end
 
     def find_dataset
-      @dataset = ::Dataset.find(params[:id].to_i)
+      @dataset = ::Dataset.find(params.id.to_i)
       error!('404 Not Found', 404) if @dataset.nil?
       error!('403 Forbidden', 403) unless current_user.all_dataset_ids.include?(@dataset.id)
     end
@@ -77,6 +77,7 @@ class API < Grape::API
   mount Octopub::Datasets::Show
   mount Octopub::Datasets::Create
   mount Octopub::Datasets::Update
+  mount Octopub::Datasets::Files
 
   mount Octopub::Dashboard
   mount Octopub::Jobs
