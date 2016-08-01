@@ -24,16 +24,8 @@ class DatasetFile < ActiveRecord::Base
     create(
       title: file["title"],
       description: file["description"],
-      mediatype: get_content_type(file["file"].original_filename),
       file: file["file"]
     )
-  end
-
-  def self.get_content_type(file)
-  #  type = MIME::Types.type_for(file).first
-  #  [(type.use_instead || type.content_type)].flatten.first
-
-    return 'text/csv'
   end
 
   def github_url
