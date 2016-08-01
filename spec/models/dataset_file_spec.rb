@@ -95,7 +95,6 @@ describe DatasetFile do
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("my-file.csv")
         expect(file.description).to eq(@file["description"])
-        expect(file.mediatype).to eq("text/csv")
       end
 
     end
@@ -118,7 +117,6 @@ describe DatasetFile do
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("hot-drinks.csv")
         expect(file.description).to eq(@file["description"])
-        expect(file.mediatype).to eq("text/csv")
       end
 
     end
@@ -143,7 +141,6 @@ describe DatasetFile do
 
       expect(file.filename).to eq('test-data.csv')
       expect(file.description).to eq(new_file["description"])
-      expect(file.mediatype).to eq("text/csv")
     end
 
     it "only updates the referenced file if a file is present" do
@@ -159,7 +156,6 @@ describe DatasetFile do
       file.update_file(new_file)
 
       expect(file.description).to eq(new_file["description"])
-      expect(file.mediatype).to eq("text/csv")
     end
 
   end
