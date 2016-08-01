@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
   root 'application#index'
 
+  get '/api-docs' => 'application#api'#, :as => :api
+
   get "/auth/:provider/callback" => "sessions#create", :as => :callback
   get "/signout" => "sessions#destroy", :as => :signout
   get "/redirect" => "sessions#redirect", :as => :redirect
@@ -25,5 +27,7 @@ Rails.application.routes.draw do
   put "/me" => "users#update"
   get "/user/organizations" => "users#organizations", as: :user_organizations
   get "/licenses" => "application#licenses"
+
+  mount API => '/'
 
 end
