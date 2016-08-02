@@ -1,3 +1,4 @@
+json.count @datasets.count
 json.datasets do
   json.array! @datasets do |dataset|
     json.name dataset.name
