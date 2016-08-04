@@ -29,6 +29,6 @@ Rails.application.routes.draw do
   get "/licenses" => "application#licenses"
 
   mount API => '/'
-  mount GrapeSwaggerRails::Engine => '/swagger'
+  mount GrapeSwaggerRails::Engine => '/api'
 
 end
