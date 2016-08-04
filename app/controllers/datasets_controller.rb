@@ -136,7 +136,7 @@ class DatasetsController < ApplicationController
     if params[:format] == 'json'
       api_routes = {
         "index" => "/api/datasets",
-        "dashboard" => "/api/dashboard",
+        "dashboard" => "/api/user/datasets",
         "show" => "/api/datasets/#{params[:id]}",
         "files" => "/api/datasets/#{params[:id]}/files"
       }

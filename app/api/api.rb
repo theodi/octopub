@@ -55,8 +55,9 @@ class API < Grape::API
   mount Octopub::Datasets::Files::Create
   mount Octopub::Datasets::Files::Update
 
-  mount Octopub::Dashboard
   mount Octopub::Jobs
+
+  mount Octopub::User::Datasets
 
   add_swagger_documentation models: [
     Octopub::Entities::Dataset,

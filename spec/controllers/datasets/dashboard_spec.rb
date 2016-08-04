@@ -36,7 +36,7 @@ describe DatasetsController, type: :controller do
     end
 
     it 'redirects to the API' do
-      expect(get 'dashboard', format: :json).to redirect_to('/api/dashboard')
+      expect(get 'dashboard', format: :json).to redirect_to('/api/user/datasets')
     end
   end
 end

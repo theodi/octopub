@@ -11,7 +11,7 @@ describe 'GET /dashboard' do
 
     dataset = create(:dataset, user: @user)
 
-    get '/api/dashboard', nil, {'Authorization' => "Token token=#{@user.api_key}"}
+    get '/api/user/datasets', nil, {'Authorization' => "Token token=#{@user.api_key}"}
 
     json = JSON.parse(response.body)
 
