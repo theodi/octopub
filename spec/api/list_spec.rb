@@ -8,7 +8,7 @@ describe 'GET /datasets' do
 
     json = JSON.parse(response.body)
 
-    expect(json['datasets'].count).to eq(5)
+    expect(json.count).to eq(5)
     expect(response.content_type).to eq("application/json")
   end
 

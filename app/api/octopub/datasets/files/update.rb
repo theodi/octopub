@@ -8,7 +8,10 @@ module Octopub
           find_dataset
         end
 
-        desc 'Updates a file or files in an existing dataset'
+        desc 'Updates a file or files in an existing dataset', http_codes: [
+          { code: 202, message: 'OK', model: Octopub::Entities::Job }
+        ],
+        ignore_defaults: true
         params do
           requires :id, type: Integer, desc: 'The ID of the dataset'
           requires :file_id, type: Integer, desc: 'The ID of the file'

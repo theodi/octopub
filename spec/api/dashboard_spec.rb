@@ -15,8 +15,8 @@ describe 'GET /dashboard' do
 
     json = JSON.parse(response.body)
 
-    expect(json['datasets'].count).to eq(1)
-    expect(json['datasets'].first['name']).to eq(dataset.name)
+    expect(json.count).to eq(1)
+    expect(json.first['name']).to eq(dataset.name)
   end
 
 end

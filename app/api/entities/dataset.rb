@@ -27,7 +27,7 @@ module Octopub
       expose :url, as: :github_url
       expose :gh_pages_url
       expose :certificate_url
-      expose :dataset_files, using: Octopub::Entities::File, as: :files
+      expose :dataset_files, using: Octopub::Entities::File, as: :files, documentation: { is_array: true }
     end
   end
 end

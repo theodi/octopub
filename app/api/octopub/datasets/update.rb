@@ -7,7 +7,10 @@ module Octopub
         find_dataset
       end
 
-      desc 'Edits a dataset for an authenticated user. Returns a Job URL, which you can then poll to check the creation status of a job'
+      desc 'Edits a dataset for an authenticated user. Returns a Job URL, which you can then poll to check the creation status of a job', http_codes: [
+        { code: 202, message: 'OK', model: Octopub::Entities::Job }
+      ],
+      ignore_defaults: true
       params do
         requires :id, type: Integer, desc: 'The ID of the dataset'
         optional :dataset, type: Hash do

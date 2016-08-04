@@ -2,7 +2,13 @@ module Octopub
   module Datasets
     class Create < Grape::API
 
-      desc 'Creates a dataset for an authenticated user. Returns a Job URL, which you can then poll to check the creation status of a job'
+      desc 'Creates a dataset for an authenticated user. Returns a Job URL, which you can then poll to check the creation status of a job',
+      success: 202,
+      entity: Octopub::Entities::Job,
+      http_codes: [
+        { code: 202, message: 'OK', model: Octopub::Entities::Job }
+      ],
+      ignore_defaults: true
       params do
         requires :dataset, type: Hash do
           requires :name, type: String, desc: 'The name of the dataset'
@@ -25,9 +31,8 @@ module Octopub
         process_files(params["files"])
         job = CreateDataset.perform_async(params["dataset"], params["files"], current_user.id)
 
-        {
-          job_url: api_jobs_path(id: job)
-        }
+        status 202
+        Octopub::Entities::Job.represent(job)
       end
 
     end

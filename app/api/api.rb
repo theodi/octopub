@@ -2,6 +2,9 @@ require 'grape-swagger'
 
 require 'entities/file'
 require 'entities/dataset'
+require 'entities/datasets'
+require 'entities/public_datasets'
+require 'entities/job'
 
 class API < Grape::API
   prefix 'api'
@@ -57,6 +60,8 @@ class API < Grape::API
 
   add_swagger_documentation models: [
     Octopub::Entities::Dataset,
-    Octopub::Entities::File
+    Octopub::Entities::Datasets,
+    Octopub::Entities::File,
+    Octopub::Entities::Job
   ]
 end
