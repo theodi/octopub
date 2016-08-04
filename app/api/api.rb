@@ -64,5 +64,10 @@ class API < Grape::API
     Octopub::Entities::Datasets,
     Octopub::Entities::File,
     Octopub::Entities::Job
-  ]
+  ],
+  info: {
+    title: 'Octopub',
+    description: 'An API to publish CSV datasets in Github',
+    contact_url: 'https://octopub.io'
+  }
 end
