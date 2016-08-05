@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/pezholio/grape-swagger.git
-  revision: 7ebdceb43dd200e63c29f34d5ee42f3dce566166
-  branch: feature-ignore-default-http-responses
-  specs:
-    grape-swagger (0.22.0)
-      grape (>= 0.12.0)
-
-GIT
   remote: git://github.com/ruby-grape/grape-swagger-rails.git
   revision: e1768ae9b9f70fb349dfcc8c83e96cbcb80aab3c
   branch: change-layout-test-branch
@@ -194,6 +186,8 @@ GEM
       activesupport
       grape (~> 0.16, >= 0.16.0)
       rake
+    grape-swagger (0.23.0)
+      grape (>= 0.12.0)
     grape-swagger-entity (0.1.4)
       grape-entity
       grape-swagger (>= 0.20.4)
@@ -427,7 +421,7 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger!
+  grape-swagger
   grape-swagger-entity
   grape-swagger-rails!
   jbuilder (~> 2.0)
