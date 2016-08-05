@@ -80,16 +80,46 @@
 
         .endpoint {
 
-          .get .http_method {
-            @extend .btn-primary;
+          .get {
+            .options a {
+              @extend .text-primary;
+            }
+
+            .http_method {
+              @extend .btn-primary;
+            }
+
+            .heading {
+              background-color: lighten(#337ab7, 50%);
+            }
           }
 
-          .post .http_method {
-            @extend .btn-success;
+          .post {
+            .options a {
+              @extend .text-success;
+            }
+
+            .http_method {
+              @extend .btn-success;
+            }
+
+            .heading {
+              background-color: lighten(#5cb85c, 40%);
+            }
           }
 
-          .put .http_method {
-            @extend .btn-warning;
+          .put {
+            .options a {
+              @extend .text-warning;
+            }
+
+            .http_method {
+              @extend .btn-warning;
+            }
+
+            .heading {
+              background-color: lighten(#f0ad4e, 30%);
+            }
           }
 
           .heading {
@@ -104,6 +134,11 @@
               float: left;
               font-size: 1.2em;
               margin: 0;
+
+              .toggleOperation  {
+                color: #111;
+                font-weight: normal;
+              }
 
               .http_method {
                 font-weight: normal;
@@ -123,6 +158,7 @@
             .options {
               float: right;
               position: relative;
+              text-align: right;
               right: 0;
               top: 0;
               width: 600px;
