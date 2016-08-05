@@ -1,0 +1,223 @@
+.swagger-ui-wrap {
+  #input_baseUrl, #logo {
+    display: none;
+  }
+
+  #api_selector {
+    .input {
+      display: inline;
+    }
+    
+    #input_apiKey {
+      @extend .form-control;
+      width: 200px;
+      display: inline;
+    }
+
+    #explore {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+}
+
+
+#swagger-ui-container {
+  .info_title {
+    display: none;
+  }
+  .container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #resources_container {
+    ul, li {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .resource {
+      @extend .panel;
+      @extend .panel-default;
+
+      .heading {
+        @extend .panel-heading;
+        position: relative;
+
+        h2 {
+          padding: 0;
+          margin: 0;
+          font-size: 1.3em;
+        }
+
+        .options {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+
+          li {
+            display: inline-block;
+            margin: 0 2px;
+            padding: 0 2px;
+          }
+        }
+      }
+
+      .endpoints {
+        @extend .panel-body;
+
+        .endpoint {
+
+          .get .http_method {
+            @extend .btn-primary;
+          }
+
+          .post .http_method {
+            @extend .btn-success;
+          }
+
+          .put .http_method {
+            @extend .btn-warning;
+          }
+
+          .heading {
+            width: 100%;
+            float: none;
+            clear: both;
+            padding: 0;
+            margin: 10px 0 0 0;
+            border: 1px solid #dddddd;
+
+            h3 {
+              float: left;
+              font-size: 1.2em;
+              margin: 0;
+
+              .http_method {
+                font-weight: normal;
+                font-size: 0.8em;
+                margin-right: 6px;
+                padding: 4px 0;
+                width: 40px;
+                text-align: center;
+                display: inline-block;
+                a {
+                  color: #fff;
+                }
+              }
+
+            }
+
+            .options {
+              float: right;
+              position: relative;
+              right: 0;
+              top: 0;
+              width: 600px;
+            }
+
+            &:after {
+            	visibility: hidden;
+            	display: block;
+            	font-size: 0;
+            	content: " ";
+            	clear: both;
+            	height: 0;
+            }
+          }
+
+          .content {
+            float: none;
+            clear: both;
+            border: 1px solid #dddddd;
+            margin: 0;
+            padding: 10px 20px;
+
+            h4 {
+              font-size: 1.2em;
+            }
+
+            select {
+              @extend .form-control;
+              width: 150px;
+              display: inline;
+            }
+
+            .signature-nav {
+              @extend .nav;
+              @extend .nav-tabs;
+
+              li {
+                display: inline-block;
+                margin: 0 10px 0 0;
+
+                a.selected {
+                  border: 1px solid #dddddd;
+                  border-bottom-color: #fff;
+                  cursor: default;
+                  top: 1px;
+                }
+              }
+            }
+
+            .signature-container {
+              padding: 15px;
+
+              .description {
+                .strong {
+                  font-weight: bold;
+                }
+
+                div {
+                  line-height: 1.5em;
+                  margin-left: 1em;
+                }
+
+                .propName {
+                  font-weight: bold;
+                }
+
+                .propType {
+                  color: #5555aa;
+                }
+
+                .propOptKey {
+                  font-style: italic;
+                }
+              }
+            }
+
+            .submit {
+              @extend .btn;
+              @extend .btn-primary;
+              margin: 10px 0;
+            }
+
+            .response {
+              margin: 15px 0;
+            }
+
+            .fullwidth {
+              @extend .table;
+
+              input[type=text], textarea {
+                @extend .form-control;
+              }
+
+              select {
+                width: 100%;
+              }
+            }
+          }
+
+        }
+      }
+
+    }
+
+  }
+
+}

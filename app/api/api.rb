@@ -66,8 +66,20 @@ class API < Grape::API
     Octopub::Entities::Job
   ],
   info: {
-    title: 'Octopub',
-    description: 'An API to publish CSV datasets in Github',
-    contact_url: 'https://octopub.io'
+    title: 'Octopub API',
+    description: """
+# Octopub API
+
+Octopub has a fully-featured API that allows you to view, create and update datasets.
+
+Most endpoints require authentication. Logged in users can get their API key from their [account page](https://octopub.io/me).
+
+Once you have your API key, you can authenticate with the API by adding an `Authorization` header to your API call.
+
+## Endpoints
+
+You can see the endpoints available below. To test endpoints that require authentication, enter your API key below and click 'Explore'.
+    """,
+    markdown: GrapeSwagger::Markdown::RedcarpetAdapter.new(render_options: { highlighter: :rouge })
   }
 end
