@@ -5,6 +5,7 @@ require 'entities/dataset'
 require 'entities/datasets'
 require 'entities/public_datasets'
 require 'entities/job'
+require 'entities/job_detail'
 
 class API < Grape::API
   prefix 'api'
