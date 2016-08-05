@@ -15,7 +15,6 @@ module Octopub
              http_codes: [
               { code: 202, message: 'OK', model: Octopub::Entities::Job }
              ]
-        end
         params do
           requires :id, type: Integer, desc: 'The ID of the dataset'
           requires :files, type: Array do
