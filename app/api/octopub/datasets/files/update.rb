@@ -8,12 +8,13 @@ module Octopub
           find_dataset
         end
 
-        desc 'Updates a file or files in an existing dataset.', http_codes: [
-          { code: 202, message: 'OK', model: Octopub::Entities::Job }
-        ],
-        ignore_defaults: true do
-          detail 'Returns a Job URL, which you can poll to check the creation status of a job'
-        end
+        desc 'Updates a file or files in an existing dataset.',
+             detail:'Returns a Job URL, which you can poll to check the creation status of a job',
+             consumes: ['multipart/form-data'],
+             http_codes: [
+              { code: 202, message: 'OK', model: Octopub::Entities::Job }
+             ],
+             ignore_defaults: true
         params do
           requires :id, type: Integer, desc: 'The ID of the dataset'
           requires :file_id, type: Integer, desc: 'The ID of the file'

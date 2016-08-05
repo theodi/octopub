@@ -3,14 +3,14 @@ module Octopub
     class Create < Grape::API
 
       desc 'Creates a dataset for an authenticated user.',
-      success: 202,
-      entity: Octopub::Entities::Job,
-      http_codes: [
-        { code: 202, message: 'OK', model: Octopub::Entities::Job }
-      ],
-      ignore_defaults: true do
-        detail 'Returns a Job URL, which you can poll to check the creation status of a job'
-      end
+           detail: 'Returns a Job URL, which you can poll to check the creation status of a job',
+           consumes: ['multipart/form-data'],
+           success: 202,
+           entity: Octopub::Entities::Job,
+           http_codes: [
+             { code: 202, message: 'OK', model: Octopub::Entities::Job }
+           ],
+           ignore_defaults: true
       params do
         requires :dataset, type: Hash do
           requires :name, type: String, desc: 'The name of the dataset'
@@ -23,9 +23,11 @@ module Octopub
           optional :schema, type: String, desc: 'The URL of a JSON table schema to validate against your file(s)'
         end
         requires :files, type: Array do
-          requires :title, type: String, desc: 'The name of the file'
-          optional :description, type: String, desc: 'A short description of the file'
-          requires :file, type: File, desc: 'The actual file'
+          requires '', type: Array do
+            requires :title, type: Array[String], desc: 'The name of the file'
+            optional :description, type: Array[String], desc: 'A short description of the file'
+            requires :file, type: Array[File], desc: 'The actual file'
+          end
         end
       end
       post :datasets do
