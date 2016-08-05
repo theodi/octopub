@@ -7,7 +7,7 @@
     .input {
       display: inline;
     }
-    
+
     #input_apiKey {
       @extend .form-control;
       width: 200px;
@@ -26,6 +26,15 @@
   .info_title {
     display: none;
   }
+
+  .info_description {
+    margin-bottom: 20px;
+
+    h1 {
+      @extend .page-header;
+    }
+  }
+
   .container {
     width: 100%;
     margin: 0;
