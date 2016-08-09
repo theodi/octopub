@@ -1,0 +1,5 @@
+platform:
+  Rubygems:
+    enumerable-lazy:
+      tests:
+        unlicensed: skip
