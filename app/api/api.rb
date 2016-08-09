@@ -6,6 +6,7 @@ require 'entities/datasets'
 require 'entities/public_datasets'
 require 'entities/job'
 require 'entities/job_detail'
+require 'entities/organisations'
 
 class API < Grape::API
   prefix 'api'
@@ -57,6 +58,7 @@ class API < Grape::API
   mount Octopub::Jobs
 
   mount Octopub::User::Datasets
+  mount Octopub::User::Organisations
 
   add_swagger_documentation models: [
     Octopub::Entities::Dataset,
