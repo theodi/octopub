@@ -28,13 +28,11 @@ describe 'POST /datasets/:id/files' do
     expect(@repo).to receive(:add_file).with("data/my-single-file.md", instance_of(String))
 
     post "/api/datasets/#{@dataset.id}/files", {
-      files: [
-        {
-          :title => 'My single file',
-          :description => 'My super descriptive description',
-          :file => fixture_file_upload(path)
-        }
-      ],
+      file: {
+        :title => 'My single file',
+        :description => 'My super descriptive description',
+        :file => fixture_file_upload(path)
+      }
     },
     {
       'Authorization' => "Token token=#{@user.api_key}"
@@ -52,54 +50,17 @@ describe 'POST /datasets/:id/files' do
     expect(@dataset.dataset_files.last.description).to eq('My super descriptive description')
   end
 
-  it 'creates multiple new files' do
-    path1 = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
-    path2 = File.join(Rails.root, 'spec', 'fixtures', 'hats-cotw.csv')
-
-    expect(@repo).to receive(:add_file).with("data/file-the-first.csv", File.read(path1))
-    expect(@repo).to receive(:add_file).with("data/file-the-second.csv", File.read(path2))
-
-    expect(@repo).to receive(:add_file).with("data/file-the-first.md", instance_of(String))
-    expect(@repo).to receive(:add_file).with("data/file-the-second.md", instance_of(String))
-
-    post "/api/datasets/#{@dataset.id}/files", {
-      files: [
-        {
-          :title => 'File the first',
-          :description => 'My super descriptive description',
-          :file => fixture_file_upload(path1)
-        },
-        {
-          :title => 'File the second',
-          :description => 'My super descriptive description',
-          :file => fixture_file_upload(path2)
-        }
-      ],
-    },
-    {
-      'Authorization' => "Token token=#{@user.api_key}"
-    }
-
-    expect(response.code).to eq("202")
-
-    @dataset.reload
-
-    expect(@dataset.dataset_files.count).to eq(3)
-  end
-
   it 'errors if the csv does not match the schema' do
     stub_request(:get, /schema\.json/).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
 
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
 
     post "/api/datasets/#{@dataset.id}/files", {
-      files: [
-        {
-          :title => 'My single file',
-          :description => 'My super descriptive description',
-          :file => fixture_file_upload(path)
-        }
-      ],
+      file: {
+        :title => 'My single file',
+        :description => 'My super descriptive description',
+        :file => fixture_file_upload(path)
+      }
     },
     {
       'Authorization' => "Token token=#{@user.api_key}"

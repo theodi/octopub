@@ -14,7 +14,6 @@ describe 'POST /datasets' do
       @publisher_url = "http://example.com"
       @license = "OGL-UK-3.0"
       @frequency = "Monthly"
-      @files ||= []
 
       allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
       allow_any_instance_of(Dataset).to receive(:create_files) { nil }
@@ -32,7 +31,7 @@ describe 'POST /datasets' do
         @repo
       }
 
-      @files << {
+      @file = {
         :title => name,
         :description => description,
         :file => fixture_file_upload(path)
@@ -54,7 +53,7 @@ describe 'POST /datasets' do
           license: @license,
           frequency: @frequency
         },
-        files: @files
+        file: @file
       },
       {
         'Authorization' => "Token token=#{@user.api_key}"
@@ -79,7 +78,7 @@ describe 'POST /datasets' do
           license: 'bogus-license-id',
           frequency: @frequency
         },
-        files: @files
+        file: @file
       },
       {
         'Authorization' => "Token token=#{@user.api_key}"
@@ -107,11 +106,11 @@ describe 'POST /datasets' do
 
         path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
-        files = [{
+        file = {
           :title => 'My File',
           :description => 'My Description',
           :file => fixture_file_upload(path)
-        }]
+        }
 
         post '/api/datasets', {
           dataset: {
@@ -123,7 +122,7 @@ describe 'POST /datasets' do
             frequency: @frequency,
             schema: @schema
           },
-          files: files
+          file: file
         },
         {
           'Authorization' => "Token token=#{@user.api_key}"
@@ -137,11 +136,11 @@ describe 'POST /datasets' do
       it 'errors if a file does not match the schema' do
         path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
 
-        files = [{
+        file = {
           :title => 'My File',
           :description => 'My Description',
           :file => fixture_file_upload(path)
-        }]
+        }
 
         post '/api/datasets', {
           dataset: {
@@ -153,7 +152,7 @@ describe 'POST /datasets' do
             frequency: @frequency,
             schema: @schema
           },
-          files: files
+          file: file
         },
         {
           'Authorization' => "Token token=#{@user.api_key}"

@@ -8,7 +8,7 @@ module Octopub
           find_dataset
         end
 
-        desc 'Updates a file or files in an existing dataset.',
+        desc 'Updates a file in an existing dataset.',
              detail:'Returns a Job URL, which you can poll to check the creation status of a job',
              consumes: ['multipart/form-data'],
              http_codes: [
@@ -24,17 +24,15 @@ module Octopub
           end
         end
         put 'datasets/:id/files/:file_id' do
-          params.files = [
-            {
-              id: params.file_id,
-              description: params.file.description,
-              file: params.file.file
-            }
-          ]
+          params.file = {
+            id: params.file_id,
+            description: params.file.description,
+            file: params.file.file
+          }
 
-          process_files(params.files)
+          process_file(params.file)
 
-          job = UpdateDataset.perform_async(@dataset.id, current_user.id, {}, params.files)
+          job = UpdateDataset.perform_async(@dataset.id, current_user.id, {}, params.file)
 
           status 202
           {

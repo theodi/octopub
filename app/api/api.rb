@@ -35,14 +35,12 @@ class API < Grape::API
       error!('403 Forbidden', 403) unless current_user.all_dataset_ids.include?(@dataset.id)
     end
 
-    def process_files(files)
-      files.each do |f|
-        if f["file"]
-          key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
-          obj = S3_BUCKET.object(key)
-          obj.put(body: f["file"].tempfile.read, acl: 'public-read')
-          f["file"] = obj.public_url
-        end
+    def process_file(file)
+      if file["file"]
+        key ="uploads/#{SecureRandom.uuid}/#{file["file"].original_filename}"
+        obj = S3_BUCKET.object(key)
+        obj.put(body: file["file"].tempfile.read, acl: 'public-read')
+        file["file"] = obj.public_url
       end
     end
   end

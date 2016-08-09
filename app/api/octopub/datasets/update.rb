@@ -25,7 +25,7 @@ module Octopub
         end
       end
       put 'datasets/:id' do
-        job = UpdateDataset.perform_async(@dataset.id, current_user.id, (params.dataset || {}), {})
+        job = UpdateDataset.perform_async(@dataset.id, current_user.id, (params.dataset || {}), [])
 
         status 202
         {

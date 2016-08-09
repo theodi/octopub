@@ -3,6 +3,8 @@ class CreateDataset
   sidekiq_options retry: false
 
   def perform(dataset_params, files, user_id, options = {})
+    files = [files] if files.class == Hash
+
     @user_id = user_id
     @dataset = dataset
 
