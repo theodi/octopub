@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/ruby-grape/grape-swagger-rails.git
-  revision: e1768ae9b9f70fb349dfcc8c83e96cbcb80aab3c
+  remote: git://github.com/pezholio/grape-swagger-rails.git
+  revision: 2b474ff5f848906b67674edae9eff1a822d04312
   branch: change-layout-test-branch
   specs:
     grape-swagger-rails (0.2.2)
