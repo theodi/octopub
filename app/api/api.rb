@@ -79,7 +79,7 @@ Once you have your API key, you can authenticate with the API by adding an `Auth
 
 ## Endpoints
 
-You can see the endpoints available below. To test endpoints that require authentication, enter your API key below and click 'Explore'.
+You can see the endpoints available below. To test endpoints that require authentication, enter your API key below.
     """,
     markdown: GrapeSwagger::Markdown::RedcarpetAdapter.new(render_options: { highlighter: :rouge })
   }

@@ -15,8 +15,7 @@
     }
 
     #explore {
-      @extend .btn;
-      @extend .btn-primary;
+      display: none;
     }
   }
 }
