@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'GET /dashboard' do
+describe 'GET /user/datasets' do
 
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")
