@@ -15,6 +15,10 @@ describe 'PUT /datasets/:id/files/:file_id' do
     expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
   end
 
+  after(:each) do
+    Sidekiq::Testing.fake!
+  end
+
   it 'updates the description of a file' do
     put "/api/datasets/#{@dataset.id}/files/#{@file.id}", {
       file: {

@@ -38,6 +38,10 @@ describe 'POST /datasets' do
       }
     end
 
+    after(:each) do
+      Sidekiq::Testing.fake!
+    end
+
     it 'returns a job ID' do
       expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
       expect(@repo).to receive(:name) { 'my-cool-repo' }
