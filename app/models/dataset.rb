@@ -261,6 +261,8 @@ class Dataset < ActiveRecord::Base
     end
 
     def add_certificate_url(url)
+      return if url.nil?
+      
       url = url.gsub('.json', '')
       update_column(:certificate_url, url)
 
