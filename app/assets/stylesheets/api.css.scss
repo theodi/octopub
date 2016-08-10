@@ -4,19 +4,7 @@
   }
 
   #api_selector {
-    .input {
-      display: inline;
-    }
-
-    #input_apiKey {
-      @extend .form-control;
-      width: 200px;
-      display: inline;
-    }
-
-    #explore {
-      display: none;
-    }
+    display: none;
   }
 }
 
