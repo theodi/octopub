@@ -98,7 +98,7 @@ class Dataset < ActiveRecord::Base
     dataset_files.each do |file|
       datapackage["resources"] << {
         "name" => file.title,
-        "mediatype" => file.mediatype,
+        "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => (JSON.parse(open(schema).read) unless schema.nil? || is_csv_otw?)
