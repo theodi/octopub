@@ -349,6 +349,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
       expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(dataset).to receive(:create_contents).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
       dataset.create_files
     end
@@ -372,6 +373,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(schema_path).read)
+      expect(dataset).to receive(:create_contents).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
       dataset.create_files
     end
@@ -547,6 +549,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
       expect(dataset).to receive(:create_contents).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(dataset).to receive(:create_contents).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(path).read)
 
       expect(dataset).to receive(:create_contents).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
