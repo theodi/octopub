@@ -64,6 +64,7 @@ class Dataset < ActiveRecord::Base
     create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
     create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
     if !schema.nil?
       create_contents("schema.json", open(schema).read)
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
