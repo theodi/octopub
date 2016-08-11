@@ -294,7 +294,7 @@ describe Dataset do
     dataset = build(:dataset, frequency: "weekly")
     config = YAML.load dataset.config
 
-    expect(config[:update_frequency]).to eq("weekly")
+    expect(config["update_frequency"]).to eq("weekly")
   end
 
   context "schemata" do
