@@ -19,152 +19,6 @@ describe Dataset do
     expect(dataset).to be_valid
   end
 
-  context 'creates a dataset with files' do
-
-    before(:each) do
-      filename = 'valid-schema.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-      @dataset = {
-        name: "My Awesome Dataset",
-        description: "An awesome dataset",
-        publisher_name: "Awesome Inc",
-        publisher_url: "http://awesome.com",
-        license: "OGL-UK-3.0",
-        frequency: "One-off"
-      }
-
-      @files = [
-        {
-          'title' => 'My File',
-          'description' => Faker::Company.bs,
-          'file' => fake_file(path)
-        }
-      ]
-    end
-
-    it 'inline' do
-      dataset = Dataset.create_dataset(@dataset, @files, @user)
-
-      expect(dataset).to be_valid
-    end
-
-    context 'asynchronously' do
-
-      before(:each) do
-        Dataset.skip_callback(:create, :after, :create_in_github)
-        Dataset.skip_callback(:create, :after, :set_owner_avatar)
-      end
-
-      after(:each) do
-        Dataset.set_callback(:create, :after, :create_in_github)
-        Dataset.set_callback(:create, :after, :set_owner_avatar)
-      end
-
-      it 'reports success' do
-        mock_client = mock_pusher('beep-beep')
-        expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
-
-        Dataset.create_dataset(@dataset, @files, @user, perform_async: true, channel_id: "beep-beep")
-      end
-
-      it 'reports errors' do
-        filename = 'schemas/bad-schema.json'
-        path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-        files = [
-          {
-            'title' => 'My File',
-            'description' => Faker::Company.bs,
-            'file' => fake_file(path)
-          }
-        ]
-
-        mock_client = mock_pusher('beep-beep')
-        expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
-
-        Dataset.create_dataset(@dataset, files, @user, perform_async: true, channel_id: "beep-beep")
-      end
-    end
-
-  end
-
-  context 'updates a dataset with files' do
-
-    before(:each) do
-      Dataset.skip_callback(:update, :after, :update_in_github)
-
-      @dataset = create(:dataset, name: "My Awesome Dataset",
-                       description: "An awesome dataset",
-                       publisher_name: "Awesome Inc",
-                       publisher_url: "http://awesome.com",
-                       license: "OGL-UK-3.0",
-                       frequency: "One-off",
-                       user: @user)
-
-       filename = 'valid-schema.csv'
-       path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-       @dataset_params = {
-         description: "Another awesome dataset",
-         publisher_name: "Awesome Incorporated",
-         publisher_url: "http://awesome.com/awesome",
-         license: "OGL-UK-3.0",
-         frequency: "One-off"
-       }
-
-       @files = [
-         {
-           'title' => 'My File',
-           'description' => Faker::Company.bs,
-           'file' => fake_file(path)
-         }
-       ]
-
-       expect(Dataset).to receive(:find).with(@dataset.id) { @dataset }
-       allow(@dataset).to receive(:fetch_repo).with(@user.octokit_client) { nil }
-    end
-
-    after(:each) do
-      Dataset.set_callback(:update, :after, :update_in_github)
-    end
-
-    it 'inline' do
-      dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files)
-
-      expect(dataset).to be_valid
-    end
-
-    context 'asynchronously' do
-
-      it 'reports success' do
-        mock_client = mock_pusher('beep-beep')
-        expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
-
-        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, @files, perform_async: true, channel_id: "beep-beep")
-      end
-
-      it 'reports errors' do
-        filename = 'schemas/bad-schema.json'
-        path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-        files = [
-          {
-            'title' => 'My File',
-            'description' => Faker::Company.bs,
-            'file' => fake_file(path)
-          }
-        ]
-
-        mock_client = mock_pusher('beep-beep')
-        expect(mock_client).to receive(:trigger).with('dataset_failed', instance_of(Array))
-
-        dataset = Dataset.update_dataset(@dataset.id, @user, @dataset_params, files, perform_async: true, channel_id: "beep-beep")
-      end
-    end
-
-  end
-
   it "returns an error if the repo already exists" do
     expect_any_instance_of(Octokit::Client).to receive(:repository?).with("user-mcuser/my-awesome-dataset") { true }
 
@@ -260,32 +114,40 @@ describe Dataset do
 
     before(:each) do
       @dataset = create(:dataset, user: @user, repo: "repo")
-
-      @double = double(GitData)
-
-      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
-        @double
-      }
     end
 
-    it "gets a repo from Github" do
-      expect(@dataset).to receive(:check_for_schema)
-      @dataset.fetch_repo
-      expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
-    end
+    context('when repo exists') do
 
-    it "gets a schema" do
-      stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+      before(:each) do
+        @double = double(GitData)
 
-      @dataset.fetch_repo
+        expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
+          @double
+        }
+      end
 
-      expect(@dataset.schema).to eq('//user-mcuser.github.io/repo/schema.json')
+      it "gets a repo from Github" do
+        expect(@dataset).to receive(:check_for_schema)
+        @dataset.fetch_repo
+        expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
+      end
+
+      it "gets a schema" do
+        stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+
+        @dataset.fetch_repo
+
+        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+      end
+
     end
 
     it 'returns nil if there is no schema present' do
+      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)).and_raise(Octokit::NotFound)
+
       @dataset.fetch_repo
 
-      expect(@dataset.schema).to be_nil
+      expect(@dataset.instance_variable_get(:@repo)).to be_nil
     end
 
   end
@@ -580,9 +442,16 @@ describe Dataset do
         client
       }
 
-      expect(@dataset).to receive(:build_certificate)
+      expect(@dataset).to receive(:retry_certificate)
 
       @dataset.send :build_certificate
+    end
+
+    it 'retries a certificate' do
+      expect_any_instance_of(Object).to receive(:sleep).with(5)
+      expect(@dataset).to receive(:build_certificate)
+
+      @dataset.send :retry_certificate
     end
 
     it 'creates the certificate when build is complete' do

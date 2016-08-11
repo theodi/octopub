@@ -58,12 +58,21 @@ RSpec.configure do |config|
 end
 
 def sign_in(user)
-  allow_any_instance_of(ApplicationController).to receive(:current_user) { user }
+  allow_any_instance_of(ApplicationController).to receive(:session) { {user_id: user.id} }
+end
+
+def sign_out
+  allow_any_instance_of(ApplicationController).to receive(:session) { {} }
+end
+
+def set_api_key(user)
+  sign_out # Make sure we haven't got any sessions hanging around
+  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
 def fake_file path
-  url = "//example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
-  stub_request(:get, "https:#{url}").to_return(body: File.read(path))
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, url).to_return(body: File.read(path))
   url
 end
 
@@ -71,4 +80,18 @@ def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
   mock_client
+end
+
+def skip_dataset_callbacks!
+  Dataset.skip_callback(:create, :after, :create_in_github)
+  Dataset.skip_callback(:create, :after, :set_owner_avatar)
+  Dataset.skip_callback(:create, :after, :build_certificate)
+  Dataset.skip_callback(:create, :after, :send_success_email)
+end
+
+def set_dataset_callbacks!
+  Dataset.set_callback(:create, :after, :create_in_github)
+  Dataset.set_callback(:create, :after, :set_owner_avatar)
+  Dataset.set_callback(:create, :after, :build_certificate)
+  Dataset.set_callback(:create, :after, :send_success_email)
 end

@@ -30,49 +30,9 @@ describe UsersController, type: :controller do
       email: 'newemail@example.com'
     }
 
+    @user.reload
+
     expect(@user.email).to eq('newemail@example.com')
-  end
-
-  it "lists a user's organizations" do
-    sign_in @user
-    allow(@user).to receive(:organizations) {
-      [
-        OpenStruct.new(
-          organization: OpenStruct.new({
-            login: "org1",
-            avatar_url: "http://www.example.org/avatar1.png"
-          })
-        ),
-        OpenStruct.new(
-          organization: OpenStruct.new({
-            login: "org2",
-            avatar_url: "http://www.example.org/avatar2.png"
-          })
-        ),
-        OpenStruct.new(
-          organization: OpenStruct.new({
-            login: "org3",
-            avatar_url: "http://www.example.org/avatar3.png"
-          })
-        )
-      ]
-    }
-
-    get :organizations
-
-    expect(response.body).to eq({
-      organizations: [
-        {
-          login: 'org1'
-        },
-        {
-          login: 'org2'
-        },
-        {
-          login: 'org3'
-        }
-      ]
-    }.to_json)
   end
 
 end

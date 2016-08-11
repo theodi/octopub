@@ -20,13 +20,15 @@
     <p>
       <%= link_to @dataset.gh_pages_url, @dataset.gh_pages_url %>
     </p>
+    <% if @dataset.certificate_url %>
+      <p>
+        We've also created an Open Data Certificate for your dataset.
+        If you have an Open Data Certificates account, you can claim the dataset and
+        answer additional questions at <%= link_to @dataset.certificate_url, @dataset.certificate_url %>.
+      </p>
+    <% end %>
     <p>
-      We've also created an Open Data Certificate for your dataset.
-      If you have an Open Data Certificates account, you can claim the dataset and
-      answer additional questions at <%= link_to @dataset.certificate_url, @dataset.certificate_url %>.
-    </p>
-    <p>
-      To manage your Octopub datasets, you can access your <%= link_to 'dashboard', dashboard_url %>
+      To manage your Octopub datasets, you can access your <%= link_to 'dashboard', main_app.dashboard_url %>
       at any time.
     </p>
 

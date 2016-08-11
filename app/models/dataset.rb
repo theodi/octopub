@@ -17,62 +17,24 @@ class Dataset < ActiveRecord::Base
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def self.create_dataset(dataset, files, user, options = {})
-    dataset = ActiveSupport::HashWithIndifferentAccess.new(dataset)
-
-    dataset = user.datasets.new(dataset)
-    files.each do |file|
-      dataset.dataset_files << DatasetFile.new_file(file)
-    end
-    if options[:perform_async] === true
-      report_status(dataset, options[:channel_id])
+  def report_status(channel_id)
+    if valid?
+      Pusher[channel_id].trigger('dataset_created', self) if channel_id
+      save
     else
-      dataset
-    end
-  end
-
-  def self.update_dataset(id, user, dataset_params, files, options = {})
-    dataset_params = ActiveSupport::HashWithIndifferentAccess.new(dataset_params)
-
-    dataset = Dataset.find(id)
-    dataset.fetch_repo(user.octokit_client)
-    dataset.assign_attributes(dataset_params) if dataset_params
-
-    files.each do |file|
-      if file["id"]
-        f = dataset.dataset_files.find { |f| f.id == file["id"].to_i }
-        f.update_file(file)
-      else
-        f = DatasetFile.new_file(file)
-        dataset.dataset_files << f
-        if f.save
-          f.add_to_github
-          f.file = nil
-        end
-      end
-    end
-
-    if options[:perform_async] === true
-      report_status(dataset, options[:channel_id])
-    else
-      dataset
-    end
-  end
-
-  def self.report_status(dataset, channel_id)
-    if dataset.valid?
-      Pusher[channel_id].trigger('dataset_created', dataset)
-      dataset.save
-    else
-      messages = dataset.errors.full_messages
-      dataset.dataset_files.each do |file|
+      messages = errors.full_messages
+      dataset_files.each do |file|
         unless file.valid?
           (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
           end
         end
       end
-      Pusher[channel_id].trigger('dataset_failed', messages)
+      if channel_id
+        Pusher[channel_id].trigger('dataset_failed', messages.uniq)
+      else
+        Error.create(job_id: self.job_id, messages: messages.uniq)
+      end
     end
   end
 
@@ -103,7 +65,7 @@ class Dataset < ActiveRecord::Base
     create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     if !schema.nil?
-      create_contents("schema.json", open("https:#{schema}").read)
+      create_contents("schema.json", open(schema).read)
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
   end
@@ -136,10 +98,10 @@ class Dataset < ActiveRecord::Base
     dataset_files.each do |file|
       datapackage["resources"] << {
         "name" => file.title,
-        "mediatype" => file.mediatype,
+        "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(open("https:#{schema}").read) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(open(schema).read) unless schema.nil? || is_csv_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -186,7 +148,7 @@ class Dataset < ActiveRecord::Base
   def check_for_schema
     begin
       open(schema_url, allow_redirections: :safe)
-      self.schema = schema_url.gsub("http:", "")
+      self.schema = schema_url
     rescue OpenURI::HTTPError
       nil
     end
@@ -252,7 +214,7 @@ class Dataset < ActiveRecord::Base
 
     def parse_schema!
       if schema.instance_variable_get("@parsed_schema").nil?
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json("https:#{schema}"))
+        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
       end
     end
 
@@ -275,12 +237,17 @@ class Dataset < ActiveRecord::Base
 
     def build_certificate
       status = user.octokit_client.pages(full_name).status
+
       if status == "built"
         create_certificate
       else
-        sleep 5
-        build_certificate
+        retry_certificate
       end
+    end
+
+    def retry_certificate
+      sleep 5
+      build_certificate
     end
 
     def create_certificate
@@ -295,6 +262,8 @@ class Dataset < ActiveRecord::Base
     end
 
     def add_certificate_url(url)
+      return if url.nil?
+      
       url = url.gsub('.json', '')
       update_column(:certificate_url, url)
 

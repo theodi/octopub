@@ -13,12 +13,6 @@ class UsersController < ApplicationController
     redirect_to root_path, notice: "User details updated"
   end
 
-  def organizations
-    render json: {
-      organizations: current_user.organizations.map { |o| { login: o.organization.login } }
-    }.to_json
-  end
-
   private
 
     def user_params

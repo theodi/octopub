@@ -3,6 +3,8 @@ require 'spec_helper'
 describe DatasetsController, type: :controller do
 
   before(:each) do
+    Sidekiq::Testing.inline!
+
     @user = create(:user, name: "User McUser", email: "user@user.com")
     Dataset.skip_callback(:create, :after, :create_in_github)
 
@@ -15,6 +17,8 @@ describe DatasetsController, type: :controller do
   end
 
   after(:each) do
+    Sidekiq::Testing.fake!
+
     Dataset.set_callback(:create, :after, :create_in_github)
   end
 
@@ -36,18 +40,6 @@ describe DatasetsController, type: :controller do
         license: "OGL-UK-3",
         frequency: "annual"
       }
-    end
-
-    it 'queues a job when async is set to true' do
-      expect {
-        put 'update', id: @dataset.id, dataset: @dataset_hash, async: true, files: [{
-          id: @file.id,
-          title: "New title",
-          description: "New description"
-        }]
-      }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
-
-      expect(response.code).to eq("202")
     end
 
     context('successful update') do
@@ -108,30 +100,6 @@ describe DatasetsController, type: :controller do
 
               expect(@dataset.dataset_files.count).to eq(2)
             end
-
-            it 'over the API' do
-              put 'update', format: :json, id: @dataset.id, files: [
-                {
-                  id: @file.id,
-                  title: "New title",
-                  description: "New description"
-                 },
-                {
-                  title: "New file",
-                  description: "New file description",
-                  file: @new_file
-                }
-              ]
-
-              expect(@dataset.dataset_files.count).to eq(2)
-              expect(JSON.parse(response.body)).to include (
-                {
-                  "name"=>"Dataset",
-                  "gh_pages_url"=>"http://user-mcuser.github.io/"
-                }
-              )
-              expect(response.code).to eq '201'
-            end
           end
         end
 
@@ -147,7 +115,7 @@ describe DatasetsController, type: :controller do
             description: "New description"
           }]
 
-          expect(response).to redirect_to(dashboard_path)
+          expect(response).to redirect_to(edited_datasets_path)
 
           expect(@dataset.name).to eq("Dataset")
           expect(@dataset.description).to eq("New description")
@@ -157,6 +125,17 @@ describe DatasetsController, type: :controller do
           expect(@dataset.frequency).to eq("annual")
           expect(@dataset.dataset_files.count).to eq(1)
           expect(@dataset.dataset_files.first.description).to eq("New description")
+        end
+
+        it 'returns 202 when async is set to true' do
+          @file.file = nil
+
+          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
+            id: @file.id,
+            description: "New description"
+          }], async: true
+
+          expect(response.code).to eq("202")
         end
 
         it 'updates a file in Github' do
@@ -225,9 +204,11 @@ describe DatasetsController, type: :controller do
               file: file
           }]
 
-          expect(request).to render_template(:edit)
-          expect(flash[:notice]).to eq("Your file '#{@file.title}' does not match the schema you provided")
-          expect(response.code).to eq '400'
+          expect(Error.count).to eq(1)
+          expect(Error.first.messages).to eq([
+            "Dataset files is invalid",
+            "Your file '#{@file.title}' does not match the schema you provided"
+          ])
         end
 
         context 'does not add new file in Github' do
@@ -243,7 +224,7 @@ describe DatasetsController, type: :controller do
             expect(file).to_not receive(:add_to_github)
           end
 
-          it 'with a browser' do
+          it 'without websockets' do
 
             put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
               {
@@ -259,12 +240,22 @@ describe DatasetsController, type: :controller do
             ]
 
             expect(@dataset.dataset_files.count).to eq(1)
-            expect(request).to render_template(:edit)
-            expect(flash[:notice]).to eq("Your file 'New file' does not match the schema you provided")
+            expect(Error.count).to eq(1)
+            expect(Error.first.messages).to eq([
+              "Dataset files is invalid",
+              "Your file 'New file' does not match the schema you provided"
+            ])
           end
 
-          it 'over the API' do
-            put 'update', format: :json, id: @dataset.id, dataset: @dataset_hash, files: [
+          it 'with websockets' do
+            mock_client = mock_pusher('foo-bar')
+
+            expect(mock_client).to receive(:trigger).with('dataset_failed', [
+              "Dataset files is invalid",
+              "Your file 'New file' does not match the schema you provided"
+            ])
+
+            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
               {
                 id: @file.id,
                 title: "New title",
@@ -275,9 +266,7 @@ describe DatasetsController, type: :controller do
                 description: "New file description",
                 file: @new_file
               }
-            ]
-
-            expect(JSON.parse(response.body)['errors'].first).to eq "Your file 'New file' does not match the schema you provided"
+            ], channel_id: 'foo-bar'
           end
         end
       end
@@ -302,7 +291,7 @@ describe DatasetsController, type: :controller do
         }
       ]
 
-      expect(Dataset).to receive(:update_dataset).with(@dataset.id.to_s, @user, @dataset_hash.stringify_keys!, [
+      expect(UpdateDataset).to receive(:perform_async).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
           {
             "id" => @file.id.to_s,
             "title" => "New title",
@@ -313,11 +302,10 @@ describe DatasetsController, type: :controller do
             "description" => "New file description",
             "file" => "http://example.com/new-file.csv"
           }
-        ]
+        ], channel_id: nil
       ) { build(:dataset) }
 
       put 'update', id: @dataset.id, dataset: @dataset_hash, files: files
-
     end
 
   end

@@ -11,7 +11,7 @@ class DatasetFile < ActiveRecord::Base
 
   def self.file_from_url(file)
     tempfile = Tempfile.new 'uploaded'
-    tempfile.write open("https:#{URI.escape(file)}").read.force_encoding("UTF-8")
+    tempfile.write open(URI.escape(file)).read.force_encoding("UTF-8")
     tempfile.rewind
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
                                            content_type: 'text/csv',
@@ -24,16 +24,8 @@ class DatasetFile < ActiveRecord::Base
     create(
       title: file["title"],
       description: file["description"],
-      mediatype: get_content_type(file["file"].original_filename),
       file: file["file"]
     )
-  end
-
-  def self.get_content_type(file)
-  #  type = MIME::Types.type_for(file).first
-  #  [(type.use_instead || type.content_type)].flatten.first
-
-    return 'text/csv'
   end
 
   def github_url
@@ -74,7 +66,7 @@ class DatasetFile < ActiveRecord::Base
 
     def check_schema
       if dataset && dataset.schema && file
-        schema = Csvlint::Schema.load_from_json("https:#{dataset.schema}")
+        schema = Csvlint::Schema.load_from_json(dataset.schema)
 
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
