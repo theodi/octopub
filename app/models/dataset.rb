@@ -111,9 +111,9 @@ class Dataset < ActiveRecord::Base
 
   def config
     {
-      data_dir: ".",
-      update_frequency: frequency,
-      permalink: 'pretty'
+      "data_dir" => '.',
+      "update_frequency" => frequency,
+      "permalink" => 'pretty'
     }.to_yaml
   end
 
@@ -264,7 +264,7 @@ class Dataset < ActiveRecord::Base
 
     def add_certificate_url(url)
       return if url.nil?
-      
+
       url = url.gsub('.json', '')
       update_column(:certificate_url, url)
 
