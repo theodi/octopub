@@ -148,8 +148,9 @@ class Dataset < ActiveRecord::Base
 
   def config
     {
-      "data_source" => ".",
-      "update_frequency" => frequency,
+      data_dir: ".",
+      update_frequency: frequency,
+      permalink: 'pretty'
     }.to_yaml
   end
 

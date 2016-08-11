@@ -50,7 +50,7 @@ layout: default
         <td property="dcat:format">{{ resource.mediatype }}</td>
         <td property="dcat:description">{{ resource.description }}</td>
 	{% if resource.mediatype == "text/csv" %}
-	 <td><a href="{{ resource.path | split:"." | first }}.html"><i class="fa fa-search"></i> View</a></td>
+	 <td><a href="{{ resource.path | split:"." | first }}"><i class="fa fa-search"></i> View</a></td>
 	{% else %}
          <td></td>
         {% endif %}
@@ -80,12 +80,12 @@ layout: default
 
     <ul>
       {% for item in site.data.index %}
-        <li><a href="{{ item['url'] | | remove: '.json'}}.html">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
+        <li><a href="{{ item['url'] | | remove: '.json'}}">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
       {% endfor %}
     </ul>
   {% endif %}
 
-  <script src="{{ site.certificate_url }}"></script>
+  <script src="{{ site.certificate_url }}"></script>		
 
   <h2>Support</h2>
 

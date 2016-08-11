@@ -28,14 +28,9 @@ layout: default
 <h1>{{ resource.name }}</h1>
 
 <div class="table-container">
-  {% include data_table.html %}
+  {% include data_table.html source = resource.path %}
 </div>
 
 {% assign csvlint = resource.links | where:"name","CSV Validation" | first %}
-<!-- <div class='pull-right'>
-  <a href='{{ csvlint.url }}'>
-    <img src="{{ csvlint.url }}.svg" alt="{{ csvlint.name }}" />
-  </a>
-</div> -->
 
-<a class='btn btn-primary' href='{{resource.url}}'><i class='fa fa-cloud-download'></i> Download CSV</a>
+<a class='btn btn-primary hidden' id='download-csv' href='{{ site.github.url }}/{{ resource.path }}'><i class='fa fa-cloud-download'></i> Download CSV</a>
