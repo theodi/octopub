@@ -8,6 +8,6 @@ GrapeSwaggerRails.options.api_key_type = 'header'
 GrapeSwaggerRails.options.swagger_ui_layout = 'layouts/application'
 
 GrapeSwaggerRails.options.before_filter_proc = proc {
-  GrapeSwaggerRails.options.app_url = request.protocol + request.host_with_port
+  GrapeSwaggerRails.options.app_url = (Rails.env.production? ? 'https://' : request.protocol) + request.host_with_port
   GrapeSwaggerRails.options.api_key_default_value = current_user.api_key if current_user.present?
 }
