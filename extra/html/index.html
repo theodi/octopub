@@ -49,7 +49,7 @@ layout: default
         <td property="dcat:title">{{ resource.name }}</td>
         <td property="dcat:format">{{ resource.mediatype }}</td>
         <td property="dcat:description">{{ resource.description }}</td>
-	      <td><a href="{{ resource.path | split:"." | first }}.html"><i class="fa fa-search"></i> View</a></td>
+	      <td><a href="{{ resource.path | split:"." | first }}"><i class="fa fa-search"></i> View</a></td>
         <td><a href="{{ resource.path }}" property='dcat:accessURL'><i class="fa fa-cloud-download"></i> Download</a></td>
         {% unless resource.path contains 'http' %}
           <td><a href="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}"><img src="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
@@ -72,7 +72,7 @@ layout: default
 
     <ul>
       {% for item in site.data.index %}
-        <li><a href="{{ item['url'] | | remove: '.json'}}.html">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
+        <li><a href="{{ item['url'] | | remove: '.json'}}">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
       {% endfor %}
     </ul>
   {% endif %}
