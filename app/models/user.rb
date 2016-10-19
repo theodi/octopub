@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
       repos = octokit_client.repos.map do |r|
         Dataset.find_by_full_name(r.full_name).try(:id)
       end
-      repos.compact!
+      repos.compact
     end
 
     def generate_api_key
