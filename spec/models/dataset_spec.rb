@@ -556,8 +556,14 @@ describe Dataset do
     
     context "without twitter creds" do
       
+      before(:all) do
+        ENV.delete("TWITTER_CONSUMER_KEY")
+        ENV.delete("TWITTER_CONSUMER_SECRET")
+        ENV.delete("TWITTER_TOKEN")
+        ENV.delete("TWITTER_SECRET")
+      end
+
       it "doesn't send twitter notification" do
-        expect(ENV["TWITTER_CONSUMER_KEY"]).to be_nil
         expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
         dataset = create(:dataset, name: "My Awesome Dataset",
                          description: "An awesome dataset",
