@@ -66,7 +66,7 @@ class DatasetFile < ActiveRecord::Base
 
     def check_schema
       if dataset && dataset.schema && file
-        schema = Csvlint::Schema.load_from_json(dataset.schema)
+        schema = Csvlint::Schema.load_from_json(URI.escape dataset.schema)
 
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 

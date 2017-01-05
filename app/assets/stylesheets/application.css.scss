@@ -23,8 +23,14 @@
 @import "extra/*";
 @import "api";
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
-  padding: 20px 0;
+  padding: 20px 0 0 0;
+  margin-bottom: 160px;
 }
 
 .navbar-text {
@@ -56,4 +62,19 @@ td.owner {
 
 .progress {
   margin-top: 15px;
+}
+
+footer {
+  img {
+    width: 175px;
+    margin: 0 0 0 -10px;
+  }
+  background-color: #f7f7f9;
+  padding: 10px 0;
+  text-align: left;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 140px;
 }
