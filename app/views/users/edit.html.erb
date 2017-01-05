@@ -8,6 +8,8 @@
 
   <%= f.email_field "user[api_key]", label: "API Key", value: current_user.api_key, required: true, disabled: true %>
 
+  <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: current_user.twitter_handle, required: false, prepend: '@' %>
+
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit
   </button>

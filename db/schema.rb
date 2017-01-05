@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20160721102217) do
     t.string   "token"
     t.string   "api_key"
     t.text     "org_dataset_ids", default: [], array: true
+    t.string   "twitter_handle"
   end
 
 end

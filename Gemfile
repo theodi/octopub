@@ -78,3 +78,4 @@ gem 'grape-swagger-rails', github: 'pezholio/grape-swagger-rails', branch: 'chan
 gem 'grape-swagger-entity'
 gem 'redcarpet'
 gem 'rouge'
+gem 'twitter'
