@@ -508,4 +508,50 @@ describe Dataset do
 
   end
 
+  context "notifying via twitter" do
+    
+    before(:all) do
+      ENV["TWITTER_CONSUMER_KEY"] = "test"
+      ENV["TWITTER_CONSUMER_SECRET"] = "test"
+      ENV["TWITTER_TOKEN"] = "test"
+      ENV["TWITTER_SECRET"] = "test"
+    end
+    
+    context "with a twitter user" do
+      before(:each) do
+        @user = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
+        allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+      end
+
+      it "creates a valid dataset" do
+        expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://user-mcuser.github.io/").once
+        dataset = create(:dataset, name: "My Awesome Dataset",
+                         description: "An awesome dataset",
+                         publisher_name: "Awesome Inc",
+                         publisher_url: "http://awesome.com",
+                         license: "OGL-UK-3.0",
+                         frequency: "One-off",
+                         user: @user)
+      end
+    end
+  
+    context "without a twitter user" do
+      before(:each) do
+        @user = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
+        allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+      end
+
+      it "creates a valid dataset" do
+        expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
+        dataset = create(:dataset, name: "My Awesome Dataset",
+                         description: "An awesome dataset",
+                         publisher_name: "Awesome Inc",
+                         publisher_url: "http://awesome.com",
+                         license: "OGL-UK-3.0",
+                         frequency: "One-off",
+                         user: @user)
+      end
+    end
+  end
+
 end

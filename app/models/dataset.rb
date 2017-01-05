@@ -7,7 +7,7 @@ class Dataset < ActiveRecord::Base
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email
+  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -233,7 +233,9 @@ class Dataset < ActiveRecord::Base
 
     def send_success_email
       DatasetMailer.success(self).deliver
-
+    end
+    
+    def send_tweet_notification
       if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
         twitter_client = Twitter::REST::Client.new do |config|
           config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
