@@ -514,19 +514,24 @@ describe Dataset do
   context "notifying via twitter" do
     
     before(:all) do
-      ENV["TWITTER_CONSUMER_KEY"] = "test"
-      ENV["TWITTER_CONSUMER_SECRET"] = "test"
-      ENV["TWITTER_TOKEN"] = "test"
-      ENV["TWITTER_SECRET"] = "test"
+      @tweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
+      @nontweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
     end
     
-    context "with a twitter user" do
-      before(:each) do
-        @user = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
-        allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
-      end
+    before(:each) do
+      allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+    end
 
-      it "sends twitter notification" do
+    context "with twitter creds" do
+    
+      before(:all) do
+        ENV["TWITTER_CONSUMER_KEY"] = "test"
+        ENV["TWITTER_CONSUMER_SECRET"] = "test"
+        ENV["TWITTER_TOKEN"] = "test"
+        ENV["TWITTER_SECRET"] = "test"
+      end
+      
+      it "sends twitter notification to twitter users" do
         expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://user-mcuser.github.io/").once
         dataset = create(:dataset, name: "My Awesome Dataset",
                          description: "An awesome dataset",
@@ -534,17 +539,10 @@ describe Dataset do
                          publisher_url: "http://awesome.com",
                          license: "OGL-UK-3.0",
                          frequency: "One-off",
-                         user: @user)
-      end
-    end
-  
-    context "without a twitter user" do
-      before(:each) do
-        @user = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
-        allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+                         user: @tweeter)
       end
 
-      it "doesn't send twitter notification" do
+      it "doesn't send twitter notification to non twitter users" do
         expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
         dataset = create(:dataset, name: "My Awesome Dataset",
                          description: "An awesome dataset",
@@ -552,21 +550,14 @@ describe Dataset do
                          publisher_url: "http://awesome.com",
                          license: "OGL-UK-3.0",
                          frequency: "One-off",
-                         user: @user)
+                         user: @nontweeter)
       end
     end
-  
+    
     context "without twitter creds" do
-      before(:each) do
-        @user = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
-        allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
-        ENV.delete("TWITTER_CONSUMER_KEY")
-        ENV.delete("TWITTER_CONSUMER_SECRET")
-        ENV.delete("TWITTER_TOKEN")
-        ENV.delete("TWITTER_SECRET")
-      end
-
+      
       it "doesn't send twitter notification" do
+        expect(ENV["TWITTER_CONSUMER_KEY"]).to be_nil
         expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
         dataset = create(:dataset, name: "My Awesome Dataset",
                          description: "An awesome dataset",
@@ -574,7 +565,7 @@ describe Dataset do
                          publisher_url: "http://awesome.com",
                          license: "OGL-UK-3.0",
                          frequency: "One-off",
-                         user: @user)
+                         user: @tweeter)
       end
     end
   end
