@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/pezholio/grape-swagger-rails.git
+  remote: https://github.com/pezholio/grape-swagger-rails.git
   revision: 2b474ff5f848906b67674edae9eff1a822d04312
   branch: change-layout-test-branch
   specs:
@@ -8,21 +8,21 @@ GIT
       railties (>= 3.2.12)
 
 GIT
-  remote: git://github.com/theodi/alternate-rails.git
+  remote: https://github.com/theodi/alternate-rails.git
   revision: 83a5b8b73655283b2d9729eeae848488881eecc4
   specs:
     alternate_rails (0.0.2)
       rails (>= 3.2.13)
 
 GIT
-  remote: git://github.com/theodi/csv2json.git
+  remote: https://github.com/theodi/csv2json.git
   revision: aea935b07ca401f66d5249d1860960e65f42bc37
   specs:
     csv2json (0.2)
       csvlint
 
 GIT
-  remote: git://github.com/theodi/csv2rest.git
+  remote: https://github.com/theodi/csv2rest.git
   revision: 32dd54523ae6ff1e24bc9e140546e4f77ca655cc
   specs:
     csv2rest (0.1.1)

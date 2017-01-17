@@ -21,8 +21,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
-gem 'csv2json', github: 'theodi/csv2json'
-gem 'csv2rest', github: 'theodi/csv2rest'
+gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
+gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'csvlint'
 
 group :test do
@@ -61,7 +61,7 @@ gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem 'octokit'
 gem 'odlifier'
-gem 'alternate_rails', github: 'theodi/alternate-rails'
+gem 'alternate_rails', git: 'https://github.com/theodi/alternate-rails.git'
 gem 'git'
 gem 'will_paginate-bootstrap'
 gem 'aws-sdk', '~> 2'
@@ -72,7 +72,7 @@ gem 'certificate-factory'
 gem 'grape'
 gem 'grape-route-helpers'
 gem 'grape-swagger'
-gem 'grape-swagger-rails', github: 'pezholio/grape-swagger-rails', branch: 'change-layout-test-branch'
+gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 gem 'grape-swagger-entity'
 gem 'redcarpet'
 gem 'rouge'
