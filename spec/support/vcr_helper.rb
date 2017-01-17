@@ -6,5 +6,6 @@ VCR.configure do |c|
   c.default_cassette_options = { record: :once }
   c.allow_http_connections_when_no_cassette = true
   c.filter_sensitive_data("<GITHUB_TOKEN>") { ENV['GITHUB_TOKEN'] }
+  c.filter_sensitive_data("<GITHUB_USER>") { ENV['GITHUB_USER'] }
   c.configure_rspec_metadata!
 end
