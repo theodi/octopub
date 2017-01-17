@@ -31,8 +31,8 @@ describe GitData, :vcr do
       end
 
       it 'sets the relevant instance variables' do
-        expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
-        expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
+        expect(@repo.html_url).to eq("https://github.com/#{@username}/my-awesome-repo")
+        expect(@repo.full_name).to eq("#{@username}/my-awesome-repo")
       end
     end
 
@@ -71,8 +71,8 @@ describe GitData, :vcr do
       end
 
       it 'finds the repo' do
-        expect(@repo.full_name).to eq('git-data-publisher/my-awesome-repo')
-        expect(@repo.html_url).to eq('https://github.com/git-data-publisher/my-awesome-repo')
+        expect(@repo.full_name).to eq("#{@username}/my-awesome-repo")
+        expect(@repo.html_url).to eq("https://github.com/#{@username}/my-awesome-repo")
       end
 
       it 'builds a base tree' do
