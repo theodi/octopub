@@ -25,7 +25,7 @@ describe DatasetsController, type: :controller do
 
       @user = create(:user, token: ENV['GITHUB_TOKEN'])
 
-      @dataset1 = create(:dataset, full_name: 'git-data-publisher/api-sandbox', user: @user)
+      @dataset1 = create(:dataset, full_name: 'octopub/api-sandbox', user: @user)
       @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
 
       sign_in @user
