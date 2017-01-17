@@ -39,7 +39,7 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.default_url_options = { host: "git-data-publisher.dev" }
+  config.action_mailer.default_url_options = { host: "octopub.dev" }
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
