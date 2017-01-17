@@ -43,6 +43,8 @@ describe 'PUT /datasets/:id/files/:file_id' do
     expect(@repo).to receive(:update_file).with("datapackage.json", instance_of(String))
     expect(@repo).to receive(:save)
 
+    allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
+
     put "/api/datasets/#{@dataset.id}/files/#{@file.id}", {
       file: {
         file: fixture_file_upload(path)
