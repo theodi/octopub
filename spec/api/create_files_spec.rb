@@ -26,6 +26,7 @@ describe 'POST /datasets/:id/files' do
 
     expect(@repo).to receive(:add_file).with("data/my-single-file.csv", File.read(path))
     expect(@repo).to receive(:add_file).with("data/my-single-file.md", instance_of(String))
+    allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
     post "/api/datasets/#{@dataset.id}/files", {
       file: {
@@ -54,6 +55,7 @@ describe 'POST /datasets/:id/files' do
     stub_request(:get, /schema\.json/).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
 
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+    allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
     post "/api/datasets/#{@dataset.id}/files", {
       file: {

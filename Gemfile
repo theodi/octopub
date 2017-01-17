@@ -26,6 +26,7 @@ gem 'csv2rest', github: 'theodi/csv2rest'
 gem 'csvlint'
 
 group :test do
+  gem 'awesome_print'
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'rspec-rails'

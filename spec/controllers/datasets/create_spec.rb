@@ -163,11 +163,13 @@ describe DatasetsController, type: :controller do
       end
 
       it 'handles non-url files' do
+
+        path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+
         expect(GitData).to receive(:create).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
           @repo
         }
-
-        path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+        allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
         @files.first["file"] = fixture_file_upload('test-data.csv')
 

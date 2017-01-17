@@ -21,7 +21,7 @@ describe 'POST /datasets' do
       name = 'Test Data'
       description = Faker::Company.bs
       filename = 'test-data.csv'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+      @path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
       Dataset.set_callback(:create, :after, :create_in_github)
 
@@ -31,10 +31,12 @@ describe 'POST /datasets' do
         @repo
       }
 
+
+
       @file = {
         :title => name,
         :description => description,
-        :file => fixture_file_upload(path)
+        :file => fixture_file_upload(@path)
       }
     end
 
@@ -47,6 +49,8 @@ describe 'POST /datasets' do
       expect(@repo).to receive(:name) { 'my-cool-repo' }
       expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
       expect(@repo).to receive(:save)
+
+      allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(@path))
 
       post '/api/datasets', {
         dataset: {
@@ -73,6 +77,8 @@ describe 'POST /datasets' do
     end
 
     it 'errors with an invalid license' do
+
+      allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(@file)
       post '/api/datasets', {
         dataset: {
           name: @name,
@@ -110,6 +116,8 @@ describe 'POST /datasets' do
 
         path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
+        allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
+
         file = {
           :title => 'My File',
           :description => 'My Description',
@@ -139,6 +147,7 @@ describe 'POST /datasets' do
 
       it 'errors if a file does not match the schema' do
         path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+        allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
         file = {
           :title => 'My File',
