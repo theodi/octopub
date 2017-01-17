@@ -488,6 +488,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   sidekiq
   spring
+  term-ansicolor
   twitter
   uglifier (>= 1.3.0)
   vcr

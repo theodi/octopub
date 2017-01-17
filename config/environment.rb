@@ -1,7 +1,7 @@
 # Load the Rails application.
-require File.expand_path('../application', __FILE__)
-
-Mime::Type.register "application/atom+xml", :feed
+require_relative 'application'
 
 # Initialize the Rails application.
 Rails.application.initialize!
+
+Mime::Type.register "application/atom+xml", :feed

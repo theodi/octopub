@@ -25,6 +25,13 @@ gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
 gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'csvlint'
 
+group :development do
+  gem 'pry-remote'
+  gem 'letter_opener'
+  gem 'term-ansicolor'
+end
+
+
 group :test do
   gem 'awesome_print'
   gem 'cucumber-rails', :require => false
@@ -45,10 +52,7 @@ group :production do
   gem 'puma'
 end
 
-group :development do
-  gem 'pry-remote'
-  gem 'letter_opener'
-end
+
 
 gem 'omniauth-github'
 gem 'dotenv-rails'
