@@ -3,8 +3,7 @@ require 'spec_helper'
 describe UpdateDataset do
 
   before(:each) do
-    Dataset.skip_callback(:update, :after, :update_in_github)
-
+    skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
     @worker = UpdateDataset.new
     @user = create(:user)
     @dataset = create(:dataset, name: "My Awesome Dataset",
