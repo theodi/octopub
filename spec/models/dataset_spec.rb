@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: datasets
+#
+#  id              :integer          not null, primary key
+#  name            :string(255)
+#  url             :string(255)
+#  user_id         :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#  repo            :string(255)
+#  description     :text
+#  publisher_name  :string(255)
+#  publisher_url   :string(255)
+#  license         :string(255)
+#  frequency       :string(255)
+#  datapackage_sha :text
+#  owner           :string(255)
+#  owner_avatar    :string(255)
+#  build_status    :string(255)
+#  full_name       :string(255)
+#  certificate_url :string(255)
+#  job_id          :string(255)
+#
+
 require 'spec_helper'
 
 describe Dataset do
