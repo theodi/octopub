@@ -40,8 +40,7 @@ class DatasetsController < ApplicationController
   end
 
   def create
-
-    files_array = params["files"].map { |file_param_object| file_param_object.to_unsafe_hash }
+    files_array = get_files_as_array_for_serialisation
     job = CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     if params[:async]
@@ -59,7 +58,7 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    files_array = params["files"].map { |file_param_object| file_param_object.to_unsafe_hash }
+    files_array = get_files_as_array_for_serialisation
     job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
@@ -77,23 +76,27 @@ class DatasetsController < ApplicationController
 
   private
 
+  def get_files_as_array_for_serialisation
+    @files.map { |file_param_object| file_param_object.to_unsafe_hash }
+  end
+
   def get_dataset
     @dataset = Dataset.find(params["id"])
   end
 
   def clear_files
-    params["files"].keep_if { |f| f["id"] || (f["file"] && f["title"]) }
+    @files.keep_if { |f| f["id"] || (f["file"] && f["title"]) }
   end
 
   def check_files
-    if params["files"].count == 0
+    if @files.blank?
       flash[:notice] = "You must specify at least one dataset"
       render "new"
     end
   end
 
   def process_files
-    params["files"].each do |f|
+    @files.each do |f|
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
         key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
         obj = S3_BUCKET.object(key)
@@ -124,13 +127,16 @@ class DatasetsController < ApplicationController
   end
 
   def get_multipart
+
+    @files = params["files"] || Array.new
+
     if params["data"]
       data = ActiveSupport::HashWithIndifferentAccess.new JSON.parse(params.delete("data"))
       params["dataset"] = data["dataset"]
 
       data["files"].each_with_index do |f, i|
-        params["files"][i]["title"] = f["title"]
-        params["files"][i]["description"] = f["description"]
+        @files[i]["title"] = f["title"]
+        @files[i]["description"] = f["description"]
       end
     end
   end
