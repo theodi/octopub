@@ -13,7 +13,7 @@ describe DatasetsController, type: :controller do
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      expect(get 'show', id: dataset.id, format: :json).to redirect_to("/api/datasets/#{dataset.id}")
+      expect(get :show, params: { id: dataset.id }, format: :json).to redirect_to("/api/datasets/#{dataset.id}")
     end
 
   end

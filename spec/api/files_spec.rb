@@ -12,7 +12,7 @@ describe 'GET /datasets/:id' do
       create(:dataset_file, title: 'File 2')
     ])
 
-    get "/api/datasets/#{dataset.id}/files", nil, {'Authorization' => "Token token=#{@user.api_key}"}
+    get "/api/datasets/#{dataset.id}/files", headers: {'Authorization' => "Token token=#{@user.api_key}"}
 
     json = JSON.parse(response.body)
 

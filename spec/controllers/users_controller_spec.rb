@@ -26,12 +26,9 @@ describe UsersController, type: :controller do
   it "updates a user's email" do
     sign_in @user
 
-    put :update, user: {
-      email: 'newemail@example.com'
-    }
+    put :update, params: { user: { email: 'newemail@example.com' }}
 
     @user.reload
-
     expect(@user.email).to eq('newemail@example.com')
   end
 

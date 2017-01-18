@@ -21,7 +21,7 @@ describe 'PUT /datasets/:id' do
   end
 
   it 'updates a dataset sucessfully' do
-    put "/api/datasets/#{@dataset.id}",
+    put "/api/datasets/#{@dataset.id}", params:
     {
       dataset: {
         description: "My new description",
@@ -31,7 +31,7 @@ describe 'PUT /datasets/:id' do
         frequency: "Annual"
       }
     },
-    {'Authorization' => "Token token=#{@user.api_key}"}
+    headers: {'Authorization' => "Token token=#{@user.api_key}"}
 
     @dataset.reload
 
