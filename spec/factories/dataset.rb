@@ -10,12 +10,11 @@ FactoryGirl.define do
     association :user, factory: :user
 
     after(:build) { |dataset|
-      dataset.class.skip_callback(:create, :after, :create_in_github)
-      dataset.class.skip_callback(:create, :after, :build_certificate)
-      dataset.class.skip_callback(:create, :after, :send_success_email)
-      dataset.class.skip_callback(:update, :after, :update_in_github)
-      dataset.class.skip_callback(:create, :after, :set_owner_avatar)
-
+      skip_callback_if_exists( Dataset, :create, :after, :create_in_github)
+      skip_callback_if_exists( Dataset, :create, :after, :build_certificate)
+      skip_callback_if_exists( Dataset, :create, :after, :send_success_email)
+      skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
+      skip_callback_if_exists( Dataset, :create, :after, :set_owner_avatar)
       dataset.instance_variable_set(:@repo, FakeData.new)
     }
 
@@ -31,5 +30,9 @@ FactoryGirl.define do
         dataset.class.set_callback(:create, :after, :set_owner_avatar)
       }
     end
+
+
   end
+
+
 end
