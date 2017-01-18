@@ -18,7 +18,7 @@
     margin-bottom: 20px;
 
     h1 {
-      @extend .page-header;
+      @extend .page-header !optional;
     }
   }
 
@@ -36,11 +36,11 @@
     }
 
     .resource {
-      @extend .panel;
-      @extend .panel-default;
+      @extend .panel !optional;
+      @extend .panel-default !optional;
 
       .heading {
-        @extend .panel-heading;
+        @extend .panel-heading !optional;
         position: relative;
 
         h2 {
@@ -63,17 +63,17 @@
       }
 
       .endpoints {
-        @extend .panel-body;
+        @extend .panel-body !optional;
 
         .endpoint {
 
           .get {
             .options a {
-              @extend .text-primary;
+              @extend .text-primary !optional;
             }
 
             .http_method {
-              @extend .btn-primary;
+              @extend .btn-primary !optional;
             }
 
             .heading {
@@ -83,11 +83,11 @@
 
           .post {
             .options a {
-              @extend .text-success;
+              @extend .text-success !optional;
             }
 
             .http_method {
-              @extend .btn-success;
+              @extend .btn-success !optional;
             }
 
             .heading {
@@ -97,11 +97,11 @@
 
           .put {
             .options a {
-              @extend .text-warning;
+              @extend .text-warning !optional;
             }
 
             .http_method {
-              @extend .btn-warning;
+              @extend .btn-warning !optional;
             }
 
             .heading {
@@ -173,14 +173,14 @@
             }
 
             select {
-              @extend .form-control;
+              @extend .form-control !optional;
               width: 150px;
               display: inline;
             }
 
             .signature-nav {
-              @extend .nav;
-              @extend .nav-tabs;
+              @extend .nav !optional;
+              @extend .nav-tabs !optional;
 
               li {
                 display: inline-block;
@@ -223,8 +223,8 @@
             }
 
             .submit {
-              @extend .btn;
-              @extend .btn-primary;
+              @extend .btn !optional;
+              @extend .btn-primary !optional;
               margin: 10px 0;
             }
 
@@ -233,10 +233,10 @@
             }
 
             .fullwidth {
-              @extend .table;
+              @extend .table !optional;
 
               input[type=text], textarea {
-                @extend .form-control;
+                @extend .form-control !optional;
               }
 
               select {
@@ -244,12 +244,8 @@
               }
             }
           }
-
         }
       }
-
     }
-
   }
-
 }
