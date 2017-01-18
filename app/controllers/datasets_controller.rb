@@ -40,7 +40,9 @@ class DatasetsController < ApplicationController
   end
 
   def create
-    job = CreateDataset.perform_async(dataset_params, params["files"], current_user.id, channel_id: params[:channel_id])
+
+    files_array = params["files"].map { |file_param_object| file_param_object.to_unsafe_hash }
+    job = CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
@@ -57,7 +59,8 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, params[:files], channel_id: params[:channel_id])
+    files_array = params["files"].map { |file_param_object| file_param_object.to_unsafe_hash }
+    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
