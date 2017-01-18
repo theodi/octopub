@@ -45,6 +45,8 @@ group :test do
   gem 'vcr'
   gem 'webmock', '~> 1.24'
   gem 'foreman'
+
+  gem 'rails-controller-testing'
 end
 
 group :production do
