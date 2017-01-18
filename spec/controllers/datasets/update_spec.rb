@@ -133,7 +133,7 @@ describe DatasetsController, type: :controller do
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @file.id,
             description: "New description"
-          }]}, async: true
+          }], async: true }
 
           expect(response.code).to eq("202")
         end
