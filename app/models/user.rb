@@ -62,7 +62,7 @@ class User < ActiveRecord::Base
     def user_repos
       octokit_client.auto_paginate = true
       repos = octokit_client.repos.map do |r|
-        Dataset.where(full_name: r.full_name).pluck(:id)
+        Dataset.find_by_full_name(r.full_name).try(:id)
       end
       repos.compact
     end
