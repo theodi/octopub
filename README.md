@@ -19,9 +19,18 @@ Live instance is running at [http://octopub.io/](http://octopub.io/)
 Checkout the repository and run ```bundle``` in the checked out directory.
 The application uses sidekiq for managing the background proccessing of data uploads. To use this functionality, install ```redis``` either by following the [instructions](https://redis.io/topics/quickstart) or if on macOS and using homebrew, run ```brew install redis``` and start a redis instance running with ```redis-server```.
 
+
 ## Tests
 
 Octopub uses the ```rspec``` test framework and the test suite can be run with the usual ```bundle exec rspec```
+
+## Environment variables
+
+Create a ```.env``` file as follows to enable the tests to run succesfully. For development purposes, use your own github username if you want to run against a real instance.
+
+```
+GITHUB_USER=bert
+```
 
 ## Deployment
 
