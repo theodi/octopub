@@ -266,7 +266,7 @@ describe DatasetsController, type: :controller do
                 description: "New file description",
                 file: @new_file
               }
-            ]}, channel_id: 'foo-bar'
+            ], channel_id: 'foo-bar' }
           end
         end
       end
