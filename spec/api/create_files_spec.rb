@@ -4,7 +4,7 @@ describe 'POST /datasets/:id/files' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    Dataset.skip_callback(:create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [

@@ -6,7 +6,7 @@ describe DatasetsController, type: :controller do
     Sidekiq::Testing.inline!
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
-    Dataset.skip_callback(:create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
