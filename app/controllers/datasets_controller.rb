@@ -1,18 +1,18 @@
 class DatasetsController < ApplicationController
 
-  before_filter :redirect_to_api, only: [:index, :show, :files, :dashboard]
-  before_filter :check_signed_in?, only: [:show, :files, :edit, :dashboard, :update, :create, :new]
-  before_filter :check_permissions, only: [:show, :files, :edit, :update, :delete]
-  before_filter :get_dataset, only: [:show, :files, :edit, :destroy]
-  before_filter :get_multipart, only: [:create, :update]
-  before_filter :clear_files, only: [:create, :update]
-  before_filter :process_files, only: [:create, :update]
-  before_filter :check_files, only: [:create]
-  before_filter :set_licenses, only: [:create, :new, :edit, :update]
-  before_filter :set_direct_post, only: [:edit, :new]
-  before_filter(only: :index) { alternate_formats [:json, :feed] }
+  before_action :redirect_to_api, only: [:index, :show, :files, :dashboard]
+  before_action :check_signed_in?, only: [:show, :files, :edit, :dashboard, :update, :create, :new]
+  before_action :check_permissions, only: [:show, :files, :edit, :update, :delete]
+  before_action :get_dataset, only: [:show, :files, :edit, :destroy]
+  before_action :get_multipart, only: [:create, :update]
+  before_action :clear_files, only: [:create, :update]
+  before_action :process_files, only: [:create, :update]
+  before_action :check_files, only: [:create]
+  before_action :set_licenses, only: [:create, :new, :edit, :update]
+  before_action :set_direct_post, only: [:edit, :new]
+  before_action(only: :index) { alternate_formats [:json, :feed] }
 
-  skip_before_filter :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
+  skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
     @datasets = Dataset.paginate(page: params[:page], per_page: 7).order(created_at: :desc)
@@ -57,7 +57,7 @@ class DatasetsController < ApplicationController
   end
 
   def update
-    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params, params[:files], channel_id: params[:channel_id])
+    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, params[:files], channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
