@@ -40,7 +40,7 @@ describe Dataset do
 
     dataset = build(:dataset, :with_callback, user: @user, name: name)
 
-    expect(GitData).to receive(:create).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
+    expect(GitData).to receive(:create).with(@user.github_username, name, private: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
@@ -61,7 +61,7 @@ describe Dataset do
     name = "My Awesome Dataset"
     dataset = build(:dataset, :with_callback, user: @user, name: name, owner: "my-cool-organization")
 
-    expect(GitData).to receive(:create).with('my-cool-organization', name, client: a_kind_of(Octokit::Client)) {
+    expect(GitData).to receive(:create).with('my-cool-organization', name, private: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
       expect(obj).to receive(:html_url) { nil }
       expect(obj).to receive(:name) { name.parameterize }
@@ -525,6 +525,29 @@ describe Dataset do
 
       expect(dataset).to be_valid
       expect(dataset.private).to be true
+    end
+    
+    it "creates a private repo in Github" do
+      name = "My Awesome Dataset"
+      html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
+
+      dataset = build(:dataset, :with_callback, user: @user, name: name, private: true)
+
+      expect(GitData).to receive(:create).with(@user.github_username, name, private: true, client: a_kind_of(Octokit::Client)) {
+        obj = double(GitData)
+        expect(obj).to receive(:html_url) { html_url }
+        expect(obj).to receive(:name) { name.parameterize }
+        expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
+        obj
+      }
+
+      expect(dataset).to receive(:commit)
+
+      dataset.save
+      dataset.reload
+
+      expect(dataset.repo).to eq(name.parameterize)
+      expect(dataset.url).to eq(html_url)
     end
   end
 
