@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721102217) do
+ActiveRecord::Schema.define(version: 20170119140548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20160721102217) do
     t.string   "gh_pages_url"
     t.string   "certificate_url"
     t.string   "job_id"
+    t.boolean  "private",         default: false
   end
 
   create_table "errors", force: true do |t|

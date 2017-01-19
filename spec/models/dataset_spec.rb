@@ -7,7 +7,7 @@ describe Dataset do
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
   end
 
-  it "creates a valid dataset" do
+  it "creates a valid public dataset" do
     dataset = create(:dataset, name: "My Awesome Dataset",
                      description: "An awesome dataset",
                      publisher_name: "Awesome Inc",
@@ -17,6 +17,7 @@ describe Dataset do
                      user: @user)
 
     expect(dataset).to be_valid
+    expect(dataset.private).to be false
   end
 
   it "returns an error if the repo already exists" do
@@ -427,7 +428,7 @@ describe Dataset do
 
   end
 
-  context 'creating certificates' do
+  context 'creating certificates for public datasets' do
 
     before(:each) do
       @dataset = create(:dataset)
@@ -509,6 +510,22 @@ describe Dataset do
       expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
 
+  end
+
+  context "creating private datasets" do
+    it "creates a valid dataset" do
+      dataset = create(:dataset, name: "My Awesome Dataset",
+                       description: "An awesome dataset",
+                       publisher_name: "Awesome Inc",
+                       publisher_url: "http://awesome.com",
+                       license: "OGL-UK-3.0",
+                       frequency: "One-off",
+                       user: @user,
+                       private: true)
+
+      expect(dataset).to be_valid
+      expect(dataset.private).to be true
+    end
   end
 
   context "notifying via twitter" do
