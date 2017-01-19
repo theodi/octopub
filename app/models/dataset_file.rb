@@ -14,7 +14,7 @@
 #  view_sha    :text
 #
 
-class DatasetFile < ActiveRecord::Base
+class DatasetFile < ApplicationRecord
 
   belongs_to :dataset
 

@@ -27,7 +27,7 @@ require 'git_data'
 require 'open-uri'
 require 'open_uri_redirections'
 
-class Dataset < ActiveRecord::Base
+class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
@@ -260,7 +260,7 @@ class Dataset < ActiveRecord::Base
     def send_success_email
       DatasetMailer.success(self).deliver
     end
-    
+
     def send_tweet_notification
       if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
         twitter_client = Twitter::REST::Client.new do |config|

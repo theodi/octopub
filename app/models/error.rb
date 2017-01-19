@@ -7,5 +7,5 @@
 #  messages :json
 #
 
-class Error < ActiveRecord::Base
+class Error < ApplicationRecord
 end
