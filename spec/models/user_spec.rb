@@ -102,7 +102,8 @@ describe User do
 
     it "caches dataset ids" do
       @user.send :get_user_repos
-      expect(@user.org_dataset_ids).to eq([@dataset1.id, @dataset2.id])
+      org_dataset_ids_as_integers = @user.org_dataset_ids.map(&:to_i)
+      expect(org_dataset_ids_as_integers).to eq([@dataset1.id, @dataset2.id])
     end
 
     it "lists datasets" do
