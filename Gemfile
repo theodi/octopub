@@ -65,6 +65,9 @@ group :development do
   gem 'term-ansicolor'
   gem 'annotate'
 
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'spring'
