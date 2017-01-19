@@ -1,0 +1,217 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/user
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 19 Jan 2017 15:11:20 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4956'
+      X-Ratelimit-Reset:
+      - '1484842180'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding
+      Etag:
+      - W/"195aea3a486d7b72d1989f9d4edb83b0"
+      Last-Modified:
+      - Thu, 19 Jan 2017 14:56:03 GMT
+      X-Oauth-Scopes:
+      - delete_repo, read:org, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - ''
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Served-By:
+      - a474937f3b2fa272558fa6dc951018ad
+      X-Github-Request-Id:
+      - EAE8:24521:133FEEB:18C2D46:5880D717
+    body:
+      encoding: ASCII-8BIT
+      string: '{"login":"Floppy","id":3565,"avatar_url":"https://avatars.githubusercontent.com/u/3565?v=3","gravatar_id":"","url":"https://api.github.com/users/Floppy","html_url":"https://github.com/Floppy","followers_url":"https://api.github.com/users/Floppy/followers","following_url":"https://api.github.com/users/Floppy/following{/other_user}","gists_url":"https://api.github.com/users/Floppy/gists{/gist_id}","starred_url":"https://api.github.com/users/Floppy/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Floppy/subscriptions","organizations_url":"https://api.github.com/users/Floppy/orgs","repos_url":"https://api.github.com/users/Floppy/repos","events_url":"https://api.github.com/users/Floppy/events{/privacy}","received_events_url":"https://api.github.com/users/Floppy/received_events","type":"User","site_admin":false,"name":"James
+        Smith","company":"The Open Data Institute","blog":"http://www.<GITHUB_USER>.org.uk","location":"Horsham,
+        UK","email":"james@<GITHUB_USER>.org.uk","hireable":null,"bio":"Building a
+        better future out of code. Head of Labs at @theodi, party leader of @SomethingNewUK,
+        founder of @cleanweb-uk, and chair of @cdcssg. Neutral Good.","public_repos":83,"public_gists":9,"followers":82,"following":24,"created_at":"2008-03-21T17:05:23Z","updated_at":"2017-01-19T14:56:03Z"}'
+    http_version: 
+  recorded_at: Thu, 19 Jan 2017 15:11:20 GMT
+- request:
+    method: post
+    uri: https://api.github.com/orgs/theodi/repos
+    body:
+      encoding: UTF-8
+      string: '{"private":true,"auto_init":true,"name":"my-awesome-repo"}'
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 19 Jan 2017 15:11:20 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '152'
+      Status:
+      - 422 Unprocessable Entity
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4955'
+      X-Ratelimit-Reset:
+      - '1484842180'
+      X-Oauth-Scopes:
+      - delete_repo, read:org, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - public_repo, repo
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - EAE9:24507:412D78:54003C:5880D718
+    body:
+      encoding: UTF-8
+      string: '{"message":"Visibility can''t be private. Please upgrade your plan
+        to create a new private repository.","documentation_url":"https://github.com/pricing"}'
+    http_version: 
+  recorded_at: Thu, 19 Jan 2017 15:11:20 GMT
+- request:
+    method: delete
+    uri: https://api.github.com/repos/<GITHUB_USER>/my-awesome-repo
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GITHUB_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 19 Jan 2017 15:11:21 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 404 Not Found
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4954'
+      X-Ratelimit-Reset:
+      - '1484842180'
+      X-Oauth-Scopes:
+      - delete_repo, read:org, repo, user:email
+      X-Accepted-Oauth-Scopes:
+      - repo
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
+        X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - EAEA:24507:412DA0:54006F:5880D718
+    body:
+      encoding: ASCII-8BIT
+      string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3"}'
+    http_version: 
+  recorded_at: Thu, 19 Jan 2017 15:11:21 GMT
+recorded_with: VCR 3.0.3
