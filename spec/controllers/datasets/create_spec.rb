@@ -26,21 +26,68 @@ describe DatasetsController, type: :controller do
     set_dataset_callbacks!
   end
 
-  describe 'create dataset' do
+  describe 'do not create dataset' do
+    context 'with missing things' do
+      before(:each) do
+        name = 'Test Data'
+        description = Faker::Company.bs
+        filename = 'test-data.csv'
+        path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-    it 'returns an error if there are no files specified' do
-      request = post :create, params: { dataset: {
-        name: @name,
-        description: @description,
-        publisher_name: @publisher_name,
-        publisher_url: @publisher_url,
-        license: @license,
-        frequency: @frequency
-      }, files: [] }
+        @files << {
+          :title => name,
+          :description => description,
+          :file => fake_file(path)
+        }
 
-      expect(request).to render_template(:new)
-      expect(flash[:notice]).to eq("You must specify at least one dataset")
+      end
+
+      it 'returns an error if no publisher is specified' do
+
+        request = post :create, params: { dataset: {
+          name: @name,
+          description: @description,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        }, files: @files }
+
+        expect(request).to render_template(:new)
+        expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
+      end
+
+      it 'returns an error if there are no files specified' do
+        request = post :create, params: { dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        }, files: [] }
+
+        expect(request).to render_template(:new)
+        expect(flash[:no_files]).to eq("You must specify at least one dataset")
+      end
+
+      it 'returns an error if there are no files nor pubslisher specified' do
+        request = post :create, params: { dataset: {
+          name: @name,
+          description: @description,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency
+        }, files: [] }
+
+        expect(request).to render_template(:new)
+        expect(flash[:no_files]).to eq("You must specify at least one dataset")
+        expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
+      end
     end
+
+  end
+
+  describe 'create dataset' do
 
     context 'with one file' do
 
@@ -65,6 +112,7 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:full_name) { nil }
         expect(@repo).to receive(:save)
       end
+
 
       it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {

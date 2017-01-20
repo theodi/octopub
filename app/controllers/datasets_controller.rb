@@ -95,7 +95,7 @@ class DatasetsController < ApplicationController
   end
 
   def check_publisher
-    if params[:publisher_name].blank?
+    if params[:dataset][:publisher_name].blank?
       flash[:no_publisher] = "Please include the name of the publisher"
     end
   end
