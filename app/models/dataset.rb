@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email, :send_tweet_notification
+  after_create :create_in_github, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -273,7 +273,7 @@ class Dataset < ApplicationRecord
       end
     end
 
-    def build_certificate
+    def publish_publicly
       status = user.octokit_client.pages(full_name).status
 
       if status == "built"
@@ -285,7 +285,7 @@ class Dataset < ApplicationRecord
 
     def retry_certificate
       sleep 5
-      build_certificate
+      publish_publicly
     end
 
     def create_certificate

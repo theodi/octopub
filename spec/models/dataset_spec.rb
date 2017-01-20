@@ -473,12 +473,12 @@ describe Dataset do
 
       expect(@dataset).to receive(:retry_certificate)
 
-      @dataset.send :build_certificate
+      @dataset.send :publish_publicly
     end
 
     it 'retries a certificate' do
       expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect(@dataset).to receive(:build_certificate)
+      expect(@dataset).to receive(:publish_publicly)
 
       @dataset.send :retry_certificate
     end
@@ -494,7 +494,7 @@ describe Dataset do
 
       expect(@dataset).to receive(:create_certificate)
 
-      @dataset.send :build_certificate
+      @dataset.send :publish_publicly
     end
 
     it 'creates a certificate' do

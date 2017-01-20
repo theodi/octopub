@@ -11,7 +11,7 @@ FactoryGirl.define do
 
     after(:build) { |dataset|
       skip_callback_if_exists( Dataset, :create, :after, :create_in_github)
-      skip_callback_if_exists( Dataset, :create, :after, :build_certificate)
+      skip_callback_if_exists( Dataset, :create, :after, :publish_publicly)
       skip_callback_if_exists( Dataset, :create, :after, :send_success_email)
       skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
       skip_callback_if_exists( Dataset, :create, :after, :set_owner_avatar)
