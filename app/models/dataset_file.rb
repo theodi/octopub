@@ -96,7 +96,7 @@ class DatasetFile < ApplicationRecord
       end
     end
 
-    def create_json_api_files schema
+    def for_each_file_in_schema schema, &block
       return unless schema.class == Csvlint::Csvw::TableGroup
       # Generate JSON outputs
       schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
@@ -114,10 +114,20 @@ class DatasetFile < ApplicationRecord
             content_item["url"] += ".json"
           end
         end
+        # call the block
+        block.call(filename, content)
+      end
+    end
 
+    def create_json_api_files schema
+      for_each_file_in_schema(schema) do |filename, content|
         # Store data as JSON in file
         dataset.create_contents(filename, content.to_json)
-
+      end
+    end
+      
+    def create_json_jekyll_files schema
+      for_each_file_in_schema(schema) do |filename, content|
         # Add human readable template
         unless filename == "index.json"
           if filename.scan('/').count > 0
@@ -126,7 +136,6 @@ class DatasetFile < ApplicationRecord
             dataset.create_contents(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
           end
         end
-
       end
     end
 

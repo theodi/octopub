@@ -81,6 +81,14 @@ class Dataset < ApplicationRecord
 
   def create_files
     create_datapackage
+    if !schema.nil?
+      create_contents("schema.json", open(schema).read)
+      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+    end
+    create_jekyll_files
+  end
+  
+  def create_jekyll_files
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
@@ -91,8 +99,7 @@ class Dataset < ApplicationRecord
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
     if !schema.nil?
-      create_contents("schema.json", open(schema).read)
-      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+      dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
     end
   end
 
