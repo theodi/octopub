@@ -274,18 +274,16 @@ class Dataset < ApplicationRecord
     end
 
     def publish_publicly
-      status = user.octokit_client.pages(full_name).status
-
-      if status == "built"
-        create_certificate
-      else
-        retry_certificate
-      end
+      wait_for_gh_pages_build
+      create_certificate
     end
 
-    def retry_certificate
-      sleep 5
-      publish_publicly
+    def wait_for_gh_pages_build(delay = 5)
+      sleep(delay) while !gh_pages_built?
+    end
+    
+    def gh_pages_built?
+      user.octokit_client.pages(full_name).status == "built"
     end
 
     def create_certificate

@@ -461,38 +461,35 @@ describe Dataset do
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
-
-    it 'waits for the page build to finish' do
-      allow_any_instance_of(User).to receive(:octokit_client) {
+    
+    it "checks if page build is finished" do
+      allow_any_instance_of(User).to receive(:octokit_client) do
         client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) {
+        allow(client).to receive(:pages).with(@dataset.full_name) do
           OpenStruct.new(status: 'pending')
-        }
+        end
         client
-      }
-
-      expect(@dataset).to receive(:retry_certificate)
-
-      @dataset.send :publish_publicly
+      end
+      expect(@dataset.send(:gh_pages_built?)).to be false
     end
 
-    it 'retries a certificate' do
-      expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect(@dataset).to receive(:publish_publicly)
-
-      @dataset.send :retry_certificate
-    end
-
-    it 'creates the certificate when build is complete' do
-      allow_any_instance_of(User).to receive(:octokit_client) {
+    it "confirms page build is finished" do
+      allow_any_instance_of(User).to receive(:octokit_client) do
         client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) {
+        allow(client).to receive(:pages).with(@dataset.full_name) do
           OpenStruct.new(status: 'built')
-        }
+        end
         client
-      }
+      end
+      expect(@dataset.send(:gh_pages_built?)).to be true
+    end
 
-      expect(@dataset).to receive(:create_certificate)
+
+    it 'waits for the page build to finish then creates certificate' do
+      expect(@dataset).to receive(:gh_pages_built?).and_return(false).once
+      expect_any_instance_of(Object).to receive(:sleep).with(5)
+      expect(@dataset).to receive(:gh_pages_built?).and_return(true).once
+      expect(@dataset).to receive(:create_certificate).once
 
       @dataset.send :publish_publicly
     end
