@@ -18,7 +18,7 @@ describe DatasetsController, type: :controller do
     @files ||= []
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_files) { nil }
+    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
   end
 
   after(:each) do

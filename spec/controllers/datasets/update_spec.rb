@@ -9,7 +9,7 @@ describe DatasetsController, type: :controller do
     skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_files) { nil }
+    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
   end
 
   before(:each, schema: true) do

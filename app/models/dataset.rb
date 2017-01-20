@@ -79,7 +79,7 @@ class Dataset < ApplicationRecord
     File.join([folder,filename].reject { |n| n.blank? })
   end
 
-  def create_files
+  def create_data_files
     create_datapackage
     if !schema.nil?
       create_contents("schema.json", open(schema).read)
@@ -206,7 +206,7 @@ class Dataset < ApplicationRecord
 
     def commit
       dataset_files.each { |d| d.add_to_github }
-      create_files
+      create_data_files
       push_to_github
     end
 

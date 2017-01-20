@@ -239,7 +239,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
       expect(dataset).to receive(:create_contents).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-      dataset.create_files
+      dataset.create_data_files
     end
 
     it "with a schema" do
@@ -263,7 +263,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(schema_path).read)
       expect(dataset).to receive(:create_contents).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-      dataset.create_files
+      dataset.create_data_files
     end
   end
 
@@ -448,7 +448,7 @@ describe Dataset do
       expect(dataset).to receive(:create_contents).with("people/stu.json", '{"@id":"/people/stu","person":"stu","age":34,"@type":"/people"}')
       expect(dataset).to receive(:create_contents).with("people/stu.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
 
-      dataset.create_files
+      dataset.create_data_files
     end
 
   end
