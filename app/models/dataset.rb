@@ -80,15 +80,16 @@ class Dataset < ApplicationRecord
   end
 
   def create_data_files
+    dataset_files.each { |d| d.add_to_github }
     create_datapackage
     if !schema.nil?
       create_contents("schema.json", open(schema).read)
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
-    create_jekyll_files
   end
   
   def create_jekyll_files
+    dataset_files.each { |d| d.add_jekyll_to_github }
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
@@ -205,8 +206,8 @@ class Dataset < ApplicationRecord
     end
 
     def commit
-      dataset_files.each { |d| d.add_to_github }
       create_data_files
+      create_jekyll_files
       push_to_github
     end
 
