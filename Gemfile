@@ -20,7 +20,7 @@ gem 'jbuilder', '~> 2.0'
 # Git hosted gems
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
 gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
-gem 'alternate_rails', git: 'https://github.com/theodi/alternate-rails.git'
+gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rails.git'
 gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
 gem 'csvlint'
@@ -59,12 +59,15 @@ group :doc do
   gem 'sdoc', '~> 0.4.0'
 end
 
+group :development, :test do
+  gem 'awesome_print'
+end
+
 group :development do
   gem 'pry-remote'
   gem 'letter_opener'
   gem 'term-ansicolor'
   gem 'annotate'
-  gem 'awesome_print'
   gem 'better_errors'
   gem 'binding_of_caller'
 
@@ -74,8 +77,7 @@ group :development do
 end
 
 group :test do
-  gem 'awesome_print'
-  gem 'cucumber-rails', :require => false
+  #gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'pry'
