@@ -192,7 +192,7 @@ class Dataset < ApplicationRecord
   private
 
     def create_in_github
-      @repo = GitData.create(repo_owner, name, client: user.octokit_client)
+      @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       commit
     end
