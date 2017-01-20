@@ -6,7 +6,7 @@ describe DatasetsController, type: :controller do
     Sidekiq::Testing.inline!
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
-    Dataset.skip_callback(:create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
     allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
     allow_any_instance_of(Dataset).to receive(:create_files) { nil }
@@ -63,10 +63,10 @@ describe DatasetsController, type: :controller do
 
             expect(@file).to receive(:update_in_github)
 
-            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+            put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @file.id,
                 file: file
-            }]
+            }]}
           end
 
           context 'adds a new file in Github' do
@@ -85,7 +85,7 @@ describe DatasetsController, type: :controller do
             end
 
             it 'via a browser' do
-              put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+              put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
                 {
                   id: @file.id,
                   title: "New title",
@@ -96,7 +96,7 @@ describe DatasetsController, type: :controller do
                   description: "New file description",
                   file: @new_file
                 }
-              ]
+              ]}
 
               expect(@dataset.dataset_files.count).to eq(2)
             end
@@ -110,10 +110,10 @@ describe DatasetsController, type: :controller do
         it 'updates a dataset' do
           @file.file = nil
 
-          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
+          put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @file.id,
             description: "New description"
-          }]
+          }]}
 
           expect(response).to redirect_to(edited_datasets_path)
 
@@ -130,10 +130,10 @@ describe DatasetsController, type: :controller do
         it 'returns 202 when async is set to true' do
           @file.file = nil
 
-          put 'update', id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
+          put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @file.id,
             description: "New description"
-          }], async: true
+          }], async: true }
 
           expect(response.code).to eq("202")
         end
@@ -145,10 +145,10 @@ describe DatasetsController, type: :controller do
 
           expect(@file).to receive(:update_in_github)
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
               file: file
-          }]
+          }]}
         end
 
         it 'adds a new file in Github' do
@@ -163,7 +163,7 @@ describe DatasetsController, type: :controller do
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect(new_file).to receive(:add_to_github)
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+          put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
               id: @file.id,
               title: "New title",
@@ -174,7 +174,7 @@ describe DatasetsController, type: :controller do
               description: "New file description",
               file: file
             }
-          ]
+          ]}
 
           expect(@dataset.dataset_files.count).to eq(2)
         end
@@ -199,10 +199,10 @@ describe DatasetsController, type: :controller do
 
           expect(@file).to_not receive(:update_in_github)
 
-          put 'update', id: @dataset.id, dataset: @dataset_hash, files: [{
+          put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
               file: file
-          }]
+          }]}
 
           expect(Error.count).to eq(1)
           expect(Error.first.messages).to eq([
@@ -226,7 +226,7 @@ describe DatasetsController, type: :controller do
 
           it 'without websockets' do
 
-            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+            put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
               {
                 id: @file.id,
                 title: "New title",
@@ -237,7 +237,7 @@ describe DatasetsController, type: :controller do
                 description: "New file description",
                 file: @new_file
               }
-            ]
+            ]}
 
             expect(@dataset.dataset_files.count).to eq(1)
             expect(Error.count).to eq(1)
@@ -255,7 +255,7 @@ describe DatasetsController, type: :controller do
               "Your file 'New file' does not match the schema you provided"
             ])
 
-            put 'update', id: @dataset.id, dataset: @dataset_hash, files: [
+            put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
               {
                 id: @file.id,
                 title: "New title",
@@ -266,7 +266,7 @@ describe DatasetsController, type: :controller do
                 description: "New file description",
                 file: @new_file
               }
-            ], channel_id: 'foo-bar'
+            ], channel_id: 'foo-bar' }
           end
         end
       end
@@ -305,7 +305,7 @@ describe DatasetsController, type: :controller do
         ], channel_id: nil
       ) { build(:dataset) }
 
-      put 'update', id: @dataset.id, dataset: @dataset_hash, files: files
+      put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: files }
     end
 
   end

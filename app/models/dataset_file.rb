@@ -1,4 +1,20 @@
-class DatasetFile < ActiveRecord::Base
+# == Schema Information
+#
+# Table name: dataset_files
+#
+#  id          :integer          not null, primary key
+#  title       :string(255)
+#  filename    :string(255)
+#  mediatype   :string(255)
+#  dataset_id  :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  description :text
+#  file_sha    :text
+#  view_sha    :text
+#
+
+class DatasetFile < ApplicationRecord
 
   belongs_to :dataset
 

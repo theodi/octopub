@@ -4,7 +4,7 @@ describe 'POST /datasets/:id/files' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    Dataset.skip_callback(:create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
@@ -28,16 +28,14 @@ describe 'POST /datasets/:id/files' do
     expect(@repo).to receive(:add_file).with("data/my-single-file.md", instance_of(String))
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
-    post "/api/datasets/#{@dataset.id}/files", {
+    post "/api/datasets/#{@dataset.id}/files", params: {
       file: {
         :title => 'My single file',
         :description => 'My super descriptive description',
         :file => fixture_file_upload(path)
       }
     },
-    {
-      'Authorization' => "Token token=#{@user.api_key}"
-    }
+    headers: {'Authorization' => "Token token=#{@user.api_key}" }
 
     json = JSON.parse(response.body)
 
@@ -57,16 +55,14 @@ describe 'POST /datasets/:id/files' do
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
-    post "/api/datasets/#{@dataset.id}/files", {
+    post "/api/datasets/#{@dataset.id}/files", params: {
       file: {
         :title => 'My single file',
         :description => 'My super descriptive description',
         :file => fixture_file_upload(path)
       }
     },
-    {
-      'Authorization' => "Token token=#{@user.api_key}"
-    }
+    headers: { 'Authorization' => "Token token=#{@user.api_key}" }
 
     expect(Error.count).to eq(1)
     expect(Error.first.messages).to eq([

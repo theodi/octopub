@@ -34,7 +34,7 @@ describe 'GET /user/organisations' do
       ]
     }
 
-    get '/api/user/organisations', nil, {'Authorization' => "Token token=#{@user.api_key}"}
+    get '/api/user/organisations', headers: {'Authorization' => "Token token=#{@user.api_key}"}
 
     expect(response.body).to eq([
       {

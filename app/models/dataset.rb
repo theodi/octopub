@@ -1,8 +1,33 @@
+# == Schema Information
+#
+# Table name: datasets
+#
+#  id              :integer          not null, primary key
+#  name            :string(255)
+#  url             :string(255)
+#  user_id         :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#  repo            :string(255)
+#  description     :text
+#  publisher_name  :string(255)
+#  publisher_url   :string(255)
+#  license         :string(255)
+#  frequency       :string(255)
+#  datapackage_sha :text
+#  owner           :string(255)
+#  owner_avatar    :string(255)
+#  build_status    :string(255)
+#  full_name       :string(255)
+#  certificate_url :string(255)
+#  job_id          :string(255)
+#
+
 require 'git_data'
 require 'open-uri'
 require 'open_uri_redirections'
 
-class Dataset < ActiveRecord::Base
+class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
@@ -235,7 +260,7 @@ class Dataset < ActiveRecord::Base
     def send_success_email
       DatasetMailer.success(self).deliver
     end
-    
+
     def send_tweet_notification
       if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
         twitter_client = Twitter::REST::Client.new do |config|

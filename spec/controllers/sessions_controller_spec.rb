@@ -22,7 +22,7 @@ describe SessionsController, type: :controller do
   context('#create') do
 
     it 'signs a user in' do
-      request = get :create, provider: 'github'
+      request = get :create, params: { provider: 'github' }
 
       expect(request).to redirect_to('/')
       expect(controller.session[:user_id]).to eq(@user.id)
@@ -30,14 +30,14 @@ describe SessionsController, type: :controller do
 
     it 'queues up a dataset refresh' do
       expect {
-        get :create, provider: 'github'
+        get :create, params: { provider: 'github' }
       }.to change(Sidekiq::Extensions::DelayedClass.jobs, :size).by(1)
     end
 
     it 'returns an API key' do
       allow(controller).to receive(:referer) { 'comma-chameleon' }
 
-      request = get :create, provider: 'github'
+      request = get :create, params: { provider: 'github' }
 
       expect(request.body).to redirect_to("/redirect?api_key=#{@user.api_key}")
     end
@@ -46,7 +46,7 @@ describe SessionsController, type: :controller do
   context('#destroy') do
 
     it 'signs a user out' do
-      get :create, provider: 'github'
+      get :create, params: { provider: 'github' }
       expect(controller.session[:user_id]).to eq(@user.id)
 
       request = get :destroy
@@ -54,7 +54,5 @@ describe SessionsController, type: :controller do
       expect(request).to redirect_to('/')
       expect(controller.session[:user_id]).to eq(nil)
     end
-
   end
-
 end

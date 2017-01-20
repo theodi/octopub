@@ -29,14 +29,14 @@ describe DatasetsController, type: :controller do
   describe 'create dataset' do
 
     it 'returns an error if there are no files specified' do
-      request = post 'create', dataset: {
+      request = post :create, params: { dataset: {
         name: @name,
         description: @description,
         publisher_name: @publisher_name,
         publisher_url: @publisher_url,
         license: @license,
         frequency: @frequency
-      }, files: []
+      }, files: [] }
 
       expect(request).to render_template(:new)
       expect(flash[:notice]).to eq("You must specify at least one dataset")
@@ -71,14 +71,14 @@ describe DatasetsController, type: :controller do
           @repo
         }
 
-        request = post 'create', dataset: {
+        request = post :create, params: { dataset: {
           name: @name,
           description: @description,
           publisher_name: @publisher_name,
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency
-        }, files: @files
+        }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
@@ -93,7 +93,7 @@ describe DatasetsController, type: :controller do
           @repo
         }
 
-        request = post 'create', dataset: {
+        request = post :create, params: { dataset: {
           name: @name,
           description: @description,
           publisher_name: @publisher_name,
@@ -101,7 +101,7 @@ describe DatasetsController, type: :controller do
           license: @license,
           frequency: @frequency,
           owner: organization
-        }, files: @files
+        }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
@@ -114,14 +114,14 @@ describe DatasetsController, type: :controller do
           @repo
         }
 
-        post 'create', dataset: {
+        post :create, params: { dataset: {
           name: @name,
           description: @description,
           publisher_name: @publisher_name,
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency,
-        }, files: @files, async: true
+        }, files: @files, async: true }
 
         expect(response.code).to eq("202")
       end
@@ -149,12 +149,12 @@ describe DatasetsController, type: :controller do
           ]
         }.to_json
 
-        request = post 'create', data: data,
+        request = post :create, params: { data: data,
           files: [
             {
               file: @files[0][:file]
             }
-          ]
+          ]}
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
@@ -173,14 +173,14 @@ describe DatasetsController, type: :controller do
 
         @files.first["file"] = fixture_file_upload('test-data.csv')
 
-        request = post 'create', dataset: {
+        request = post :create, params: { dataset: {
           name: @name,
           description: @description,
           publisher_name: @publisher_name,
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency
-        }, files: @files
+        }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
@@ -220,7 +220,7 @@ describe DatasetsController, type: :controller do
         end
 
         it 'without websockets' do
-          post 'create', dataset: @dataset, files: @files
+          post :create, params: { dataset: @dataset, files: @files }
 
           expect(Dataset.count).to eq(0)
           expect(Error.count).to eq(1)
@@ -238,7 +238,7 @@ describe DatasetsController, type: :controller do
             "Your file 'My File' does not match the schema you provided"
           ])
 
-          post 'create', dataset: @dataset, files: @files, channel_id: 'foo-bar'
+          post :create, params: { dataset: @dataset, files: @files, channel_id: 'foo-bar' }
         end
 
       end
@@ -252,7 +252,7 @@ describe DatasetsController, type: :controller do
           :file => fake_file(path)
         }
 
-        request = post 'create', dataset: {
+        request = post :create, params: { dataset: {
           name: @name,
           description: @description,
           publisher_name: @publisher_name,
@@ -260,7 +260,7 @@ describe DatasetsController, type: :controller do
           license: @license,
           frequency: @frequency,
           schema: @schema
-        }, files: @files
+        }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)

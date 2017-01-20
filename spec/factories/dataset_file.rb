@@ -8,7 +8,7 @@ FactoryGirl.define do
     file Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv'), "text/csv")
 
     after(:build) { |dataset_file|
-      dataset_file.class.skip_callback(:create, :after, :add_to_github)
+      skip_callback_if_exists(DatasetFile, :create, :after, :add_to_github)
     }
 
     trait :with_callback do

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_filter :check_signed_in?, only: [:edit, :update, :organizations]
+  before_action :check_signed_in?, only: [:edit, :update, :organizations]
 
   def new
   end
