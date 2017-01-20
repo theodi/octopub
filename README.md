@@ -107,10 +107,9 @@ Assuming you have an account, if not, create one at https://certificates.theodi.
 
 Get your API Authentication token from your profile page when logged in and add the following to your ```.env``` file
 
-``
+```
 ODC_API_KEY=<API Key>
 ODC_USERNAME=<your username which is your email address you used when signing up>
-
 ```
 
 ### Now to test
