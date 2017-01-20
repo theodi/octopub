@@ -19,9 +19,19 @@ Live instance is running at [http://octopub.io/](http://octopub.io/)
 Checkout the repository and run ```bundle``` in the checked out directory.
 The application uses sidekiq for managing the background proccessing of data uploads. To use this functionality, install ```redis``` either by following the [instructions](https://redis.io/topics/quickstart) or if on macOS and using homebrew, run ```brew install redis``` and start a redis instance running with ```redis-server```.
 
-### Running the full application locally
 
-Pre-requisites, GitHub account, AWS account, Pusher Account - these instructions assume you have these in place already.
+## Tests
+
+Octopub uses the ```rspec``` test framework and the test suite can be run with the usual ```bundle exec rspec```.
+It requires the presence of a ```.env``` with at least the following in it:
+
+```
+GITHUB_USER=bert
+```
+
+## Running the full application locally
+
+Pre-requisites, GitHub account, AWS account, Pusher Account, Open Data Certificate account - these instructions assume you have these in place already.
 
 #### Github setup 
 
@@ -78,30 +88,42 @@ AWS_SECRET_ACCESS_KEY=<YOURNEWUSERSECRET>
 S3_BUCKET=<YOURNEWS3BUCKETNAME>
 ```
   
- 4. Create Pusher Account
+#### Pusher setup
+
  
- 	1. Create an account on pusher.com if you don't have one.
-    2. Create a new application
-    3. Selete 'App Keys' and get the values
-  
+1. Log in to https://pusher.com
+2. Create a new application and call it something sensible
+3. Select the ```App Keys``` tab and get the values and paste them in to your ```.env``` file
 
-3:Pusher.app_id = ENV['PUSHER_APP_ID']
-4:Pusher.key = ENV['PUSHER_KEY']
-5:Pusher.secret = ENV['PUSHER_SECRET']
+```
+PUSHER_APP_ID=
+PUSHER_KEY=
+PUSHER_SECRET=
+```
 
+### ODC Data certificate setup
 
-   
+Assuming you have an account, if not, create one at https://certificates.theodi.org/
+
+Get your API Authentication token from your profile page when logged in and add the following to your ```.env``` file
+
+``
+ODC_API_KEY=<API Key>
+ODC_USERNAME=<your username which is your email address you used when signing up>
+
+```
+
 ### Now to test
 
-* Make sure redis is running!
-* Make sure Sidekiq is running!
-* fire up the app
+* Make sure redis is running ```redis-server```
+* Make sure Sidekiq is running ```bundle exec sidekiq``` in the application directory
+* Start the application
 * Go to index page
 * Sign in with github (your acocunt)
 * Authorise in github
-SIGNED IN
+* Congratulations, you should be signed in, now try adding some data.
 
-### Check the queue
+### How to check the Sidekiq queue
 
 in a rails console session 
 
@@ -109,18 +131,8 @@ in a rails console session
 require 'sidekiq/api'
 Sidekiq::Queue.new.size
 Sidekiq::Queue.new.first
-
-## Tests
-
-Octopub uses the ```rspec``` test framework and the test suite can be run with the usual ```bundle exec rspec```
-
-## Environment variables
-
-Create a ```.env``` file as follows to enable the tests to run succesfully. For development purposes, use your own github username if you want to run against a real instance.
-
 ```
-GITHUB_USER=bert
-```
+
 
 ## Deployment
 
