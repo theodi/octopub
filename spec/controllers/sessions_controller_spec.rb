@@ -55,4 +55,11 @@ describe SessionsController, type: :controller do
       expect(controller.session[:user_id]).to eq(nil)
     end
   end
+
+  context('#redirect') do
+    it 'renders nothing' do
+      get :redirect
+      expect(controller.response.body).to be_blank
+    end
+  end
 end

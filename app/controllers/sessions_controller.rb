@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def redirect
-    render nothing: true
+    head :ok
   end
 
   private
