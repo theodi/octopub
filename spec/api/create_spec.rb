@@ -96,6 +96,28 @@ describe 'POST /datasets' do
     expect(json['error']).to eq('dataset[license] does not have a valid value')
   end
 
+  it 'errors with a missing publisher name' do
+
+    allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(@file)
+    post '/api/datasets', params: {
+      dataset: {
+        name: @name,
+        description: @description,
+        publisher_url: @publisher_url,
+        license: @license,
+        frequency: @frequency
+      },
+      file: @file
+    },
+    headers: { 'Authorization' => "Token token=#{@user.api_key}" }
+
+    expect(response.code).to eq("400")
+
+    json = JSON.parse(response.body)
+
+    expect(json['error']).to eq('dataset[publisher_name] is missing')
+  end
+
   context('with a schema') do
 
     before(:each) do
