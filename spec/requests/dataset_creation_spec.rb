@@ -17,8 +17,11 @@ RSpec.describe "Dataset creation", type: :request do
     @files ||= []
 
     allow_any_instance_of(User).to receive(:organizations) { [] }
-    allow_any_instance_of(User).to receive(:github_username) { 'Ivana' }
-
+    allow_any_instance_of(User).to receive(:github_user) {
+      OpenStruct.new(
+        avatar_url: "http://www.example.org/avatar2.png"
+      )
+    }
 
     file_name = 'Test Data'
     description = Faker::Company.bs
