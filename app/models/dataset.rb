@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
+  after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -208,16 +208,16 @@ class Dataset < ApplicationRecord
 
   private
 
-    def create_in_github
+    def create_repo_and_populate
 
       @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       logger.info "Now updated with github details - call commit!"
 
-      commit
+      add_files_to_repo_and_push_to_github
     end
 
-    def commit
+    def add_files_to_repo_and_push_to_github
       create_data_files
       create_jekyll_files
       push_to_github

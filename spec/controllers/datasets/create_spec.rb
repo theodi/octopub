@@ -97,7 +97,7 @@ describe DatasetsController, type: :controller do
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-        Dataset.set_callback(:create, :after, :create_in_github)
+        Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
         @files << {
           :title => name,

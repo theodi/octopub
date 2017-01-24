@@ -73,7 +73,7 @@ describe Dataset do
       obj
     }
 
-    expect(dataset).to receive(:commit)
+    expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
 
     dataset.save
     dataset.reload
@@ -94,7 +94,7 @@ describe Dataset do
       obj
     }
 
-    expect(dataset).to receive(:commit)
+    expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
 
     dataset.save
   end
@@ -576,7 +576,7 @@ describe Dataset do
         obj
       }
 
-      expect(dataset).to receive(:commit)
+      expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
 
       dataset.save
       dataset.reload

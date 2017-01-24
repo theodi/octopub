@@ -15,7 +15,7 @@ class GitData
     # Get the current branch info
     branch_data = client.branch full_name, 'master'
     # Create a gh-pages branch
-    client.create_ref(full_name, 'heads/gh-pages', branch_data.commit.sha)
+    client.create_ref(full_name, 'heads/gh-pages', branch_data.add_files_to_repo_and_push_to_github.sha)
     # Make the gh-pages branch the default
     client.edit_repository(full_name, default_branch: 'gh-pages')
     new(client, repo)
@@ -78,7 +78,7 @@ class GitData
 
     def commit
      branch_data = @client.branch @full_name, 'gh-pages'
-     latest_commit = branch_data.commit.sha
+     latest_commit = branch_data.add_files_to_repo_and_push_to_github.sha
      commit = @client.create_commit @full_name, "Update #{DateTime.now.to_s} [ci skip]",
               create_tree.sha, latest_commit
      commit.sha

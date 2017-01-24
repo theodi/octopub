@@ -6,7 +6,7 @@ describe DatasetsController, type: :controller do
     Sidekiq::Testing.inline!
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
-    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
     allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
     allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
@@ -19,7 +19,7 @@ describe DatasetsController, type: :controller do
   after(:each) do
     Sidekiq::Testing.fake!
 
-    Dataset.set_callback(:create, :after, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   describe 'update' do
