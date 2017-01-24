@@ -229,7 +229,7 @@ describe Dataset do
                                 ]
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')).read)
-      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.datapackage) { {content: {} }}
+      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       expect(dataset).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
@@ -256,7 +256,7 @@ describe Dataset do
                                 schema: fake_file(schema_path)
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')).read)
-      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.datapackage) { {content: {} }}
+      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
       expect(dataset).to receive(:add_file_to_repo).with("schema.json", File.open(schema_path).read)
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
@@ -289,7 +289,7 @@ describe Dataset do
                                 file
                               ])
 
-    datapackage = JSON.parse(dataset.datapackage)
+    datapackage = JSON.parse(dataset.create_json_datapackage)
 
     expect(datapackage["name"]).to eq("my-awesome-dataset")
     expect(datapackage["title"]).to eq("My Awesome Dataset")
@@ -314,13 +314,13 @@ describe Dataset do
     dataset = create(:dataset, dataset_files: [
       create(:dataset_file)
     ])
-    expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.datapackage)
-    dataset.create_datapackage
+    expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage)
+    dataset.create_json_datapackage_and_add_to_repo
   end
 
   it "updates the datapackage" do
     dataset = create(:dataset)
-    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.datapackage)
+    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.create_json_datapackage)
     dataset.update_datapackage
   end
 
@@ -358,7 +358,7 @@ describe Dataset do
 
 
       dataset = build(:dataset, schema: schema, dataset_files: [file])
-      datapackage = JSON.parse dataset.datapackage
+      datapackage = JSON.parse dataset.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']['fields']).to eq([
         {
@@ -418,7 +418,7 @@ describe Dataset do
                                    description: "My Awesome File Description")
 
       dataset = build(:dataset, schema: schema, dataset_files: [file])
-      datapackage = JSON.parse dataset.datapackage
+      datapackage = JSON.parse dataset.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
@@ -437,7 +437,7 @@ describe Dataset do
       dataset.dataset_files << file
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
-      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.datapackage) { {content: {} }}
+      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
       expect(dataset).to receive(:add_file_to_repo).with("schema.json", File.open(path).read)
 
       expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')

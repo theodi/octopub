@@ -65,7 +65,6 @@ class Dataset < ApplicationRecord
     end
   end
 
-  # TODO refactor this to something like 'add_file_to_repo'
   def add_file_to_repo(filename, file)
     @repo.add_file(filename, file)
   end
@@ -86,7 +85,7 @@ class Dataset < ApplicationRecord
     logger.info "Create data files and add to github"
     dataset_files.each { |d| d.add_to_github }
     logger.info "Create datapackage and add to repo"
-    create_datapackage
+    create_json_datapackage_and_add_to_repo
 
     if !schema.nil?
       logger.info "Schema isn't empty, so write it to schema.json #{schema}"
@@ -113,17 +112,15 @@ class Dataset < ApplicationRecord
     end
   end
 
-  # TODO refactor name Create datapackage json and add it to repo
-  def create_datapackage
-    add_file_to_repo("datapackage.json", datapackage)
+  def create_json_datapackage_and_add_to_repo
+    add_file_to_repo("datapackage.json", create_json_datapackage)
   end
 
   def update_datapackage
-    update_contents("datapackage.json", datapackage)
+    update_contents("datapackage.json", create_json_datapackage)
   end
 
-  # TODO refactor name create json datapackage
-  def datapackage
+  def create_json_datapackage
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
