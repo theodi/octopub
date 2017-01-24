@@ -251,11 +251,11 @@ describe Dataset do
 
       dataset = build :dataset, user: @user,
                                 dataset_files: [
-                                  create(:dataset_file)
+                                  create(:dataset_file, :with_good_schema)
                                 ],
                                 schema: fake_file(schema_path)
 
-      expect(dataset).to receive(:create_contents).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')).read)
+      expect(dataset).to receive(:create_contents).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')).read)
       expect(dataset).to receive(:create_contents).with("datapackage.json", dataset.datapackage) { { content: {} }}
       expect(dataset).to receive(:create_contents).with("schema.json", File.open(schema_path).read)
 
