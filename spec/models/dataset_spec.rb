@@ -158,10 +158,24 @@ describe Dataset do
         expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
       end
 
-      it "gets a schema" do
+      it "gets a schema with a repo fetch" do
         stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
 
         @dataset.fetch_repo
+
+        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+      end
+
+      it "gets a schema from the persisted dataset" do
+        stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+
+        @dataset.fetch_repo
+
+        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+        @dataset.reload
+        @dataset = nil
+
+        @dataset = Dataset.where(user: @user, repo: "repo").first
 
         expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
       end
@@ -474,7 +488,7 @@ describe Dataset do
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
-    
+
     it "checks if page build is finished" do
       allow_any_instance_of(User).to receive(:octokit_client) do
         client = double(Octokit::Client)
@@ -561,7 +575,7 @@ describe Dataset do
       expect(dataset).to be_valid
       expect(dataset.private).to be true
     end
-    
+
     it "creates a private repo in Github" do
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
@@ -587,25 +601,25 @@ describe Dataset do
   end
 
   context "notifying via twitter" do
-    
+
     before(:all) do
       @tweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
       @nontweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
     end
-    
+
     before(:each) do
       allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
     end
 
     context "with twitter creds" do
-    
+
       before(:all) do
         ENV["TWITTER_CONSUMER_KEY"] = "test"
         ENV["TWITTER_CONSUMER_SECRET"] = "test"
         ENV["TWITTER_TOKEN"] = "test"
         ENV["TWITTER_SECRET"] = "test"
       end
-      
+
       it "sends twitter notification to twitter users" do
         expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://user-mcuser.github.io/").once
         dataset = create(:dataset, name: "My Awesome Dataset",
@@ -628,9 +642,9 @@ describe Dataset do
                          user: @nontweeter)
       end
     end
-    
+
     context "without twitter creds" do
-      
+
       before(:all) do
         ENV.delete("TWITTER_CONSUMER_KEY")
         ENV.delete("TWITTER_CONSUMER_SECRET")
