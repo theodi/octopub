@@ -270,9 +270,10 @@ class Dataset < ApplicationRecord
     def parse_schema!
       logger.info "in parse schema! - is parsed_schema set? #{schema.instance_variable_get('@parsed_schema').nil?}"
       if schema.instance_variable_get("@parsed_schema").nil?
+        logger.info "now being set to #{Csvlint::Schema.load_from_json(schema)} "
         schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
       end
-      logger.info "Now schema.parsed_schema is #{schema.instance_variable_get("@parsed_schema")}"
+
     end
 
     def is_csv_otw?
