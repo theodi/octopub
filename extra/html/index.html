@@ -61,6 +61,49 @@ layout: default
     </tbody>
   </table>
 
+  <h2>Schema</h2>
+
+  {% for resource in site.data.datapackage.resources %}
+
+  <table class='table table-striped'>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Title
+      </th>
+      <th>
+        Description
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Required
+      </th>
+    </tr>
+    {% for field in resource.schema.fields %}
+      <tr>
+        <td>
+          {{field.name}}
+        </td>
+        <td>
+          {{field.title}}
+        </td>
+        <td>
+          {{field.description}}
+        </td>
+        <td>
+          {{field.constraints.type | split:'#' | last }}
+        </td>
+        <td>
+          {{field.constraints.required}}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
   {% assign index_length = 0 %}
 
   {% for item in site.data.index %}
