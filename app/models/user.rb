@@ -63,7 +63,7 @@ class User < ApplicationRecord
   end
 
   def all_datasets
-    Dataset.where(id: all_dataset_ids) || []
+    Dataset.where(id: all_dataset_ids).order(:id) || []
   end
 
   def all_dataset_ids
