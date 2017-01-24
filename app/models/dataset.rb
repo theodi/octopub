@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :build_certificate, :send_success_email, :send_tweet_notification
+  after_create :create_in_github, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -79,8 +79,17 @@ class Dataset < ApplicationRecord
     File.join([folder,filename].reject { |n| n.blank? })
   end
 
-  def create_files
+  def create_data_files
+    dataset_files.each { |d| d.add_to_github }
     create_datapackage
+    if !schema.nil?
+      create_contents("schema.json", open(schema).read)
+      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+    end
+  end
+  
+  def create_jekyll_files
+    dataset_files.each { |d| d.add_jekyll_to_github }
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     create_contents("_config.yml", config)
     create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
@@ -91,8 +100,7 @@ class Dataset < ApplicationRecord
     create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
     if !schema.nil?
-      create_contents("schema.json", open(schema).read)
-      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+      dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
     end
   end
 
@@ -198,13 +206,18 @@ class Dataset < ApplicationRecord
     end
 
     def commit
-      dataset_files.each { |d| d.add_to_github }
-      create_files
+      create_data_files
+      create_jekyll_files
       push_to_github
     end
 
     def update_in_github
-      dataset_files.each { |d| d.update_in_github if d.file }
+      dataset_files.each do |d| 
+        if d.file
+          d.update_in_github
+          d.update_jekyll_in_github
+        end
+      end
       update_datapackage
       push_to_github
     end
@@ -273,19 +286,17 @@ class Dataset < ApplicationRecord
       end
     end
 
-    def build_certificate
-      status = user.octokit_client.pages(full_name).status
-
-      if status == "built"
-        create_certificate
-      else
-        retry_certificate
-      end
+    def publish_publicly
+      wait_for_gh_pages_build
+      create_certificate
     end
 
-    def retry_certificate
-      sleep 5
-      build_certificate
+    def wait_for_gh_pages_build(delay = 5)
+      sleep(delay) while !gh_pages_built?
+    end
+    
+    def gh_pages_built?
+      user.octokit_client.pages(full_name).status == "built"
     end
 
     def create_certificate

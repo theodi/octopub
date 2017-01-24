@@ -16,5 +16,9 @@ FactoryGirl.define do
         dataset_file.class.set_callback(:create, :after, :add_to_github)
       }
     end
+    
+    trait :with_good_schema do
+      file Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv'), "text/csv")
+    end
   end
 end

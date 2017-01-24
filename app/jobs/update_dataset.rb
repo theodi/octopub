@@ -44,6 +44,7 @@ class UpdateDataset
     @dataset.dataset_files << f
     if f.save
       f.add_to_github
+      f.add_jekyll_to_github
       f.file = nil
     end
   end

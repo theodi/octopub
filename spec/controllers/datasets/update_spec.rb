@@ -8,8 +8,8 @@ describe DatasetsController, type: :controller do
     @user = create(:user, name: "User McUser", email: "user@user.com")
     skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
 
-    allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_files) { nil }
+    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
+    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
   end
 
   before(:each, schema: true) do
@@ -62,6 +62,7 @@ describe DatasetsController, type: :controller do
             file = fake_file(path)
 
             expect(@file).to receive(:update_in_github)
+            expect(@file).to receive(:update_jekyll_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @file.id,
@@ -82,6 +83,7 @@ describe DatasetsController, type: :controller do
 
               expect(DatasetFile).to receive(:new_file) { file }
               expect(file).to receive(:add_to_github)
+              expect(file).to receive(:add_jekyll_to_github)
             end
 
             it 'via a browser' do
@@ -144,6 +146,7 @@ describe DatasetsController, type: :controller do
           file = fake_file(path)
 
           expect(@file).to receive(:update_in_github)
+          expect(@file).to receive(:update_jekyll_in_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
@@ -162,6 +165,7 @@ describe DatasetsController, type: :controller do
 
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect(new_file).to receive(:add_to_github)
+          expect(new_file).to receive(:add_jekyll_to_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {

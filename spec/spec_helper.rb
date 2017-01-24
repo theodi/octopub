@@ -85,14 +85,14 @@ end
 def skip_dataset_callbacks!
   skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
   skip_callback_if_exists(Dataset, :create, :after, :set_owner_avatar)
-  skip_callback_if_exists(Dataset, :create, :after, :build_certificate)
+  skip_callback_if_exists(Dataset, :create, :after, :publish_publicly)
   skip_callback_if_exists(Dataset, :create, :after, :send_success_email)
 end
 
 def set_dataset_callbacks!
   Dataset.set_callback(:create, :after, :create_in_github)
   Dataset.set_callback(:create, :after, :set_owner_avatar)
-  Dataset.set_callback(:create, :after, :build_certificate)
+  Dataset.set_callback(:create, :after, :publish_publicly)
   Dataset.set_callback(:create, :after, :send_success_email)
 end
 

@@ -51,12 +51,16 @@ describe DatasetFile do
       @dataset.dataset_files << @file
     end
 
-    it "adds a file to Github" do
+    it "adds data file to Github" do
       expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
-      expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-
       @file.send(:add_to_github)
     end
+
+    it "adds jekyll file to Github" do
+      expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      @file.send(:add_jekyll_to_github)
+    end
+
   end
 
   context "update_in_github" do
@@ -68,12 +72,16 @@ describe DatasetFile do
       @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
     end
 
-    it "updates a file in Github" do
+    it "updates a data file in Github" do
       expect(@dataset).to receive(:update_contents).with("data/example.csv", File.read(@path))
-      expect(@dataset).to receive(:update_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-
       @file.send(:update_in_github)
     end
+
+    it "updates a jekyll file in Github" do
+      expect(@dataset).to receive(:update_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      @file.send(:update_jekyll_in_github)
+    end
+    
   end
 
   context "delete_from_github" do
