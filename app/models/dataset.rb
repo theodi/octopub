@@ -43,8 +43,10 @@ class Dataset < ApplicationRecord
   validates_associated :dataset_files
 
   def report_status(channel_id)
+    logger.info "report_status #{channel_id}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
+      logger.info "Valid so now do the save and trigger the after creates"
       save
     else
       messages = errors.full_messages
@@ -63,6 +65,7 @@ class Dataset < ApplicationRecord
     end
   end
 
+  # TODO refactor this to something like 'add_file_to_repo'
   def create_contents(filename, file)
     @repo.add_file(filename, file)
   end
@@ -80,14 +83,20 @@ class Dataset < ApplicationRecord
   end
 
   def create_data_files
+    logger.info "Create data files and add to github"
     dataset_files.each { |d| d.add_to_github }
+    logger.info "Create datapackage and add to repo"
     create_datapackage
+
     if !schema.nil?
+      logger.info "Schema isn't empty, so write it to schema.json #{schema}"
       create_contents("schema.json", open(schema).read)
+      logger.info "For each file, call create_json_api_files on it, with parsed schema"
+      logger.ap parsed_schema
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
   end
-  
+
   def create_jekyll_files
     dataset_files.each { |d| d.add_jekyll_to_github }
     create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
@@ -104,6 +113,7 @@ class Dataset < ApplicationRecord
     end
   end
 
+  # TODO refactor name Create datapackage json and add it to repo
   def create_datapackage
     create_contents("datapackage.json", datapackage)
   end
@@ -112,6 +122,7 @@ class Dataset < ApplicationRecord
     update_contents("datapackage.json", datapackage)
   end
 
+  # TODO refactor name create json datapackage
   def datapackage
     datapackage = {}
 
@@ -193,6 +204,7 @@ class Dataset < ApplicationRecord
   end
 
   def parsed_schema
+    logger.info "in parsed schema - is schema nil? #{schema.nil?}"
     return nil if schema.nil?
     schema.instance_variable_get("@parsed_schema") || parse_schema!
   end
@@ -200,8 +212,11 @@ class Dataset < ApplicationRecord
   private
 
     def create_in_github
+
       @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
+      logger.info "Now updated with github details - call commit!"
+
       commit
     end
 
@@ -212,7 +227,7 @@ class Dataset < ApplicationRecord
     end
 
     def update_in_github
-      dataset_files.each do |d| 
+      dataset_files.each do |d|
         if d.file
           d.update_in_github
           d.update_jekyll_in_github
@@ -227,6 +242,7 @@ class Dataset < ApplicationRecord
     end
 
     def push_to_github
+      logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
       @repo.save
     end
 
@@ -252,9 +268,11 @@ class Dataset < ApplicationRecord
     end
 
     def parse_schema!
+      logger.info "in parse schema! - is parsed_schema set? #{schema.instance_variable_get('@parsed_schema').nil?}"
       if schema.instance_variable_get("@parsed_schema").nil?
         schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
       end
+      logger.info "Now schema.parsed_schema is #{schema.instance_variable_get("@parsed_schema")}"
     end
 
     def is_csv_otw?
@@ -294,7 +312,7 @@ class Dataset < ApplicationRecord
     def wait_for_gh_pages_build(delay = 5)
       sleep(delay) while !gh_pages_built?
     end
-    
+
     def gh_pages_built?
       user.octokit_client.pages(full_name).status == "built"
     end
