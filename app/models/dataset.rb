@@ -212,7 +212,12 @@ class Dataset < ApplicationRecord
     end
 
     def update_in_github
-      dataset_files.each { |d| d.update_in_github if d.file }
+      dataset_files.each do |d| 
+        if d.file
+          d.update_in_github
+          d.update_jekyll_in_github
+        end
+      end
       update_datapackage
       push_to_github
     end
