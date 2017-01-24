@@ -52,12 +52,12 @@ describe DatasetFile do
     end
 
     it "adds data file to Github" do
-      expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
+      expect(@dataset).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
       @file.send(:add_to_github)
     end
 
     it "adds jekyll file to Github" do
-      expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(@dataset).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       @file.send(:add_jekyll_to_github)
     end
 

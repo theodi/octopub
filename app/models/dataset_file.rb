@@ -68,11 +68,11 @@ class DatasetFile < ApplicationRecord
   end
 
   def add_to_github
-    dataset.create_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    dataset.add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
   def add_jekyll_to_github
-    dataset.create_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+    dataset.add_file_to_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def update_in_github
@@ -128,7 +128,7 @@ class DatasetFile < ApplicationRecord
     def create_json_api_files schema
       for_each_file_in_schema(schema) do |filename, content|
         # Store data as JSON in file
-        dataset.create_contents(filename, content.to_json)
+        dataset.add_file_to_repo(filename, content.to_json)
       end
     end
       
@@ -137,9 +137,9 @@ class DatasetFile < ApplicationRecord
         # Add human readable template
         unless filename == "index.json"
           if filename.scan('/').count > 0
-            dataset.create_contents(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
           else
-            dataset.create_contents(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
           end
         end
       end

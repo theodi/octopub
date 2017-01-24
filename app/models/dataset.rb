@@ -66,7 +66,7 @@ class Dataset < ApplicationRecord
   end
 
   # TODO refactor this to something like 'add_file_to_repo'
-  def create_contents(filename, file)
+  def add_file_to_repo(filename, file)
     @repo.add_file(filename, file)
   end
 
@@ -90,7 +90,7 @@ class Dataset < ApplicationRecord
 
     if !schema.nil?
       logger.info "Schema isn't empty, so write it to schema.json #{schema}"
-      create_contents("schema.json", open(schema).read)
+      add_file_to_repo("schema.json", open(schema).read)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
       logger.ap parsed_schema
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
@@ -99,15 +99,15 @@ class Dataset < ApplicationRecord
 
   def create_jekyll_files
     dataset_files.each { |d| d.add_jekyll_to_github }
-    create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-    create_contents("_config.yml", config)
-    create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-    create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-    create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-    create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-    create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-    create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-    create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+    add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+    add_file_to_repo("_config.yml", config)
+    add_file_to_repo("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    add_file_to_repo("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    add_file_to_repo("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    add_file_to_repo("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+    add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+    add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
     if !schema.nil?
       dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
     end
@@ -115,7 +115,7 @@ class Dataset < ApplicationRecord
 
   # TODO refactor name Create datapackage json and add it to repo
   def create_datapackage
-    create_contents("datapackage.json", datapackage)
+    add_file_to_repo("datapackage.json", datapackage)
   end
 
   def update_datapackage
