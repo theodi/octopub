@@ -7,7 +7,7 @@ class DatasetsController < ApplicationController
   before_action :get_multipart, only: [:create, :update]
   before_action :clear_files, only: [:create, :update]
   before_action :process_files, only: [:create, :update]
-  before_action :check_files, only: [:create]
+  before_action :check_mandatory_fields, only: [:create]
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
@@ -88,10 +88,21 @@ class DatasetsController < ApplicationController
     @files.keep_if { |f| f["id"] || (f["file"] && f["title"]) }
   end
 
+  def check_mandatory_fields
+    check_files
+    check_publisher
+    render 'new' unless flash.empty?
+  end
+
+  def check_publisher
+    if params[:dataset][:publisher_name].blank?
+      flash[:no_publisher] = "Please include the name of the publisher"
+    end
+  end
+
   def check_files
     if @files.blank?
-      flash[:notice] = "You must specify at least one dataset"
-      render "new"
+      flash[:no_files] = "You must specify at least one dataset"
     end
   end
 

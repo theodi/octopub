@@ -16,7 +16,7 @@ module Octopub
           requires :name, type: String, desc: 'The name of the dataset'
           optional :description, type: String, desc: 'A short description of the dataset'
           optional :owner, type: String, desc: 'The Github organisation to publish the dataset to (see /api/user/organisations for a list)'
-          optional :publisher_name, type: String, desc: 'The name of the person / organisation publishing the data'
+          requires :publisher_name, type: String, desc: 'The name of the person / organisation publishing the data'
           optional :publisher_url, type: String, desc: 'The website of the person / organisation publishing the data'
           requires :license, type: String, desc: 'The ID of the dataset\'s license', values: ["CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0", "OGL-UK-3.0", "ODC-BY-1.0", "ODC-PDDL-1.0"]
           optional :frequency, type: String, desc: 'How freqently the dataset is updated', values: ['One-off', 'Annual', 'Every working day', 'Daily', 'Monthly', 'Every minute', 'Every quarter', 'Half yearly', 'Weekly']
