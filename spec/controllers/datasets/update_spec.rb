@@ -62,6 +62,7 @@ describe DatasetsController, type: :controller do
             file = fake_file(path)
 
             expect(@file).to receive(:update_in_github)
+            expect(@file).to receive(:update_jekyll_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @file.id,
@@ -82,6 +83,7 @@ describe DatasetsController, type: :controller do
 
               expect(DatasetFile).to receive(:new_file) { file }
               expect(file).to receive(:add_to_github)
+              expect(file).to receive(:add_jekyll_to_github)
             end
 
             it 'via a browser' do
@@ -144,6 +146,7 @@ describe DatasetsController, type: :controller do
           file = fake_file(path)
 
           expect(@file).to receive(:update_in_github)
+          expect(@file).to receive(:update_jekyll_in_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
@@ -162,6 +165,7 @@ describe DatasetsController, type: :controller do
 
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect(new_file).to receive(:add_to_github)
+          expect(new_file).to receive(:add_jekyll_to_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
