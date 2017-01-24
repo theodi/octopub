@@ -76,16 +76,16 @@ class DatasetFile < ApplicationRecord
   end
 
   def update_in_github
-    dataset.update_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    dataset.update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
   def update_jekyll_in_github
-    dataset.update_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+    dataset.update_file_in_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def delete_from_github(file)
-    dataset.delete_contents(file.filename)
-    dataset.delete_contents("#{File.basename(file.filename, '.*')}.md")
+    dataset.delete_file_from_repo(file.filename)
+    dataset.delete_file_from_repo("#{File.basename(file.filename, '.*')}.md")
   end
 
   private

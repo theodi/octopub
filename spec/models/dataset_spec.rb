@@ -209,7 +209,7 @@ describe Dataset do
 
     expect(repo).to receive(:update_file).with("my-file", "File contents")
 
-    dataset.update_contents("my-file", "File contents")
+    dataset.update_file_in_repo("my-file", "File contents")
   end
 
   it "deletes a file in Github" do
@@ -218,7 +218,7 @@ describe Dataset do
 
     expect(repo).to receive(:delete_file).with("my-file")
 
-    dataset.delete_contents("my-file")
+    dataset.delete_file_from_repo("my-file")
   end
 
   context "sends the correct files to Github" do
@@ -320,7 +320,7 @@ describe Dataset do
 
   it "updates the datapackage" do
     dataset = create(:dataset)
-    expect(dataset).to receive(:update_contents).with("datapackage.json", dataset.create_json_datapackage)
+    expect(dataset).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
     dataset.update_datapackage
   end
 
@@ -533,7 +533,7 @@ describe Dataset do
 
     it 'adds the badge url to the repo' do
       expect(@dataset).to receive(:fetch_repo)
-      expect(@dataset).to receive(:update_contents).with('_config.yml', {
+      expect(@dataset).to receive(:update_file_in_repo).with('_config.yml', {
         "data_source" => ".",
         "update_frequency" => "One-off",
         "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"

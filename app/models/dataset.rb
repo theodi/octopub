@@ -69,11 +69,11 @@ class Dataset < ApplicationRecord
     @repo.add_file(filename, file)
   end
 
-  def update_contents(filename, file)
+  def update_file_in_repo(filename, file)
     @repo.update_file(filename, file)
   end
 
-  def delete_contents(filename)
+  def delete_file_from_repo(filename)
     @repo.delete_file(filename)
   end
 
@@ -117,7 +117,7 @@ class Dataset < ApplicationRecord
   end
 
   def update_datapackage
-    update_contents("datapackage.json", create_json_datapackage)
+    update_file_in_repo("datapackage.json", create_json_datapackage)
   end
 
   def create_json_datapackage
@@ -339,7 +339,7 @@ class Dataset < ApplicationRecord
       }.to_yaml
 
       fetch_repo(user.octokit_client)
-      update_contents('_config.yml', config)
+      update_file_in_repo('_config.yml', config)
       push_to_github
     end
 
