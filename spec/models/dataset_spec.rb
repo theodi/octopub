@@ -161,11 +161,14 @@ describe Dataset do
       end
 
       it "gets a schema" do
-        stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
 
+        schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+        url_for_schema = url_with_stubbed_get_for(schema_path)
+
+        @dataset.dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)    
         @dataset.fetch_repo
 
-        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
+        expect(@dataset.schema).to eq(url_for_schema)
       end
 
     end

@@ -93,7 +93,7 @@ class Dataset < ApplicationRecord
     unless dataset_schema.nil?
 
       logger.ap dataset_schema
-      logger.info "Schema isn't empty, so write it to schema.json #{schema}"
+      logger.info "Schema isn't empty, so write it to schema.json"
       add_file_to_repo("schema.json", dataset_schema.schema)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
       logger.ap parsed_schema
@@ -193,18 +193,16 @@ class Dataset < ApplicationRecord
   end
 
   def check_for_schema
-    begin
-      open(schema_url, allow_redirections: :safe)
-      self.schema = schema_url
-    rescue OpenURI::HTTPError
-      nil
-    end
+    # This is in for backwards compatibility at the moment
+    self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
+    dataset_schema.blank?
   end
 
   def schema_url
     "#{gh_pages_url}/schema.json"
   end
 
+  # TODO Move this into DatasetSchemaService
   def parsed_schema
     logger.info "in parsed schema - is schema nil? #{schema.nil?}"
     return nil if dataset_schema.nil?
@@ -268,6 +266,7 @@ class Dataset < ApplicationRecord
       end
     end
 
+    # TODO Move this into DatasetSchemaService
     def parse_schema!
       logger.info "in parse schema! - is parsed_schema set? #{dataset_schema.parsed_schema.nil?}"
 
