@@ -3,9 +3,9 @@
 # Table name: dataset_files
 #
 #  id          :integer          not null, primary key
-#  title       :string(255)
-#  filename    :string(255)
-#  mediatype   :string(255)
+#  title       :string
+#  filename    :string
+#  mediatype   :string
 #  dataset_id  :integer
 #  created_at  :datetime
 #  updated_at  :datetime

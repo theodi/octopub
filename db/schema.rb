@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170125102629) do
+ActiveRecord::Schema.define(version: 20170125103553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,9 @@ ActiveRecord::Schema.define(version: 20170125102629) do
     t.string   "full_name"
     t.string   "certificate_url"
     t.string   "job_id"
-    t.boolean  "private",         default: false
+    t.boolean  "private",           default: false
+    t.integer  "dataset_schema_id"
+    t.index ["dataset_schema_id"], name: "index_datasets_on_dataset_schema_id", using: :btree
   end
 
   create_table "errors", force: :cascade do |t|
