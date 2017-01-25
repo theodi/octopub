@@ -7,20 +7,17 @@ class CreateDataset
   
     user = find_user(user_id)
     @dataset = new_dataset_for_user(user)
-    logger.info(dataset_params.inspect)
-
-    if dataset_params.include?('schema') || dataset_params.include?(:schema)
-      logger.info("We have a schema url")
-      url_in_s3 = dataset_params[:schema]
-      @dataset_schema = create_dataset_schema_for_user(user, url_in_s3)
-      logger.ap @dataset_schema
-    else
-      logger.info("We do not have a schema url")
-    end
-
+   
     @dataset.assign_attributes(ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     ))
+
+    unless @dataset.schema.nil? 
+      logger.debug("We have a schema url #{@dataset.schema}")
+      url_in_s3 = @dataset.schema
+      dataset_schema = create_dataset_schema_for_user(user, url_in_s3)
+      @dataset.dataset_schema = dataset_schema
+    end
 
     files.each do |file|
       @dataset.dataset_files << DatasetFile.new_file(file)
