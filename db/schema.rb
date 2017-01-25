@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170119140548) do
+ActiveRecord::Schema.define(version: 20170125102629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "dataset_files", force: true do |t|
+  create_table "dataset_files", force: :cascade do |t|
     t.string   "title"
     t.string   "filename"
     t.string   "mediatype"
@@ -28,7 +27,17 @@ ActiveRecord::Schema.define(version: 20170119140548) do
     t.text     "view_sha"
   end
 
-  create_table "datasets", force: true do |t|
+  create_table "dataset_schemas", force: :cascade do |t|
+    t.text    "name"
+    t.text    "description"
+    t.text    "url_in_s3"
+    t.text    "url_in_repo"
+    t.json    "schema"
+    t.integer "user_id"
+    t.index ["user_id"], name: "index_dataset_schemas_on_user_id", using: :btree
+  end
+
+  create_table "datasets", force: :cascade do |t|
     t.string   "name"
     t.string   "url"
     t.integer  "user_id"
@@ -45,18 +54,17 @@ ActiveRecord::Schema.define(version: 20170119140548) do
     t.string   "owner_avatar"
     t.string   "build_status"
     t.string   "full_name"
-    t.string   "gh_pages_url"
     t.string   "certificate_url"
     t.string   "job_id"
     t.boolean  "private",         default: false
   end
 
-  create_table "errors", force: true do |t|
+  create_table "errors", force: :cascade do |t|
     t.string "job_id",   null: false
     t.json   "messages"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "provider"
     t.string   "uid"
     t.string   "email"
