@@ -341,7 +341,9 @@ describe Dataset do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset = build(:dataset, schema: schema)
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)    
+
+      dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema)
 
       expect(dataset.valid?).to be false
       expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
@@ -361,7 +363,6 @@ describe Dataset do
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
-
 
       dataset = build(:dataset, schema: schema, dataset_files: [file])
       datapackage = JSON.parse dataset.create_json_datapackage
@@ -410,7 +411,9 @@ describe Dataset do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset = build(:dataset, schema: schema)
+
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)    
+      dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema)
 
       expect(dataset.valid?).to be false
       expect(dataset.errors.messages[:schema].first).to eq 'is invalid'
@@ -419,11 +422,14 @@ describe Dataset do
     it 'does not add the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
+
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
 
-      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema) 
+
+      dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema, dataset_files: [file])
       datapackage = JSON.parse dataset.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
@@ -435,8 +441,6 @@ describe Dataset do
       schema = url_with_stubbed_get_for(path)
       dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema, @user)   
 
-      allow_any_instance_of(Dataset).to receive(:parse_schema!).and_return(Csvlint::Schema.load_from_json(schema))
-      
       dataset = build :dataset, schema: schema, dataset_schema: dataset_schema
 
       file = create(:dataset_file, dataset: dataset,

@@ -33,8 +33,4 @@ class CreateDataset
     user.datasets.new
   end
 
-  def create_dataset_schema_for_user(user, url_in_s3)
-    user.dataset_schemas.create(url_in_s3: url_in_s3)
-  end
-
 end

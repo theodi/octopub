@@ -4,8 +4,10 @@ class DatasetSchemaService
     @dataset_schema = dataset_schema
   end
 
-  def create_dataset_schema(url_in_s3, user)  
-    @dataset_schema = create_dataset_schema_for_user(user, url_in_s3)
+  def create_dataset_schema(url_in_s3, user = nil) 
+    @dataset_schema = DatasetSchema.new(url_in_s3: url_in_s3)
+    @dataset_schema.user = user if user
+
     update_dataset_schema_with_json_schema
     @dataset_schema
   end

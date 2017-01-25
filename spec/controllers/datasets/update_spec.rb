@@ -29,6 +29,11 @@ describe DatasetsController, type: :controller do
       @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
+
+      good_schema = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = url_with_stubbed_get_for(good_schema)
+      @dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)    
+
       @dataset.save
       @file = @dataset.dataset_files.first
 
@@ -193,6 +198,8 @@ describe DatasetsController, type: :controller do
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          ap @dataset_schema
+          @dataset.update(dataset_schema: @dataset_schema)
         end
 
         it 'does not update a file in Github' do
