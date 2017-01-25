@@ -10,7 +10,7 @@ FactoryGirl.define do
     association :user, factory: :user
 
     after(:build) { |dataset|
-      skip_callback_if_exists( Dataset, :create, :after, :create_in_github)
+      skip_callback_if_exists( Dataset, :create, :after, :create_repo_and_populate)
       skip_callback_if_exists( Dataset, :create, :after, :publish_publicly)
       skip_callback_if_exists( Dataset, :create, :after, :send_success_email)
       skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
@@ -20,7 +20,7 @@ FactoryGirl.define do
 
     trait :with_callback do
       after(:build) { |dataset|
-        dataset.class.set_callback(:create, :after, :create_in_github)
+        dataset.class.set_callback(:create, :after, :create_repo_and_populate)
         dataset.class.set_callback(:update, :after, :update_in_github)
       }
     end

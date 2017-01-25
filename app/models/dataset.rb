@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_in_github, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
+  after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -43,8 +43,10 @@ class Dataset < ApplicationRecord
   validates_associated :dataset_files
 
   def report_status(channel_id)
+    logger.info "report_status #{channel_id}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
+      logger.info "Valid so now do the save and trigger the after creates"
       save
     else
       messages = errors.full_messages
@@ -63,15 +65,15 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def create_contents(filename, file)
+  def add_file_to_repo(filename, file)
     @repo.add_file(filename, file)
   end
 
-  def update_contents(filename, file)
+  def update_file_in_repo(filename, file)
     @repo.update_file(filename, file)
   end
 
-  def delete_contents(filename)
+  def delete_file_from_repo(filename)
     @repo.delete_file(filename)
   end
 
@@ -80,39 +82,45 @@ class Dataset < ApplicationRecord
   end
 
   def create_data_files
+    logger.info "Create data files and add to github"
     dataset_files.each { |d| d.add_to_github }
-    create_datapackage
+    logger.info "Create datapackage and add to repo"
+    create_json_datapackage_and_add_to_repo
+
     if !schema.nil?
-      create_contents("schema.json", open(schema).read)
+      logger.info "Schema isn't empty, so write it to schema.json #{schema}"
+      add_file_to_repo("schema.json", open(schema).read)
+      logger.info "For each file, call create_json_api_files on it, with parsed schema"
+      logger.ap parsed_schema
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
     end
   end
-  
+
   def create_jekyll_files
     dataset_files.each { |d| d.add_jekyll_to_github }
-    create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-    create_contents("_config.yml", config)
-    create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-    create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-    create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-    create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-    create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-    create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-    create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+    add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+    add_file_to_repo("_config.yml", config)
+    add_file_to_repo("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    add_file_to_repo("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    add_file_to_repo("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    add_file_to_repo("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+    add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+    add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
     if !schema.nil?
       dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
     end
   end
 
-  def create_datapackage
-    create_contents("datapackage.json", datapackage)
+  def create_json_datapackage_and_add_to_repo
+    add_file_to_repo("datapackage.json", create_json_datapackage)
   end
 
   def update_datapackage
-    update_contents("datapackage.json", datapackage)
+    update_file_in_repo("datapackage.json", create_json_datapackage)
   end
 
-  def datapackage
+  def create_json_datapackage
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
@@ -193,26 +201,30 @@ class Dataset < ApplicationRecord
   end
 
   def parsed_schema
+    logger.info "in parsed schema - is schema nil? #{schema.nil?}"
     return nil if schema.nil?
     schema.instance_variable_get("@parsed_schema") || parse_schema!
   end
 
   private
 
-    def create_in_github
+    def create_repo_and_populate
+
       @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      commit
+      logger.info "Now updated with github details - call commit!"
+
+      add_files_to_repo_and_push_to_github
     end
 
-    def commit
+    def add_files_to_repo_and_push_to_github
       create_data_files
       create_jekyll_files
       push_to_github
     end
 
     def update_in_github
-      dataset_files.each do |d| 
+      dataset_files.each do |d|
         if d.file
           d.update_in_github
           d.update_jekyll_in_github
@@ -227,6 +239,7 @@ class Dataset < ApplicationRecord
     end
 
     def push_to_github
+      logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
       @repo.save
     end
 
@@ -252,9 +265,12 @@ class Dataset < ApplicationRecord
     end
 
     def parse_schema!
+      logger.info "in parse schema! - is parsed_schema set? #{schema.instance_variable_get('@parsed_schema').nil?}"
       if schema.instance_variable_get("@parsed_schema").nil?
+        logger.info "now being set to #{Csvlint::Schema.load_from_json(schema)} "
         schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
       end
+
     end
 
     def is_csv_otw?
@@ -294,7 +310,7 @@ class Dataset < ApplicationRecord
     def wait_for_gh_pages_build(delay = 5)
       sleep(delay) while !gh_pages_built?
     end
-    
+
     def gh_pages_built?
       user.octokit_client.pages(full_name).status == "built"
     end
@@ -323,7 +339,7 @@ class Dataset < ApplicationRecord
       }.to_yaml
 
       fetch_repo(user.octokit_client)
-      update_contents('_config.yml', config)
+      update_file_in_repo('_config.yml', config)
       push_to_github
     end
 
