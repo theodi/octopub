@@ -250,12 +250,14 @@ describe Dataset do
 
     it "with a schema" do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-
+      dataset_schema = DatasetSchema.new(user: @user, url_in_s3: url_with_stubbed_get_for(schema_path))
+      DatasetSchemaService.new(dataset_schema).update_dataset_schema_with_json_schema
       dataset = build :dataset, user: @user,
                                 dataset_files: [
                                   create(:dataset_file, :with_good_schema)
                                 ],
-                                schema: url_with_stubbed_get_for(schema_path)
+                                schema: url_with_stubbed_get_for(schema_path),
+                                dataset_schema: dataset_schema   
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
@@ -426,9 +428,13 @@ describe Dataset do
     end
 
     it "creates JSON files on GitHub when using a CSVW schema" do
+
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset = build :dataset, schema: schema
+      dataset_schema = DatasetSchema.new(user: @user, url_in_s3: url_with_stubbed_get_for(path))
+      DatasetSchemaService.new(dataset_schema).update_dataset_schema_with_json_schema
+
+      dataset = build :dataset, schema: schema, dataset_schema: dataset_schema
 
       file = create(:dataset_file, dataset: dataset,
                                    file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),

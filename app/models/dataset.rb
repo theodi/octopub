@@ -90,9 +90,12 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
-    if !schema.nil?
+    unless dataset_schema_id.nil?
+      dataset_schema = DatasetSchema.find(dataset_schema_id)
+      logger.ap dataset_schema
+
       logger.info "Schema isn't empty, so write it to schema.json #{schema}"
-      add_file_to_repo("schema.json", open(schema).read)
+      add_file_to_repo("schema.json", dataset_schema.schema)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
       logger.ap parsed_schema
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
