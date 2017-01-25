@@ -70,6 +70,9 @@ group :development do
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'guard'
+  gem 'guard-rspec', require: false
+  gem 'terminal-notifier-guard', '~> 1.6.1'
 
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
