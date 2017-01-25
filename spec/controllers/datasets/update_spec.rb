@@ -59,7 +59,7 @@ describe DatasetsController, type: :controller do
           it 'updates a file in Github' do
             filename = 'valid-schema.csv'
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = fake_file(path)
+            file = url_with_stubbed_get_for(path)
 
             expect(@file).to receive(:update_in_github)
             expect(@file).to receive(:update_jekyll_in_github)
@@ -77,7 +77,7 @@ describe DatasetsController, type: :controller do
 
               @filename = 'valid-schema.csv'
               @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-              @new_file = fake_file(@path)
+              @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -143,7 +143,7 @@ describe DatasetsController, type: :controller do
         it 'updates a file in Github' do
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           expect(@file).to receive(:update_in_github)
           expect(@file).to receive(:update_jekyll_in_github)
@@ -159,7 +159,7 @@ describe DatasetsController, type: :controller do
 
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -199,7 +199,7 @@ describe DatasetsController, type: :controller do
           @file.file = nil
           filename = 'invalid-schema.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           expect(@file).to_not receive(:update_in_github)
 
@@ -221,7 +221,7 @@ describe DatasetsController, type: :controller do
 
             @filename = 'invalid-schema.csv'
             @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-            @new_file = fake_file(@path)
+            @new_file = url_with_stubbed_get_for(@path)
 
             file = build(:dataset_file, dataset: @dataset, file: nil)
 

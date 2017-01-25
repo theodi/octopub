@@ -37,7 +37,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
       end
@@ -102,7 +102,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
         @repo = double(GitData)
@@ -241,7 +241,7 @@ describe DatasetsController, type: :controller do
 
       before(:each) do
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-        @schema = fake_file(schema_path)
+        @schema = url_with_stubbed_get_for(schema_path)
       end
 
       context 'returns an error if the file does not match the schema' do
@@ -253,7 +253,7 @@ describe DatasetsController, type: :controller do
           @files << {
             :title => 'My File',
             :description => 'My Description',
-            :file => fake_file(path)
+            :file => url_with_stubbed_get_for(path)
           }
 
           @dataset = {
@@ -307,7 +307,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => 'My File',
           :description => 'My Description',
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
         request = post :create, params: { dataset: {
