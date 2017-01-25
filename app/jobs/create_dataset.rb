@@ -14,12 +14,8 @@ class CreateDataset
 
     unless @dataset.schema.nil? 
       logger.debug("We have a schema url #{@dataset.schema}")
-      url_in_s3 = @dataset.schema
-      dataset_schema = create_dataset_schema_for_user(user, url_in_s3)
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(@dataset.schema, user)    
       @dataset.dataset_schema = dataset_schema
-      schema_service = DatasetSchemaService.new(dataset_schema)
-      schema_service.update_dataset_schema_with_json_schema
-
     end
 
     files.each do |file|

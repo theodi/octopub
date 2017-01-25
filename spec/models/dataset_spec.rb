@@ -250,8 +250,10 @@ describe Dataset do
 
     it "with a schema" do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      dataset_schema = DatasetSchema.new(user: @user, url_in_s3: url_with_stubbed_get_for(schema_path))
-      DatasetSchemaService.new(dataset_schema).update_dataset_schema_with_json_schema
+      url_for_schema = url_with_stubbed_get_for(schema_path)
+
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)    
+
       dataset = build :dataset, user: @user,
                                 dataset_files: [
                                   create(:dataset_file, :with_good_schema)
@@ -431,9 +433,10 @@ describe Dataset do
 
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset_schema = DatasetSchema.new(user: @user, url_in_s3: url_with_stubbed_get_for(path))
-      DatasetSchemaService.new(dataset_schema).update_dataset_schema_with_json_schema
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema, @user)   
 
+      allow_any_instance_of(Dataset).to receive(:parse_schema!).and_return(Csvlint::Schema.load_from_json(schema))
+      
       dataset = build :dataset, schema: schema, dataset_schema: dataset_schema
 
       file = create(:dataset_file, dataset: dataset,
@@ -446,7 +449,7 @@ describe Dataset do
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      expect(dataset).to receive(:add_file_to_repo).with("schema.json", File.open(path).read)
+      expect(dataset).to receive(:add_file_to_repo).with("schema.json", dataset_schema.schema)
 
       expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
       expect(dataset).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
