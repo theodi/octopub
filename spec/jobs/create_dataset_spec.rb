@@ -20,7 +20,7 @@ describe CreateDataset do
       ActiveSupport::HashWithIndifferentAccess.new(
         title: 'My File',
         description: 'My description',
-        file: fake_file(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv'))
+        file: url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv'))
       )
     ]
 
@@ -75,7 +75,7 @@ describe CreateDataset do
       {
         'title' => 'My File',
         'description' => Faker::Company.bs,
-        'file' => fake_file(path)
+        'file' => url_with_stubbed_get_for(path)
       }
     ]
 
@@ -97,7 +97,7 @@ describe CreateDataset do
       {
         'title' => 'My File',
         'description' => Faker::Company.bs,
-        'file' => fake_file(path)
+        'file' => url_with_stubbed_get_for(path)
       }
     ]
 

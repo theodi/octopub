@@ -33,7 +33,7 @@ RSpec.describe "Dataset creation", type: :request do
     @files << {
       :title => file_name,
       :description => description,
-      :file => fake_file(path)
+      :file => url_with_stubbed_get_for(path)
     }
   end
 
