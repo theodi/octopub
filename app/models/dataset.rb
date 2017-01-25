@@ -222,7 +222,6 @@ class Dataset < ApplicationRecord
 
     def add_files_to_repo_and_push_to_github
       create_data_files
-      create_jekyll_files
       push_to_github
     end
 
@@ -230,7 +229,7 @@ class Dataset < ApplicationRecord
       dataset_files.each do |d|
         if d.file
           d.update_in_github
-          d.update_jekyll_in_github
+          d.update_jekyll_in_github unless private?
         end
       end
       update_datapackage
@@ -306,6 +305,8 @@ class Dataset < ApplicationRecord
     end
 
     def publish_publicly
+      create_jekyll_files
+      push_to_github
       wait_for_gh_pages_build
       create_certificate
     end
