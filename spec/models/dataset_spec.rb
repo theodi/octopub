@@ -425,7 +425,6 @@ describe Dataset do
     it 'does not add the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
-
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
