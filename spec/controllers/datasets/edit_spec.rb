@@ -12,7 +12,7 @@ describe DatasetsController, type: :controller do
       sign_in @user
       dataset = create(:dataset, name: "Dataset", user: @user)
 
-      get 'edit', id: dataset.id
+      get :edit, params: { id: dataset.id }
 
       expect(assigns(:dataset)).to eq(dataset)
     end
@@ -26,7 +26,7 @@ describe DatasetsController, type: :controller do
 
       expect(@user).to receive(:all_dataset_ids) { [dataset1.id, dataset2.id] }
 
-      get 'edit', id: dataset2.id
+      get :edit, params: { id: dataset2.id }
 
       expect(assigns(:dataset)).to eq(dataset2)
     end
@@ -37,7 +37,7 @@ describe DatasetsController, type: :controller do
 
       sign_in @user
 
-      get 'edit', id: dataset.id
+      get :edit, params: { id: dataset.id }
 
       expect(response.code).to eq("403")
     end
@@ -45,7 +45,7 @@ describe DatasetsController, type: :controller do
     it 'returns 404 if the user is not signed in' do
       dataset = create(:dataset, name: "Dataset", user: @user)
 
-      get 'edit', id: dataset.id
+      get :edit, params: { id: dataset.id }
 
       expect(response.code).to eq("403")
     end

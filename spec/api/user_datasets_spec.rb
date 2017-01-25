@@ -11,7 +11,7 @@ describe 'GET /user/datasets' do
 
     dataset = create(:dataset, user: @user)
 
-    get '/api/user/datasets', nil, {'Authorization' => "Token token=#{@user.api_key}"}
+    get '/api/user/datasets', headers: {'Authorization' => "Token token=#{@user.api_key}"}
 
     json = JSON.parse(response.body)
 

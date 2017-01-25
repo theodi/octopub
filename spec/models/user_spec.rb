@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id              :integer          not null, primary key
+#  provider        :string(255)
+#  uid             :string(255)
+#  email           :string(255)
+#  created_at      :datetime
+#  updated_at      :datetime
+#  name            :string(255)
+#  token           :string(255)
+#  api_key         :string(255)
+#  org_dataset_ids :text             default("{}"), is an Array
+#  twitter_handle  :string(255)
+#
+
 require 'spec_helper'
 
 describe User do
@@ -85,7 +102,8 @@ describe User do
 
     it "caches dataset ids" do
       @user.send :get_user_repos
-      expect(@user.org_dataset_ids).to eq([@dataset1.id, @dataset2.id])
+      org_dataset_ids_as_integers = @user.org_dataset_ids.map(&:to_i)
+      expect(org_dataset_ids_as_integers).to eq([@dataset1.id, @dataset2.id])
     end
 
     it "lists datasets" do

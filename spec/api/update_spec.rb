@@ -4,7 +4,7 @@ describe 'PUT /datasets/:id' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    Dataset.skip_callback(:create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
@@ -17,11 +17,11 @@ describe 'PUT /datasets/:id' do
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   it 'updates a dataset sucessfully' do
-    put "/api/datasets/#{@dataset.id}",
+    put "/api/datasets/#{@dataset.id}", params:
     {
       dataset: {
         description: "My new description",
@@ -31,7 +31,7 @@ describe 'PUT /datasets/:id' do
         frequency: "Annual"
       }
     },
-    {'Authorization' => "Token token=#{@user.api_key}"}
+    headers: {'Authorization' => "Token token=#{@user.api_key}"}
 
     @dataset.reload
 

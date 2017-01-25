@@ -1,4 +1,20 @@
-class DatasetFile < ActiveRecord::Base
+# == Schema Information
+#
+# Table name: dataset_files
+#
+#  id          :integer          not null, primary key
+#  title       :string(255)
+#  filename    :string(255)
+#  mediatype   :string(255)
+#  dataset_id  :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  description :text
+#  file_sha    :text
+#  view_sha    :text
+#
+
+class DatasetFile < ApplicationRecord
 
   belongs_to :dataset
 
@@ -52,18 +68,24 @@ class DatasetFile < ActiveRecord::Base
   end
 
   def add_to_github
-    dataset.create_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
-    dataset.create_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+    dataset.add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  end
+
+  def add_jekyll_to_github
+    dataset.add_file_to_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def update_in_github
-    dataset.update_contents("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
-    dataset.update_contents("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+    dataset.update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  end
+
+  def update_jekyll_in_github
+    dataset.update_file_in_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def delete_from_github(file)
-    dataset.delete_contents(file.filename)
-    dataset.delete_contents("#{File.basename(file.filename, '.*')}.md")
+    dataset.delete_file_from_repo(file.filename)
+    dataset.delete_file_from_repo("#{File.basename(file.filename, '.*')}.md")
   end
 
   private
@@ -80,7 +102,7 @@ class DatasetFile < ActiveRecord::Base
       end
     end
 
-    def create_json_api_files schema
+    def for_each_file_in_schema schema, &block
       return unless schema.class == Csvlint::Csvw::TableGroup
       # Generate JSON outputs
       schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
@@ -98,19 +120,28 @@ class DatasetFile < ActiveRecord::Base
             content_item["url"] += ".json"
           end
         end
+        # call the block
+        block.call(filename, content)
+      end
+    end
 
+    def create_json_api_files schema
+      for_each_file_in_schema(schema) do |filename, content|
         # Store data as JSON in file
-        dataset.create_contents(filename, content.to_json)
-
+        dataset.add_file_to_repo(filename, content.to_json)
+      end
+    end
+      
+    def create_json_jekyll_files schema
+      for_each_file_in_schema(schema) do |filename, content|
         # Add human readable template
         unless filename == "index.json"
           if filename.scan('/').count > 0
-            dataset.create_contents(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
           else
-            dataset.create_contents(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
           end
         end
-
       end
     end
 

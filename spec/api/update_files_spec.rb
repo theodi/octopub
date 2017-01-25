@@ -20,12 +20,11 @@ describe 'PUT /datasets/:id/files/:file_id' do
   end
 
   it 'updates the description of a file' do
-    put "/api/datasets/#{@dataset.id}/files/#{@file.id}", {
+    put "/api/datasets/#{@dataset.id}/files/#{@file.id}", params: {
       file: {
         description: 'My shiny new amazing description'
       }
-    },
-    {'Authorization' => "Token token=#{@user.api_key}"}
+    }, headers: { 'Authorization' => "Token token=#{@user.api_key}" }
 
     @dataset.reload
 
@@ -45,12 +44,11 @@ describe 'PUT /datasets/:id/files/:file_id' do
 
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
-    put "/api/datasets/#{@dataset.id}/files/#{@file.id}", {
+    put "/api/datasets/#{@dataset.id}/files/#{@file.id}", params: {
       file: {
         file: fixture_file_upload(path)
       }
-    },
-    {'Authorization' => "Token token=#{@user.api_key}"}
+    }, headers: {'Authorization' => "Token token=#{@user.api_key}"}
   end
 
 end

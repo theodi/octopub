@@ -1,3 +1,3 @@
 <h1 class="page-header">Edit Dataset</h1>
 
-<%= render :partial => "form.html", locals: { url: dataset_path(@dataset), method: :put } %>
+<%= render 'form', url: dataset_path(@dataset), dataset: @dataset, s3_direct_post: @s3_direct_post, licenses: @licenses, method: :put %>

@@ -19,7 +19,7 @@ describe DatasetsController, type: :controller do
       expect(@dataset).to receive(:fetch_repo)
       expect(@dataset).to receive(:destroy)
 
-      request = delete 'destroy', id: @dataset.id
+      request = delete :destroy, params: { id: @dataset.id }
       expect(request).to redirect_to(dashboard_path)
       expect(flash[:notice]).to eq("Dataset '#{@dataset.name}' deleted sucessfully")
     end
