@@ -17,6 +17,9 @@ class CreateDataset
       url_in_s3 = @dataset.schema
       dataset_schema = create_dataset_schema_for_user(user, url_in_s3)
       @dataset.dataset_schema = dataset_schema
+      schema_service = DatasetSchemaService.new(dataset_schema)
+      schema_service.update_dataset_schema_with_json_schema
+
     end
 
     files.each do |file|
