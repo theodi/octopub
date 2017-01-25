@@ -37,7 +37,7 @@ describe UpdateDataset do
       {
         'title' => 'My File',
         'description' => Faker::Company.bs,
-        'file' => fake_file(path)
+        'file' => url_with_stubbed_get_for(path)
       }
     ]
   end
@@ -70,7 +70,7 @@ describe UpdateDataset do
         {
           'title' => 'My File',
           'description' => Faker::Company.bs,
-          'file' => fake_file(path)
+          'file' => url_with_stubbed_get_for(path)
         }
       ]
     end

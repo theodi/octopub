@@ -123,7 +123,7 @@ describe 'POST /datasets' do
 
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-      @schema = fake_file(schema_path)
+      @schema = url_with_stubbed_get_for(schema_path)
     end
 
     it 'creates a dataset sucessfully' do
