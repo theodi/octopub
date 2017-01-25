@@ -18,6 +18,7 @@
 class User < ApplicationRecord
 
   has_many :datasets
+  has_many :dataset_schemas
 
   before_create :generate_api_key
 

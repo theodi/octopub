@@ -312,6 +312,9 @@ describe DatasetsController, type: :controller do
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
+        expect(DatasetSchema.count).to eq(1)
+
+        expect(@user.dataset_schemas.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end

@@ -33,7 +33,7 @@ class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
-  has_one :dataset_schema
+  belongs_to :dataset_schema
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github

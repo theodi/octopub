@@ -38,10 +38,7 @@ describe CreateDataset do
       "84855ffe6a7e1d6dacf6685e"
     }
 
-    expect(@worker).to receive(:dataset) {
-      @dataset
-    }
-
+    expect(@worker).to receive(:new_dataset_for_user) { @dataset }
     expect(@dataset).to receive(:report_status).with('foo-bar')
 
     @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'foo-bar')
@@ -54,6 +51,20 @@ describe CreateDataset do
     expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
 
     @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
+  end
+
+  it 'creates a schema' do
+    mock_client = mock_pusher('beep-beep')
+    expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
+    example_schema_uri = 'http://my-schemas.org/1234/schema.json'
+    @dataset_params[:schema] = example_schema_uri
+
+    allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
+    allow_any_instance_of(Dataset).to receive(:check_schema).and_return(nil)
+    @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
+    expect(Dataset.count).to eq(1)
+    expect(DatasetSchema.count).to eq(1)
+    expect(DatasetSchema.first.url_in_s3).to eq example_schema_uri
   end
 
   it 'reports errors' do
