@@ -24,7 +24,7 @@ describe 'POST /datasets' do
     filename = 'test-data.csv'
     @path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
-    Dataset.set_callback(:create, :after, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
     @repo = double(GitData)
 
@@ -123,7 +123,7 @@ describe 'POST /datasets' do
 
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-      @schema = fake_file(schema_path)
+      @schema = url_with_stubbed_get_for(schema_path)
     end
 
     it 'creates a dataset sucessfully' do
@@ -135,6 +135,7 @@ describe 'POST /datasets' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
+      allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
       file = {
         :title => 'My File',
@@ -164,6 +165,7 @@ describe 'POST /datasets' do
     it 'errors if a file does not match the schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
+      allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
       file = {
         :title => 'My File',

@@ -2,49 +2,55 @@
 #
 # Table name: datasets
 #
-#  id              :integer          not null, primary key
-#  name            :string(255)
-#  url             :string(255)
-#  user_id         :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  repo            :string(255)
-#  description     :text
-#  publisher_name  :string(255)
-#  publisher_url   :string(255)
-#  license         :string(255)
-#  frequency       :string(255)
-#  datapackage_sha :text
-#  owner           :string(255)
-#  owner_avatar    :string(255)
-#  build_status    :string(255)
-#  full_name       :string(255)
-#  certificate_url :string(255)
-#  job_id          :string(255)
+#  id                :integer          not null, primary key
+#  name              :string
+#  url               :string
+#  user_id           :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  repo              :string
+#  description       :text
+#  publisher_name    :string
+#  publisher_url     :string
+#  license           :string
+#  frequency         :string
+#  datapackage_sha   :text
+#  owner             :string
+#  owner_avatar      :string
+#  build_status      :string
+#  full_name         :string
+#  certificate_url   :string
+#  job_id            :string
+#  private           :boolean          default(FALSE)
+#  dataset_schema_id :integer
 #
 
 require 'git_data'
-require 'open-uri'
-require 'open_uri_redirections'
 
 class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
+  belongs_to :dataset_schema
 
-  after_create :create_in_github, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
+  after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
+  # Backwards compatibility for API calls
   attr_accessor :schema
 
-  validate :check_schema
+  # TODO This could become validates_associated dataset_schema
+  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_schema.present? }
+
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
   def report_status(channel_id)
+    logger.info "report_status #{channel_id}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
+      logger.info "Valid so now do the save and trigger the after creates"
       save
     else
       messages = errors.full_messages
@@ -63,15 +69,15 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def create_contents(filename, file)
+  def add_file_to_repo(filename, file)
     @repo.add_file(filename, file)
   end
 
-  def update_contents(filename, file)
+  def update_file_in_repo(filename, file)
     @repo.update_file(filename, file)
   end
 
-  def delete_contents(filename)
+  def delete_file_from_repo(filename)
     @repo.delete_file(filename)
   end
 
@@ -80,39 +86,44 @@ class Dataset < ApplicationRecord
   end
 
   def create_data_files
+    logger.info "Create data files and add to github"
     dataset_files.each { |d| d.add_to_github }
-    create_datapackage
-    if !schema.nil?
-      create_contents("schema.json", open(schema).read)
-      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
-    end
-  end
-  
-  def create_jekyll_files
-    dataset_files.each { |d| d.add_jekyll_to_github }
-    create_contents("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-    create_contents("_config.yml", config)
-    create_contents("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-    create_contents("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-    create_contents("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-    create_contents("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-    create_contents("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-    create_contents("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-    create_contents("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-    if !schema.nil?
-      dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
+    logger.info "Create datapackage and add to repo"
+    create_json_datapackage_and_add_to_repo
+
+    unless dataset_schema.nil?
+      logger.info "Schema isn't empty, so write it to schema.json"
+      add_file_to_repo("schema.json", dataset_schema.schema)
+      logger.info "For each file, call create_json_api_files on it, with parsed schema"
+      dataset_files.each { |f| f.send(:create_json_api_files, dataset_schema.parsed_schema) }
     end
   end
 
-  def create_datapackage
-    create_contents("datapackage.json", datapackage)
+  def create_jekyll_files
+    dataset_files.each { |d| d.add_jekyll_to_github }
+    add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+    add_file_to_repo("_config.yml", config)
+    add_file_to_repo("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+    add_file_to_repo("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+    add_file_to_repo("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+    add_file_to_repo("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+    add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+    add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+    add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+    unless dataset_schema.nil?
+      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_schema.parsed_schema) }
+    end
+  end
+
+  def create_json_datapackage_and_add_to_repo
+    add_file_to_repo("datapackage.json", create_json_datapackage)
   end
 
   def update_datapackage
-    update_contents("datapackage.json", datapackage)
+    update_file_in_repo("datapackage.json", create_json_datapackage)
   end
 
-  def datapackage
+  def create_json_datapackage
     datapackage = {}
 
     datapackage["name"] = name.downcase.parameterize
@@ -135,7 +146,7 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(open(schema).read) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || dataset_schema.is_schema_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -173,49 +184,34 @@ class Dataset < ApplicationRecord
   def fetch_repo(client = user.octokit_client)
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
-      check_for_schema
+      # This is in for backwards compatibility at the moment required for API
+      self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
     rescue Octokit::NotFound
       @repo = nil
     end
   end
 
-  def check_for_schema
-    begin
-      open(schema_url, allow_redirections: :safe)
-      self.schema = schema_url
-    rescue OpenURI::HTTPError
-      nil
-    end
-  end
-
-  def schema_url
-    "#{gh_pages_url}/schema.json"
-  end
-
-  def parsed_schema
-    return nil if schema.nil?
-    schema.instance_variable_get("@parsed_schema") || parse_schema!
-  end
-
   private
 
-    def create_in_github
+    def create_repo_and_populate
+
       @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      commit
+      logger.info "Now updated with github details - call commit!"
+
+      add_files_to_repo_and_push_to_github
     end
 
-    def commit
+    def add_files_to_repo_and_push_to_github
       create_data_files
-      create_jekyll_files
       push_to_github
     end
 
     def update_in_github
-      dataset_files.each do |d| 
+      dataset_files.each do |d|
         if d.file
           d.update_in_github
-          d.update_jekyll_in_github
+          d.update_jekyll_in_github unless private?
         end
       end
       update_datapackage
@@ -227,21 +223,12 @@ class Dataset < ApplicationRecord
     end
 
     def push_to_github
+      logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
       @repo.save
     end
 
-    def check_schema
-      return nil unless schema
-
-      if is_csv_otw?
-        unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
-          errors.add :schema, 'is invalid'
-        end
-      else
-        unless parsed_schema.fields.first
-          errors.add :schema, 'is invalid'
-        end
-      end
+    def check_schema_is_valid
+      dataset_schema.is_valid?(errors)
     end
 
     def check_repo
@@ -249,17 +236,6 @@ class Dataset < ApplicationRecord
       if user.octokit_client.repository?(repo_name)
         errors.add :repository_name, 'already exists'
       end
-    end
-
-    def parse_schema!
-      if schema.instance_variable_get("@parsed_schema").nil?
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
-      end
-    end
-
-    def is_csv_otw?
-      return false if schema.nil?
-      parsed_schema.class == Csvlint::Csvw::TableGroup
     end
 
     def set_owner_avatar
@@ -287,6 +263,8 @@ class Dataset < ApplicationRecord
     end
 
     def publish_publicly
+      create_jekyll_files
+      push_to_github
       wait_for_gh_pages_build
       create_certificate
     end
@@ -294,7 +272,7 @@ class Dataset < ApplicationRecord
     def wait_for_gh_pages_build(delay = 5)
       sleep(delay) while !gh_pages_built?
     end
-    
+
     def gh_pages_built?
       user.octokit_client.pages(full_name).status == "built"
     end
@@ -323,7 +301,7 @@ class Dataset < ApplicationRecord
       }.to_yaml
 
       fetch_repo(user.octokit_client)
-      update_contents('_config.yml', config)
+      update_file_in_repo('_config.yml', config)
       push_to_github
     end
 

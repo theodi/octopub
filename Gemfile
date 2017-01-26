@@ -36,6 +36,8 @@ gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem 'will_paginate-bootstrap'
 
+# Logging and debug
+gem 'awesome_print'
 
 gem 'octokit'
 gem 'odlifier'
@@ -54,13 +56,11 @@ gem 'redcarpet'
 gem 'rouge'
 gem 'twitter'
 
+gem 'airbrake'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', '~> 0.4.0'
-end
-
-group :development, :test do
-  gem 'awesome_print'
 end
 
 group :development do

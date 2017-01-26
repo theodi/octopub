@@ -70,7 +70,7 @@ def set_api_key(user)
   request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
-def fake_file path
+def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))
   url
@@ -83,14 +83,14 @@ def mock_pusher(channel_id)
 end
 
 def skip_dataset_callbacks!
-  skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
+  skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
   skip_callback_if_exists(Dataset, :create, :after, :set_owner_avatar)
   skip_callback_if_exists(Dataset, :create, :after, :publish_publicly)
   skip_callback_if_exists(Dataset, :create, :after, :send_success_email)
 end
 
 def set_dataset_callbacks!
-  Dataset.set_callback(:create, :after, :create_in_github)
+  Dataset.set_callback(:create, :after, :create_repo_and_populate)
   Dataset.set_callback(:create, :after, :set_owner_avatar)
   Dataset.set_callback(:create, :after, :publish_publicly)
   Dataset.set_callback(:create, :after, :send_success_email)

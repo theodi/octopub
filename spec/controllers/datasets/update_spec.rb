@@ -6,7 +6,7 @@ describe DatasetsController, type: :controller do
     Sidekiq::Testing.inline!
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
-    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
     allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
     allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
@@ -19,7 +19,7 @@ describe DatasetsController, type: :controller do
   after(:each) do
     Sidekiq::Testing.fake!
 
-    Dataset.set_callback(:create, :after, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   describe 'update' do
@@ -29,6 +29,11 @@ describe DatasetsController, type: :controller do
       @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
+
+      good_schema = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      schema = url_with_stubbed_get_for(good_schema)
+      @dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
+
       @dataset.save
       @file = @dataset.dataset_files.first
 
@@ -59,7 +64,7 @@ describe DatasetsController, type: :controller do
           it 'updates a file in Github' do
             filename = 'valid-schema.csv'
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = fake_file(path)
+            file = url_with_stubbed_get_for(path)
 
             expect(@file).to receive(:update_in_github)
             expect(@file).to receive(:update_jekyll_in_github)
@@ -77,7 +82,7 @@ describe DatasetsController, type: :controller do
 
               @filename = 'valid-schema.csv'
               @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-              @new_file = fake_file(@path)
+              @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -143,7 +148,7 @@ describe DatasetsController, type: :controller do
         it 'updates a file in Github' do
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           expect(@file).to receive(:update_in_github)
           expect(@file).to receive(:update_jekyll_in_github)
@@ -159,7 +164,7 @@ describe DatasetsController, type: :controller do
 
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
@@ -193,13 +198,14 @@ describe DatasetsController, type: :controller do
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          @dataset.update(dataset_schema: @dataset_schema)
         end
 
         it 'does not update a file in Github' do
           @file.file = nil
           filename = 'invalid-schema.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = fake_file(path)
+          file = url_with_stubbed_get_for(path)
 
           expect(@file).to_not receive(:update_in_github)
 
@@ -221,7 +227,7 @@ describe DatasetsController, type: :controller do
 
             @filename = 'invalid-schema.csv'
             @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-            @new_file = fake_file(@path)
+            @new_file = url_with_stubbed_get_for(@path)
 
             file = build(:dataset_file, dataset: @dataset, file: nil)
 

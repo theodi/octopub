@@ -4,7 +4,7 @@ describe 'POST /datasets/:id/files' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_callback_if_exists(Dataset, :create, :after, :create_in_github)
+    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
@@ -17,7 +17,7 @@ describe 'POST /datasets/:id/files' do
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_in_github)
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   it 'creates a new file' do
@@ -50,7 +50,11 @@ describe 'POST /datasets/:id/files' do
   end
 
   it 'errors if the csv does not match the schema' do
-    stub_request(:get, /schema\.json/).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+
+    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+    url_for_schema = url_with_stubbed_get_for(schema_path)
+
+    @dataset.update(dataset_schema: DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user))   
 
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))

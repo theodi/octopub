@@ -3,9 +3,9 @@
 # Table name: dataset_files
 #
 #  id          :integer          not null, primary key
-#  title       :string(255)
-#  filename    :string(255)
-#  mediatype   :string(255)
+#  title       :string
+#  filename    :string
+#  mediatype   :string
 #  dataset_id  :integer
 #  created_at  :datetime
 #  updated_at  :datetime
@@ -52,12 +52,12 @@ describe DatasetFile do
     end
 
     it "adds data file to Github" do
-      expect(@dataset).to receive(:create_contents).with("data/example.csv", File.read(@path))
+      expect(@dataset).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
       @file.send(:add_to_github)
     end
 
     it "adds jekyll file to Github" do
-      expect(@dataset).to receive(:create_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(@dataset).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       @file.send(:add_jekyll_to_github)
     end
 
@@ -73,12 +73,12 @@ describe DatasetFile do
     end
 
     it "updates a data file in Github" do
-      expect(@dataset).to receive(:update_contents).with("data/example.csv", File.read(@path))
+      expect(@dataset).to receive(:update_file_in_repo).with("data/example.csv", File.read(@path))
       @file.send(:update_in_github)
     end
 
     it "updates a jekyll file in Github" do
-      expect(@dataset).to receive(:update_contents).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(@dataset).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       @file.send(:update_jekyll_in_github)
     end
     
@@ -90,8 +90,8 @@ describe DatasetFile do
       file = create(:dataset_file, title: "Example")
       dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
 
-      expect(dataset).to receive(:delete_contents).with("example.csv")
-      expect(dataset).to receive(:delete_contents).with("example.md")
+      expect(dataset).to receive(:delete_file_from_repo).with("example.csv")
+      expect(dataset).to receive(:delete_file_from_repo).with("example.md")
 
       file.send(:delete_from_github, file)
     end
@@ -188,7 +188,8 @@ describe DatasetFile do
 
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      @dataset = build(:dataset, schema: fake_file(schema_path))
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema_path)    
+      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_schema: dataset_schema)
     end
 
     it 'validates against a schema with good data' do
@@ -225,7 +226,7 @@ describe DatasetFile do
   context 'with csv-on-the-web schema' do
     before :each do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      @dataset = build(:dataset, schema: fake_file(schema_path))
+      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path))
     end
 
     it 'validates with good data' do
@@ -261,7 +262,8 @@ describe DatasetFile do
   context 'with multiple csv-on-the-web files' do
     before :each do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
-      @dataset = build(:dataset, schema: fake_file(schema_path))
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema_path)    
+      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_schema: dataset_schema)
     end
 
     it 'validates with good data' do
