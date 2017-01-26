@@ -2,25 +2,27 @@
 #
 # Table name: datasets
 #
-#  id              :integer          not null, primary key
-#  name            :string(255)
-#  url             :string(255)
-#  user_id         :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  repo            :string(255)
-#  description     :text
-#  publisher_name  :string(255)
-#  publisher_url   :string(255)
-#  license         :string(255)
-#  frequency       :string(255)
-#  datapackage_sha :text
-#  owner           :string(255)
-#  owner_avatar    :string(255)
-#  build_status    :string(255)
-#  full_name       :string(255)
-#  certificate_url :string(255)
-#  job_id          :string(255)
+#  id                :integer          not null, primary key
+#  name              :string
+#  url               :string
+#  user_id           :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  repo              :string
+#  description       :text
+#  publisher_name    :string
+#  publisher_url     :string
+#  license           :string
+#  frequency         :string
+#  datapackage_sha   :text
+#  owner             :string
+#  owner_avatar      :string
+#  build_status      :string
+#  full_name         :string
+#  certificate_url   :string
+#  job_id            :string
+#  private           :boolean          default(FALSE)
+#  dataset_schema_id :integer
 #
 
 require 'spec_helper'
@@ -253,7 +255,7 @@ describe Dataset do
                                 dataset_files: [
                                   create(:dataset_file, :with_good_schema)
                                 ],
-                                schema: fake_file(schema_path)
+                                schema: url_with_stubbed_get_for(schema_path)
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
@@ -334,7 +336,7 @@ describe Dataset do
   context "schemata" do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -343,7 +345,7 @@ describe Dataset do
 
     it 'is happy with a good schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be true
@@ -351,7 +353,7 @@ describe Dataset do
 
     it 'adds the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -403,7 +405,7 @@ describe Dataset do
   context 'csv-on-the-web schema' do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       dataset = build(:dataset, schema: schema)
 
       expect(dataset.valid?).to be false
@@ -412,7 +414,7 @@ describe Dataset do
 
     it 'does not add the schema to the datapackage' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       file = create(:dataset_file, filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
@@ -425,7 +427,7 @@ describe Dataset do
 
     it "creates JSON files on GitHub when using a CSVW schema" do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      schema = fake_file(path)
+      schema = url_with_stubbed_get_for(path)
       dataset = build :dataset, schema: schema
 
       file = create(:dataset_file, dataset: dataset,

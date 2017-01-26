@@ -37,7 +37,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
       end
@@ -102,7 +102,7 @@ describe DatasetsController, type: :controller do
         @files << {
           :title => name,
           :description => description,
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
         @repo = double(GitData)
@@ -241,7 +241,7 @@ describe DatasetsController, type: :controller do
 
       before(:each) do
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-        @schema = fake_file(schema_path)
+        @schema = url_with_stubbed_get_for(schema_path)
       end
 
       context 'returns an error if the file does not match the schema' do
@@ -253,7 +253,7 @@ describe DatasetsController, type: :controller do
           @files << {
             :title => 'My File',
             :description => 'My Description',
-            :file => fake_file(path)
+            :file => url_with_stubbed_get_for(path)
           }
 
           @dataset = {
@@ -268,6 +268,9 @@ describe DatasetsController, type: :controller do
         end
 
         it 'without websockets' do
+
+          allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
+
           post :create, params: { dataset: @dataset, files: @files }
 
           expect(Dataset.count).to eq(0)
@@ -279,6 +282,9 @@ describe DatasetsController, type: :controller do
         end
 
         it 'with websockets' do
+
+          allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
+          
           mock_client = mock_pusher('foo-bar')
 
           expect(mock_client).to receive(:trigger).with('dataset_failed', [
@@ -292,12 +298,16 @@ describe DatasetsController, type: :controller do
       end
 
       it 'creates sucessfully if the file matches the schema' do
+
+        allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
+        allow_any_instance_of(Dataset).to receive(:check_schema).and_return(nil)
+
         path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
         @files << {
           :title => 'My File',
           :description => 'My Description',
-          :file => fake_file(path)
+          :file => url_with_stubbed_get_for(path)
         }
 
         request = post :create, params: { dataset: {
@@ -312,8 +322,13 @@ describe DatasetsController, type: :controller do
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
+        expect(DatasetSchema.count).to eq(1)
+
+        expect(@user.dataset_schemas.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
+
+        expect(@user.datasets.first.dataset_schema.url_in_s3).to eq(@schema)
       end
 
     end
