@@ -191,10 +191,6 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def schema_url
-    "#{gh_pages_url}/schema.json"
-  end
-
   private
 
     def create_repo_and_populate
@@ -240,11 +236,6 @@ class Dataset < ApplicationRecord
       if user.octokit_client.repository?(repo_name)
         errors.add :repository_name, 'already exists'
       end
-    end
-
-    def is_csv_otw?
-      return false if dataset_schema.nil?
-      dataset_schema.parsed_schema.class == Csvlint::Csvw::TableGroup
     end
 
     def set_owner_avatar
