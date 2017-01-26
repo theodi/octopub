@@ -30,18 +30,24 @@
       <% end %>
     <% end %>
   </div>
+  <p class="text-right" id="wut">
+    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
   <% if current_page?(action: 'new') %>
-    <div class="bg-upload">
+    <h3>Schema</h3>
+    <%= f.text_field "dataset[schema_name]", label: "Schema name", value: dataset.dataset_schema.name, placeholder: t(:'dataset.schema.name') %>
+    <%= f.text_area "dataset[schema_description]", label: "Schema description", value: dataset.dataset_schema.description, placeholder: t(:'dataset.schema.description') %>
+    <div class="bg-upload well">
       <%=
         f.file_field "dataset[schema]",
-        label: "Schema",
+        label: "File",
         help: 'Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to'.html_safe
       %>
     </div>
+
+
   <% end %>
-  <p class="text-right" id="wut">
-    <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
-  </p>
+
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>

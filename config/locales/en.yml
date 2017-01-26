@@ -27,9 +27,12 @@ en:
       covers, what it means, and how it should be interpreted.
     publisher_name: The name of the organisation or individual that publishes the data
     publisher_url: A URL for the publisher
+    schema:
+      name: A descriptive name for the Schema
+      description: A detailed description of the Schema, for example any standards it meets.
   dataset_file:
     name: A descriptive name for this particular file
     description: >
       A detailed description of this particular file. Perhaps explain why someone would
       want this file instead of any other, what any unusual fields mean, and so on.
-    
+
