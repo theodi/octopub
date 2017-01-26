@@ -39,6 +39,7 @@ class DatasetsController < ApplicationController
     @dataset = Dataset.new
     @dataset_schema = DatasetSchema.new
     @dataset.dataset_schema = @dataset_schema
+    @dataset_schemas = DatasetSchema.all
   end
 
   def create

@@ -35,6 +35,10 @@
   </p>
   <% if current_page?(action: 'new') %>
     <h3>Schema</h3>
+    <h4>Existing schema</h4>
+    <%= f.select  "dataset[existing_dataset_schema_id]", options_from_collection_for_select(@dataset_schemas, :id, :name), { :prompt => 'Select Existing Schema', label: 'Existing dataset schema' } %>
+
+    <h4>or Create a new schema</h4>
     <%= f.text_field "dataset[schema_name]", label: "Schema name", value: dataset.dataset_schema.name, placeholder: t(:'dataset.schema.name') %>
     <%= f.text_area "dataset[schema_description]", label: "Schema description", value: dataset.dataset_schema.description, placeholder: t(:'dataset.schema.description') %>
     <div class="bg-upload well">
