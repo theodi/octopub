@@ -188,7 +188,8 @@ describe DatasetFile do
 
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path))
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema_path)    
+      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_schema: dataset_schema)
     end
 
     it 'validates against a schema with good data' do
@@ -261,7 +262,8 @@ describe DatasetFile do
   context 'with multiple csv-on-the-web files' do
     before :each do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
-      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path))
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema_path)    
+      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_schema: dataset_schema)
     end
 
     it 'validates with good data' do

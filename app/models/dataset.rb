@@ -90,9 +90,11 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
-    if !schema.nil?
-      logger.info "Schema isn't empty, so write it to schema.json #{schema}"
-      add_file_to_repo("schema.json", open(schema).read)
+    unless dataset_schema.nil?
+
+      logger.ap dataset_schema
+      logger.info "Schema isn't empty, so write it to schema.json"
+      add_file_to_repo("schema.json", dataset_schema.schema)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
       logger.ap parsed_schema
       dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
@@ -191,22 +193,20 @@ class Dataset < ApplicationRecord
   end
 
   def check_for_schema
-    begin
-      open(schema_url, allow_redirections: :safe)
-      self.schema = schema_url
-    rescue OpenURI::HTTPError
-      nil
-    end
+    # This is in for backwards compatibility at the moment
+    self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
+    dataset_schema.blank?
   end
 
   def schema_url
     "#{gh_pages_url}/schema.json"
   end
 
+  # TODO Move this into DatasetSchemaService
   def parsed_schema
     logger.info "in parsed schema - is schema nil? #{schema.nil?}"
-    return nil if schema.nil?
-    schema.instance_variable_get("@parsed_schema") || parse_schema!
+    return nil if dataset_schema.nil?
+    parse_schema!
   end
 
   private
@@ -246,7 +246,7 @@ class Dataset < ApplicationRecord
     end
 
     def check_schema
-      return nil unless schema
+      return nil unless dataset_schema
 
       if is_csv_otw?
         unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
@@ -266,13 +266,15 @@ class Dataset < ApplicationRecord
       end
     end
 
+    # TODO Move this into DatasetSchemaService
     def parse_schema!
-      logger.info "in parse schema! - is parsed_schema set? #{schema.instance_variable_get('@parsed_schema').nil?}"
-      if schema.instance_variable_get("@parsed_schema").nil?
-        logger.info "now being set to #{Csvlint::Schema.load_from_json(schema)} "
-        schema.instance_variable_set("@parsed_schema", Csvlint::Schema.load_from_json(schema))
-      end
+      logger.info "in parse schema! - is parsed_schema set? #{dataset_schema.parsed_schema.nil?}"
 
+      if dataset_schema.parsed_schema.nil?
+        dataset_schema.parsed_schema = Csvlint::Schema.load_from_json(dataset_schema.url_in_s3)
+      end
+      logger.info "in parse schema! - is parsed_schema set? #{dataset_schema.parsed_schema}"
+      dataset_schema.parsed_schema
     end
 
     def is_csv_otw?
