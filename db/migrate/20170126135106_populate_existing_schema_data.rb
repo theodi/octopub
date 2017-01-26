@@ -7,10 +7,10 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
       schema_url = get_schema_url(dataset)
       schema = get_schema_from_repo(schema_url)
       next if schema.nil?
+      
       puts "we have schema for #{dataset.name} #{schema}"
       # We have a schema
-     # dataset_schema = DatasetSchema.where(user_id: dataset.user.id, schema: schema).first_or_create
-      dataset_schema = DatasetSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url)
+      dataset_schema = DatasetSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
       dataset_schema.update(url_in_repo: schema_url)
       dataset.update(dataset_schema_id: dataset_schema.id)
       ap dataset_schema
