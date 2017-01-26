@@ -159,6 +159,7 @@ describe Dataset do
         expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
       end
 
+      # TODO this will go but is in for backwards compatibility
       it "gets a schema with a repo fetch" do
 
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
@@ -168,20 +169,6 @@ describe Dataset do
         @dataset.fetch_repo
 
         expect(@dataset.schema).to eq(url_for_schema)
-      end
-
-      it "gets a schema from the persisted dataset" do
-        stub_request(:get, @dataset.schema_url).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
-
-        @dataset.fetch_repo
-
-        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
-        @dataset.reload
-        @dataset = nil
-
-        @dataset = Dataset.where(user: @user, repo: "repo").first
-
-        expect(@dataset.schema).to eq('http://user-mcuser.github.io/repo/schema.json')
       end
 
     end
