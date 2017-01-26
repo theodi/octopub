@@ -29,17 +29,20 @@
 
           <ul class="nav navbar-nav">
             <% if current_user %>
-              <li><%= link_to "Add dataset", main_app.new_dataset_path %></li>
-              <li><%= link_to "List my datasets", main_app.dashboard_path %></li>
+              <li><%= link_to "Add dataset", new_dataset_path %></li>
+              <li><%= link_to "List my datasets", dashboard_path %></li>
             <% end %>
-            <li><%= link_to "All datasets", main_app.datasets_path %></li>
+            <li><%= link_to "All datasets", datasets_path %></li>
             <li><%= link_to "API", '/api' %></li>
+            <% if Rails.env.development? %>
+              <li><%= link_to "All dataset schemas", dataset_schemas_path %></li>
+            <% end %>
           </ul>
 
         <% if current_user %>
           <p class="navbar-text navbar-right">
-            Signed in as <%= link_to current_user.name, main_app.me_path %>
-            <%= bs_button_to 'Logout', main_app.signout_path, style: "primary" %>
+            Signed in as <%= link_to current_user.name, me_path %>
+            <%= bs_button_to 'Logout', signout_path, style: "primary" %>
           </p>
         <% else %>
           <p class="navbar-text navbar-right">
