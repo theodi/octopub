@@ -70,7 +70,7 @@ def set_api_key(user)
   request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
-def url_with_stubbed_get_for path
+def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))
   url

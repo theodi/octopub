@@ -13,5 +13,7 @@
 
 class DatasetSchema < ApplicationRecord
   belongs_to :user
+  
+  attr_accessor :parsed_schema
 
 end

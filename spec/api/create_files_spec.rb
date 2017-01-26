@@ -50,7 +50,11 @@ describe 'POST /datasets/:id/files' do
   end
 
   it 'errors if the csv does not match the schema' do
-    stub_request(:get, /schema\.json/).to_return(body: File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')))
+
+    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+    url_for_schema = url_with_stubbed_get_for(schema_path)
+
+    @dataset.update(dataset_schema: DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user))   
 
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
