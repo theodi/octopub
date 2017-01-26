@@ -26,8 +26,6 @@
 #
 
 require 'git_data'
-require 'open-uri'
-require 'open_uri_redirections'
 
 class Dataset < ApplicationRecord
 
@@ -39,9 +37,12 @@ class Dataset < ApplicationRecord
   after_update :update_in_github
   after_destroy :delete_in_github
 
+  # Backwards compatibility for API calls
   attr_accessor :schema
 
-  validate :check_schema
+  # TODO This could become validates_associated dataset_schema
+  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_schema.present? }
+
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
@@ -145,7 +146,7 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || dataset_schema.is_schema_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -183,7 +184,7 @@ class Dataset < ApplicationRecord
   def fetch_repo(client = user.octokit_client)
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
-      # This is in for backwards compatibility at the moment
+      # This is in for backwards compatibility at the moment required for API
       self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
     rescue Octokit::NotFound
       @repo = nil
@@ -193,13 +194,6 @@ class Dataset < ApplicationRecord
   def schema_url
     "#{gh_pages_url}/schema.json"
   end
-
-  # TODO Move this into DatasetSchemaService
-  # def parsed_schema
-  #   logger.info "in parsed schema - is schema nil? #{schema.nil?}"
-  #   return nil if dataset_schema.nil?
-  #   dataset_schema.parsed_schema
-  # end
 
   private
 
@@ -237,18 +231,8 @@ class Dataset < ApplicationRecord
       @repo.save
     end
 
-    def check_schema
-      return nil unless dataset_schema
-
-      if is_csv_otw?
-        unless dataset_schema.parsed_schema.tables[dataset_schema.parsed_schema.tables.keys.first].columns.first
-          errors.add :schema, 'is invalid'
-        end
-      else
-        unless dataset_schema.parsed_schema.fields.first
-          errors.add :schema, 'is invalid'
-        end
-      end
+    def check_schema_is_valid
+      dataset_schema.is_valid?(errors)
     end
 
     def check_repo
