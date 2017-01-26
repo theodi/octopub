@@ -135,8 +135,8 @@ describe 'POST /datasets' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
-      allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
-          
+      allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
+
       file = {
         :title => 'My File',
         :description => 'My Description',
@@ -165,8 +165,8 @@ describe 'POST /datasets' do
     it 'errors if a file does not match the schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
-      allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
-          
+      allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
+
       file = {
         :title => 'My File',
         :description => 'My Description',

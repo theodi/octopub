@@ -26,8 +26,6 @@
 #
 
 require 'git_data'
-require 'open-uri'
-require 'open_uri_redirections'
 
 class Dataset < ApplicationRecord
 
@@ -39,9 +37,12 @@ class Dataset < ApplicationRecord
   after_update :update_in_github
   after_destroy :delete_in_github
 
+  # Backwards compatibility for API calls
   attr_accessor :schema
 
-  validate :check_schema
+  # TODO This could become validates_associated dataset_schema
+  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_schema.present? }
+
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
@@ -94,7 +95,7 @@ class Dataset < ApplicationRecord
       logger.info "Schema isn't empty, so write it to schema.json"
       add_file_to_repo("schema.json", dataset_schema.schema)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
-      dataset_files.each { |f| f.send(:create_json_api_files, parsed_schema) }
+      dataset_files.each { |f| f.send(:create_json_api_files, dataset_schema.parsed_schema) }
     end
   end
 
@@ -109,8 +110,8 @@ class Dataset < ApplicationRecord
     add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-    if !schema.nil?
-      dataset_files.each { |f| f.send(:create_json_jekyll_files, parsed_schema) }
+    unless dataset_schema.nil?
+      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_schema.parsed_schema) }
     end
   end
 
@@ -145,7 +146,7 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(open(schema).read) unless schema.nil? || is_csv_otw?)
+        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || dataset_schema.is_schema_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -183,27 +184,11 @@ class Dataset < ApplicationRecord
   def fetch_repo(client = user.octokit_client)
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
-      check_for_schema
+      # This is in for backwards compatibility at the moment required for API
+      self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
     rescue Octokit::NotFound
       @repo = nil
     end
-  end
-
-  def check_for_schema
-    # This is in for backwards compatibility at the moment
-    self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
-    dataset_schema.blank?
-  end
-
-  def schema_url
-    "#{gh_pages_url}/schema.json"
-  end
-
-  # TODO Move this into DatasetSchemaService
-  def parsed_schema
-    logger.info "in parsed schema - is schema nil? #{schema.nil?}"
-    return nil if dataset_schema.nil?
-    parse_schema!
   end
 
   private
@@ -242,18 +227,8 @@ class Dataset < ApplicationRecord
       @repo.save
     end
 
-    def check_schema
-      return nil unless dataset_schema
-
-      if is_csv_otw?
-        unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
-          errors.add :schema, 'is invalid'
-        end
-      else
-        unless parsed_schema.fields.first
-          errors.add :schema, 'is invalid'
-        end
-      end
+    def check_schema_is_valid
+      dataset_schema.is_valid?(errors)
     end
 
     def check_repo
@@ -261,22 +236,6 @@ class Dataset < ApplicationRecord
       if user.octokit_client.repository?(repo_name)
         errors.add :repository_name, 'already exists'
       end
-    end
-
-    # TODO Move this into DatasetSchemaService
-    def parse_schema!
-      logger.info "in parse schema! - is parsed_schema set? #{dataset_schema.parsed_schema.nil?}"
-
-      if dataset_schema.parsed_schema.nil?
-        dataset_schema.parsed_schema = Csvlint::Schema.load_from_json(dataset_schema.url_in_s3)
-      end
-      logger.info "in parse schema! - is parsed_schema set? #{dataset_schema.parsed_schema}"
-      dataset_schema.parsed_schema
-    end
-
-    def is_csv_otw?
-      return false if schema.nil?
-      parsed_schema.class == Csvlint::Csvw::TableGroup
     end
 
     def set_owner_avatar

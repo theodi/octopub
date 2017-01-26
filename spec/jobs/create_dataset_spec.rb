@@ -62,7 +62,7 @@ describe CreateDataset do
     good_schema_file_as_json = File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json'))
 
     allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
-    allow_any_instance_of(Dataset).to receive(:check_schema).and_return(nil)
+    allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(nil)
     allow_any_instance_of(DatasetSchemaService).to receive(:read_file_with_utf_8).and_return(good_schema_file_as_json)
 
     @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')

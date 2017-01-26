@@ -155,7 +155,6 @@ describe Dataset do
       end
 
       it "gets a repo from Github" do
-        expect(@dataset).to receive(:check_for_schema)
         @dataset.fetch_repo
         expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
       end
@@ -165,7 +164,7 @@ describe Dataset do
         schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
         url_for_schema = url_with_stubbed_get_for(schema_path)
 
-        @dataset.dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)    
+        @dataset.dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)
         @dataset.fetch_repo
 
         expect(@dataset.schema).to eq(url_for_schema)
@@ -255,14 +254,14 @@ describe Dataset do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
       url_for_schema = url_with_stubbed_get_for(schema_path)
 
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)    
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user)
 
       dataset = build :dataset, user: @user,
                                 dataset_files: [
                                   create(:dataset_file, :with_good_schema)
                                 ],
                                 schema: url_with_stubbed_get_for(schema_path),
-                                dataset_schema: dataset_schema   
+                                dataset_schema: dataset_schema
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
@@ -344,7 +343,7 @@ describe Dataset do
     it 'is unhappy with a duff schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)    
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
 
       dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema)
 
@@ -367,7 +366,9 @@ describe Dataset do
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
 
-      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
+
+      dataset = build(:dataset, schema: schema, dataset_files: [file], dataset_schema: dataset_schema)
       datapackage = JSON.parse dataset.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']['fields']).to eq([
@@ -415,7 +416,7 @@ describe Dataset do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/duff-csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
 
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)    
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
       dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema)
 
       expect(dataset.valid?).to be false
@@ -429,7 +430,7 @@ describe Dataset do
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
 
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema) 
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
 
       dataset = build(:dataset, schema: schema, dataset_schema: dataset_schema, dataset_files: [file])
       datapackage = JSON.parse dataset.create_json_datapackage
@@ -441,7 +442,7 @@ describe Dataset do
 
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema, @user)   
+      dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema, @user)
 
       dataset = build :dataset, schema: schema, dataset_schema: dataset_schema
 
@@ -491,7 +492,7 @@ describe Dataset do
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
-    
+
     it "checks if page build is finished" do
       allow_any_instance_of(User).to receive(:octokit_client) do
         client = double(Octokit::Client)
@@ -578,7 +579,7 @@ describe Dataset do
       expect(dataset).to be_valid
       expect(dataset.private).to be true
     end
-    
+
     it "creates a private repo in Github" do
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
@@ -604,25 +605,25 @@ describe Dataset do
   end
 
   context "notifying via twitter" do
-    
+
     before(:all) do
       @tweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
       @nontweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
     end
-    
+
     before(:each) do
       allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
     end
 
     context "with twitter creds" do
-    
+
       before(:all) do
         ENV["TWITTER_CONSUMER_KEY"] = "test"
         ENV["TWITTER_CONSUMER_SECRET"] = "test"
         ENV["TWITTER_TOKEN"] = "test"
         ENV["TWITTER_SECRET"] = "test"
       end
-      
+
       it "sends twitter notification to twitter users" do
         expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://user-mcuser.github.io/").once
         dataset = create(:dataset, name: "My Awesome Dataset",
@@ -645,9 +646,9 @@ describe Dataset do
                          user: @nontweeter)
       end
     end
-    
+
     context "without twitter creds" do
-      
+
       before(:all) do
         ENV.delete("TWITTER_CONSUMER_KEY")
         ENV.delete("TWITTER_CONSUMER_SECRET")

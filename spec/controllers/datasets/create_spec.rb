@@ -269,7 +269,7 @@ describe DatasetsController, type: :controller do
 
         it 'without websockets' do
 
-          allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
+          allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
           post :create, params: { dataset: @dataset, files: @files }
 
@@ -283,8 +283,8 @@ describe DatasetsController, type: :controller do
 
         it 'with websockets' do
 
-          allow_any_instance_of(Dataset).to receive(:check_schema).and_return(false)
-          
+          allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
+
           mock_client = mock_pusher('foo-bar')
 
           expect(mock_client).to receive(:trigger).with('dataset_failed', [
@@ -300,7 +300,7 @@ describe DatasetsController, type: :controller do
       it 'creates sucessfully if the file matches the schema' do
 
         allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
-        allow_any_instance_of(Dataset).to receive(:check_schema).and_return(nil)
+        allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(nil)
 
         path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
