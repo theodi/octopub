@@ -134,6 +134,27 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
 
+      it 'creates a private dataset' do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, private: true, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+
+        request = post :create, params: { dataset: {
+          name: @name,
+          description: @description,
+          publisher_name: @publisher_name,
+          publisher_url: @publisher_url,
+          license: @license,
+          frequency: @frequency,
+          private: true,
+        }, files: @files }
+
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+      end
+
       it 'creates a dataset in an organization' do
         organization = 'my-cool-organization'
 
