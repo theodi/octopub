@@ -12,14 +12,14 @@ class CreateDataset
       dataset_params.merge(job_id: self.jid)
     ))
 
-    unless @dataset.schema.nil? 
-      logger.debug("We have a schema url #{@dataset.schema}")
-      dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(@dataset.schema, user)    
-      @dataset.dataset_file_schema = dataset_file_schema
-    end
-
     files.each do |file|
-      @dataset.dataset_files << DatasetFile.new_file(file)
+      dataset_file = DatasetFile.new_file(file)
+      if file["schema"]
+        # Create schema
+        schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], user)
+        dataset_file.dataset_file_schema = schema
+      end
+      @dataset.dataset_files << dataset_file
     end
 
     @dataset.report_status(options["channel_id"])
@@ -34,3 +34,16 @@ class CreateDataset
   end
 
 end
+
+# Results from Files array - just what's required
+# [
+#     [0] {
+#                                   "title" => "Fri1414",
+#                             "description" => "Fri1414",
+#                                    "file" => "https://jj-octopub-development.s3-eu-west-1.amazonaws.com/uploads/ef2d221a-3210-40c0-af49-0bfe39b139be/australian-open-data-publishers.csv",
+#         "existing_dataset_file_schema_id" => "",
+#                             "schema_name" => "Fri1414",
+#                      "schema_description" => "Fri1414",
+#                                  "schema" => "https://jj-octopub-development.s3-eu-west-1.amazonaws.com/uploads/ef2d221a-3210-40c0-af49-0bfe39b139be/schema.json"
+#     }
+# ]
