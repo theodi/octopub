@@ -89,12 +89,14 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
-    unless dataset_file_schema.nil?
-      logger.info "Schema isn't empty, so write it to schema.json"
-      add_file_to_repo("schema.json", dataset_file_schema.schema)
-      logger.info "For each file, call create_json_api_files on it, with parsed schema"
-      dataset_files.each { |f| f.send(:create_json_api_files, dataset_file_schema.parsed_schema) }
-    end
+    # TODO a schema file *per* file!
+
+    # unless dataset_file_schema.nil?
+    #   logger.info "Schema isn't empty, so write it to schema.json"
+    #   add_file_to_repo("schema.json", dataset_file_schema.schema)
+    #   logger.info "For each file, call create_json_api_files on it, with parsed schema"
+    #   dataset_files.each { |f| f.send(:create_json_api_files, dataset_file_schema.parsed_schema) }
+    # end
   end
 
   def create_jekyll_files
@@ -108,9 +110,12 @@ class Dataset < ApplicationRecord
     add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-    unless dataset_file_schema.nil?
-      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_file_schema.parsed_schema) }
-    end
+
+    # TODO a schema file *per* file!
+
+    # unless dataset_file_schema.nil?
+    #   dataset_files.each { |f| f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) }
+    # end
   end
 
   def create_json_datapackage_and_add_to_repo
@@ -144,7 +149,7 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(dataset_file_schema.schema) unless dataset_file_schema.nil? || dataset_file_schema.is_schema_otw?)
+        "schema" => (JSON.parse(file.dataset_file_schema.schema) unless file.dataset_file_schema.nil? || file.dataset_file_schema.is_schema_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -183,7 +188,9 @@ class Dataset < ApplicationRecord
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
       # This is in for backwards compatibility at the moment required for API
-      self.schema = dataset_file_schema.url_in_s3 unless dataset_file_schema.blank?
+
+      # TODO this all wants sorting!
+      self.schema = dataset_files.first.dataset_file_schema.url_in_s3 unless dataset_files.first.dataset_file_schema.blank?
     rescue Octokit::NotFound
       @repo = nil
     end
@@ -225,8 +232,9 @@ class Dataset < ApplicationRecord
       @repo.save
     end
 
+    # TODO fix
     def check_schema_is_valid
-      dataset_file_schema.is_valid?(errors)
+      dataset_files.first.dataset_file_schema.is_valid?(errors)
     end
 
     def check_repo
