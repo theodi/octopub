@@ -524,7 +524,7 @@ describe Dataset do
       expect(@dataset).to receive(:gh_pages_built?).and_return(true).once
       expect(@dataset).to receive(:create_certificate).once
 
-      @dataset.send :publish_public_views
+      @dataset.send :create_public_views
     end
 
     it 'creates a certificate' do
@@ -605,6 +605,31 @@ describe Dataset do
       expect(dataset.repo).to eq(name.parameterize)
       expect(dataset.url).to eq(html_url)
     end
+
+
+    it "can make a private repo public" do
+      # Create dataset
+      name = "My Awesome Dataset"
+      html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
+      dataset = build(:dataset, :with_callback, user: @user, name: name, private: true)
+      expect(GitData).to receive(:create).with(@user.github_username, name, private: true, client: a_kind_of(Octokit::Client)) {
+        obj = double(GitData)
+        expect(obj).to receive(:html_url) { html_url }
+        expect(obj).to receive(:name) { name.parameterize }
+        expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
+        expect(obj).to receive(:make_public).once
+        obj
+      }
+      expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+      dataset.save
+      # Update dataset and make public
+      dataset.reload
+      expect(dataset).to receive(:update_in_github).once
+      expect(dataset).to receive(:create_public_views).once
+      dataset.private = false
+      dataset.save
+    end
+    
   end
 
   context "notifying via twitter" do
