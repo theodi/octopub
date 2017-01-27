@@ -75,7 +75,7 @@ class GitData
   end
 
   def make_public
-    raise 'poop'
+    @client.update_repository(@full_name, private: false)
   end
 
   private
