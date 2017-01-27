@@ -76,6 +76,7 @@ describe Dataset do
     }
 
     expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+    expect(dataset).to receive(:create_public_views)
 
     dataset.save
     dataset.reload
@@ -97,6 +98,7 @@ describe Dataset do
     }
 
     expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+    expect(dataset).to receive(:create_public_views)
 
     dataset.save
   end
@@ -522,7 +524,7 @@ describe Dataset do
       expect(@dataset).to receive(:gh_pages_built?).and_return(true).once
       expect(@dataset).to receive(:create_certificate).once
 
-      @dataset.send :publish_publicly
+      @dataset.send :publish_public_views
     end
 
     it 'creates a certificate' do
@@ -595,6 +597,7 @@ describe Dataset do
       }
 
       expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+      expect(dataset).not_to receive(:create_public_views)
 
       dataset.save
       dataset.reload

@@ -33,7 +33,7 @@ class Dataset < ApplicationRecord
   has_many :dataset_files
   belongs_to :dataset_schema
 
-  after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
+  after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
   after_update :update_in_github
   after_destroy :delete_in_github
 
@@ -262,7 +262,15 @@ class Dataset < ApplicationRecord
       end
     end
 
-    def publish_publicly
+    def publish_public_views
+      return if private
+      # Later we'll want to make sure this is called on create or when things are
+      # made public, and that different action is taken if an already-public dataset
+      # is updated.
+      create_public_views
+    end
+
+    def create_public_views
       create_jekyll_files
       push_to_github
       wait_for_gh_pages_build
