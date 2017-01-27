@@ -609,13 +609,23 @@ describe Dataset do
 
     it "can make a private repo public" do
       # Create dataset
-      dataset = build(:dataset, :with_callback, private: true)
-      expect(dataset).to receive(:create_repo_and_populate)
+      name = "My Awesome Dataset"
+      html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
+      dataset = build(:dataset, :with_callback, user: @user, name: name, private: true)
+      expect(GitData).to receive(:create).with(@user.github_username, name, private: true, client: a_kind_of(Octokit::Client)) {
+        obj = double(GitData)
+        expect(obj).to receive(:html_url) { html_url }
+        expect(obj).to receive(:name) { name.parameterize }
+        expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
+        expect(obj).to receive(:make_public).once
+        obj
+      }
+      expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
       dataset.save
       # Update dataset and make public
       dataset.reload
-      # TODO something here with setting the git repo flag
-      expect(dataset).to receive(:create_public_views)
+      expect(dataset).to receive(:update_in_github).once
+      expect(dataset).to receive(:create_public_views).once
       dataset.private = false
       dataset.save
     end

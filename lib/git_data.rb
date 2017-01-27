@@ -74,6 +74,10 @@ class GitData
     @client.delete_repository(@full_name)
   end
 
+  def make_public
+    raise 'poop'
+  end
+
   private
 
     def commit
