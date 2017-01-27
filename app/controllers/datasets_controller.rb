@@ -37,9 +37,9 @@ class DatasetsController < ApplicationController
 
   def new
     @dataset = Dataset.new
-    @dataset_schema = DatasetSchema.new
-    @dataset.dataset_schema = @dataset_schema
-    @dataset_schemas = DatasetSchema.all
+    @dataset_file_schema = DatasetFileSchema.new
+    @dataset.dataset_file_schema = @dataset_file_schema
+    @dataset_file_schemas = DatasetFileSchema.all
   end
 
   def create
@@ -121,7 +121,7 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_schema_id)
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id)
   end
 
   def dataset_update_params

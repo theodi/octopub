@@ -10,10 +10,10 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
       
       puts "we have schema for #{dataset.name} #{schema}"
       # We have a schema
-      dataset_schema = DatasetSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
-      dataset_schema.update(url_in_repo: schema_url)
-      dataset.update(dataset_schema_id: dataset_schema.id)
-      ap dataset_schema
+      dataset_file_schema = DatasetFileSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
+      dataset_file_schema.update(url_in_repo: schema_url)
+      dataset.update(dataset_file_schema_id: dataset_file_schema.id)
+      ap dataset_file_schema
     end
   end
 

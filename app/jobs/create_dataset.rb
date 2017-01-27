@@ -14,8 +14,8 @@ class CreateDataset
 
     unless @dataset.schema.nil? 
       logger.debug("We have a schema url #{@dataset.schema}")
-      dataset_schema = DatasetSchemaService.new.create_dataset_schema(@dataset.schema, user)    
-      @dataset.dataset_schema = dataset_schema
+      dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(@dataset.schema, user)    
+      @dataset.dataset_file_schema = dataset_file_schema
     end
 
     files.each do |file|

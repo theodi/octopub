@@ -67,9 +67,9 @@ describe CreateDataset do
 
     @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
     expect(Dataset.count).to eq(1)
-    expect(DatasetSchema.count).to eq(1)
-    expect(DatasetSchema.first.url_in_s3).to eq example_schema_uri
-    expect(DatasetSchema.first.schema).to eq good_schema_file_as_json
+    expect(DatasetFileSchema.count).to eq(1)
+    expect(DatasetFileSchema.first.url_in_s3).to eq example_schema_uri
+    expect(DatasetFileSchema.first.schema).to eq good_schema_file_as_json
   end
 
   it 'reports errors' do

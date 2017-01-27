@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: dataset_schemas
+# Table name: dataset_file_schemas
 #
 #  id          :integer          not null, primary key
 #  name        :text
@@ -11,7 +11,7 @@
 #  user_id     :integer
 #
 
-class DatasetSchema < ApplicationRecord
+class DatasetFileSchema < ApplicationRecord
   belongs_to :user
 
   attr_accessor :parsed_schema

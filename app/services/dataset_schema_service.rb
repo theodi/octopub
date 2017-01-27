@@ -1,24 +1,24 @@
 class DatasetSchemaService
 
-  def initialize(dataset_schema = nil)
-    @dataset_schema = dataset_schema
+  def initialize(dataset_file_schema = nil)
+    @dataset_file_schema = dataset_file_schema
   end
 
-  def create_dataset_schema(url_in_s3, user = nil)
-    @dataset_schema = DatasetSchema.new(url_in_s3: url_in_s3)
-    @dataset_schema.user = user if user
+  def create_dataset_file_schema(url_in_s3, user = nil)
+    @dataset_file_schema = DatasetFileSchema.new(url_in_s3: url_in_s3)
+    @dataset_file_schema.user = user if user
 
-    update_dataset_schema_with_json_schema
-    @dataset_schema
+    update_dataset_file_schema_with_json_schema
+    @dataset_file_schema
   end
 
-  def create_dataset_schema_for_user(user, url_in_s3)
-    user.dataset_schemas.create(url_in_s3: url_in_s3)
+  def create_dataset_file_schema_for_user(user, url_in_s3)
+    user.dataset_file_schemas.create(url_in_s3: url_in_s3)
   end
 
-  def update_dataset_schema_with_json_schema
-    schema_from_s3 = read_file_with_utf_8(@dataset_schema.url_in_s3)
-    @dataset_schema.update(schema: schema_from_s3)
+  def update_dataset_file_schema_with_json_schema
+    schema_from_s3 = read_file_with_utf_8(@dataset_file_schema.url_in_s3)
+    @dataset_file_schema.update(schema: schema_from_s3)
   end
 
   def read_file_with_utf_8(url)

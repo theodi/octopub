@@ -322,13 +322,13 @@ describe DatasetsController, type: :controller do
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
-        expect(DatasetSchema.count).to eq(1)
+        expect(DatasetFileSchema.count).to eq(1)
 
-        expect(@user.dataset_schemas.count).to eq(1)
+        expect(@user.dataset_file_schemas.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(@user.datasets.first.dataset_schema.url_in_s3).to eq(@schema)
+        expect(@user.datasets.first.dataset_file_schema.url_in_s3).to eq(@schema)
       end
 
     end

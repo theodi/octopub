@@ -22,7 +22,7 @@
 #  certificate_url   :string
 #  job_id            :string
 #  private           :boolean          default(FALSE)
-#  dataset_schema_id :integer
+#  dataset_file_schema_id :integer
 #
 
 require 'git_data'
@@ -31,7 +31,7 @@ class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
-  belongs_to :dataset_schema
+  belongs_to :dataset_file_schema
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_publicly, :send_success_email, :send_tweet_notification
   after_update :update_in_github
@@ -40,8 +40,8 @@ class Dataset < ApplicationRecord
   # Backwards compatibility for API calls
   attr_accessor :schema
 
-  # TODO This could become validates_associated dataset_schema
-  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_schema.present? }
+  # TODO This could become validates_associated dataset_file_schema
+  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_file_schema.present? }
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -91,11 +91,11 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
-    unless dataset_schema.nil?
+    unless dataset_file_schema.nil?
       logger.info "Schema isn't empty, so write it to schema.json"
-      add_file_to_repo("schema.json", dataset_schema.schema)
+      add_file_to_repo("schema.json", dataset_file_schema.schema)
       logger.info "For each file, call create_json_api_files on it, with parsed schema"
-      dataset_files.each { |f| f.send(:create_json_api_files, dataset_schema.parsed_schema) }
+      dataset_files.each { |f| f.send(:create_json_api_files, dataset_file_schema.parsed_schema) }
     end
   end
 
@@ -110,8 +110,8 @@ class Dataset < ApplicationRecord
     add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-    unless dataset_schema.nil?
-      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_schema.parsed_schema) }
+    unless dataset_file_schema.nil?
+      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_file_schema.parsed_schema) }
     end
   end
 
@@ -146,7 +146,7 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || dataset_schema.is_schema_otw?)
+        "schema" => (JSON.parse(dataset_file_schema.schema) unless dataset_file_schema.nil? || dataset_file_schema.is_schema_otw?)
       }.delete_if { |k,v| v.nil? }
     end
 
@@ -185,7 +185,7 @@ class Dataset < ApplicationRecord
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
       # This is in for backwards compatibility at the moment required for API
-      self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
+      self.schema = dataset_file_schema.url_in_s3 unless dataset_file_schema.blank?
     rescue Octokit::NotFound
       @repo = nil
     end
@@ -228,7 +228,7 @@ class Dataset < ApplicationRecord
     end
 
     def check_schema_is_valid
-      dataset_schema.is_valid?(errors)
+      dataset_file_schema.is_valid?(errors)
     end
 
     def check_repo
