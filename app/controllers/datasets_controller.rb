@@ -37,9 +37,7 @@ class DatasetsController < ApplicationController
 
   def new
     @dataset = Dataset.new
-    @dataset_file_schema = DatasetFileSchema.new
-    @dataset.dataset_file_schema = @dataset_file_schema
-    @dataset_file_schemas = DatasetFileSchema.all
+    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
   end
 
   def create
