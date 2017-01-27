@@ -31,7 +31,7 @@ class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
-  belongs_to :dataset_file_schema
+
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
   after_update :update_in_github
@@ -40,8 +40,6 @@ class Dataset < ApplicationRecord
   # Backwards compatibility for API calls
   attr_accessor :schema
 
-  # TODO This could become validates_associated dataset_file_schema
-  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_file_schema.present? }
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
