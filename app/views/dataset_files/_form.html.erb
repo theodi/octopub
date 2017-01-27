@@ -15,5 +15,27 @@
       <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
     <% end %>
     <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
+</fieldset>
+<fieldset class="file bg-upload">
+  <div class="well bg-info">
+    <h3>Optional Schema</h3>
+    <% if @dataset_file_schemas.any? %>
+    <h4>Existing schema</h4>
+    <%= f.select "files[][existing_dataset_file_schema_id]", options_from_collection_for_select(@dataset_file_schemas, :id, :name), {:prompt => 'Select Existing Schema', label: 'Existing dataset schema' } %>
+
+    <% end %>
+    <h4>Create a new schema</h4>
+
+    <p>Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
+
+    <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
+    <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
+    <div>
+      <%=
+        f.file_field "files[][schema]",
+        label: "File",
+        help: 'Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to'.html_safe
+      %>
+    </div>
   </div>
 </fieldset>
