@@ -8,6 +8,10 @@ describe 'datasets/_dataset.html.erb' do
     allow(@dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
+    @private_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, private: true)
+    allow(@private_dataset).to receive(:owner_avatar) {
+      "http://example.org/avatar.png"
+    }
   end
 
   it 'displays a single dataset' do
@@ -30,9 +34,27 @@ describe 'datasets/_dataset.html.erb' do
     @dashboard = true
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td').count).to eq(5)
-    expect(page.css('tr')[0].css('td')[3].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Delete/)
+    expect(page.css('tr')[0].css('td').count).to eq(6)
+    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Delete/)
+  end
+
+  it 'displays access icon in the dashboard' do
+    @dashboard = true
+    
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+    page = Nokogiri::HTML(rendered)
+    expect(page.css('tr')[0].css('td').count).to eq(6)
+    expect(page.css('tr')[0].css('td')[1].inner_html).to match('<i class="fa fa-globe" title="public"></i>')
+  end
+
+  it 'displays private icon in the dashboard' do
+    @dashboard = true
+    
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @private_dataset}
+    page = Nokogiri::HTML(rendered)
+    expect(page.css('tr')[0].css('td').count).to eq(6)
+    expect(page.css('tr')[0].css('td')[1].inner_html).to match('<i class="fa fa-lock" title="private"></i>')
   end
 
 end
