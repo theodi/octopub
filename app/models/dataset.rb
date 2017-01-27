@@ -276,6 +276,7 @@ class Dataset < ApplicationRecord
         # This is either a new record or has just been made public
         create_public_views
       end
+      # updates to existing public repos are handled in #update_in_github
     end
 
     def create_public_views
