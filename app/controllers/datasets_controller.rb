@@ -15,7 +15,7 @@ class DatasetsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
-    @datasets = Dataset.paginate(page: params[:page], per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.where(private: false).paginate(page: params[:page], per_page: 7).order(created_at: :desc)
   end
 
   def dashboard
@@ -89,7 +89,7 @@ class DatasetsController < ApplicationController
   end
 
   def check_mandatory_fields
-    check_files
+    check_files 
     check_publisher
     render 'new' unless flash.empty?
   end
