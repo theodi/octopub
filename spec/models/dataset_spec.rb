@@ -524,7 +524,7 @@ describe Dataset do
       expect(@dataset).to receive(:gh_pages_built?).and_return(true).once
       expect(@dataset).to receive(:create_certificate).once
 
-      @dataset.send :publish_public_views
+      @dataset.send :create_public_views
     end
 
     it 'creates a certificate' do
@@ -605,6 +605,21 @@ describe Dataset do
       expect(dataset.repo).to eq(name.parameterize)
       expect(dataset.url).to eq(html_url)
     end
+
+
+    it "can make a private repo public" do
+      # Create dataset
+      dataset = build(:dataset, :with_callback, private: true)
+      expect(dataset).to receive(:create_repo_and_populate)
+      dataset.save
+      # Update dataset and make public
+      dataset.reload
+      # TODO something here with setting the git repo flag
+      expect(dataset).to receive(:create_public_views)
+      dataset.private = false
+      dataset.save
+    end
+    
   end
 
   context "notifying via twitter" do
