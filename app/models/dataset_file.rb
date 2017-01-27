@@ -17,11 +17,16 @@
 class DatasetFile < ApplicationRecord
 
   belongs_to :dataset
+  belongs_to :dataset_file_schema
 
   validate :check_schema, :check_csv
   validates_presence_of :title
 
   after_validation :set_filename
+
+  # TODO This could become validates_associated dataset_file_schema
+  # validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_file_schema.present? }
+
 
   attr_accessor :file
 
