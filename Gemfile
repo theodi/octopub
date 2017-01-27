@@ -64,6 +64,7 @@ group :doc do
 end
 
 group :development do
+  gem 'spring-commands-rspec'
   gem 'pry-remote'
   gem 'letter_opener'
   gem 'term-ansicolor'
