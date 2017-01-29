@@ -66,6 +66,15 @@ describe GitData, :vcr do
         @repo = GitData.create('theodi', @name, client: @client, private: true)
         expect(@repo).to be_nil
       end
+
+      it 'can make a private repo public' do
+        # @username should have private repos available if running this test
+        # without a cassette
+        @repo = GitData.create(@username, @name, client: @client, private: true)
+        expect(@client.repository(@repo_name).private).to eq(true)
+        @repo.make_public
+        expect(@client.repository(@repo_name).private).to eq(false)
+      end
     end
     
     context 'case insensitive' do
