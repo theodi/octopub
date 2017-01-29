@@ -74,6 +74,10 @@ class GitData
     @client.delete_repository(@full_name)
   end
 
+  def make_public
+    @client.update_repository(@full_name, private: false)
+  end
+
   private
 
     def commit
