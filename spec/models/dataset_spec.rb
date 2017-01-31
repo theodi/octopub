@@ -350,15 +350,7 @@ describe Dataset do
       bad_schema = url_for_schema_with_stubbed_get_for(bad_schema_path)
 
       dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', bad_schema)
-      dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
-
-      dataset = build(:dataset, user: @user, dataset_files: [dataset_file])
-
-      ap dataset.dataset_files.first
-      ap dataset.dataset_files.first.dataset_file_schema
-
-      expect(dataset.dataset_files.first.valid?).to be false
-      expect(dataset.dataset_files.first.errors.messages[:schema].first).to eq 'is invalid'
+      expect { create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv")) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File does not match the schema you provided")
     end
 
     it 'is happy with a good schema' do
