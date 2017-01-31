@@ -4,10 +4,10 @@ class CreateDataset
 
   def perform(dataset_params, files, user_id, options = {})
     files = [files] if files.class == Hash
-  
+
     user = find_user(user_id)
     @dataset = new_dataset_for_user(user)
-   
+
     @dataset.assign_attributes(ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     ))
@@ -16,6 +16,7 @@ class CreateDataset
       dataset_file = DatasetFile.new_file(file)
       if file["schema"]
         # Create schema
+        # TODO if schema is existing, use it rather than create a new one
         schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], user)
         dataset_file.dataset_file_schema = schema
       end
