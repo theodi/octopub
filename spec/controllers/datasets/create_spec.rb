@@ -239,21 +239,24 @@ describe DatasetsController, type: :controller do
 
     context('with a schema') do
 
+      let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+      let(:data_file_not_marching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
+      let(:schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+
       before(:each) do
-        schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-        @schema = url_with_stubbed_get_for(schema_path)
+        @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
       end
 
       context 'returns an error if the file does not match the schema' do
 
         before(:each) do
-          path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
-          schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
-
           @files << {
-            :title => 'My File',
-            :description => 'My Description',
-            :file => url_with_stubbed_get_for(path)
+            title: 'My File',
+            description: 'My Description',
+            file: url_with_stubbed_get_for(data_file_not_marching_schema),
+            schema_name: 'schem nme',
+            schema_description: 'schema description',
+            schema: @url_for_schema
           }
 
           @dataset = {
@@ -262,14 +265,11 @@ describe DatasetsController, type: :controller do
             publisher_name: @publisher_name,
             publisher_url: @publisher_url,
             license: @license,
-            frequency: @frequency,
-            schema: @schema
+            frequency: @frequency
           }
         end
 
         it 'without websockets' do
-
-          allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
           post :create, params: { dataset: @dataset, files: @files }
 
@@ -283,31 +283,24 @@ describe DatasetsController, type: :controller do
 
         it 'with websockets' do
 
-          allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
-
           mock_client = mock_pusher('foo-bar')
-
           expect(mock_client).to receive(:trigger).with('dataset_failed', [
             "Dataset files is invalid",
             "Your file 'My File' does not match the schema you provided"
           ])
-
           post :create, params: { dataset: @dataset, files: @files, channel_id: 'foo-bar' }
         end
-
       end
 
       it 'creates sucessfully if the file matches the schema' do
 
-        allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
-        allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(nil)
-
-        path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
-
         @files << {
-          :title => 'My File',
-          :description => 'My Description',
-          :file => url_with_stubbed_get_for(path)
+          title: 'My File',
+          description: 'My Description',
+          file: url_with_stubbed_get_for(data_file),
+          schema_name: 'schem nme',
+          schema_description: 'schema description',
+          schema: @url_for_schema
         }
 
         request = post :create, params: { dataset: {
@@ -317,7 +310,6 @@ describe DatasetsController, type: :controller do
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency,
-          schema: @schema
         }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
@@ -328,10 +320,8 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
 
-        expect(@user.datasets.first.dataset_file_schema.url_in_s3).to eq(@schema)
+        expect(@user.datasets.first.dataset_files.first.dataset_file_schema.url).to eq(@url_for_schema)
       end
-
     end
-
   end
 end
