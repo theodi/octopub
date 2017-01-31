@@ -254,7 +254,7 @@ describe DatasetsController, type: :controller do
             title: 'My File',
             description: 'My Description',
             file: url_with_stubbed_get_for(data_file_not_marching_schema),
-            schema_name: 'schem nme',
+            schema_name: 'schema name',
             schema_description: 'schema description',
             schema: @url_for_schema
           }
