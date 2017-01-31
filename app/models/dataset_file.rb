@@ -97,35 +97,37 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      p "IN CHECK SCHEMA"
+      logger.info "IN CHECK SCHEMA"
       if dataset_file_schema
         # TODO this could use the cached schema in the object, but for now...
         schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-        # ap dataset_file_schema.url
-        # ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
-        # ap schema
-
+        logger.info "Dataset file schema.url:"
+        logger.ap dataset_file_schema.url
+        logger.info "Dataset file schema.url - JSON parsed"
+        logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
+        logger.info "Loaded, linted schema object"
+        logger.ap schema
 
         the_data_file = File.new(file.tempfile)
 
-        # ap the_data_file.read
-        # ap file.tempfile.path
+        # logger.ap the_data_file.read
+        # logger.ap file.tempfile.path
 
         # TODO what does this do?
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
         validation = Csvlint::Validator.new(the_data_file, {}, schema)
 
-        # ap schema.uri
-        # ap schema
-        # ap validation.valid?
-        #validation.validate
-        # ap validation.info_messages
-        # ap errors
+        # logger.ap schema.uri
+        # logger.ap schema
+        # logger.ap validation.valid?
+        # #validation.validate
+        # logger.ap validation.info_messages
+        # logger.ap errors
 
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-        ap errors
+        logger.ap errors
       end
     end
 
