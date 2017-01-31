@@ -5,12 +5,12 @@ class UpdateDataset
   def perform(id, user_id, dataset_params, files, options = {})
     files = [files] if files.class == Hash
 
-    user = User.find(user_id)
+    @user = User.find(user_id)
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     )
 
-    @dataset = get_dataset(id, user)
+    @dataset = get_dataset(id, @user)
     @dataset.assign_attributes(dataset_params) if dataset_params
 
     handle_files(files)
@@ -36,6 +36,14 @@ class UpdateDataset
 
   def update_file(id, file)
     f = @dataset.dataset_files.find { |f| f.id == id.to_i }
+
+    if file["schema"]
+      # Create schema
+      # TODO if schema is existing, use it rather than create a new one
+      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+    end
+
+    file["dataset_file_schema_id"] = schema.id
     f.update_file(file)
   end
 
