@@ -76,6 +76,12 @@ def url_with_stubbed_get_for(path)
   url
 end
 
+def url_for_schema_with_stubbed_get_for(path)
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/schema.json"
+  stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
 def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
