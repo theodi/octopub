@@ -3,7 +3,7 @@
 # Table name: errors
 #
 #  id       :integer          not null, primary key
-#  job_id   :string(255)      not null
+#  job_id   :string           not null
 #  messages :json
 #
 

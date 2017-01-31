@@ -3,16 +3,16 @@
 # Table name: users
 #
 #  id              :integer          not null, primary key
-#  provider        :string(255)
-#  uid             :string(255)
-#  email           :string(255)
+#  provider        :string
+#  uid             :string
+#  email           :string
 #  created_at      :datetime
 #  updated_at      :datetime
-#  name            :string(255)
-#  token           :string(255)
-#  api_key         :string(255)
+#  name            :string
+#  token           :string
+#  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
-#  twitter_handle  :string(255)
+#  twitter_handle  :string
 #
 
 class User < ApplicationRecord

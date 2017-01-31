@@ -2,16 +2,17 @@
 #
 # Table name: dataset_files
 #
-#  id          :integer          not null, primary key
-#  title       :string(255)
-#  filename    :string(255)
-#  mediatype   :string(255)
-#  dataset_id  :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  description :text
-#  file_sha    :text
-#  view_sha    :text
+#  id                     :integer          not null, primary key
+#  title                  :string
+#  filename               :string
+#  mediatype              :string
+#  dataset_id             :integer
+#  created_at             :datetime
+#  updated_at             :datetime
+#  description            :text
+#  file_sha               :text
+#  view_sha               :text
+#  dataset_file_schema_id :integer
 #
 
 class DatasetFile < ApplicationRecord
