@@ -104,7 +104,7 @@ class DatasetFile < ApplicationRecord
         # TODO what does this do?
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
-        validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
+        validation = Csvlint::Validator.new(File.new(file.tempfile), {}, schema)
 
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       end
