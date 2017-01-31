@@ -3,16 +3,16 @@
 # Table name: users
 #
 #  id              :integer          not null, primary key
-#  provider        :string
-#  uid             :string
-#  email           :string
+#  provider        :string(255)
+#  uid             :string(255)
+#  email           :string(255)
 #  created_at      :datetime
 #  updated_at      :datetime
-#  name            :string
-#  token           :string
-#  api_key         :string
+#  name            :string(255)
+#  token           :string(255)
+#  api_key         :string(255)
 #  org_dataset_ids :text             default([]), is an Array
-#  twitter_handle  :string
+#  twitter_handle  :string(255)
 #
 
 require 'spec_helper'

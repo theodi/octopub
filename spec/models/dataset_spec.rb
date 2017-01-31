@@ -3,26 +3,26 @@
 # Table name: datasets
 #
 #  id                :integer          not null, primary key
-#  name              :string
-#  url               :string
+#  name              :string(255)
+#  url               :string(255)
 #  user_id           :integer
 #  created_at        :datetime
 #  updated_at        :datetime
-#  repo              :string
+#  repo              :string(255)
 #  description       :text
-#  publisher_name    :string
-#  publisher_url     :string
-#  license           :string
-#  frequency         :string
+#  publisher_name    :string(255)
+#  publisher_url     :string(255)
+#  license           :string(255)
+#  frequency         :string(255)
 #  datapackage_sha   :text
-#  owner             :string
-#  owner_avatar      :string
-#  build_status      :string
-#  full_name         :string
-#  certificate_url   :string
-#  job_id            :string
+#  owner             :string(255)
+#  owner_avatar      :string(255)
+#  build_status      :string(255)
+#  full_name         :string(255)
+#  certificate_url   :string(255)
+#  job_id            :string(255)
 #  private           :boolean          default(FALSE)
-#  dataset_file_schema_id :integer
+#  dataset_schema_id :integer
 #
 
 require 'spec_helper'
@@ -257,7 +257,7 @@ describe Dataset do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
       url_for_schema = url_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(url_for_schema, @user)
+     # dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(url_for_schema, @user)
 
       dataset = build :dataset, user: @user,
                                 dataset_files: [
@@ -630,7 +630,7 @@ describe Dataset do
       dataset.private = false
       dataset.save
     end
-    
+
   end
 
   context "notifying via twitter" do
