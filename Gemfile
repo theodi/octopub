@@ -73,6 +73,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'guard'
   gem 'guard-rspec', require: false
+  gem 'guard-rails', require: false
   gem 'terminal-notifier-guard', '~> 1.6.1'
 
   # Spring speeds up development by keeping your application running
