@@ -195,22 +195,29 @@ describe DatasetsController, type: :controller do
     context('unsuccessful update') do
 
       context 'with non-compliant csv', :schema do
+
+        let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+        let(:data_file_not_matching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
+        let(:schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
         end
 
         it 'does not update a file in Github' do
           @file.file = nil
-          filename = 'invalid-schema.csv'
-          path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = url_with_stubbed_get_for(path)
+          file = url_with_stubbed_get_for(data_file_not_matching_schema)
 
           expect(@file).to_not receive(:update_in_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @file.id,
-              file: file
+              file: file,
+              schema_name: 'schema name',
+              schema_description: 'schema description',
+              schema: @url_for_schema
           }]}
 
           expect(Error.count).to eq(1)
@@ -239,12 +246,17 @@ describe DatasetsController, type: :controller do
               {
                 id: @file.id,
                 title: "New title",
-                description: "New description"
-               },
-              {
+                description: "New description",
+                schema_name: 'schema name',
+                schema_description: 'schema description',
+                schema: @url_for_schema
+              }, {
                 title: "New file",
                 description: "New file description",
-                file: @new_file
+                file: @new_file,
+                schema_name: 'schema name',
+                schema_description: 'schema description',
+                schema: @url_for_schema
               }
             ]}
 
@@ -268,12 +280,18 @@ describe DatasetsController, type: :controller do
               {
                 id: @file.id,
                 title: "New title",
-                description: "New description"
+                description: "New description",
+                schema_name: 'schema name',
+                schema_description: 'schema description',
+                schema: @url_for_schema
                },
               {
                 title: "New file",
                 description: "New file description",
-                file: @new_file
+                file: @new_file,
+                schema_name: 'schema name',
+                schema_description: 'schema description',
+                schema: @url_for_schema
               }
             ], channel_id: 'foo-bar' }
           end
