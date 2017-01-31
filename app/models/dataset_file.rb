@@ -102,21 +102,27 @@ class DatasetFile < ApplicationRecord
         # TODO this could use the cached schema in the object, but for now...
         schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-        ap dataset_file_schema.url
-        ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
+        # ap dataset_file_schema.url
+        # ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
         # ap schema
+
+
+        the_data_file = File.new(file.tempfile)
+
+        # ap the_data_file.read
+        # ap file.tempfile.path
+
         # TODO what does this do?
-
-        ap (File.new(file.tempfile)).read
-        ap file.tempfile.path
-
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-       # ap schema.tables
 
-        validation = Csvlint::Validator.new(File.new(file.tempfile), {}, schema)
-        validation.validate
-        ap validation.info_messages
-        ap errors
+        validation = Csvlint::Validator.new(the_data_file, {}, schema)
+
+        # ap schema.uri
+        # ap schema
+        # ap validation.valid?
+        #validation.validate
+        # ap validation.info_messages
+        # ap errors
 
         errors.add(:file, 'does not match the schema you provided') unless validation.valid?
         ap errors
