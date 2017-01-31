@@ -88,6 +88,11 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
+    dataset_files.each do |dataset_file|
+      dataset_file.validate
+      add_file_to_repo("schema.json", dataset_file.dataset_file_schema.schema) if dataset_file.dataset_file_schema
+    end
+
     # TODO a schema file *per* file!
 
     # unless dataset_file_schema.nil?
@@ -189,7 +194,7 @@ class Dataset < ApplicationRecord
       # This is in for backwards compatibility at the moment required for API
 
       # TODO this all wants sorting!
-      if dataset_files && dataset_files.first.dataset_file_schema
+      if dataset_files.any? && dataset_files.first.dataset_file_schema
         self.schema = dataset_files.first.dataset_file_schema.url_in_s3
       else
         logger.info "No schema set for first dataset file"
