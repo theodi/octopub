@@ -55,6 +55,9 @@ guard :rspec, cmd: "spring rspec", failed_mode: :focus  do
     ]
   end
 
+  # Factory changes
+  watch(%r{^spec/factories/(.+)\.rb$}) { "spec/models" }
+
   # Rails config changes
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
