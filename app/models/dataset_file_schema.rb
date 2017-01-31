@@ -29,15 +29,18 @@ class DatasetFileSchema < ApplicationRecord
     parsed_schema.class == Csvlint::Csvw::TableGroup
   end
 
-  def is_valid?(dataset_errors)
+  def is_schema_valid?
     if is_schema_otw?
-      unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
-        dataset_errors.add :schema, 'is invalid'
-      end
+      return false unless parsed_schema.tables[parsed_schema.tables.keys.first].columns.first
     else
-      unless parsed_schema.fields.first
-        dataset_errors.add :schema, 'is invalid'
-      end
+      return false unless parsed_schema.fields.first
     end
+    true
+  end
+
+  def is_valid?
+    errors.add :schema, 'is invalid' unless is_schema_valid?
   end
 end
+
+
