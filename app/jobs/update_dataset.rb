@@ -41,9 +41,9 @@ class UpdateDataset
       # Create schema
       # TODO if schema is existing, use it rather than create a new one
       schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      file["dataset_file_schema_id"] = schema.id
     end
 
-    file["dataset_file_schema_id"] = schema.id
     f.update_file(file)
   end
 
