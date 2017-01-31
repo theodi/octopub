@@ -82,7 +82,7 @@ describe DatasetFile do
       expect(@dataset).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       @file.send(:update_jekyll_in_github)
     end
-    
+
   end
 
   context "delete_from_github" do
@@ -188,15 +188,16 @@ describe DatasetFile do
   context 'with schema' do
 
     before(:each) do
-      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(schema_path)    
-      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_file_schema: dataset_file_schema)
+      @dataset = build(:dataset)
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
+      stubbed_schema_url = url_with_stubbed_get_for(schema_path)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
     end
 
     it 'validates against a schema with good data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
-
-      file = build(:dataset_file, filename: "example.csv",
+      file = build(:dataset_file,  dataset_file_schema: @dataset_file_schema,
+                                  filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description",
                                    file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
@@ -209,8 +210,9 @@ describe DatasetFile do
 
     it 'validates against a schema with bad data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
-
-      file = build(:dataset_file, filename: "example.csv",
+      file = build(:dataset_file,
+                                   dataset_file_schema: @dataset_file_schema,
+                                   filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description",
                                    file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
@@ -227,13 +229,15 @@ describe DatasetFile do
   context 'with csv-on-the-web schema' do
     before :each do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
-      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path))
+      stubbed_schema_url = url_with_stubbed_get_for(schema_path)
+      @dataset = build(:dataset)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
     end
 
     it 'validates with good data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')
-
-      file = build(:dataset_file, filename: "people.csv",
+      file = build(:dataset_file,  dataset_file_schema: @dataset_file_schema,
+                                   filename: "people.csv",
                                    title: "People",
                                    description: "People make the world go round",
                                    file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
@@ -263,18 +267,20 @@ describe DatasetFile do
   context 'with multiple csv-on-the-web files' do
     before :each do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
-      dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(schema_path)    
-      @dataset = build(:dataset, schema: url_with_stubbed_get_for(schema_path), dataset_file_schema: dataset_file_schema)
+      stubbed_schema_url = url_with_stubbed_get_for(schema_path)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+      @dataset = build(:dataset)
     end
 
     it 'validates with good data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'shoes-cotw.csv')
 
-      file = build(:dataset_file, filename: "shoes.csv",
-                                   title: "Shoes",
-                                   description: "Shoes and glasses",
-                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                   dataset: @dataset)
+      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
+                                  filename: "shoes.csv",
+                                  title: "Shoes",
+                                  description: "Shoes and glasses",
+                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                  dataset: @dataset)
       @dataset.dataset_files << file
 
       expect(file.valid?).to eq(true)
@@ -284,11 +290,12 @@ describe DatasetFile do
     it 'does not validate with duff data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'hats-cotw.csv')
 
-      file = build(:dataset_file, filename: "hats.csv",
-                                   title: "Hats",
-                                   description: "All around my hat",
-                                   file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                   dataset: @dataset)
+      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
+                                  filename: "hats.csv",
+                                  title: "Hats",
+                                  description: "All around my hat",
+                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                  dataset: @dataset)
 
       @dataset.dataset_files << file
 

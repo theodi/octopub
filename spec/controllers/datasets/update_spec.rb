@@ -198,7 +198,6 @@ describe DatasetsController, type: :controller do
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
- #         @dataset.update(dataset_file_schema: @dataset_file_schema)
         end
 
         it 'does not update a file in Github' do

@@ -189,7 +189,11 @@ class Dataset < ApplicationRecord
       # This is in for backwards compatibility at the moment required for API
 
       # TODO this all wants sorting!
-      self.schema = dataset_files.first.dataset_file_schema.url_in_s3 unless dataset_files.first.dataset_file_schema.blank?
+      if dataset_files && dataset_files.first.dataset_file_schema
+        self.schema = dataset_files.first.dataset_file_schema.url_in_s3
+      else
+        logger.info "No schema set for first dataset file"
+      end
     rescue Octokit::NotFound
       @repo = nil
     end

@@ -97,9 +97,11 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      if dataset && dataset.schema && file
-        schema = Csvlint::Schema.load_from_json(URI.escape dataset.schema)
+      if dataset_file_schema
+        # TODO this could use the cached schema in the object, but for now...
+        schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url_in_repo)
 
+        # TODO what does this do?
         schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
         validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
@@ -137,7 +139,7 @@ class DatasetFile < ApplicationRecord
         dataset.add_file_to_repo(filename, content.to_json)
       end
     end
-      
+
     def create_json_jekyll_files schema
       for_each_file_in_schema(schema) do |filename, content|
         # Add human readable template
