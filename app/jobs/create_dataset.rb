@@ -12,12 +12,13 @@ class CreateDataset
       dataset_params.merge(job_id: self.jid)
     ))
 
-    files.each do |file|
-      dataset_file = DatasetFile.new_file(file)
-      if file["schema"]
+    # TODO this new_file thing does funny stuff
+    files.each do |dateset_file_creation_hash|
+      dataset_file = DatasetFile.new_file(dateset_file_creation_hash)
+      if dateset_file_creation_hash["schema"]
         # Create schema
         # TODO if schema is existing, use it rather than create a new one
-        schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], user)
+        schema = DatasetFileSchemaService.new.create_dataset_file_schema(dateset_file_creation_hash["schema_name"], dateset_file_creation_hash["schema_description"], dateset_file_creation_hash["schema"], user)
         dataset_file.dataset_file_schema = schema
       end
       @dataset.dataset_files << dataset_file
