@@ -48,7 +48,15 @@ class UpdateDataset
   end
 
   def add_file(file)
+
     f = DatasetFile.new_file(file)
+    if file["schema"]
+      # Create schema
+      # TODO if schema is existing, use it rather than create a new one
+      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      f.dataset_file_schema_id = schema.id
+    end
+
     @dataset.dataset_files << f
     if f.save
       f.add_to_github
