@@ -87,7 +87,7 @@ class Dataset < ApplicationRecord
       dataset_file.validate
       if dataset_file.dataset_file_schema
         add_file_to_repo("schema.json", dataset_file.dataset_file_schema.schema)
-        dataset_file.send(:create_json_api_files, dataset_file_schema.parsed_schema)
+        dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
       end
     end
 
