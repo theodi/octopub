@@ -38,7 +38,6 @@ describe DatasetsController, type: :controller do
       @file = @dataset.dataset_files.first
 
       @dataset_hash = {
-      #  name: "New name",
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
@@ -229,27 +228,31 @@ describe DatasetsController, type: :controller do
 
         context 'does not add new file in Github' do
           before :each do
-            @file.file = nil
 
-            @filename = 'invalid-schema.csv'
-            @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-            @new_file = url_with_stubbed_get_for(@path)
 
-            file = build(:dataset_file, dataset: @dataset, file: nil)
+            dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', schema_path, @user)
+            existing_data_file = url_with_stubbed_get_for(data_file)
 
-            expect(file).to_not receive(:add_to_github)
+            dateset_file_creation_hash = {
+                                  file: existing_data_file,
+                                  title: "My Awesome File",
+                                  description: "My Awesome File Description" }
+
+            @existing_file = DatasetFile.new_file(dateset_file_creation_hash)
+            @existing_file.update(dataset: @dataset, dataset_file_schema: dataset_file_schema)
+
+            bad_data_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+            new_file = url_with_stubbed_get_for(bad_data_path)
           end
 
           it 'without websockets' do
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
               {
-                id: @file.id,
+                id: @existing_file.id,
                 title: "New title",
                 description: "New description",
-                schema_name: 'schema name',
-                schema_description: 'schema description',
-                schema: @url_for_schema
+
               }, {
                 title: "New file",
                 description: "New file description",
