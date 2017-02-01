@@ -99,37 +99,42 @@ class DatasetFile < ApplicationRecord
     def check_schema
       logger.info "IN CHECK SCHEMA"
       if dataset_file_schema
-        # TODO this could use the cached schema in the object, but for now...
-        schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-        logger.info "Dataset file schema.url:"
-        logger.ap dataset_file_schema.url
-        logger.info "Dataset file schema.url - JSON parsed"
-        logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
-        logger.info "Loaded, linted schema object"
-        logger.ap schema
+        if dataset_file_schema.is_schema_valid?
 
-        the_data_file = File.new(file.tempfile)
+          # TODO this could use the cached schema in the object, but for now...
+          schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-        # logger.ap the_data_file.read
-        # logger.ap file.tempfile.path
+          # logger.info "Dataset file schema.url:"
+          # logger.ap dataset_file_schema.url
+          # logger.info "Dataset file schema.url - JSON parsed"
+          # logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
+          # logger.info "Loaded, linted schema object"
+          # logger.ap schema
+          # logger.ap the_data_file.read
+          # logger.ap file.tempfile.path
 
-        # TODO what does this do?
-        schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+          # TODO what does this do?
+          schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
-        validation = Csvlint::Validator.new(the_data_file, {}, schema)
+          validation = Csvlint::Validator.new(File.new(file.tempfile), {}, schema)
 
-        # logger.ap schema.uri
-        # logger.ap schema
-        # logger.ap validation.valid?
-        # #validation.validate
-        # logger.ap validation.info_messages
-        # logger.ap errors
+          # logger.ap schema.uri
+          # logger.ap schema
+          # logger.ap validation.valid?
+          # #validation.validate
+          # logger.ap validation.info_messages
+          # logger.ap errors
 
-        errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-        logger.ap errors
+          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+          #logger.ap errors
+        else
+          errors.add(:schema, 'is not valid')
+        end
       end
     end
+
+
 
     def for_each_file_in_schema schema, &block
       return unless schema.class == Csvlint::Csvw::TableGroup
