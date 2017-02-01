@@ -446,8 +446,7 @@ describe Dataset do
                                    file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
                                    filename: "valid-cotw.csv",
                                    title: "My Awesome File",
-                                   description: "My Awesome File Description",
-                                   dataset_file_schema: dataset_file_schema)
+                                   description: "My Awesome File Description")
 
       dataset.dataset_files << file
 
