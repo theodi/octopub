@@ -64,10 +64,10 @@ class DatasetFile < ApplicationRecord
 
   def update_file(file)
     file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
-
     update_hash = {
       description: file["description"],
       file: file["file"],
+      dataset_file_schema_id: file["dataset_file_schema_id"]
     }.delete_if { |k,v| v.nil? }
 
     self.update(update_hash)
