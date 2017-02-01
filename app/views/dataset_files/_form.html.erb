@@ -1,5 +1,7 @@
+<div class="file-and-schema">
 <fieldset class="file bg-upload">
   <div class="well bg-info">
+    <h3>Data files</h3>
     <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
     <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
     <% if file.filename %>
@@ -39,3 +41,4 @@
     </div>
   </div>
 </fieldset>
+</div>
