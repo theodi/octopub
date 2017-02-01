@@ -134,13 +134,19 @@ describe 'POST /datasets' do
 
       path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
 
+      good_schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      stubbed_schema_url = url_with_stubbed_get_for(good_schema_path)
+
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
-      allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
+    #  allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
       file = {
-        :title => 'My File',
-        :description => 'My Description',
-        :file => fixture_file_upload(path)
+        title: 'My File',
+        description: 'My Description',
+        file: fixture_file_upload(path),
+        schema_name: 'schema name',
+        schema_description: 'schema description',
+        schema: stubbed_schema_url
       }
 
       post '/api/datasets', params: {
@@ -151,7 +157,6 @@ describe 'POST /datasets' do
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency,
-          schema: @schema
         },
         file: file
       },
