@@ -208,8 +208,28 @@ describe DatasetFile do
       expect(@dataset.valid?).to eq(true)
     end
 
-    it 'validates against a schema with bad data' do
+    it 'does not validate against a good schema with bad data' do
       file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
+                                  filename: "example.csv",
+                                  title: "My Awesome File",
+                                  description: "My Awesome File Description",
+                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
+                                  dataset: @dataset)
+
+      @dataset.dataset_files << file
+
+      expect(file.valid?).to eq(false)
+      expect(@dataset.valid?).to eq(false)
+    end
+
+    it 'does not validate against a bad schema with good data' do
+
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
+      stubbed_schema_url = url_with_stubbed_get_for(schema_path)
+      @dataset_file_schema = create(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+
+      file_path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
                                   filename: "example.csv",
                                   title: "My Awesome File",
