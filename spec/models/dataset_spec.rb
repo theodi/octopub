@@ -334,16 +334,6 @@ describe Dataset do
     let(:bad_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json') }
     let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
 
-    before(:each) do
-
-      url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
-
-      @dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', url_for_schema)
-
-      @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
-      @dataset = build(:dataset, user: @user, dataset_files: [@dataset_file])
-    end
-
     it 'is unhappy with a duff schema' do
       bad_schema = url_for_schema_with_stubbed_get_for(bad_schema_path)
       dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', bad_schema)
@@ -353,12 +343,24 @@ describe Dataset do
     it 'is happy with a good schema' do
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
       schema = url_with_stubbed_get_for(path)
-      dataset = build(:dataset, schema: schema)
+      dataset = build(:dataset)
 
       expect(dataset.valid?).to be true
+
+      good_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
+      dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', good_schema)
+      create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
+
+      expect(DatasetFile.count).to be 1
+
+
     end
 
     it 'adds the schema to the datapackage' do
+      url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
+      @dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', url_for_schema)
+      @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
+      @dataset = build(:dataset, user: @user, dataset_files: [@dataset_file])
 
       datapackage = JSON.parse @dataset.create_json_datapackage
 
@@ -406,7 +408,7 @@ describe Dataset do
 
     let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'csv-on-the-web-schema.json') }
     let(:bad_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'duff-csv-on-the-web-schema.json') }
-    let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+    let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv') }
 
     it 'is unhappy with a duff schema' do
 
@@ -419,11 +421,15 @@ describe Dataset do
     it 'does not add the schema to the datapackage' do
 
       schema = url_with_stubbed_get_for(good_schema_path)
-      file = create(:dataset_file, filename: "example.csv",
+      dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', schema)
+
+      file = create(:dataset_file, dataset_file_schema: dataset_file_schema,
+                                   file: Rack::Test::UploadedFile.new(data_file, "text/csv"),
+                                   filename: "example.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
 
-      dataset = build(:dataset, schema: schema, dataset_files: [file])
+      dataset = build(:dataset, dataset_files: [file])
       datapackage = JSON.parse dataset.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
@@ -447,9 +453,7 @@ describe Dataset do
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      p "Hello"
       expect(dataset).to receive(:add_file_to_repo).with("schema.json", file.dataset_file_schema.schema)
-      p "See you!"
       expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
       expect(dataset).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
       expect(dataset).to receive(:add_file_to_repo).with("index.json", '[{"@type":"/people","url":"people.json"}]')

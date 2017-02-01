@@ -31,14 +31,9 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
   after_update :update_in_github, :make_repo_public_if_appropriate, :publish_public_views
   after_destroy :delete_in_github
-
-  # Backwards compatibility for API calls
-  attr_accessor :schema
-
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -90,7 +85,10 @@ class Dataset < ApplicationRecord
 
     dataset_files.each do |dataset_file|
       dataset_file.validate
-      add_file_to_repo("schema.json", dataset_file.dataset_file_schema.schema) if dataset_file.dataset_file_schema
+      if dataset_file.dataset_file_schema
+        add_file_to_repo("schema.json", dataset_file.dataset_file_schema.schema)
+        dataset_file.send(:create_json_api_files, dataset_file_schema.parsed_schema)
+      end
     end
 
     # TODO a schema file *per* file!
