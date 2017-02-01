@@ -44,13 +44,18 @@ class DatasetFile < ApplicationRecord
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
-  def self.new_file(file)
-    file['file'] = file_from_url(file['file']) if file["file"].class == String
+  def self.new_file(dataset_file_creation_hash)
 
+    # allow use of hashes or strings for keys
+    dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
+    dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
+
+    logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
+    # Do the actual create here
     create(
-      title: file["title"],
-      description: file["description"],
-      file: file["file"]
+      title: dataset_file_creation_hash[:title],
+      description: dataset_file_creation_hash[:description],
+      file: dataset_file_creation_hash[:file]
     )
   end
 
@@ -115,9 +120,9 @@ class DatasetFile < ApplicationRecord
           # logger.ap file.tempfile.path
 
           # TODO what does this do?
-          schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
-          validation = Csvlint::Validator.new(File.new(file.tempfile), {}, schema)
+          validation = Csvlint::Validator.new(get_file_for_validation_from_file, {}, schema)
 
           # logger.ap schema.uri
           # logger.ap schema
@@ -134,7 +139,9 @@ class DatasetFile < ApplicationRecord
       end
     end
 
-
+    def get_file_for_validation_from_file
+      File.new(file.tempfile)
+    end
 
     def for_each_file_in_schema schema, &block
       return unless schema.class == Csvlint::Csvw::TableGroup
