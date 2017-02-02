@@ -1,0 +1,25 @@
+<h1 class="page-header">Dataset File Schemas</h1>
+
+<% if @dataset_file_schemas.any? %>
+  <table class="table">
+    <tr>
+      <th>Owner</th>
+      <th>Name</th>
+      <th>Link</th>
+    </tr>
+    <% @dataset_file_schemas.each do |dataset_file_schema| %>
+      <tr>
+        <td><%= dataset_file_schema.user.name %></td>
+        <td><%= dataset_file_schema.name %></td>
+        <td></td>
+      </tr>
+    <% end %>
+
+  </table>
+<% else %>
+  <p class='text-center lead'>You currently have no dataset schemas</p>
+<% end %>
+
+<div class="text-center">
+  <%= will_paginate @dataset_file_schemas, renderer: BootstrapPagination::Rails %>
+</div>

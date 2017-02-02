@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe DatasetsController, type: :controller do
 
+  let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+  let(:data_file_not_matching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
+  let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+
   before(:each) do
     Sidekiq::Testing.inline!
 
@@ -30,15 +34,12 @@ describe DatasetsController, type: :controller do
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      good_schema = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = url_with_stubbed_get_for(good_schema)
-      @dataset_schema = DatasetSchemaService.new.create_dataset_schema(schema)
+      schema = url_with_stubbed_get_for(good_schema_path)
 
-      @dataset.save
-      @file = @dataset.dataset_files.first
+      @dataset_file = @dataset.dataset_files.first
+      dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', schema)
 
       @dataset_hash = {
-      #  name: "New name",
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
@@ -66,11 +67,11 @@ describe DatasetsController, type: :controller do
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
             file = url_with_stubbed_get_for(path)
 
-            expect(@file).to receive(:update_in_github)
-            expect(@file).to receive(:update_jekyll_in_github)
+            expect(@dataset_file).to receive(:update_in_github)
+            expect(@dataset_file).to receive(:update_jekyll_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
-                id: @file.id,
+                id: @dataset_file.id,
                 file: file
             }]}
           end
@@ -78,10 +79,10 @@ describe DatasetsController, type: :controller do
           context 'adds a new file in Github' do
 
             before :each do
-              @file.file = nil
+              @dataset_file.file = nil
 
-              @filename = 'valid-schema.csv'
-              @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
+              @dataset_filename = 'valid-schema.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
               @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
@@ -94,7 +95,7 @@ describe DatasetsController, type: :controller do
             it 'via a browser' do
               put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
                 {
-                  id: @file.id,
+                  id: @dataset_file.id,
                   title: "New title",
                   description: "New description"
                  },
@@ -115,10 +116,10 @@ describe DatasetsController, type: :controller do
       context('without schema', schema: false) do
 
         it 'updates a dataset' do
-          @file.file = nil
+          @dataset_file.file = nil
 
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
-            id: @file.id,
+            id: @dataset_file.id,
             description: "New description"
           }]}
 
@@ -135,10 +136,10 @@ describe DatasetsController, type: :controller do
         end
 
         it 'returns 202 when async is set to true' do
-          @file.file = nil
+          @dataset_file.file = nil
 
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
-            id: @file.id,
+            id: @dataset_file.id,
             description: "New description"
           }], async: true }
 
@@ -150,17 +151,17 @@ describe DatasetsController, type: :controller do
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = url_with_stubbed_get_for(path)
 
-          expect(@file).to receive(:update_in_github)
-          expect(@file).to receive(:update_jekyll_in_github)
+          expect(@dataset_file).to receive(:update_in_github)
+          expect(@dataset_file).to receive(:update_jekyll_in_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
-              id: @file.id,
+              id: @dataset_file.id,
               file: file
           }]}
         end
 
         it 'adds a new file in Github' do
-          @file.file = nil
+          @dataset_file.file = nil
 
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
@@ -174,7 +175,7 @@ describe DatasetsController, type: :controller do
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
-              id: @file.id,
+              id: @dataset_file.id,
               title: "New title",
               description: "New description"
              },
@@ -195,99 +196,43 @@ describe DatasetsController, type: :controller do
     context('unsuccessful update') do
 
       context 'with non-compliant csv', :schema do
+
+
+
         before(:each) do
           @repo = double(GitData)
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-          @dataset.update(dataset_schema: @dataset_schema)
+          @url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
         end
 
         it 'does not update a file in Github' do
-          @file.file = nil
-          filename = 'invalid-schema.csv'
-          path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = url_with_stubbed_get_for(path)
+          @dataset_file.file = nil
+          file = url_with_stubbed_get_for(data_file_not_matching_schema)
 
-          expect(@file).to_not receive(:update_in_github)
+          expect(@dataset_file).to_not receive(:update_in_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
-              id: @file.id,
-              file: file
+              id: @dataset_file.id,
+              file: file,
+              schema_name: 'schema name',
+              schema_description: 'schema description',
+              schema: @url_for_schema
           }]}
 
           expect(Error.count).to eq(1)
           expect(Error.first.messages).to eq([
             "Dataset files is invalid",
-            "Your file '#{@file.title}' does not match the schema you provided"
+            "Your file '#{@dataset_file.title}' does not match the schema you provided"
           ])
         end
-
-        context 'does not add new file in Github' do
-          before :each do
-            @file.file = nil
-
-            @filename = 'invalid-schema.csv'
-            @path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-            @new_file = url_with_stubbed_get_for(@path)
-
-            file = build(:dataset_file, dataset: @dataset, file: nil)
-
-            expect(file).to_not receive(:add_to_github)
-          end
-
-          it 'without websockets' do
-
-            put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
-              {
-                id: @file.id,
-                title: "New title",
-                description: "New description"
-               },
-              {
-                title: "New file",
-                description: "New file description",
-                file: @new_file
-              }
-            ]}
-
-            expect(@dataset.dataset_files.count).to eq(1)
-            expect(Error.count).to eq(1)
-            expect(Error.first.messages).to eq([
-              "Dataset files is invalid",
-              "Your file 'New file' does not match the schema you provided"
-            ])
-          end
-
-          it 'with websockets' do
-            mock_client = mock_pusher('foo-bar')
-
-            expect(mock_client).to receive(:trigger).with('dataset_failed', [
-              "Dataset files is invalid",
-              "Your file 'New file' does not match the schema you provided"
-            ])
-
-            put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
-              {
-                id: @file.id,
-                title: "New title",
-                description: "New description"
-               },
-              {
-                title: "New file",
-                description: "New file description",
-                file: @new_file
-              }
-            ], channel_id: 'foo-bar' }
-          end
-        end
       end
-
     end
 
     it 'filters out empty file params' do
 
       files = [
         {
-          id: @file.id,
+          id: @dataset_file.id,
           title: "New title",
           description: "New description"
         },
@@ -303,7 +248,7 @@ describe DatasetsController, type: :controller do
 
       expect(UpdateDataset).to receive(:perform_async).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
           {
-            "id" => @file.id.to_s,
+            "id" => @dataset_file.id.to_s,
             "title" => "New title",
             "description" => "New description"
           },
@@ -317,7 +262,5 @@ describe DatasetsController, type: :controller do
 
       put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: files }
     end
-
   end
-
 end

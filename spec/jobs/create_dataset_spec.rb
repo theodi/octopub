@@ -56,20 +56,27 @@ describe CreateDataset do
   it 'creates a schema' do
     mock_client = mock_pusher('beep-beep')
     expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
-    example_schema_uri = 'http://my-schemas.org/1234/schema.json'
-    @dataset_params[:schema] = example_schema_uri
 
-    good_schema_file_as_json = File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json'))
+    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+    data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+    url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-    allow_any_instance_of(DatasetFile).to receive(:check_schema).and_return(nil)
-    allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(nil)
-    allow_any_instance_of(DatasetSchemaService).to receive(:read_file_with_utf_8).and_return(good_schema_file_as_json)
+    @files = [
+      ActiveSupport::HashWithIndifferentAccess.new(
+        title: 'My File',
+        description: 'My description',
+        file: url_with_stubbed_get_for(data_file),
+        schema_name: 'schem nme',
+        schema_description: 'schema description',
+        schema: url_for_schema
+      )
+    ]
 
     @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
     expect(Dataset.count).to eq(1)
-    expect(DatasetSchema.count).to eq(1)
-    expect(DatasetSchema.first.url_in_s3).to eq example_schema_uri
-    expect(DatasetSchema.first.schema).to eq good_schema_file_as_json
+    expect(DatasetFileSchema.count).to eq(1)
+    expect(DatasetFileSchema.first.url_in_s3).to eq url_for_schema
+    expect(DatasetFileSchema.first.schema).to eq get_json_from_url(schema_path)
   end
 
   it 'reports errors' do
