@@ -59,8 +59,6 @@ ActiveRecord::Schema.define(version: 20170202152140) do
     t.string   "certificate_url"
     t.string   "job_id"
     t.boolean  "restricted",                    default: false
-    t.integer  "dataset_schema_id"
-    t.index ["dataset_schema_id"], name: "index_datasets_on_dataset_schema_id", using: :btree
   end
 
   create_table "errors", force: :cascade do |t|
