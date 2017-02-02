@@ -17,7 +17,7 @@ class DatasetFileSchema < ApplicationRecord
   attr_accessor :parsed_schema
 
   def parsed_schema
-    @parsed_schema ||= DatasetSchemaService.get_parsed_schema_from_csv_lint(url)
+    @parsed_schema ||= DatasetFileSchemaService.get_parsed_schema_from_csv_lint(url)
   end
 
   def url

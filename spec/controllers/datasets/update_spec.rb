@@ -35,8 +35,9 @@ describe DatasetsController, type: :controller do
       ])
 
       schema = url_with_stubbed_get_for(good_schema_path)
-      @dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(schema)
+
       @dataset_file = @dataset.dataset_files.first
+      dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', schema)
 
       @dataset_hash = {
         description: "New description",
