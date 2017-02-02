@@ -253,7 +253,7 @@ describe Dataset do
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(data_file).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      expect(dataset).to receive(:add_file_to_repo).with("schema.json", File.open(schema_path).read.strip)
+      expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       expect(dataset).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
@@ -331,6 +331,7 @@ describe Dataset do
   context "schemata" do
 
     let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json') }
+
     let(:bad_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json') }
     let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
 
@@ -437,22 +438,23 @@ describe Dataset do
 
     it "creates JSON files on GitHub when using a CSVW schema" do
 
-      url_for_schema = url_with_stubbed_get_for(good_schema_path)
+      good_schema_cotw_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
+      url_for_schema = url_with_stubbed_get_for(good_schema_cotw_path)
       dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', url_for_schema, @user)
       dataset = build(:dataset, user: @user)
 
-      file = create(:dataset_file, dataset_file_schema: dataset_file_schema,
+      dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema,
                                    dataset: dataset,
                                    file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
                                    filename: "valid-cotw.csv",
                                    title: "My Awesome File",
                                    description: "My Awesome File Description")
 
-      dataset.dataset_files << file
+      dataset.dataset_files << dataset_file
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", file.dataset_file_schema.schema)
+      expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
       expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
       expect(dataset).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
       expect(dataset).to receive(:add_file_to_repo).with("index.json", '[{"@type":"/people","url":"people.json"}]')
@@ -469,10 +471,10 @@ describe Dataset do
       expect(dataset).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
       expect(dataset).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-      expect(dataset).to receive(:add_file_to_repo).with("people/sam.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
       expect(dataset).to receive(:add_file_to_repo).with("people.md", File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
       expect(dataset).to receive(:add_file_to_repo).with("people/stu.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
 
+      expect(dataset).to receive(:add_file_to_repo).with("people/sam.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
       dataset.create_data_files
       dataset.create_jekyll_files
     end
