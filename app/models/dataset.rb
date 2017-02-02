@@ -87,18 +87,11 @@ class Dataset < ApplicationRecord
       dataset_file.validate
       if dataset_file.dataset_file_schema
         add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
+        # For ref, does a send as it's a private method
         dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
       end
     end
 
-    # TODO a schema file *per* file!
-
-    # unless dataset_file_schema.nil?
-    #   logger.info "Schema isn't empty, so write it to schema.json"
-    #   add_file_to_repo("schema.json", dataset_file_schema.schema)
-    #   logger.info "For each file, call create_json_api_files on it, with parsed schema"
-    #   dataset_files.each { |f| f.send(:create_json_api_files, dataset_file_schema.parsed_schema) }
-    # end
   end
 
   def create_jekyll_files
@@ -113,11 +106,10 @@ class Dataset < ApplicationRecord
     add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-    # TODO a schema file *per* file!
-
-    # unless dataset_file_schema.nil?
-    #   dataset_files.each { |f| f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) }
-    # end
+    dataset_files.each do |f|
+      # For ref, does a send as it's a private method
+      f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
+    end
   end
 
   def create_json_datapackage_and_add_to_repo
