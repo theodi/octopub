@@ -56,7 +56,14 @@ class User < ApplicationRecord
   end
 
   def organizations
-    @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+    @organizations ||= begin
+      orgs = octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+      orgs.map do |org|
+        org.merge(
+          restricted: octokit_client.organization(org[:name])[:plan][:private_repos] > 0
+        )
+      end
+    end
   end
 
   def org_datasets

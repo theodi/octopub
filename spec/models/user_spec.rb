@@ -63,16 +63,39 @@ describe User do
           },
           {
             name: "org2",
+            role: "admin"
+          },
+          {
+            name: "org3",
             role: "member"
           },
         ]
+      }.once
+      
+      expect(user.octokit_client).to receive(:organization).with("org1") {
+        {
+          plan: {
+            private_repos: 20
+          }
+        }
+      }.once
+
+      expect(user.octokit_client).to receive(:organization).with("org2") {
+        {
+          plan: {
+            private_repos: 0
+          }
+        }
       }.once
 
       orgs = user.organizations
       user.organizations
 
-      expect(orgs.count).to eq(1)
-      expect(orgs.first[:name]).to eq("org1")
+      expect(orgs.count).to eq(2)
+      expect(orgs[0][:name]).to eq("org1")
+      expect(orgs[0][:restricted:]).to eq(true)
+      expect(orgs[1][:name]).to eq("org2")
+      expect(orgs[1][:restricted:]).to eq(false)
     end
 
     it "gets a user's github user details" do
