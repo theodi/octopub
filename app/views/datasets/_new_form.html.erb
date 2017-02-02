@@ -7,7 +7,7 @@
   <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, required: true, placeholder: t(:'dataset.publisher_name') %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
   <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-  <%= f.select "dataset[private]", [
+  <%= f.select "dataset[restricted]", [
                                     ["Yes, make this data available on the public web", false],
                                     ["No, only I should be able to see this data", true]
                                    ], label: "Publish publicly?", selected: dataset.restricted %>
