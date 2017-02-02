@@ -131,7 +131,7 @@
     $('form').submit(function(e) {
       $('#spinner').removeClass('hidden')
 
-      if ($('.s3-file').length > 0) {
+      if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
         postForm($(this))
       } else {
         $('body').scrollTop(0)

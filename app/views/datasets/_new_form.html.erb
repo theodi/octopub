@@ -19,13 +19,13 @@
                                       ], label: "Publication frequency", selected: dataset.frequency %>
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>
-      <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f } %>
+      <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f } %>
     <% else %>
       <% dataset.dataset_files.each_with_index do |file, i| %>
         <div class="hidden">
-          <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
+          <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
         </div>
-        <%= render partial: "dataset_files/form", locals: { file: file, f: f, i: i } %>
+        <%= render partial: "dataset_files/new_form", locals: { file: file, f: f, i: i } %>
       <% end %>
     <% end %>
   </div>
