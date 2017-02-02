@@ -365,7 +365,12 @@ describe Dataset do
 
       datapackage = JSON.parse @dataset.create_json_datapackage
 
-      expect(datapackage['resources'].first['schema']['fields']).to eq([
+      first_resource = datapackage['resources'].first
+
+      expect(first_resource['schema']['name']).to eq('schema-name')
+      expect(first_resource['schema']['description']).to eq('schema-name-description')
+
+      expect(first_resource['schema']['fields']).to eq([
         {
           "name" => "Username",
           "constraints" => {

@@ -143,11 +143,19 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(file.dataset_file_schema.schema) unless file.dataset_file_schema.nil? || file.dataset_file_schema.is_schema_otw?)
+        "schema" => json_schema_for_datapackage(file.dataset_file_schema)
       }.delete_if { |k,v| v.nil? }
     end
 
     datapackage.to_json
+  end
+
+  def json_schema_for_datapackage(dataset_file_schema)
+    return if dataset_file_schema.nil? || dataset_file_schema.is_schema_otw?
+    schema_hash = JSON.parse(dataset_file_schema.schema)
+    schema_hash["name"] = dataset_file_schema.name
+    schema_hash["description"] = dataset_file_schema.description
+    schema_hash
   end
 
   def config
