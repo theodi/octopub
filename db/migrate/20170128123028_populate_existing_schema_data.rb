@@ -7,7 +7,7 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
       schema_url = get_schema_url(dataset)
       schema = get_schema_from_repo(schema_url)
       next if schema.nil?
-      
+
       puts "we have schema for #{dataset.name} #{schema}"
       # We have a schema
       dataset_file_schema = DatasetFileSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
@@ -23,7 +23,7 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
 
   def get_schema_from_repo(schema_url)
     begin
-      JSON.generate(JSON.load(open(schema_url, allow_redirections: :safe)))
+      JSON.generate(JSON.load(open(schema_url, allow_redirections: :safe))).strip
     rescue OpenURI::HTTPError
       nil
     end
