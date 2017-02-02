@@ -25,10 +25,6 @@ class DatasetFile < ApplicationRecord
 
   after_validation :set_filename
 
-  # TODO This could become validates_associated dataset_file_schema
-  # validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_file_schema.present? }
-
-
   attr_accessor :file
 
   def self.file_from_url(file)

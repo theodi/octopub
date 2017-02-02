@@ -138,7 +138,6 @@ describe 'POST /datasets' do
       stubbed_schema_url = url_with_stubbed_get_for(good_schema_path)
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
-    #  allow_any_instance_of(Dataset).to receive(:check_schema_is_valid).and_return(false)
 
       file = {
         title: 'My File',

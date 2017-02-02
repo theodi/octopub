@@ -232,11 +232,6 @@ class Dataset < ApplicationRecord
       @repo.save
     end
 
-    # TODO fix
-    def check_schema_is_valid
-      dataset_files.first.dataset_file_schema.is_valid?(errors)
-    end
-
     def check_repo
       repo_name = "#{repo_owner}/#{name.parameterize}"
       if user.octokit_client.repository?(repo_name)
