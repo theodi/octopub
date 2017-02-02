@@ -349,6 +349,22 @@ describe DatasetFile do
       expect(@dataset.valid?).to eq(false)
     end
 
+    it 'errors on create with garbage' do
+
+      allow(CSV).to receive(:parse).and_raise("boom")
+
+      file = build(:dataset_file, filename: "example.csv",
+                                   title: "My Awesome File",
+                                   description: "My Awesome File Description",
+                                   file: @file,
+                                   dataset: @dataset)
+
+      @dataset.dataset_files << file
+      expect(file.valid?).to eq(false)
+      expect(file.errors.messages[:file].first).to eq('had some problems trying to upload. Please check your file and try again.')
+      expect(@dataset.valid?).to eq(false)
+    end
+
     it 'errors on update' do
       file = create(:dataset_file, filename: "example.csv")
 
