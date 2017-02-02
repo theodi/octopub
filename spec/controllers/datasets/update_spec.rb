@@ -263,4 +263,27 @@ describe DatasetsController, type: :controller do
       put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: files }
     end
   end
+
+  describe 'updating a restricted dataset' do
+
+    before(:each) do
+      sign_in @user
+      @dataset = create(:dataset, name: "Dataset", restricted: true, user: @user, dataset_files: [
+        create(:dataset_file, filename: 'test-data.csv')
+      ])
+      @dataset.save
+      @repo = double(GitData)
+      expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
+      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+    end
+
+    it 'can update private flag' do
+      expect(@repo).to receive(:make_public)
+      put :update, params: { id: @dataset.id, dataset: {restricted: true}}
+      @dataset.reload
+      expect(@dataset.private).to be_true
+    end
+  
+  end
+
 end
