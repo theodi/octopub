@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe DatasetsController, type: :controller do
 
+  let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+  let(:data_file_not_matching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
+  let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+
   before(:each) do
     Sidekiq::Testing.inline!
 
@@ -30,11 +34,8 @@ describe DatasetsController, type: :controller do
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      good_schema = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      schema = url_with_stubbed_get_for(good_schema)
+      schema = url_with_stubbed_get_for(good_schema_path)
       @dataset_file_schema = DatasetSchemaService.new.create_dataset_file_schema(schema)
-
-      @dataset.save
       @dataset_file = @dataset.dataset_files.first
 
       @dataset_hash = {
@@ -186,7 +187,79 @@ describe DatasetsController, type: :controller do
 
           expect(@dataset.dataset_files.count).to eq(2)
         end
+
       end
+
+    end
+
+    context('unsuccessful update') do
+
+      context 'with non-compliant csv', :schema do
+
+
+
+        before(:each) do
+          @repo = double(GitData)
+          expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+          @url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
+        end
+
+        it 'does not update a file in Github' do
+          @dataset_file.file = nil
+          file = url_with_stubbed_get_for(data_file_not_matching_schema)
+
+          expect(@dataset_file).to_not receive(:update_in_github)
+
+          put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
+              id: @dataset_file.id,
+              file: file,
+              schema_name: 'schema name',
+              schema_description: 'schema description',
+              schema: @url_for_schema
+          }]}
+
+          expect(Error.count).to eq(1)
+          expect(Error.first.messages).to eq([
+            "Dataset files is invalid",
+            "Your file '#{@dataset_file.title}' does not match the schema you provided"
+          ])
+        end
+      end
+    end
+
+    it 'filters out empty file params' do
+
+      files = [
+        {
+          id: @dataset_file.id,
+          title: "New title",
+          description: "New description"
+        },
+        {
+          title: "New file",
+          description: "New file description",
+          file: "http://example.com/new-file.csv"
+        },
+        {
+          title: "This should get binned"
+        }
+      ]
+
+      expect(UpdateDataset).to receive(:perform_async).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
+          {
+            "id" => @dataset_file.id.to_s,
+            "title" => "New title",
+            "description" => "New description"
+          },
+          {
+            "title" => "New file",
+            "description" => "New file description",
+            "file" => "http://example.com/new-file.csv"
+          }
+        ], channel_id: nil
+      ) { build(:dataset) }
+
+      put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: files }
     end
   end
 end
