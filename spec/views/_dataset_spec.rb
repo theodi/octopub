@@ -8,8 +8,8 @@ describe 'datasets/_dataset.html.erb' do
     allow(@dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
-    @private_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, private: true)
-    allow(@private_dataset).to receive(:owner_avatar) {
+    @restricted_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, restricted: true)
+    allow(@restricted_dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
   end
@@ -51,7 +51,7 @@ describe 'datasets/_dataset.html.erb' do
   it 'displays private icon in the dashboard' do
     @dashboard = true
     
-    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @private_dataset}
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @restricted_dataset}
     page = Nokogiri::HTML(rendered)
     expect(page.css('tr')[0].css('td').count).to eq(6)
     expect(page.css('tr')[0].css('td')[1].inner_html).to match('<i class="fa fa-lock" title="private"></i>')

@@ -21,7 +21,7 @@
 #  full_name         :string
 #  certificate_url   :string
 #  job_id            :string
-#  private           :boolean          default(FALSE)
+#  restricted        :boolean          default(FALSE)
 #  dataset_schema_id :integer
 #
 
@@ -44,7 +44,7 @@ describe Dataset do
                      user: @user)
 
     expect(dataset).to be_valid
-    expect(dataset.private).to be false
+    expect(dataset.restricted).to be false
   end
 
   it "returns an error if the repo already exists" do
@@ -67,7 +67,7 @@ describe Dataset do
 
     dataset = build(:dataset, :with_callback, user: @user, name: name)
 
-    expect(GitData).to receive(:create).with(@user.github_username, name, private: false, client: a_kind_of(Octokit::Client)) {
+    expect(GitData).to receive(:create).with(@user.github_username, name, restricted: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
@@ -89,7 +89,7 @@ describe Dataset do
     name = "My Awesome Dataset"
     dataset = build(:dataset, :with_callback, user: @user, name: name, owner: "my-cool-organization")
 
-    expect(GitData).to receive(:create).with('my-cool-organization', name, private: false, client: a_kind_of(Octokit::Client)) {
+    expect(GitData).to receive(:create).with('my-cool-organization', name, restricted: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
       expect(obj).to receive(:html_url) { nil }
       expect(obj).to receive(:name) { name.parameterize }
@@ -567,7 +567,7 @@ describe Dataset do
 
   end
 
-  context "creating private datasets" do
+  context "creating restricted datasets" do
     it "creates a valid dataset" do
       dataset = create(:dataset, name: "My Awesome Dataset",
                        description: "An awesome dataset",
@@ -576,19 +576,19 @@ describe Dataset do
                        license: "OGL-UK-3.0",
                        frequency: "One-off",
                        user: @user,
-                       private: true)
+                       restricted: true)
 
       expect(dataset).to be_valid
-      expect(dataset.private).to be true
+      expect(dataset.restricted).to be true
     end
 
     it "creates a private repo in Github" do
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
-      dataset = build(:dataset, :with_callback, user: @user, name: name, private: true)
+      dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
 
-      expect(GitData).to receive(:create).with(@user.github_username, name, private: true, client: a_kind_of(Octokit::Client)) {
+      expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         obj = double(GitData)
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
@@ -611,8 +611,8 @@ describe Dataset do
       # Create dataset
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
-      dataset = build(:dataset, :with_callback, user: @user, name: name, private: true)
-      expect(GitData).to receive(:create).with(@user.github_username, name, private: true, client: a_kind_of(Octokit::Client)) {
+      dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
+      expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         obj = double(GitData)
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
@@ -626,7 +626,7 @@ describe Dataset do
       dataset.reload
       expect(dataset).to receive(:update_in_github).once
       expect(dataset).to receive(:create_public_views).once
-      dataset.private = false
+      dataset.restricted = false
       dataset.save
     end
     

@@ -21,7 +21,7 @@
 #  full_name         :string
 #  certificate_url   :string
 #  job_id            :string
-#  private           :boolean          default(FALSE)
+#  restricted        :boolean          default(FALSE)
 #  dataset_schema_id :integer
 #
 
@@ -195,7 +195,7 @@ class Dataset < ApplicationRecord
 
     def create_repo_and_populate
 
-      @repo = GitData.create(repo_owner, name, private: private, client: user.octokit_client)
+      @repo = GitData.create(repo_owner, name, restricted: restricted, client: user.octokit_client)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       logger.info "Now updated with github details - call commit!"
 
@@ -212,7 +212,7 @@ class Dataset < ApplicationRecord
       dataset_files.each do |d|
         if d.file
           d.update_in_github
-          d.update_jekyll_in_github unless private?
+          d.update_jekyll_in_github unless restricted?
         end
       end
       update_datapackage
@@ -221,7 +221,7 @@ class Dataset < ApplicationRecord
 
     def make_repo_public_if_appropriate
       # Should the repo be made public?
-      if private_changed? && private == false
+      if restricted_changed? && restricted == false
         @repo.make_public
       end
     end
@@ -271,8 +271,8 @@ class Dataset < ApplicationRecord
     end
 
     def publish_public_views
-      return if private
-      if id_changed? || private_changed?
+      return if restricted
+      if id_changed? || restricted_changed?
         # This is either a new record or has just been made public
         create_public_views
       end

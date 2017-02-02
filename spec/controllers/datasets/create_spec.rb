@@ -115,7 +115,7 @@ describe DatasetsController, type: :controller do
 
 
       it 'creates a dataset with one file' do
-        expect(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {
+        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -134,8 +134,8 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.first.dataset_files.count).to eq(1)
       end
 
-      it 'creates a private dataset' do
-        expect(GitData).to receive(:create).with(@user.github_username, @name, private: true, client: a_kind_of(Octokit::Client)) {
+      it 'creates a restricted dataset' do
+        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: true, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -146,7 +146,7 @@ describe DatasetsController, type: :controller do
           publisher_url: @publisher_url,
           license: @license,
           frequency: @frequency,
-          private: true,
+          restricted: true,
         }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
@@ -158,7 +158,7 @@ describe DatasetsController, type: :controller do
       it 'creates a dataset in an organization' do
         organization = 'my-cool-organization'
 
-        expect(GitData).to receive(:create).with(organization, @name, private: false, client: a_kind_of(Octokit::Client)) {
+        expect(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -179,7 +179,7 @@ describe DatasetsController, type: :controller do
       end
 
       it 'returns 202 when async is set to true' do
-        expect(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {
+        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -197,7 +197,7 @@ describe DatasetsController, type: :controller do
 
       it 'extracts from data params', async: false do
         # This is a special Zapier thing, it sends the data in a hash called 'data'
-        expect(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {
+        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
@@ -235,7 +235,7 @@ describe DatasetsController, type: :controller do
 
         path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
 
-        expect(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {
+        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
         allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))

@@ -10,7 +10,7 @@
   <%= f.select "dataset[private]", [
                                     ["Yes, make this data available on the public web", false],
                                     ["No, only I should be able to see this data", true]
-                                   ], label: "Publish publicly?", selected: dataset.private %>
+                                   ], label: "Publish publicly?", selected: dataset.restricted %>
   <%= f.select "dataset[frequency]", [
                                         "One-off",
                                         "Annual",
