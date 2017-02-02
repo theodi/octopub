@@ -11,7 +11,7 @@ default: &default
 
 development:
   <<: *default
-  database: octopub_production
+  database: git_data_publisher_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
