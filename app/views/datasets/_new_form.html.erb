@@ -18,30 +18,22 @@
                                         "Weekly"
                                       ], label: "Publication frequency", selected: dataset.frequency %>
   <div id="files">
-    <h3>Data files</h3>
     <% if dataset.dataset_files.count == 0 %>
-      <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, f: f } %>
+      <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f } %>
     <% else %>
       <% dataset.dataset_files.each_with_index do |file, i| %>
         <div class="hidden">
-          <%= render partial: "dataset_files/form", locals: { file: DatasetFile.new, f: f, i: i } %>
+          <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
         </div>
-        <%= render partial: "dataset_files/form", locals: { file: file, f: f, i: i } %>
+        <%= render partial: "dataset_files/new_form", locals: { file: file, f: f, i: i } %>
       <% end %>
     <% end %>
   </div>
-  <% if current_page?(action: 'new') %>
-    <div class="bg-upload">
-      <%=
-        f.file_field "dataset[schema]",
-        label: "Schema",
-        help: 'Provide an optional <a href=\'http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to'.html_safe
-      %>
-    </div>
-  <% end %>
   <p class="text-right" id="wut">
-    <%= bs_button_to 'Add another file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
+
+
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>

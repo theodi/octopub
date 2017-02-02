@@ -61,10 +61,12 @@ layout: default
     </tbody>
   </table>
 
-  <h2>Schema</h2>
+  <h2>Schemas</h2>
 
   {% for resource in site.data.datapackage.resources %}
     {% if resource.schema %}
+      <h3>{{resource.schema.name}}</h3>
+      <p>{{resource.schema.description}}</p>
       <table class='table table-striped'>
         <tr>
           <th>ID</th>

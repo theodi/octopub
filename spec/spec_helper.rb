@@ -70,8 +70,18 @@ def set_api_key(user)
   request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
+def get_json_from_url(url)
+  JSON.generate(JSON.load(open(url).read.force_encoding("UTF-8")))
+end
+
 def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
+def url_for_schema_with_stubbed_get_for(path)
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/schema.json"
   stub_request(:get, url).to_return(body: File.read(path))
   url
 end

@@ -21,6 +21,10 @@ module Octopub
           requires :file, type: Hash do
             optional :description, type: String, desc: 'A short description of the file'
             optional :file, type: File, desc: 'The actual file'
+            optional :existing_dataset_file_schema_id, type: String, desc: 'The ID of an existing JSON table schema to validate against your file(s)'
+            optional :schema_name, type: String, desc: 'The name of a new JSON table schema to validate against your file(s)'
+            optional :schema_description, type: String, desc: 'The description of a JSON table schema to validate against your file(s)'
+            optional :schema, type: String, desc: 'The URL of a JSON table schema to validate against your file(s)'
           end
         end
         put 'datasets/:id/files/:file_id' do

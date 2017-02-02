@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170125103553) do
+ActiveRecord::Schema.define(version: 20170127123028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "dataset_file_schemas", force: :cascade do |t|
+    t.text    "name"
+    t.text    "description"
+    t.text    "url_in_s3"
+    t.text    "url_in_repo"
+    t.json    "schema"
+    t.integer "user_id"
+    t.index ["user_id"], name: "index_dataset_file_schemas_on_user_id", using: :btree
+  end
 
   create_table "dataset_files", force: :cascade do |t|
     t.string   "title"
@@ -25,16 +35,8 @@ ActiveRecord::Schema.define(version: 20170125103553) do
     t.text     "description"
     t.text     "file_sha"
     t.text     "view_sha"
-  end
-
-  create_table "dataset_schemas", force: :cascade do |t|
-    t.text    "name"
-    t.text    "description"
-    t.text    "url_in_s3"
-    t.text    "url_in_repo"
-    t.json    "schema"
-    t.integer "user_id"
-    t.index ["user_id"], name: "index_dataset_schemas_on_user_id", using: :btree
+    t.integer  "dataset_file_schema_id"
+    t.index ["dataset_file_schema_id"], name: "index_dataset_files_on_dataset_file_schema_id", using: :btree
   end
 
   create_table "datasets", force: :cascade do |t|
@@ -56,9 +58,7 @@ ActiveRecord::Schema.define(version: 20170125103553) do
     t.string   "full_name"
     t.string   "certificate_url"
     t.string   "job_id"
-    t.boolean  "private",           default: false
-    t.integer  "dataset_schema_id"
-    t.index ["dataset_schema_id"], name: "index_datasets_on_dataset_schema_id", using: :btree
+    t.boolean  "private",         default: false
   end
 
   create_table "errors", force: :cascade do |t|

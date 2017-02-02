@@ -2,21 +2,23 @@
 #
 # Table name: dataset_files
 #
-#  id          :integer          not null, primary key
-#  title       :string
-#  filename    :string
-#  mediatype   :string
-#  dataset_id  :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  description :text
-#  file_sha    :text
-#  view_sha    :text
+#  id                     :integer          not null, primary key
+#  title                  :string
+#  filename               :string
+#  mediatype              :string
+#  dataset_id             :integer
+#  created_at             :datetime
+#  updated_at             :datetime
+#  description            :text
+#  file_sha               :text
+#  view_sha               :text
+#  dataset_file_schema_id :integer
 #
 
 class DatasetFile < ApplicationRecord
 
   belongs_to :dataset
+  belongs_to :dataset_file_schema
 
   validate :check_schema, :check_csv
   validates_presence_of :title
@@ -38,13 +40,18 @@ class DatasetFile < ApplicationRecord
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
-  def self.new_file(file)
-    file['file'] = file_from_url(file['file']) if file["file"].class == String
+  def self.new_file(dataset_file_creation_hash)
 
+    # allow use of hashes or strings for keys
+    dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
+    dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
+
+    logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
+    # Do the actual create here
     create(
-      title: file["title"],
-      description: file["description"],
-      file: file["file"]
+      title: dataset_file_creation_hash[:title],
+      description: dataset_file_creation_hash[:description],
+      file: dataset_file_creation_hash[:file]
     )
   end
 
@@ -58,10 +65,10 @@ class DatasetFile < ApplicationRecord
 
   def update_file(file)
     file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
-
     update_hash = {
       description: file["description"],
       file: file["file"],
+      dataset_file_schema_id: file["dataset_file_schema_id"]
     }.delete_if { |k,v| v.nil? }
 
     self.update(update_hash)
@@ -91,15 +98,45 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      if dataset && dataset.schema && file
-        schema = Csvlint::Schema.load_from_json(URI.escape dataset.schema)
+      logger.info "IN CHECK SCHEMA"
+      if dataset_file_schema
 
-        schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+        if dataset_file_schema.is_schema_valid?
 
-        validation = Csvlint::Validator.new File.new(file.tempfile), {}, schema
+          # TODO this could use the cached schema in the object, but for now...
+          schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-        errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+          # logger.info "Dataset file schema.url:"
+          # logger.ap dataset_file_schema.url
+          # logger.info "Dataset file schema.url - JSON parsed"
+          # logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
+          # logger.info "Loaded, linted schema object"
+          # logger.ap schema
+          # logger.ap the_data_file.read
+          # logger.ap file.tempfile.path
+
+          # TODO what does this do?
+          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+
+          validation = Csvlint::Validator.new(get_file_for_validation_from_file, {}, schema)
+
+          # logger.ap schema.uri
+          # logger.ap schema
+          # logger.ap validation.valid?
+          # #validation.validate
+          # logger.ap validation.info_messages
+          # logger.ap errors
+
+          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+          #logger.ap errors
+        else
+          errors.add(:schema, 'is not valid')
+        end
       end
+    end
+
+    def get_file_for_validation_from_file
+      File.new(file.tempfile)
     end
 
     def for_each_file_in_schema schema, &block
@@ -131,7 +168,7 @@ class DatasetFile < ApplicationRecord
         dataset.add_file_to_repo(filename, content.to_json)
       end
     end
-      
+
     def create_json_jekyll_files schema
       for_each_file_in_schema(schema) do |filename, content|
         # Add human readable template

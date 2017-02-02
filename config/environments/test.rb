@@ -41,4 +41,10 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.active_support.test_order = :random
+
+  # # Enable stdout logger
+  # config.logger = Logger.new(STDOUT)
+
+  # # Set log level
+  # config.log_level = :info
 end
