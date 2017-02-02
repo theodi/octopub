@@ -51,19 +51,21 @@ describe 'POST /datasets/:id/files' do
 
   it 'errors if the csv does not match the schema' do
 
-    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-    url_for_schema = url_with_stubbed_get_for(schema_path)
-
-    @dataset.update(dataset_schema: DatasetSchemaService.new.create_dataset_schema(url_for_schema, @user))   
+    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
+    stubbed_schema_url = url_with_stubbed_get_for(schema_path)
 
     path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
     post "/api/datasets/#{@dataset.id}/files", params: {
       file: {
-        :title => 'My single file',
-        :description => 'My super descriptive description',
-        :file => fixture_file_upload(path)
+        title: 'My single file',
+        description: 'My super descriptive description',
+        file: fixture_file_upload(path),
+        schema_name: 'schema name',
+        schema_description: 'schema description',
+        schema: stubbed_schema_url
       }
     },
     headers: { 'Authorization' => "Token token=#{@user.api_key}" }
@@ -76,3 +78,4 @@ describe 'POST /datasets/:id/files' do
   end
 
 end
+

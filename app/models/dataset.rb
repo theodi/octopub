@@ -2,27 +2,26 @@
 #
 # Table name: datasets
 #
-#  id                :integer          not null, primary key
-#  name              :string
-#  url               :string
-#  user_id           :integer
-#  created_at        :datetime
-#  updated_at        :datetime
-#  repo              :string
-#  description       :text
-#  publisher_name    :string
-#  publisher_url     :string
-#  license           :string
-#  frequency         :string
-#  datapackage_sha   :text
-#  owner             :string
-#  owner_avatar      :string
-#  build_status      :string
-#  full_name         :string
-#  certificate_url   :string
-#  job_id            :string
-#  restricted        :boolean          default(FALSE)
-#  dataset_schema_id :integer
+#  id              :integer          not null, primary key
+#  name            :string
+#  url             :string
+#  user_id         :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#  repo            :string
+#  description     :text
+#  publisher_name  :string
+#  publisher_url   :string
+#  license         :string
+#  frequency       :string
+#  datapackage_sha :text
+#  owner           :string
+#  owner_avatar    :string
+#  build_status    :string
+#  full_name       :string
+#  certificate_url :string
+#  job_id          :string
+#  restricted      :boolean          default(FALSE)
 #
 
 require 'git_data'
@@ -31,17 +30,10 @@ class Dataset < ApplicationRecord
 
   belongs_to :user
   has_many :dataset_files
-  belongs_to :dataset_schema
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
   after_update :update_in_github, :make_repo_public_if_appropriate, :publish_public_views
   after_destroy :delete_in_github
-
-  # Backwards compatibility for API calls
-  attr_accessor :schema
-
-  # TODO This could become validates_associated dataset_schema
-  validate :check_schema_is_valid, if: Proc.new { |dataset| dataset.dataset_schema.present? }
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -91,12 +83,15 @@ class Dataset < ApplicationRecord
     logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
-    unless dataset_schema.nil?
-      logger.info "Schema isn't empty, so write it to schema.json"
-      add_file_to_repo("schema.json", dataset_schema.schema)
-      logger.info "For each file, call create_json_api_files on it, with parsed schema"
-      dataset_files.each { |f| f.send(:create_json_api_files, dataset_schema.parsed_schema) }
+    dataset_files.each do |dataset_file|
+      dataset_file.validate
+      if dataset_file.dataset_file_schema
+        add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
+        # For ref, does a send as it's a private method
+        dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
+      end
     end
+
   end
 
   def create_jekyll_files
@@ -110,8 +105,10 @@ class Dataset < ApplicationRecord
     add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
     add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-    unless dataset_schema.nil?
-      dataset_files.each { |f| f.send(:create_json_jekyll_files, dataset_schema.parsed_schema) }
+
+    dataset_files.each do |f|
+      # For ref, does a send as it's a private method
+      f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
     end
   end
 
@@ -146,11 +143,19 @@ class Dataset < ApplicationRecord
         "mediatype" => 'text/csv',
         "description" => file.description,
         "path" => "data/#{file.filename}",
-        "schema" => (JSON.parse(dataset_schema.schema) unless dataset_schema.nil? || dataset_schema.is_schema_otw?)
+        "schema" => json_schema_for_datapackage(file.dataset_file_schema)
       }.delete_if { |k,v| v.nil? }
     end
 
     datapackage.to_json
+  end
+
+  def json_schema_for_datapackage(dataset_file_schema)
+    return if dataset_file_schema.nil? || dataset_file_schema.is_schema_otw?
+    schema_hash = JSON.parse(dataset_file_schema.schema)
+    schema_hash["name"] = dataset_file_schema.name
+    schema_hash["description"] = dataset_file_schema.description
+    schema_hash
   end
 
   def config
@@ -185,7 +190,7 @@ class Dataset < ApplicationRecord
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
       # This is in for backwards compatibility at the moment required for API
-      self.schema = dataset_schema.url_in_s3 unless dataset_schema.blank?
+
     rescue Octokit::NotFound
       @repo = nil
     end
@@ -233,10 +238,6 @@ class Dataset < ApplicationRecord
     def push_to_github
       logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
       @repo.save
-    end
-
-    def check_schema_is_valid
-      dataset_schema.is_valid?(errors)
     end
 
     def check_repo

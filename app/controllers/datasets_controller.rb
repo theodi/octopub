@@ -37,6 +37,7 @@ class DatasetsController < ApplicationController
 
   def new
     @dataset = Dataset.new
+    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
   end
 
   def create
@@ -118,11 +119,11 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :restricted)
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :restricted)
   end
 
   def dataset_update_params
-    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema])
+    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id])
   end
 
   def check_signed_in?

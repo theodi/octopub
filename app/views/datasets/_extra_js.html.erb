@@ -111,14 +111,17 @@
   }
 
   $(document).ready(function() {
-    var file = $('.file:first').clone();
+    var file = $('.file-and-schema:first').clone();
 
+    // Clone button to create another file to upload
     $('#clone').click(function(e) {
       e.preventDefault();
       clone = $(file).clone()
       clone.find('.title').attr('required', 'required')
       clone.appendTo('#files');
-      bgUpload(clone)
+      clone.find('.bg-upload').each(function(i, elem) {
+        bgUpload(elem)
+      });
     });
 
     $('.bg-upload').each(function(i, elem) {
@@ -128,7 +131,7 @@
     $('form').submit(function(e) {
       $('#spinner').removeClass('hidden')
 
-      if ($('.s3-file').length > 0) {
+      if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
         postForm($(this))
       } else {
         $('body').scrollTop(0)
