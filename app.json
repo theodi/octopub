@@ -17,7 +17,7 @@
     },
     "AIRBRAKE_API_KEY": {
       "required": true
-    },
+    }
   },
   "formation": {
     "worker": {
