@@ -102,11 +102,44 @@ describe User do
       user = User.find_for_github_oauth(@auth)
 
       expect(Rails.configuration.octopub_admin).to receive(:user).with('user-mcuser') {
-        {}
+        {
+          plan: {
+            private_repos: 0
+          }
+        }
       }.once
 
       user.github_user
       user.github_user
+    end
+
+    it "knows if a user can have private repos" do
+      user = User.find_for_github_oauth(@auth)
+
+      expect(Rails.configuration.octopub_admin).to receive(:user).with('user-mcuser') {
+        {
+          plan: {
+            private_repos: 5
+          }
+        }
+      }.once
+
+      expect(user.can_create_private_repos?).to eq(true)
+    end
+
+    
+    it "knows if a user cannot have private repos" do
+      user = User.find_for_github_oauth(@auth)
+
+      expect(Rails.configuration.octopub_admin).to receive(:user).with('user-mcuser') {
+        {
+          plan: {
+            private_repos: 0
+          }
+        }
+      }.once
+
+      expect(user.can_create_private_repos?).to eq(false)
     end
 
   end

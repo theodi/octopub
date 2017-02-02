@@ -77,6 +77,13 @@ class User < ApplicationRecord
   def all_dataset_ids
     org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
+  
+  def can_create_private_repos?
+    @private_repos ||= begin
+      raise github_user.inspect
+      github_user[:plan][:private_repos] > 0
+    end
+  end
 
   private
 

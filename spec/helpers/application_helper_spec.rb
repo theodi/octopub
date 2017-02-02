@@ -14,19 +14,22 @@ describe ApplicationHelper do
         OpenStruct.new(
           organization: OpenStruct.new({
             login: "org1",
-            avatar_url: "http://www.example.org/avatar1.png"
+            avatar_url: "http://www.example.org/avatar1.png",
+            restricted: true
           })
         ),
         OpenStruct.new(
           organization: OpenStruct.new({
             login: "org2",
-            avatar_url: "http://www.example.org/avatar2.png"
+            avatar_url: "http://www.example.org/avatar2.png",
+            restricted: true
           })
         ),
         OpenStruct.new(
           organization: OpenStruct.new({
             login: "org3",
-            avatar_url: "http://www.example.org/avatar3.png"
+            avatar_url: "http://www.example.org/avatar3.png",
+            restricted: false
           })
         )
       ]
@@ -34,7 +37,10 @@ describe ApplicationHelper do
 
     allow(@user).to receive(:github_user) {
       OpenStruct.new(
-        avatar_url: "http://www.example.org/avatar2.png"
+        avatar_url: "http://www.example.org/avatar2.png",
+        plan: {
+          private_repos: 5
+        }
       )
     }
   end
@@ -45,17 +51,26 @@ describe ApplicationHelper do
         [
           'org1',
           'org1',
-          { 'data-content' => "<img src='http://www.example.org/avatar1.png' height='20' width='20' /> org1" }
+          { 
+            'data-content' => "<img src='http://www.example.org/avatar1.png' height='20' width='20' /> org1 <i class='fa fa-lock'></i>",
+            'data-private' => true
+          }
         ],
         [
           'org2',
           'org2',
-          { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> org2" }
+          {
+            'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> org2 <i class='fa fa-lock'></i>",
+            'data-private' => true
+          }
         ],
         [
           'org3',
           'org3',
-          { 'data-content' => "<img src='http://www.example.org/avatar3.png' height='20' width='20' /> org3" }
+          {
+            'data-content' => "<img src='http://www.example.org/avatar3.png' height='20' width='20' /> org3",
+            'data-private' => false
+          }
         ]
       ]
     )
@@ -66,7 +81,10 @@ describe ApplicationHelper do
       [
         'user',
         nil,
-        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
+        {
+          'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user <i class='fa fa-lock'></i>",
+          'data-private' => true        
+        }
       ]
     )
   end
@@ -76,22 +94,34 @@ describe ApplicationHelper do
       [
         'user',
         nil,
-        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
+        {
+          'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user <i class='fa fa-lock'></i>",
+          'data-private' => true        
+        }
       ],
       [
         'org1',
         'org1',
-        { 'data-content' => "<img src='http://www.example.org/avatar1.png' height='20' width='20' /> org1" }
+        {
+          'data-content' => "<img src='http://www.example.org/avatar1.png' height='20' width='20' /> org1 <i class='fa fa-lock'></i>",
+          'data-private' => true
+        }
       ],
       [
         'org2',
         'org2',
-        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> org2" }
+        {
+          'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> org2 <i class='fa fa-lock'></i>",
+          'data-private' => true       
+        }
       ],
       [
         'org3',
         'org3',
-        { 'data-content' => "<img src='http://www.example.org/avatar3.png' height='20' width='20' /> org3" }
+        {
+          'data-content' => "<img src='http://www.example.org/avatar3.png' height='20' width='20' /> org3",
+          'data-private' => false
+        }
       ]
     ])
   end
