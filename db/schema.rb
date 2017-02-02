@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170128123028) do
+ActiveRecord::Schema.define(version: 20170202152140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20170128123028) do
     t.string   "full_name",       limit: 255
     t.string   "certificate_url", limit: 255
     t.string   "job_id",          limit: 255
-    t.boolean  "private",                     default: false
+    t.boolean  "restricted",                    default: false
   end
 
   create_table "errors", force: :cascade do |t|
