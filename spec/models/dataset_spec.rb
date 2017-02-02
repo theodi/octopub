@@ -452,7 +452,7 @@ describe Dataset do
 
       expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
       expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      expect(dataset).to receive(:add_file_to_repo).with("schema.json", file.dataset_file_schema.schema)
+      expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", file.dataset_file_schema.schema)
       expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
       expect(dataset).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
       expect(dataset).to receive(:add_file_to_repo).with("index.json", '[{"@type":"/people","url":"people.json"}]')

@@ -86,7 +86,7 @@ class Dataset < ApplicationRecord
     dataset_files.each do |dataset_file|
       dataset_file.validate
       if dataset_file.dataset_file_schema
-        add_file_to_repo("#{dataset_file.title.downcase.parameterize}-schema.json", dataset_file.dataset_file_schema.schema)
+        add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
         dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
       end
     end
@@ -190,7 +190,7 @@ class Dataset < ApplicationRecord
     begin
       @repo = GitData.find(repo_owner, self.name, client: client)
       # This is in for backwards compatibility at the moment required for API
-      
+
     rescue Octokit::NotFound
       @repo = nil
     end
