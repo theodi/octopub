@@ -11,7 +11,13 @@
     },
     "GITHUB_TOKEN": {
       "required": true
-    }
+    },
+    "AIRBRAKE_PROJECT_ID": {
+      "required": true
+    },
+    "AIRBRAKE_API_KEY": {
+      "required": true
+    },
   },
   "formation": {
     "worker": {
