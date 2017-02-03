@@ -3,13 +3,18 @@
     <%= image_tag dataset.owner_avatar, height: 20, width: 20 %>
     <%= dataset.repo_owner %>
   </td>
+  <% if @dashboard %>
+    <td class="private">
+      <% if dataset.restricted %>
+        <i class='fa fa-lock' title="private"></i>
+      <% else %>
+        <i class='fa fa-globe' title="public"></i>
+      <% end %>
+    </td>
+  <% end %>
   <td><%= dataset.name %></td>
   <td>
-    <% if @dashboard %>
-      <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
-    <% else %>
-      <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
-    <% end %>
+    <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
   </td>
   <% if @dashboard %>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>

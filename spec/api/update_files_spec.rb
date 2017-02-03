@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'PUT /datasets/:id/files/:file_id' do
 

@@ -4,11 +4,11 @@ class GitData
 
   def self.create(owner, repo_name, options = {})
     client = options[:client]
-    private = options[:private] || false
+    restricted = options[:restricted] || false
     if client.user[:login].downcase == owner.downcase
-      repo = client.create_repository(repo_name.parameterize, private: private, auto_init: true)
+      repo = client.create_repository(repo_name.parameterize, private: restricted, auto_init: true)
     else
-      repo = client.create_repository(repo_name.parameterize, private: private, auto_init: true, organization: owner)
+      repo = client.create_repository(repo_name.parameterize, private: restricted, auto_init: true, organization: owner)
     end
     # Create repo that auto initializes
     full_name = full_name(owner, repo_name)
@@ -75,7 +75,7 @@ class GitData
   end
 
   def make_public
-    @client.update_repository(@full_name, private: false)
+    @client.update_repository(@full_name, restricted: false)
   end
 
   private

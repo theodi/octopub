@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'POST /datasets' do
 
@@ -28,7 +28,7 @@ describe 'POST /datasets' do
 
     @repo = double(GitData)
 
-    allow(GitData).to receive(:create).with(@user.github_username, @name, private: false, client: a_kind_of(Octokit::Client)) {
+    allow(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
       @repo
     }
 
