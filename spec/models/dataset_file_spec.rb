@@ -15,7 +15,7 @@
 #  dataset_file_schema_id :integer
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe DatasetFile do
 

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe DatasetFileSchemasController, type: :controller do
   describe 'index' do
