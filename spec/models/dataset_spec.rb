@@ -26,7 +26,9 @@
 
 require 'spec_helper'
 
-describe Dataset do
+#describe Dataset , vcr: { cassette_name: 'odlifier', :allow_playback_repeats => true, :record => :new_episodes, :match_requests_on => [:host, :method] } do
+
+describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     @user = create(:user, name: "user-mcuser", email: "user@user.com")
