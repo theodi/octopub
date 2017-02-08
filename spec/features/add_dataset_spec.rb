@@ -48,4 +48,25 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(page).to have_content "Upload a schema for this Data File"
     end
   end
+
+  # context "visitor has schemas and" do
+
+  #   before(:each) do
+  #     good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
+  #     create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
+  #   end
+
+  #   scenario "logged in visitors can access their own added schemas" do
+  #     visit root_path
+  #     click_link "Add dataset"
+  #     expect(DatasetFileSchema.count).to be 1
+  #     expect(page).to have_content "Dataset name"
+  #     within 'form' do
+  #       expect(page).to have_content "good schema"
+  #       expect(page).to have_content "Or upload a new one"
+  #       expect(page).to have_content "No schema required"
+  #     end
+  #   end
+  # end
 end
+
