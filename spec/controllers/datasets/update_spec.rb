@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DatasetsController, type: :controller do
+describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host, :method] } do
 
   let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
   let(:data_file_not_matching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
