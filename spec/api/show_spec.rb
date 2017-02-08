@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'GET /datasets/:id' do
+describe 'GET /datasets/:id', vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")
