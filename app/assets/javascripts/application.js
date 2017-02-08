@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require bootstrap-sprockets
 //= require bootstrap-select
-//= require_tree .
+//= require jquery.ui.widget.js
+//= require z.jquery.fileupload.js
