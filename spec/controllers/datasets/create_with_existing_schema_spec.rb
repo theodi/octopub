@@ -21,14 +21,16 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
     allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
 
-    @dataset_file_schema = create(:dataset_file_schema,
-      url_in_repo: @url,
-      name: 'existing schema',
-      description: 'existing schema description',
-      user: @user
+    @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+    @dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema(
+      'existing schema',
+      'existing schema description',
+      @url_for_schema,
+      @user
     )
 
-    @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
     @files ||= []
   end
 
