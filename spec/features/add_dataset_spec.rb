@@ -47,4 +47,13 @@ feature "Add dataset page", type: :feature do
       expect(page).to have_content "user-mcuser"
     end
   end
+
+  scenario "logged in visitors can access their own added schemas" do
+    visit root_path
+    click_link "Add dataset"
+    expect(page).to have_content "Dataset name"
+    within 'form' do
+      expect(page).to have_content "user-mcuser"
+    end
+  end
 end
