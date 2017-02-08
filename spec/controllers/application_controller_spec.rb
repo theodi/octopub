@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationController, type: :controller do
+describe ApplicationController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
    describe "GET 'index'" do
 
      it "returns http success" do

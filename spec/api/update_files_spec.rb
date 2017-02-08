@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'PUT /datasets/:id/files/:file_id' do
+describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     Sidekiq::Testing.inline!

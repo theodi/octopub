@@ -1,4 +1,4 @@
-RSpec.describe "Dataset creation", type: :request do
+RSpec.describe "Dataset creation", type: :request, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
 
