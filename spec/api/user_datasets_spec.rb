@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'GET /user/datasets', vcr: { :match_requests_on => [:host, :method] } do
 

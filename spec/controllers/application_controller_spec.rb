@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe ApplicationController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
    describe "GET 'index'" do

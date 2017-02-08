@@ -1,5 +1,6 @@
 language: ruby
 cache: bundler
+dist: trusty
 sudo: false
 rvm:
 - 2.4.0
@@ -7,7 +8,7 @@ bundler_args: "--without development --path=~/.bundle"
 before_script:
 - bundle exec rake db:create db:migrate
 addons:
-  postgresql: '9.3'
+  postgresql: '9.6'
 notifications:
   irc:
     channels:

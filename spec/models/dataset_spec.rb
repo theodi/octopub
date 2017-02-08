@@ -24,7 +24,7 @@
 #  restricted      :boolean          default(FALSE)
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 #describe Dataset , vcr: { cassette_name: 'odlifier', :allow_playback_repeats => true, :record => :new_episodes, :match_requests_on => [:host, :method] } do
 
