@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'GET /user/datasets' do
+describe 'GET /user/datasets', vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     @user = create(:user, name: "User McUser", email: "user@user.com")

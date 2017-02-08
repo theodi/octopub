@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DatasetsController, type: :controller do
+describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     Sidekiq::Testing.inline!
