@@ -1,6 +1,6 @@
 require "rails_helper"
 
-feature "Add dataset page", type: :feature do
+feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
 
   let(:organizations) {
     [
