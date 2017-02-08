@@ -13,6 +13,7 @@
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
+  validates_presence_of :user
 
   attr_accessor :parsed_schema
 
