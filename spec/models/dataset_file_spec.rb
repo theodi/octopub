@@ -17,7 +17,7 @@
 
 require 'rails_helper'
 
-describe DatasetFile do
+describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     @user = create(:user, name: "user-mcuser", email: "user@user.com")
