@@ -89,11 +89,10 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
-  gem 'coveralls', require: false
+  gem 'coveralls', git: 'https://github.com/tagliala/coveralls-ruby.git', branch: 'update-simplecov-dependency', require: false
   gem 'vcr'
   gem 'webmock'
   gem 'foreman'
-
   # Rails 5 has pulled out 'assigns' - this puts it back
   gem 'rails-controller-testing'
 end

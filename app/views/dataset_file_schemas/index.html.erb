@@ -1,23 +1,33 @@
 <h1 class="page-header">Dataset File Schemas</h1>
 
 <% if @dataset_file_schemas.any? %>
-  <table class="table">
-    <tr>
-      <th>Owner</th>
-      <th>Name</th>
-      <th>Link</th>
-    </tr>
-    <% @dataset_file_schemas.each do |dataset_file_schema| %>
-      <tr>
-        <td><%= dataset_file_schema.user.name %></td>
-        <td><%= dataset_file_schema.name %></td>
-        <td></td>
-      </tr>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id=<%= "heading-#{index}" %>>
+          <h4 class="panel-title">
+            <% if index == 0 %>
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="true" aria-controls="<%= "collapse#{index}" %>">
+              <%= dataset_file_schema.name %>
+            </a>
+            <% else %>
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="false" aria-controls="<%= "collapse#{index}" %>">
+              <%= dataset_file_schema.name %>
+            </a>
+            <% end %>
+          </h4>
+        </div>
+        <div id="<%= "collapse#{index}" %>" class="panel-collapse collapse <%= 'in' if index == 0 %>" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            <h3><%= dataset_file_schema.description %></h3>
+            <code><%= dataset_file_schema.schema %></code>
+          </div>
+        </div>
+      </div>
     <% end %>
-
-  </table>
+  </div>
 <% else %>
-  <p class='text-center lead'>You currently have no dataset schemas</p>
+  <p class='text-center lead'>You currently have no dataset file schemas</p>
 <% end %>
 
 <div class="text-center">
