@@ -43,7 +43,8 @@ module ApplicationHelper
   end
 
   def markdown_json(json_text)
-    markdown("```json\n#{json_text}```")
+    pretty_json = JSON.pretty_generate JSON.parse(json_text)
+    markdown("```json\n#{pretty_json}")
   end
 
 end
