@@ -35,6 +35,9 @@ gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem 'will_paginate-bootstrap'
+# For syntax highlighting
+gem 'coderay'
+
 
 # Logging and debug
 gem 'awesome_print'

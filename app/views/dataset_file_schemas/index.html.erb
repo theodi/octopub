@@ -20,7 +20,7 @@
         <div id="<%= "collapse#{index}" %>" class="panel-collapse collapse <%= 'in' if index == 0 %>" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
             <h3><%= dataset_file_schema.description %></h3>
-            <code><%= dataset_file_schema.schema %></code>
+            <%= markdown_json(dataset_file_schema.schema) %>
           </div>
         </div>
       </div>

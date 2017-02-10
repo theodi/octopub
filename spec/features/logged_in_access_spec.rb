@@ -41,7 +41,10 @@ feature "Logged in access to pages", type: :feature do
     schema_description = 'Good schema description superduper'
 
     good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
-    create(:dataset_file_schema, url_in_repo: good_schema_url, name: schema_name, description: schema_description, user: @user)
+   # create(:dataset_file_schema, url_in_repo: good_schema_url, name: schema_name, description: schema_description, user: @user)
+
+    DatasetFileSchemaService.new.create_dataset_file_schema(schema_name, schema_description, good_schema_url, @user)
+
 
     visit root_path
     sign_in @user
