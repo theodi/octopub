@@ -20,7 +20,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body data-pusher-key="<%= Pusher.key %>">
+  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= Rails.configuration.pusher_cluster %>">
     <div class="container">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">

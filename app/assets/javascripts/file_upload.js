@@ -70,10 +70,7 @@ function postForm(form) {
 }
 
 function bindToPusher(channelID) {
-  Pusher.host = 'ws-eu.pusher.com';
-  Pusher.sockjs_host = 'sockjs-eu.pusher.com';
-  var pusherKey = $('body').data('pusher-key');
-  var pusher = new Pusher(pusherKey);
+  var pusher = setUpPusher();
   var channel = pusher.subscribe(channelID);
 
   channel.bind('dataset_created', function(data) {
