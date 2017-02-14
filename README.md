@@ -34,17 +34,17 @@ GITHUB_USER=bert
 
 Pre-requisites, GitHub account, AWS account, Pusher Account, Open Data Certificate account - these instructions assume you have these in place already.
 
-#### Github setup 
+#### Github setup
 
 Create a github application
 
 1. Log in to github and go to ```settings```
 2. Click on ```OAuth applications``` in the ```Developer settings``` section
-3. Create a new OAuth application with a unique name, you can use http://octopub.io for the hompage. 
+3. Create a new OAuth application with a unique name, you can use http://octopub.io for the hompage.
 For the callback URL use your local dev machine's address, i.e. http://octopub.dev
-   
+
 Once created, you can use the client ID and client secret in your ```.env``` file as follows:
- 
+
  ```
 GITHUB_KEY=<whatever your Client ID is>
 GITHUB_SECRET=<whatever your client secret is>
@@ -52,7 +52,7 @@ GITHUB_TOKEN=???
 ```
 
 #### AWS setup
-  
+
 Create an AWS S3 bucket and grant it's permissions accordingly
 
 1. Log in to your AWS account and create an S3 bucket with a sensible name
@@ -88,10 +88,10 @@ AWS_ACCESS_KEY_ID=<YOURNEWUSERACCESSKEY>
 AWS_SECRET_ACCESS_KEY=<YOURNEWUSERSECRET>
 S3_BUCKET=<YOURNEWS3BUCKETNAME>
 ```
-  
+
 #### Pusher setup
 
- 
+
 1. Log in to https://pusher.com
 2. Create a new application and call it something sensible
 3. Select the ```App Keys``` tab and get the values and paste them in to your ```.env``` file
@@ -101,6 +101,8 @@ PUSHER_APP_ID=
 PUSHER_KEY=
 PUSHER_SECRET=
 ```
+
+NOTE: You may be set up for a non-default Pusher cluster (The default is ```us-east-1```), which causes some confusion. Look at your App overiew on pusher.com and get the Cluster value from the 'Keys' section. Add this to your ```.env``` file as ```PUSHER_CLUSTER=```
 
 ### ODC Data certificate setup
 
@@ -125,7 +127,7 @@ ODC_USERNAME=<your username which is your email address you used when signing up
 
 ### How to check the Sidekiq queue
 
-in a rails console session 
+in a rails console session
 
 ```
 require 'sidekiq/api'
