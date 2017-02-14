@@ -17,3 +17,4 @@
 //= require jquery.ui.widget
 //= require jquery.fileupload
 //= require pusher.min
+//= require file_upload
