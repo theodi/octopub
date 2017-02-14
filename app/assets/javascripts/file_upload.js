@@ -58,9 +58,8 @@ function bgUpload(elem) {
 }
 
 function postForm(form) {
-  var channelID = form.attr('method') + '-<%= SecureRandom.uuid %>';
-
-  console.log(channelID);
+  var channelID = form.attr('method') + '-' +  uuid();
+  console.log("Pusher channelID: " + channelID);
 
   $.ajax({
     type: form.attr('method'),
@@ -73,8 +72,8 @@ function postForm(form) {
 function bindToPusher(channelID) {
   Pusher.host = 'ws-eu.pusher.com';
   Pusher.sockjs_host = 'sockjs-eu.pusher.com';
-
-  var pusher = new Pusher('<%= Pusher.key %>');
+  var pusherKey = $('body').data('pusher-key');
+  var pusher = new Pusher(pusherKey);
   var channel = pusher.subscribe(channelID);
 
   channel.bind('dataset_created', function(data) {
