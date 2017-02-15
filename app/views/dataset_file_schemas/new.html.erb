@@ -4,7 +4,7 @@
 <%= bootstrap_form_for(@dataset_file_schema) do |f| %>
   <%= f.text_field :name %>
   <%= f.text_area :description %>
-  <%= f.select :user, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+  <%= f.select :user_id, organization_select_options_schema, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>
