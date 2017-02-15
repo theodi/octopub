@@ -20,6 +20,7 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
+    ap user
     dataset.fetch_repo(user.octokit_client)
     dataset
   end
@@ -49,6 +50,8 @@ class UpdateDataset
 
   def add_file(file)
 
+    @repo = @dataset.fetch_repo
+
     f = DatasetFile.new_file(file)
     if file["schema"]
       # Create schema
@@ -59,8 +62,8 @@ class UpdateDataset
 
     @dataset.dataset_files << f
     if f.save
-      f.add_to_github
-      f.add_jekyll_to_github
+      f.add_to_github(@repo)
+      f.add_jekyll_to_github(@repo)
       f.file = nil
     end
   end

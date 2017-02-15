@@ -46,7 +46,8 @@ guard :rspec, cmd: "spring rspec", failed_mode: :focus  do
   rails = dsl.rails(view_extensions: %w(erb))
   dsl.watch_spec_files_for(rails.app_files)
   dsl.watch_spec_files_for(rails.views)
-
+  watch(%r{^app/(.+)\.rb$})                           { |m| "spec/#{m[1]}_spec.rb" }
+  watch(%r{^app/(services/.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
   watch(rails.controllers) do |m|
     [
       rspec.spec.call("routing/#{m[1]}_routing"),

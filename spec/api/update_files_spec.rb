@@ -12,7 +12,10 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     @file = @dataset.dataset_files.last
 
     @repo = double(GitData)
-    expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+    allow_any_instance_of(User).to receive(:octokit_client).and_return {}
+    allow_any_instance_of(Dataset).to receive(:fetch_repo).with(:param).and_return { @repo }
+
+  #  expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
   end
 
   after(:each) do

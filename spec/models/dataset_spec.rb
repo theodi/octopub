@@ -24,6 +24,7 @@
 #  restricted      :boolean          default(FALSE)
 #
 
+
 require 'rails_helper'
 
 #describe Dataset , vcr: { cassette_name: 'odlifier', :allow_playback_repeats => true, :record => :new_episodes, :match_requests_on => [:host, :method] } do
@@ -76,7 +77,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       obj
     }
 
-    expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+    jekyll_service = JekyllService.new(dataset, nil)
+
+    allow_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github).and_return { nil }
     expect(dataset).to receive(:create_public_views)
 
     dataset.save
@@ -98,7 +101,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       obj
     }
 
-    expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+    jekyll_service = JekyllService.new(dataset, nil)
+
+    expect(jekyll_service).to receive(:add_files_to_repo_and_push_to_github)
     expect(dataset).to receive(:create_public_views)
 
     dataset.save
@@ -183,20 +188,21 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "creates a file in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
-    repo = dataset.instance_variable_get(:@repo)
-
+    #repo = dataset.instance_variable_get(:@repo)
+    repo = double(GitData)
     expect(repo).to receive(:add_file).with("my-file", "File contents")
+    jekyll_service = JekyllService.new(dataset, repo)
 
-    dataset.add_file_to_repo("my-file", "File contents")
+    jekyll_service.add_file_to_repo("my-file", "File contents")
   end
 
   it "creates a file in a folder in Github" do
     dataset = build(:dataset, user: @user, repo: "repo")
-    repo = dataset.instance_variable_get(:@repo)
-
+ #   repo = dataset.instance_variable_get(:@repo)
+    repo = double(GitData)
     expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
-
-    dataset.add_file_to_repo("folder/my-file", "File contents")
+    jekyll_service = JekyllService.new(dataset, repo)
+    jekyll_service.add_file_to_repo("folder/my-file", "File contents")
   end
 
   it "updates a file in Github" do
@@ -224,22 +230,27 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                                   create(:dataset_file)
                                 ]
 
-      expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')).read)
-      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
 
-      expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
-      expect(dataset).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+      jekyll_service = JekyllService.new(dataset, nil)
 
-      dataset.create_data_files
-      dataset.create_jekyll_files
+      allow_any_instance_of(RepoService).to receive(:add_file).and_return {}
+
+      expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}
+
+      expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+
+      jekyll_service.create_data_files
+      jekyll_service.create_jekyll_files
     end
 
     it "with a schema" do
@@ -253,23 +264,27 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
       dataset = build(:dataset, user: @user, dataset_files: [dataset_file])
 
-      expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(data_file).read)
-      expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-      expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
+      jekyll_service = JekyllService.new(dataset, nil)
+      allow_any_instance_of(RepoService).to receive(:add_file).with(:param_one, :param_two).and_return { nil }
 
-      expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
-      expect(dataset).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-      expect(dataset).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-      dataset.create_data_files
-      dataset.create_jekyll_files
+      expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(data_file).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}
+      expect(jekyll_service).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
+
+      expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-dataset.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+      expect(jekyll_service).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+
+      jekyll_service.create_data_files
+      jekyll_service.create_jekyll_files
     end
   end
 
@@ -287,7 +302,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                                 file
                               ])
 
-    datapackage = JSON.parse(dataset.create_json_datapackage)
+    jekyll_service = JekyllService.new(dataset, nil)
+    datapackage = JSON.parse(jekyll_service.create_json_datapackage)
 
     expect(datapackage["name"]).to eq("my-awesome-dataset")
     expect(datapackage["title"]).to eq("My Awesome Dataset")
@@ -312,13 +328,15 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset = create(:dataset, dataset_files: [
       create(:dataset_file)
     ])
-    expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage)
-    dataset.create_json_datapackage_and_add_to_repo
+    jekyll_service = JekyllService.new(dataset, nil)
+    expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage)
+    jekyll_service.create_json_datapackage_and_add_to_repo
   end
 
   it "updates the datapackage" do
     dataset = create(:dataset)
-    expect(dataset).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
+    jekyll_service = JekyllService.new(dataset, nil)
+    expect(jekyll_service).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
     dataset.update_datapackage
   end
 
@@ -438,7 +456,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                                    description: "My Awesome File Description")
 
       dataset = build(:dataset, dataset_files: [file])
-      datapackage = JSON.parse dataset.create_json_datapackage
+      jekyll_service = JekyllService.new(dataset, nil)
+      datapackage = JSON.parse jekyll_service.create_json_datapackage
 
       expect(datapackage['resources'].first['schema']).to eq(nil)
     end
@@ -478,31 +497,34 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
         dataset.dataset_files << dataset_file
 
-        expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
-        expect(dataset).to receive(:add_file_to_repo).with("datapackage.json", dataset.create_json_datapackage) { {content: {} }}
-        expect(dataset).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
-        expect(dataset).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
-        expect(dataset).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
-        expect(dataset).to receive(:add_file_to_repo).with("index.json", '[{"@type":"/people","url":"people.json"}]')
-        expect(dataset).to receive(:add_file_to_repo).with("people/stu.json", '{"@id":"/people/stu","person":"stu","age":34,"@type":"/people"}')
+        jekyll_service = JekyllService.new(dataset, nil)
+        allow_any_instance_of(RepoService).to receive(:add_file).with(:param_one, :param_two).and_return { nil }
 
-        expect(dataset).to receive(:add_file_to_repo).with("data/my-awesome-file.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
-        expect(dataset).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}
+        expect(jekyll_service).to receive(:add_file_to_repo).with("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people/sam.json", '{"@id":"/people/sam","person":"sam","age":42,"@type":"/people"}')
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people.json", '[{"@id":"/people/sam","url":"people/sam.json"},{"@id":"/people/stu","url":"people/stu.json"}]')
+        expect(jekyll_service).to receive(:add_file_to_repo).with("index.json", '[{"@type":"/people","url":"people.json"}]')
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people/stu.json", '{"@id":"/people/stu","person":"stu","age":34,"@type":"/people"}')
 
-        expect(dataset).to receive(:add_file_to_repo).with("people.md", File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
-        expect(dataset).to receive(:add_file_to_repo).with("people/stu.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-file.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_config.yml", dataset.config)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
-        expect(dataset).to receive(:add_file_to_repo).with("people/sam.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
-        dataset.create_data_files
-        dataset.create_jekyll_files
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people.md", File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people/stu.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+
+        expect(jekyll_service).to receive(:add_file_to_repo).with("people/sam.md", File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+        jekyll_service.create_data_files
+        jekyll_service.create_jekyll_files
       end
 
     end

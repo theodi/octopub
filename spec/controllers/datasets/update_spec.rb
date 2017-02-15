@@ -12,8 +12,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
     @user = create(:user, name: "User McUser", email: "user@user.com")
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
 
   before(:each, schema: true) do
@@ -53,7 +53,9 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         @repo = double(GitData)
 
         expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
-        expect(@dataset).to receive(:update_datapackage)
+        @jekyll_service = JekyllService.new(@dataset, @repo)
+
+        expect(@jekyll_service).to receive(:update_datapackage)
         expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
         Dataset.set_callback(:update, :after, :update_in_github)

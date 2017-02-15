@@ -50,15 +50,16 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
 
       @dataset = build(:dataset, repo: "my-repo", user: @user)
       @dataset.dataset_files << @file
+      @jekyll_service = JekyllService.new(@dataset, nil)
     end
 
     it "adds data file to Github" do
-      expect(@dataset).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
+      expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
       @file.send(:add_to_github)
     end
 
     it "adds jekyll file to Github" do
-      expect(@dataset).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+      expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
       @file.send(:add_jekyll_to_github)
     end
 

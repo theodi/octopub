@@ -74,20 +74,36 @@ class DatasetFile < ApplicationRecord
     self.update(update_hash)
   end
 
-  def add_to_github
-    dataset.add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def add_file_to_repo(repo, filename, file)
+    p filename
+    p "WOOF"
+    ap file
+    js = JekyllService.new(dataset, repo)
+    js.add_file_to_repo(filename, file)
   end
 
-  def add_jekyll_to_github
-    dataset.add_file_to_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+  def update_file_in_repo(repo, filename, file)
+    p filename
+    p "WOOF"
+    ap file
+    js = JekyllService.new(dataset, repo)
+    js.add_file_to_repo(filename, file)
   end
 
-  def update_in_github
-    dataset.update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def add_to_github(repo)
+    add_file_to_repo(repo, "data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
-  def update_jekyll_in_github
-    dataset.update_file_in_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+  def add_jekyll_to_github(repo)
+    add_file_to_repo(repo, "data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+  end
+
+  def update_in_github(repo)
+    update_file_in_repo(repo, "data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  end
+
+  def update_jekyll_in_github(repo)
+    update_file_in_repo(repo, "data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def delete_from_github(file)

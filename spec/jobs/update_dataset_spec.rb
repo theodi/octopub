@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UpdateDataset do
+describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
     skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
@@ -17,6 +17,8 @@ describe UpdateDataset do
     expect(@worker).to receive(:get_dataset).with(@dataset.id, @user) {
       @dataset
     }
+
+    expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
     expect(@worker).to receive(:jid) {
       "84855ffe6a7e1d6dacf6685e"
