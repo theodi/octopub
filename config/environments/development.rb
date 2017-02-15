@@ -3,12 +3,12 @@ require 'pusher'
 Pusher.app_id = ENV['PUSHER_APP_ID']
 Pusher.key = ENV['PUSHER_KEY']
 Pusher.secret = ENV['PUSHER_SECRET']
-Pusher.cluster = ENV['PUSHER_CLUSTER'] unless ENV['PUSHER_CLUSTER'].empty?
+Pusher.cluster = ENV['PUSHER_CLUSTER'] unless ENV['PUSHER_CLUSTER'].nil?
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.pusher_cluster = ENV['PUSHER_CLUSTER'] unless ENV['PUSHER_CLUSTER'].empty?
+  config.pusher_cluster = ENV['PUSHER_CLUSTER'] unless ENV['PUSHER_CLUSTER'].nil?
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
