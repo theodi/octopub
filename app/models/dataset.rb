@@ -199,8 +199,7 @@ class Dataset < ApplicationRecord
   private
 
     def create_repo_and_populate
-
-      @repo = GitData.create(repo_owner, name, restricted: restricted, client: user.octokit_client)
+      @repo = RepoService.new.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       logger.info "Now updated with github details - call commit!"
 
