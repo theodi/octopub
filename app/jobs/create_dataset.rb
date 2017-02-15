@@ -13,13 +13,19 @@ class CreateDataset
     ))
 
     # TODO this new_file thing does funny stuff
-    files.each do |dateset_file_creation_hash|
-      dataset_file = DatasetFile.new_file(dateset_file_creation_hash)
-      if dateset_file_creation_hash["schema"]
+    files.each do |dataset_file_creation_hash|
+      dataset_file = DatasetFile.new_file(dataset_file_creation_hash)
+      if dataset_file_creation_hash["schema"]
         # Create schema
-        # TODO if schema is existing, use it rather than create a new one
-        schema = DatasetFileSchemaService.new.create_dataset_file_schema(dateset_file_creation_hash["schema_name"], dateset_file_creation_hash["schema_description"], dateset_file_creation_hash["schema"], user)
+        schema = DatasetFileSchemaService.new.create_dataset_file_schema(
+          dataset_file_creation_hash["schema_name"],
+          dataset_file_creation_hash["schema_description"],
+          dataset_file_creation_hash["schema"],
+          user
+        )
         dataset_file.dataset_file_schema = schema
+      elsif dataset_file_creation_hash["dataset_file_schema_id"]
+        dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
       end
       @dataset.dataset_files << dataset_file
     end

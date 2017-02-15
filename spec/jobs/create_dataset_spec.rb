@@ -79,6 +79,38 @@ describe CreateDataset do
     expect(DatasetFileSchema.first.schema).to eq get_json_from_url(schema_path)
   end
 
+  it 'creates a dataset with an existing schema' do
+    mock_client = mock_pusher('beep-beep')
+    expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
+
+    schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+    data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+    url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+    dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema(
+      'existing schema',
+      'existing schema description',
+      url_for_schema,
+      @user
+        )
+
+    @files = [
+      ActiveSupport::HashWithIndifferentAccess.new(
+        title: 'My File',
+        description: 'My description',
+        file: url_with_stubbed_get_for(data_file),
+        dataset_file_schema_id: dataset_file_schema.id
+      )
+    ]
+
+    @worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
+    expect(Dataset.count).to eq(1)
+    expect(DatasetFileSchema.count).to eq(1)
+    expect(DatasetFileSchema.first.url).to eq url_for_schema
+    expect(DatasetFileSchema.first.schema).to eq get_json_from_url(schema_path)
+    expect(Dataset.first.dataset_files.first.dataset_file_schema.id).to eq dataset_file_schema.id
+  end
+
   it 'reports errors' do
     filename = 'schemas/bad-schema.json'
     path = File.join(Rails.root, 'spec', 'fixtures', filename)

@@ -2,6 +2,13 @@ require 'rails_helper'
 
 describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
 
+  let(:dataset_name) { "My cool dataset" }
+  let(:description) { "This is a description" }
+  let(:publisher_name) { "Cool inc"}
+  let(:publisher_url) { "http://example.com"}
+  let(:license) { "OGL-UK-3.0" }
+  let(:frequency) { "Monthly" }
+
   before(:each) do
     Sidekiq::Testing.inline!
     skip_dataset_callbacks!
@@ -45,11 +52,11 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       it 'returns an error if no publisher is specified' do
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
         expect(request).to render_template(:new)
@@ -58,12 +65,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
       it 'returns an error if there are no files specified' do
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: [] }
 
         expect(request).to render_template(:new)
@@ -72,11 +79,11 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
       it 'returns an error if there are no files nor pubslisher specified' do
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: [] }
 
         expect(request).to render_template(:new)
@@ -120,12 +127,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
@@ -140,12 +147,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency,
           restricted: true,
         }, files: @files }
 
@@ -163,12 +170,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency,
           owner: organization
         }, files: @files }
 
@@ -184,12 +191,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
 
         post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files, async: true }
 
         expect(response.code).to eq("202")
@@ -203,12 +210,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
         data = {
           dataset: {
-            name: @name,
-            description: @description,
-            publisher_name: @publisher_name,
-            publisher_url: @publisher_url,
-            license: @license,
-            frequency: @frequency
+            name: dataset_name,
+            description: description,
+            publisher_name: publisher_name,
+            publisher_url: publisher_url,
+            license: license,
+            frequency: frequency
           },
           files: [
             {
@@ -243,105 +250,18 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         @files.first["file"] = fixture_file_upload('test-data.csv')
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         expect(@user.datasets.first.dataset_files.count).to eq(1)
-      end
-    end
-
-    context('with a schema') do
-
-      let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
-      let(:data_file_not_marching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
-      let(:schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
-
-      before(:each) do
-        @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
-      end
-
-      context 'returns an error if the file does not match the schema' do
-
-        before(:each) do
-          @files << {
-            title: 'My File',
-            description: 'My Description',
-            file: url_with_stubbed_get_for(data_file_not_marching_schema),
-            schema_name: 'schema name',
-            schema_description: 'schema description',
-            schema: @url_for_schema
-          }
-
-          @dataset = {
-            name: @name,
-            description: @description,
-            publisher_name: @publisher_name,
-            publisher_url: @publisher_url,
-            license: @license,
-            frequency: @frequency
-          }
-        end
-
-        it 'without websockets' do
-
-          post :create, params: { dataset: @dataset, files: @files }
-
-          expect(Dataset.count).to eq(0)
-          expect(Error.count).to eq(1)
-          expect(Error.first.messages).to eq([
-            "Dataset files is invalid",
-            "Your file 'My File' does not match the schema you provided"
-          ])
-        end
-
-        it 'with websockets' do
-
-          mock_client = mock_pusher('foo-bar')
-          expect(mock_client).to receive(:trigger).with('dataset_failed', [
-            "Dataset files is invalid",
-            "Your file 'My File' does not match the schema you provided"
-          ])
-          post :create, params: { dataset: @dataset, files: @files, channel_id: 'foo-bar' }
-        end
-      end
-
-      it 'creates sucessfully if the file matches the schema' do
-
-        @files << {
-          title: 'My File',
-          description: 'My Description',
-          file: url_with_stubbed_get_for(data_file),
-          schema_name: 'schem nme',
-          schema_description: 'schema description',
-          schema: @url_for_schema
-        }
-
-        request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
-        }, files: @files }
-
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(DatasetFileSchema.count).to eq(1)
-
-        expect(@user.dataset_file_schemas.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
-
-        expect(@user.datasets.first.dataset_files.first.dataset_file_schema.url).to eq(@url_for_schema)
       end
     end
   end
