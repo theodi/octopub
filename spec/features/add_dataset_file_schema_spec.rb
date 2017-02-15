@@ -49,8 +49,9 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       visit root_path
 
       click_link "List my dataset file schemas"
-      expect(page).to have_content "You currently have no dataset file schemas"
       expect(page).to have_content "You currently have no dataset file schemas, why not add one?"
+
+      
       # common_name = 'Fri1437'
 
       # before_datasets = Dataset.count

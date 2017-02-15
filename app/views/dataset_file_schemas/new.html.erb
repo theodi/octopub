@@ -1,0 +1,11 @@
+<h1 class="page-header">Add a new Dataset File Schema</h1>
+
+
+<%= bootstrap_form_for(@dataset_file_schema) do |f| %>
+  <%= f.text_field :name %>
+  <%= f.text_area :description %>
+  <%= f.select :user, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
+<% end %>

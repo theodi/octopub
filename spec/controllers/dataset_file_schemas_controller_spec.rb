@@ -3,7 +3,7 @@ require 'rails_helper'
 describe DatasetFileSchemasController, type: :controller do
   describe 'index' do
     it "returns http success" do
-      get dataset_file_schemas_path
+      get :index
       expect(response).to be_success
     end
 
@@ -30,19 +30,19 @@ describe DatasetFileSchemasController, type: :controller do
 
   describe 'new' do
     it "returns http success" do
-      get new_dataset_file_schema_path
+      get :new
       expect(response).to be_success
     end
   end
 
   describe 'create' do
     it "returns http success" do
-      post dataset_file_schemas_path
+      post :create
       expect(response).to be_success
     end
 
     it "creates a dataset file schema and redirects back to index" do
-      post dataset_file_schemas_path
+      post :create
       expect(response).to be_success
     end
   end
