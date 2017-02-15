@@ -1,39 +1,8 @@
 <h1 class="page-header">
   My Datasets
   <div class="pull-right">
-    <%= link_to "<i class='fa fa-refresh'></i> Refresh datasets".html_safe, dashboard_path(params: {refresh: true}), class: "btn btn-primary", id: "refresh" %>
+    <%= link_to "<i class='fa fa-refresh'></i> Refresh datasets".html_safe, dashboard_path(params: {refresh: true}), class: "btn btn-primary", id: "refresh", data: { user_id: current_user.id } %>
   </div>
 </h1>
 
 <%= render partial: "datasets" %>
-
-<% content_for :extra_js do %>
-  <script src="//js.pusher.com/2.2/pusher.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      Pusher.host = 'ws-eu.pusher.com';
-      Pusher.sockjs_host = 'sockjs-eu.pusher.com';
-
-      var pusher = new Pusher('<%= Pusher.key %>');
-
-      $('#refresh').click(function(e) {
-
-        var channelID = 'datasetRefresh<%= current_user.id %>'
-        var spinner = $(this).find('.fa-refresh')
-
-        spinner.addClass('fa-spin')
-
-        $.get('/datasets/refresh?channel_id=' + channelID, function() {
-          channel = pusher.subscribe(channelID);
-
-          channel.bind('refreshed', function(data) {
-            spinner.removeClass('fa-spin')
-            location.reload();
-          })
-        })
-
-        e.preventDefault();
-      })
-    })
-  </script>
-<% end %>

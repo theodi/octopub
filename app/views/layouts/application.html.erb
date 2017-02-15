@@ -20,7 +20,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster) %>">
     <div class="container">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
@@ -75,8 +75,5 @@
         </div>
       </div>
     </footer>
-
-
   </body>
-  <%= yield :extra_js %>
 </html>
