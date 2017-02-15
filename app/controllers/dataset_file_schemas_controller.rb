@@ -6,6 +6,7 @@ class DatasetFileSchemasController < ApplicationController
 
   def new
     @dataset_file_schema = DatasetFileSchema.new
+    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
    # render status: :forbidden, plain: "Forbidden fruit"
   end
 
