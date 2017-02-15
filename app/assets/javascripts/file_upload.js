@@ -110,8 +110,9 @@ function setUpCloneAndFileUpload() {
 
   // Clone button to create another file to upload
   $('#clone').click(function(e) {
+
     e.preventDefault();
-    clone = $(file).clone();
+    var clone = $(file).clone();
     clone.find('.title').attr('required', 'required');
     clone.appendTo('#files');
     clone.find('.bg-upload').each(function(i, elem) {
