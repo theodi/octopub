@@ -1,6 +1,6 @@
 class DatasetFileSchemaService
 
-  def initialize(dataset_file_schema)
+  def initialize(dataset_file_schema = nil)
     @dataset_file_schema = dataset_file_schema
   end
 
