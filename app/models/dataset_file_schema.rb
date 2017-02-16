@@ -13,6 +13,7 @@
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
+  validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
 
   attr_accessor :parsed_schema
 
