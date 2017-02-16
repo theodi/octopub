@@ -1,5 +1,9 @@
 class DatasetFileSchemaService
 
+  def initialize(dataset_file_schema)
+    @dataset_file_schema = dataset_file_schema
+  end
+
   def create_dataset_file_schema(schema_name, description, url_in_s3, user = nil)
     Rails.logger.info "In create #{url_in_s3}"
     unless user.nil?

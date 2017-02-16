@@ -13,6 +13,7 @@ class DatasetFileSchemasController < ApplicationController
   def create
     @dataset_file_schema = DatasetFileSchema.new(create_params)
     if @dataset_file_schema.save
+  #    DatasetFileSchemaService.new(@dataset_file_schema).update_dataset_file_schema_with_json_schema
       redirect_to dataset_file_schemas_path
     else
       render :new
@@ -25,7 +26,7 @@ class DatasetFileSchemasController < ApplicationController
     params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url)
   end
 
-      def dataset_params
+  def dataset_params
     params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :restricted)
   end
 end
