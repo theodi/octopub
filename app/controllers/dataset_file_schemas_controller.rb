@@ -23,7 +23,7 @@ class DatasetFileSchemasController < ApplicationController
   private
 
   def create_params
-    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url)
+    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3)
   end
 
   def dataset_params
