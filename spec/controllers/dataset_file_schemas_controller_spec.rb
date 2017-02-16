@@ -56,19 +56,6 @@ describe DatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.user).to eq @user
     end
 
-    it "returns to new page if schema does not validate" do
-      schema_name = 'schema-name'
-      description = 'schema-description'
-
-      post :create, params: {
-        dataset_file_schema: {
-          name: schema_name, description: description, user_id: @user.id
-        }
-      }
-      expect(response).to render_template("new")
-   #   expect(flash[:errors]).to match(/You must have a schema file/)
-    end
-
     it "creates a dataset file schema and redirects back to index" do
       schema_name = 'schema-name'
       description = 'schema-description'
@@ -80,5 +67,28 @@ describe DatasetFileSchemasController, type: :controller do
       }
       expect(response).to redirect_to(dataset_file_schemas_path)
     end
+  end
+
+  describe 'create failure' do
+  #  render_views
+
+    before(:each) do
+      allow(controller).to receive(:current_user) { @user }
+    end
+
+    it "returns to new page if schema does not validate" do
+
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, user_id: @user.id
+        }
+      }
+      expect(response).to render_template("new")
+  #    expect(response.body).to match /You must have a schema file/
+    end
+
   end
 end

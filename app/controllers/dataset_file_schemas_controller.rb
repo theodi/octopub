@@ -17,7 +17,7 @@ class DatasetFileSchemasController < ApplicationController
       DatasetFileSchemaService.new(@dataset_file_schema).update_dataset_file_schema_with_json_schema
       redirect_to dataset_file_schemas_path
     else
-      flash[:errors] = @dataset_file_schema.errors
+      @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
       render :new
     end
   end
