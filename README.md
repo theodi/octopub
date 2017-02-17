@@ -6,7 +6,6 @@
 [![Dependency Status](https://dependencyci.com/github/theodi/octopub/badge)](https://dependencyci.com/github/theodi/octopub)
 [![Badges](http://img.shields.io/:badges-7/7-ff6799.svg)](https://github.com/badges/badgerbadgerbadger)
 
-
 # Octopub
 
 A Rails app that provides a simple and frictionless way for users to publish data on Github.

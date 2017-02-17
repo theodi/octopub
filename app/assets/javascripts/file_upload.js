@@ -105,6 +105,23 @@ function addError(message) {
   $('#main').prepend(alert);
 }
 
+function setUpFileUpload() {
+  $('.bg-upload').each(function(i, elem) {
+    bgUpload(elem);
+  });
+
+  $('input.change-file').on('click', function(e) {
+    $(this).attr('style', 'color:red');
+    e.stopImmediatePropagation();
+
+    var container = $(this).parents('.file');
+
+    container.find('.current-file').addClass('hidden');
+    container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">File</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>');
+    bgUpload(container);
+  });
+}
+
 function setUpCloneAndFileUpload() {
   var file = $('div.file-panel:first').clone();
 
@@ -120,10 +137,7 @@ function setUpCloneAndFileUpload() {
     });
   });
 
-  $('.bg-upload').each(function(i, elem) {
-    bgUpload(elem);
-  });
-
+  // Do ajax form uploading
   $('form').submit(function(e) {
     $('#spinner').removeClass('hidden');
 
@@ -138,21 +152,15 @@ function setUpCloneAndFileUpload() {
     e.preventDefault();
   });
 
-  $('input.change-file').on('click', function(e) {
-    $(this).attr('style', 'color:red');
-    e.stopImmediatePropagation();
-
-    var container = $(this).parents('.file');
-
-    container.find('.current-file').addClass('hidden');
-    container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">File</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>');
-    bgUpload(container);
-  });
+  setUpFileUpload();
 }
 
 $(document).ready(function() {
   if ($('div.file-panel').length) {
     setUpCloneAndFileUpload();
+  }
+  if ($('div.schema-panel').length) {
+    setUpFileUpload();
   }
 });
 
