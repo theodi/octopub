@@ -3,7 +3,7 @@ class RepoService
   attr_accessor :repo
 
   def initialize(repo)
-    p "Repo service initizliaed"
+    p "Repo service initialised"
     # ap self
     @repo = repo
   end

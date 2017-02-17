@@ -334,8 +334,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "updates the datapackage" do
     dataset = create(:dataset)
-    jekyll_service = JekyllService.new(dataset, nil)
-    expect(jekyll_service).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
+    expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
     dataset.update_datapackage
   end
 
