@@ -9,17 +9,13 @@ class JekyllService
   end
 
   def add_files_to_repo_and_push_to_github
+    p "in add_files_to_repo_and_push_to_github"
     create_data_files
     push_to_github
   end
 
-  def push_to_github
-    Rails.logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
-    @repo_service.save
-  end
-
-
   def create_data_files
+     p "in create_data_files"
     ap @repo_service
     Rails.logger.info "Create data files and add to github"
     @dataset.dataset_files.each { |d| add_to_github(d.filename, d.file) }
@@ -38,6 +34,12 @@ class JekyllService
       end
     end
 
+  end 
+
+  def push_to_github
+    p "in push_to_github"
+    Rails.logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
+    @repo_service.save
   end
 
   def create_jekyll_files
@@ -82,21 +84,20 @@ class JekyllService
   def add_file_to_repo(filename, file)
 
     p "SUPER MEOW"
-    p filename
-    ap file
-    ap @repo_service
-    @repo_service.hello_james(filename, file)
+    # p filename
+    # ap file
+    # ap @repo_service
+    @repo_service.add_file(filename, file)
     # @repo_service.send(:add_file, filename, file)
     # ap  method( :add_file ).owner
-    @repo_service.hello_james(filename, file)
   end
 
   def update_file_in_repo(filename, file)
 
     p "MEOW"
-    p filename
-    ap file
-    ap @repo_service
+    # p filename
+    # ap file
+    # ap @repo_service
     @repo_service.update_file(filename, file)
   end
 

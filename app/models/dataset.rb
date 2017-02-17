@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   has_many :dataset_files
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
-  after_update :update_in_github, :make_repo_public_if_appropriate, :publish_public_views
+  after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
   after_destroy :delete_in_github
 
   validate :check_repo, on: :create
@@ -215,9 +215,10 @@ class Dataset < ApplicationRecord
   private
 
     def create_repo_and_populate
+      p "in create_repo_and_populate"
       @repo = RepoService.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      logger.info "Now updated with github details - call commit!"
+      p "Now updated with github details - call commit!"
       @jekyll_service = JekyllService.new(self, @repo)
       @jekyll_service.add_files_to_repo_and_push_to_github
     end

@@ -87,7 +87,7 @@ class DatasetFile < ApplicationRecord
     p "WOOF"
     ap file
     js = JekyllService.new(dataset, repo)
-    js.add_file_to_repo(filename, file)
+    js.update_file_to_repo(filename, file)
   end
 
   # def add_to_github(repo = nil)

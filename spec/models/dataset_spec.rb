@@ -71,6 +71,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     expect(GitData).to receive(:create).with(@user.github_username, name, restricted: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
+      expect(obj).to receive(:add_file) { nil }
+      expect(obj).to receive(:save) { nil }
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
       expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
@@ -79,7 +81,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     jekyll_service = JekyllService.new(dataset, nil)
 
-    allow_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github).and_return { nil }
     expect(dataset).to receive(:create_public_views)
 
     dataset.save
@@ -92,18 +93,16 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   it "creates a repo with an organization" do
     name = "My Awesome Dataset"
     dataset = build(:dataset, :with_callback, user: @user, name: name, owner: "my-cool-organization")
-
+    html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
     expect(GitData).to receive(:create).with('my-cool-organization', name, restricted: false, client: a_kind_of(Octokit::Client)) {
       obj = double(GitData)
-      expect(obj).to receive(:html_url) { nil }
+      expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
       expect(obj).to receive(:full_name) { "my-cool-organization/#{name.parameterize}" }
       obj
     }
 
-    jekyll_service = JekyllService.new(dataset, nil)
-
-    expect(jekyll_service).to receive(:add_files_to_repo_and_push_to_github)
+    expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
     expect(dataset).to receive(:create_public_views)
 
     dataset.save
@@ -190,7 +189,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset = build(:dataset, user: @user, repo: "repo")
     #repo = dataset.instance_variable_get(:@repo)
     repo = double(GitData)
-    expect(repo).to receive(:add_file).with("my-file", "File contents")
+    expect(repo).to receive(:add_file).once.with("my-file", "File contents")
     jekyll_service = JekyllService.new(dataset, repo)
 
     jekyll_service.add_file_to_repo("my-file", "File contents")
@@ -498,7 +497,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
         dataset.dataset_files << dataset_file
 
         jekyll_service = JekyllService.new(dataset, 'repo')
-        allow_any_instance_of(RepoService).to receive(:hello_james).and_return { "ROOORARRRR" }
+        allow_any_instance_of(RepoService).to receive(:add_file).and_return { "ROOORARRRR" }
 
         expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
         expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}
@@ -643,7 +642,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
         obj
       }
 
-      expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+      expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
       expect(dataset).not_to receive(:create_public_views)
 
       dataset.save
@@ -661,6 +660,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         obj = double(GitData)
+        expect(obj).to receive(:add_file).twice { nil }
+        expect(obj).to receive(:save) { nil }
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
         expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
@@ -671,7 +672,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       dataset.save
       # Update dataset and make public
       dataset.reload
-      expect(dataset).to receive(:update_in_github).once
+      expect_any_instance_of(JekyllService).to receive(:update_in_github).once
+      
+      expect(dataset).to receive(:update_dataset_in_github).once
       expect(dataset).to receive(:create_public_views).once
       dataset.restricted = false
       dataset.save

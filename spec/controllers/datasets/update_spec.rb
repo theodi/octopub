@@ -58,7 +58,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         expect(@jekyll_service).to receive(:update_datapackage)
         expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
         expect(@repo).to receive(:save)
-        Dataset.set_callback(:update, :after, :update_in_github)
+        Dataset.set_callback(:update, :after, :update_dataset_in_github)
       end
 
       context('with schema', :schema) do
@@ -69,8 +69,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
             path = File.join(Rails.root, 'spec', 'fixtures', filename)
             file = url_with_stubbed_get_for(path)
 
-            expect(@dataset_file).to receive(:update_in_github)
-            expect(@dataset_file).to receive(:update_jekyll_in_github)
+  #          expect(@dataset_file).to receive(:update_dataset_in_github)
+            expect(@jekyll_service).to receive(:update_jekyll_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
