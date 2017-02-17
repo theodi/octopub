@@ -497,8 +497,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
         dataset.dataset_files << dataset_file
 
-        jekyll_service = JekyllService.new(dataset, nil)
-        allow_any_instance_of(RepoService).to receive(:add_file).with(:param_one, :param_two).and_return { nil }
+        jekyll_service = JekyllService.new(dataset, 'repo')
+        allow_any_instance_of(RepoService).to receive(:hello_james).and_return { "ROOORARRRR" }
 
         expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-file.csv", File.open(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv')).read)
         expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}

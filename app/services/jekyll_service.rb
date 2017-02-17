@@ -2,7 +2,10 @@ class JekyllService
 
   def initialize(dataset, repo = nil)
     @dataset = dataset
+    @repo = repo
     @repo_service = RepoService.new(repo)
+ #   ap @dataset.dataset_files
+ #   ap @dataset.dataset_files.first.file
   end
 
   def add_files_to_repo_and_push_to_github
@@ -17,24 +20,28 @@ class JekyllService
 
 
   def create_data_files
+    ap @repo_service
     Rails.logger.info "Create data files and add to github"
-    @dataset.dataset_files.each { |d| d.add_to_github(@repo) }
+    @dataset.dataset_files.each { |d| add_to_github(d.filename, d.file) }
     Rails.logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
     @dataset.dataset_files.each do |dataset_file|
+      p '#' * 50
+      ap dataset_file.file
+      p '#' * 50
       dataset_file.validate
       if dataset_file.dataset_file_schema
         add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
         # For ref, does a send as it's a private method
-        dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
+        create_json_api_files(dataset_file.file, dataset_file.dataset_file_schema.parsed_schema)
       end
     end
 
   end
 
   def create_jekyll_files
-    @dataset.dataset_files.each { |d| d.add_jekyll_to_github }
+    @dataset.dataset_files.each { |d| add_jekyll_to_github(d.filename) }
     add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     add_file_to_repo("_config.yml", @dataset.config)
     add_file_to_repo("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
@@ -47,8 +54,25 @@ class JekyllService
 
     @dataset.dataset_files.each do |f|
       # For ref, does a send as it's a private method
-      f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
+      create_json_jekyll_files(f.file, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
+   #   f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
     end
+  end
+
+  def add_to_github(filename, file)
+    add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  end
+
+  def add_jekyll_to_github(filename)
+    add_file_to_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+  end
+
+  def update_in_github(filename, file)
+    update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  end
+
+  def update_jekyll_in_github(filename)
+    update_file_in_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
   end
 
   def create_json_datapackage_and_add_to_repo
@@ -57,11 +81,14 @@ class JekyllService
 
   def add_file_to_repo(filename, file)
 
-    p "MEOW"
+    p "SUPER MEOW"
     p filename
     ap file
     ap @repo_service
-    @repo_service.add_file(filename, file)
+    @repo_service.hello_james(filename, file)
+    # @repo_service.send(:add_file, filename, file)
+    # ap  method( :add_file ).owner
+    @repo_service.hello_james(filename, file)
   end
 
   def update_file_in_repo(filename, file)
@@ -78,7 +105,7 @@ class JekyllService
     File.join([folder,filename].reject { |n| n.blank? })
   end
 
-    def update_in_github
+    def update_dataset_in_github
       # Update files
       @dataset.dataset_files.each do |d|
         if d.file
@@ -136,6 +163,49 @@ class JekyllService
   def license_details
     Odlifier::License.define(@dataset.license)
   end
+
+    def for_each_file_in_schema(file, schema, &block)
+      return unless schema.class == Csvlint::Csvw::TableGroup
+      # Generate JSON outputs
+      schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
+      # Add individual files to dataset
+      (files || []).each do |filename, content|
+        # Strip leading slash and create filename with extension
+        filename = filename[1..-1]
+        filename = "index" if filename == ""
+        filename += ".json"
+        # Strip leading slashes from urls and add json
+        ([content].flatten).each do |content_item|
+          if content_item["url"]
+            content_item["url"] = content_item["url"].gsub(/^\//,"")
+            content_item["url"] += ".json"
+          end
+        end
+        # call the block
+        block.call(filename, content)
+      end
+    end
+
+    def create_json_api_files(file, schema)
+      for_each_file_in_schema(file, schema) do |filename, content|
+        # Store data as JSON in file
+        add_file_to_repo(filename, content.to_json)
+      end
+    end
+
+    def create_json_jekyll_files(file, schema)
+      for_each_file_in_schema(file, schema) do |filename, content|
+        # Add human readable template
+        unless filename == "index.json"
+          if filename.scan('/').count > 0
+            add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+          else
+            add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+          end
+        end
+      end
+    end
 
 
 end

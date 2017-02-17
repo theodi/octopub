@@ -43,7 +43,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
-        license: "OGL-UK-3",
+        license: "OGL-UK-3.0",
         frequency: "annual"
       }
     end
@@ -131,7 +131,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           expect(@dataset.description).to eq("New description")
           expect(@dataset.publisher_name).to eq("New Publisher")
           expect(@dataset.publisher_url).to eq("http://new.publisher.com")
-          expect(@dataset.license).to eq("OGL-UK-3")
+          expect(@dataset.license).to eq("OGL-UK-3.0")
           expect(@dataset.frequency).to eq("annual")
           expect(@dataset.dataset_files.count).to eq(1)
           expect(@dataset.dataset_files.first.description).to eq("New description")
