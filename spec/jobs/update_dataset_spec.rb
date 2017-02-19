@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
+    skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
     @worker = UpdateDataset.new
     @user = create(:user)
     @dataset = create(:dataset, name: "My Awesome Dataset",
@@ -45,7 +45,7 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   after(:each) do
-    Dataset.set_callback(:update, :after, :update_in_github)
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
   it 'sets a job id' do

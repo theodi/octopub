@@ -173,19 +173,20 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it "only updates the referenced file if a file is present" do
-      pending
-      # file = create(:dataset_file)
 
-      # new_file = {
-      #   "id" => file.id,
-      #   "title" => 'My File',
-      #   "description" => 'A new description',
-      # }
+      file = create(:dataset_file)
 
-      # expect(file).to_not receive(:update_in_github)
-      # file.update_file(new_file)
+      new_file = {
+        "id" => file.id,
+        "title" => 'My File',
+        "description" => 'A new description',
+      }
 
-      # expect(file.description).to eq(new_file["description"])
+      expect_any_instance_of(JekyllService).to_not receive(:update_in_github)
+
+      file.update_file(new_file)
+
+      expect(file.description).to eq(new_file["description"])
     end
 
   end
