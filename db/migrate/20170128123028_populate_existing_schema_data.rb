@@ -1,7 +1,8 @@
 class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
   def up
 
-    Dataset.skip_callback(:update, :after, :update_in_github)
+    skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
+    skip_callback_if_exists( Dataset, :update, :after, :update_in_github) 
 
     Dataset.all.each do |dataset|
       schema_url = get_schema_url(dataset)
