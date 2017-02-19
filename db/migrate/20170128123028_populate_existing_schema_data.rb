@@ -28,6 +28,10 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
     end
   end
 
+  def any_callbacks?(callbacks, name, kind, filter)
+    callbacks.select { |cb| cb.name == name && cb.kind == kind && cb.filter == filter }.any?
+  end
+
   def get_schema_from_repo(schema_url)
     begin
       JSON.generate(JSON.load(open(schema_url, allow_redirections: :safe))).strip
