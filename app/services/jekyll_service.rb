@@ -70,6 +70,7 @@ class JekyllService
   end
 
   def update_in_github(filename, file)
+    p 'update_in_github'
     update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
@@ -94,7 +95,7 @@ class JekyllService
 
   def update_file_in_repo(filename, file)
 
-    p "MEOW"
+    p "update_file_in_repo"
     # p filename
     # ap file
     # ap @repo_service
@@ -106,20 +107,21 @@ class JekyllService
     File.join([folder,filename].reject { |n| n.blank? })
   end
 
-    def update_dataset_in_github
-      # Update files
-      @dataset.dataset_files.each do |d|
-        if d.file
-          ap d
-          update_in_github(d.filename, d.file)
-     #     d.update_in_github(@repo)
-          update_jekyll_in_github(d.filename) unless @dataset.restricted?
-       #   d.update_jekyll_in_github(@repo) unless @dataset.restricted?
-        end
+  def update_dataset_in_github
+    # Update files
+    p 'update_dataset_in_github'
+    @dataset.dataset_files.each do |d|
+      if d.file
+        ap d
+        update_in_github(d.filename, d.file)
+   #     d.update_in_github(@repo)
+        update_jekyll_in_github(d.filename) unless @dataset.restricted?
+     #   d.update_jekyll_in_github(@repo) unless @dataset.restricted?
       end
-      update_datapackage
-      push_to_github
     end
+    update_datapackage
+    push_to_github
+  end
 
  def create_json_datapackage
     name = @dataset.name
