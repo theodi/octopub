@@ -60,10 +60,14 @@ class UpdateDataset
       f.dataset_file_schema_id = schema.id
     end
 
+    jekyll_service = JekyllService.new(@dataset, @repo)
+
     @dataset.dataset_files << f
     if f.save
-      f.add_to_github(@repo)
-      f.add_jekyll_to_github(@repo)
+      jekyll_service.add_to_github(f.filename, f.file)
+      jekyll_service.add_jekyll_to_github(f.filename)    
+      # f.add_to_github(@repo)
+      # f.add_jekyll_to_github(@repo)
       f.file = nil
     end
   end

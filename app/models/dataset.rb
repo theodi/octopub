@@ -229,7 +229,7 @@ class Dataset < ApplicationRecord
     end
 
     def update_dataset_in_github
-      JekyllService.new(self, @repo).update_in_github
+      JekyllService.new(self, @repo).update_dataset_in_github
     end
 
     def make_repo_public_if_appropriate
