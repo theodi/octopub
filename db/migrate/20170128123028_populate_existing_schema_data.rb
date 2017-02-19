@@ -22,6 +22,11 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
   def down
   end
 
+  def skip_callback_if_exists(thing, name, kind, filter)
+    if any_callbacks?(thing._update_callbacks, name, kind, filter)
+      thing.skip_callback(name, kind, filter)
+    end
+  end
 
   def get_schema_from_repo(schema_url)
     begin
