@@ -110,9 +110,10 @@ class JekyllService
       # Update files
       @dataset.dataset_files.each do |d|
         if d.file
-          update_file_in_repo(d.file, @repo)
+          ap d
+          update_in_github(d.filename, d.file)
      #     d.update_in_github(@repo)
-          update_jekyll_in_github(d.file, @repo) unless @dataset.restricted?
+          update_jekyll_in_github(d.filename) unless @dataset.restricted?
        #   d.update_jekyll_in_github(@repo) unless @dataset.restricted?
         end
       end
