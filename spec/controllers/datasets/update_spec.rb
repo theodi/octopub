@@ -89,7 +89,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
               @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
-
+              expect(GitData).to receive(:find).twice.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+    
               expect(DatasetFile).to receive(:new_file) { file }
               expect_any_instance_of(JekyllService).to receive(:add_to_github)
               expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)

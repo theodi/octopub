@@ -26,6 +26,8 @@ class UpdateDataset
   end
 
   def handle_files(files)
+    ap files
+    p files.count
     files.each do |file|
       if file["id"]
         update_file(file["id"], file)
@@ -64,12 +66,15 @@ class UpdateDataset
 
     @dataset.dataset_files << f
     if f.save
+      p "WOOF"
       jekyll_service.add_to_github(f.filename, f.file)
+      p "WOOFWOOF"
       jekyll_service.add_jekyll_to_github(f.filename)    
       # f.add_to_github(@repo)
       # f.add_jekyll_to_github(@repo)
       f.file = nil
     end
+    p "BYE"
   end
 
 end
