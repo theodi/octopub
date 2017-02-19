@@ -61,28 +61,12 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def update_file_in_repo(filename, file)
-    jekyll_service.update_file_in_repo(filename, file)
-  end
-
   def delete_file_from_repo(filename)
     @repo.delete_file(filename)
   end
 
   def path(filename, folder = "")
     File.join([folder,filename].reject { |n| n.blank? })
-  end
-
-  def create_data_files
-    jekyll_service.create_data_files
-  end
-
-  def update_datapackage
-    jekyll_service.update_datapackage
-  end
-
-  def create_json_datapackage
-    jekyll_service.create_json_datapackage
   end
 
   def config
@@ -121,6 +105,7 @@ class Dataset < ApplicationRecord
 
   private
 
+    # This is a callback
     def create_repo_and_populate
       p "in create_repo_and_populate"
       @repo = RepoService.create_repo(repo_owner, name, restricted, user)
@@ -129,15 +114,12 @@ class Dataset < ApplicationRecord
       jekyll_service.add_files_to_repo_and_push_to_github
     end
 
-    def add_files_to_repo_and_push_to_github
-      jekyll_service.add_files_to_repo_and_push_to_github
-    #   push_to_github
-    end
-
+    # This is a callback
     def update_dataset_in_github
       jekyll_service.update_dataset_in_github
     end
 
+    # This is a callback
     def make_repo_public_if_appropriate
       # Should the repo be made public?
       if restricted_changed? && restricted == false
@@ -145,12 +127,9 @@ class Dataset < ApplicationRecord
       end
     end
 
+    # This is a callback
     def delete_in_github
       @repo.delete if @repo
-    end
-
-    def push_to_github
-      jekyll_service.push_to_github
     end
 
     def check_repo
@@ -185,12 +164,12 @@ class Dataset < ApplicationRecord
     end
 
     def jekyll_service
+      p "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
 
+    # This is a callback
     def publish_public_views
-
-
       return if restricted
       if id_changed? || restricted_changed?
         # This is either a new record or has just been made public
@@ -200,13 +179,9 @@ class Dataset < ApplicationRecord
       # updates to existing public repos are handled in #update_in_github
     end
 
-    def create_jekyll_files
+    def create_public_views
       jekyll_service.create_jekyll_files
-    end
-
-    def create_public_views(jekyll_service = nil)
-      create_jekyll_files
-      push_to_github
+      jekyll_service.push_to_github
       wait_for_gh_pages_build
       create_certificate
     end
@@ -243,8 +218,7 @@ class Dataset < ApplicationRecord
       }.to_yaml
 
       fetch_repo(user.octokit_client)
-      update_file_in_repo('_config.yml', config)
-      push_to_github
+      jekyll_service.update_file_in_repo('_config.yml', config)
+      jekyll_service.push_to_github
     end
-
 end

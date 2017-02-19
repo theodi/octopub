@@ -209,8 +209,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     repo = dataset.instance_variable_get(:@repo)
 
     expect(repo).to receive(:update_file).with("my-file", "File contents")
-
-    dataset.update_file_in_repo("my-file", "File contents")
+    jekyll_service = JekyllService.new(dataset, repo)
+    jekyll_service.update_file_in_repo("my-file", "File contents")
   end
 
   it "deletes a file in Github" do
@@ -334,8 +334,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "updates the datapackage" do
     dataset = create(:dataset)
-    expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with("datapackage.json", dataset.create_json_datapackage)
-    dataset.update_datapackage
+    jekyll_service = JekyllService.new(dataset, nil)
+    expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with("datapackage.json", jekyll_service.create_json_datapackage)
+    jekyll_service.update_datapackage
   end
 
   it "generates the correct config" do
@@ -381,7 +382,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
       @dataset = build(:dataset, user: @user, dataset_files: [@dataset_file])
 
-      datapackage = JSON.parse @dataset.create_json_datapackage
+      jekyll_service = JekyllService.new(@dataset, nil)
+
+      datapackage = JSON.parse jekyll_service.create_json_datapackage
 
       first_resource = datapackage['resources'].first
 
@@ -598,12 +601,12 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     it 'adds the badge url to the repo' do
       expect(@dataset).to receive(:fetch_repo)
-      expect(@dataset).to receive(:update_file_in_repo).with('_config.yml', {
+      expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
         "data_source" => ".",
         "update_frequency" => "One-off",
         "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
       }.to_yaml)
-      expect(@dataset).to receive(:push_to_github)
+      expect_any_instance_of(JekyllService).to receive(:push_to_github)
 
       @dataset.send(:add_certificate_url, @certificate_url)
 

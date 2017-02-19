@@ -4,8 +4,6 @@ class JekyllService
     @dataset = dataset
     @repo = repo
     @repo_service = RepoService.new(repo)
- #   ap @dataset.dataset_files
- #   ap @dataset.dataset_files.first.file
   end
 
   def add_files_to_repo_and_push_to_github
@@ -15,17 +13,13 @@ class JekyllService
   end
 
   def create_data_files
-     p "in create_data_files"
-    ap @repo_service
+    p "in create_data_files"
     Rails.logger.info "Create data files and add to github"
     @dataset.dataset_files.each { |d| add_to_github(d.filename, d.file) }
     Rails.logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
     @dataset.dataset_files.each do |dataset_file|
-      p '#' * 50
-      ap dataset_file.file
-      p '#' * 50
       dataset_file.validate
       if dataset_file.dataset_file_schema
         add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
@@ -37,7 +31,6 @@ class JekyllService
   end 
 
   def push_to_github
-    p "in push_to_github"
     Rails.logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
     @repo_service.save
   end
@@ -55,9 +48,7 @@ class JekyllService
     add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
 
     @dataset.dataset_files.each do |f|
-      # For ref, does a send as it's a private method
       create_json_jekyll_files(f.file, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
-   #   f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
     end
   end
 
@@ -83,22 +74,10 @@ class JekyllService
   end
 
   def add_file_to_repo(filename, file)
-
-    p "SUPER MEOW"
-    # p filename
-    # ap file
-    # ap @repo_service
     @repo_service.add_file(filename, file)
-    # @repo_service.send(:add_file, filename, file)
-    # ap  method( :add_file ).owner
   end
 
   def update_file_in_repo(filename, file)
-
-    p "update_file_in_repo"
-    # p filename
-    # ap file
-    # ap @repo_service
     @repo_service.update_file(filename, file)
   end
 
@@ -112,11 +91,8 @@ class JekyllService
     p 'update_dataset_in_github'
     @dataset.dataset_files.each do |d|
       if d.file
-        ap d
         update_in_github(d.filename, d.file)
-   #     d.update_in_github(@repo)
         update_jekyll_in_github(d.filename) unless @dataset.restricted?
-     #   d.update_jekyll_in_github(@repo) unless @dataset.restricted?
       end
     end
     update_datapackage
@@ -212,6 +188,4 @@ class JekyllService
         end
       end
     end
-
-
 end

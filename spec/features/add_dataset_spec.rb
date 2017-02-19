@@ -55,9 +55,9 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       click_link "Add dataset"
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(data_file))
-      allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-      allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
-      allow_any_instance_of(Dataset).to receive(:push_to_github) { nil }
+      allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+      allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
+      allow_any_instance_of(JekyllService).to receive(:push_to_github) { nil }
       allow_any_instance_of(Dataset).to receive(:publish_public_views) { nil }
       allow_any_instance_of(Dataset).to receive(:send_success_email) { nil }
 

@@ -4,7 +4,6 @@ class RepoService
 
   def initialize(repo)
     p "Repo service initialised"
-    # ap self
     @repo = repo
   end
 
@@ -13,9 +12,6 @@ class RepoService
   end
 
   def add_file(filename, file)
-    # p "BARK"
-    # p filename
-    # ap file
     @repo.add_file(filename, file) if @repo
   end
 
