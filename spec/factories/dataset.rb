@@ -13,7 +13,7 @@ FactoryGirl.define do
       skip_callback_if_exists( Dataset, :create, :after, :create_repo_and_populate)
       skip_callback_if_exists( Dataset, :create, :after, :publish_public_views)
       skip_callback_if_exists( Dataset, :create, :after, :send_success_email)
-      skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
+      skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
       skip_callback_if_exists( Dataset, :create, :after, :set_owner_avatar)
       dataset.instance_variable_set(:@repo, FakeData.new)
     }
@@ -22,7 +22,7 @@ FactoryGirl.define do
       after(:build) { |dataset|
         dataset.class.set_callback(:create, :after, :create_repo_and_populate)
         dataset.class.set_callback(:create, :after, :publish_public_views)
-        dataset.class.set_callback(:update, :after, :update_in_github)
+        dataset.class.set_callback(:update, :after, :update_dataset_in_github)
       }
     end
 

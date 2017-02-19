@@ -659,24 +659,29 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         obj = double(GitData)
-        expect(obj).to receive(:add_file).twice { nil }
+        expect(obj).to receive(:add_file).once { nil }
         expect(obj).to receive(:save) { nil }
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
         expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
-        expect(obj).to receive(:make_public).once
+
         obj
       }
-      expect(dataset).to receive(:add_files_to_repo_and_push_to_github)
+
+      expect(dataset).to_not receive(:create_public_views)
       dataset.save
+
       # Update dataset and make public
-      dataset.reload
-      expect_any_instance_of(JekyllService).to receive(:update_in_github).once
+      updated_dataset = Dataset.find(dataset.id)
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
       
-      expect(dataset).to receive(:update_dataset_in_github).once
-      expect(dataset).to receive(:create_public_views).once
-      dataset.restricted = false
-      dataset.save
+      expect(updated_dataset).to receive(:create_public_views).once
+      updated_dataset.restricted = false
+      repo = double(GitData)
+
+      expect(repo).to receive(:make_public).once
+      updated_dataset.instance_variable_set(:@repo, repo)
+      updated_dataset.save
     end
 
   end
