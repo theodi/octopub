@@ -83,6 +83,9 @@ RSpec.configure do |config|
       mocks.verify_partial_doubles = true
     end
   end
+
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
 end
 
 def sign_in(user)
