@@ -31,7 +31,7 @@ require 'rails_helper'
 describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    @user = create(:user, name: "user-mcuser", email: "user@user.com")
+    @user = create(:user)
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
   end
 
@@ -49,7 +49,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it "returns an error if the repo already exists" do
-    expect_any_instance_of(Octokit::Client).to receive(:repository?).with("user-mcuser/my-awesome-dataset") { true }
+    expect_any_instance_of(Octokit::Client).to receive(:repository?).with("#{@user.github_username}/my-awesome-dataset") { true }
 
     dataset = build(:dataset, name: "My Awesome Dataset",
                      description: "An awesome dataset",
@@ -460,7 +460,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
       it "creates JSON files on GitHub when using a CSVW schema" do
 
-        @user = create(:user, name: "user-mcuser", email: "user@user.com")
+        @user = create(:user)
         allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
         allow(Csv2rest).to receive(:generate) { csv2rest_hash}
 
@@ -660,8 +660,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   context "notifying via twitter" do
 
     before(:all) do
-      @tweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: "bob")
-      @nontweeter = create(:user, name: "user-mcuser", email: "user@user.com", twitter_handle: nil)
+      @tweeter = create(:user, twitter_handle: "bob")
+      @nontweeter = create(:user, twitter_handle: nil)
     end
 
     before(:each) do
@@ -678,7 +678,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       end
 
       it "sends twitter notification to twitter users" do
-        expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://user-mcuser.github.io/").once
+        expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://#{@tweeter.github_username}.github.io/").once
         dataset = create(:dataset, name: "My Awesome Dataset",
                          description: "An awesome dataset",
                          publisher_name: "Awesome Inc",

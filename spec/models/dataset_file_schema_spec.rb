@@ -5,7 +5,7 @@ require 'rails_helper'
 describe DatasetFileSchema do
 
   before(:each) do
-    @user = create(:user, name: "user-mcuser", email: "user@user.com")
+    @user = create(:user)
     @good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
     @bad_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json'))
 

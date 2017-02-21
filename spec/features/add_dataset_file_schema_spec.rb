@@ -7,7 +7,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
   let(:data_file) {File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     OmniAuth.config.mock_auth[:github]
     sign_in @user
     allow_any_instance_of(User).to receive(:organizations) { organizations }

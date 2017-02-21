@@ -3,7 +3,7 @@ require 'rails_helper'
 describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   describe 'new dataset' do

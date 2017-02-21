@@ -20,7 +20,7 @@ require 'rails_helper'
 describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    @user = create(:user, name: "user-mcuser", email: "user@user.com")
+    @user = create(:user)
     @path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
   end
 
@@ -28,8 +28,8 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     file = create(:dataset_file, title: "Example")
     dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [file])
 
-    expect(file.github_url).to eq("http://github.com/user-mcuser/my-repo/data/example.csv")
-    expect(file.gh_pages_url).to eq("http://user-mcuser.github.io/my-repo/data/example.csv")
+    expect(file.github_url).to eq("http://github.com/#{@user.github_username}/my-repo/data/example.csv")
+    expect(file.gh_pages_url).to eq("http://#{@user.github_username}.github.io/my-repo/data/example.csv")
   end
 
   it "generates a filename" do

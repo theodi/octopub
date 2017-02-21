@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :datasets
   has_many :dataset_file_schemas
 
-  before_create :generate_api_key
+  before_validation :generate_api_key, on: :create
 
   def self.refresh_datasets id, channel_id = nil
     user = User.find id
@@ -29,7 +29,7 @@ class User < ApplicationRecord
   end
 
   def self.find_for_github_oauth(auth)
-    user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
+    user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create
     user.update_attributes(
                            name: auth["info"]["nickname"],
                            email: auth["info"]["email"],
