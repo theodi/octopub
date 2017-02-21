@@ -38,8 +38,15 @@ class ApplicationController < ActionController::Base
           authenticate_or_request_with_http_token do |token, options|
             User.find_by_api_key token
           end
+        else
+          devise_current_user
         end
+
       end
+    end
+
+    def devise_current_user
+      @devise_current_user ||= warden.authenticate(:scope => :user)
     end
 
     def render_404
