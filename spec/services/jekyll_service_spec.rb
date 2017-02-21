@@ -2,32 +2,79 @@ require 'rails_helper'
 
 describe JekyllService do
 
-  it "creates a file in Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
-    #repo = dataset.instance_variable_get(:@repo)
-    repo = double(GitData)
-    expect(repo).to receive(:add_file).once.with("my-file", "File contents")
-    jekyll_service = JekyllService.new(dataset, repo)
+  contet "for a dataset" do
+    it "creates a file in Github" do
+      dataset = build(:dataset, user: @user, repo: "repo")
+      #repo = dataset.instance_variable_get(:@repo)
+      repo = double(GitData)
+      expect(repo).to receive(:add_file).once.with("my-file", "File contents")
+      jekyll_service = JekyllService.new(dataset, repo)
 
-    jekyll_service.add_file_to_repo("my-file", "File contents")
+      jekyll_service.add_file_to_repo("my-file", "File contents")
+    end
+
+    it "creates a file in a folder in Github" do
+      dataset = build(:dataset, user: @user, repo: "repo")
+   #   repo = dataset.instance_variable_get(:@repo)
+      repo = double(GitData)
+      expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
+      jekyll_service = JekyllService.new(dataset, repo)
+      jekyll_service.add_file_to_repo("folder/my-file", "File contents")
+    end
+
+    it "updates a file in Github" do
+      dataset = build(:dataset, user: @user, repo: "repo")
+      repo = dataset.instance_variable_get(:@repo)
+
+      expect(repo).to receive(:update_file).with("my-file", "File contents")
+      jekyll_service = JekyllService.new(dataset, repo)
+      jekyll_service.update_file_in_repo("my-file", "File contents")
+    end
   end
 
-  it "creates a file in a folder in Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
- #   repo = dataset.instance_variable_get(:@repo)
-    repo = double(GitData)
-    expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
-    jekyll_service = JekyllService.new(dataset, repo)
-    jekyll_service.add_file_to_repo("folder/my-file", "File contents")
-  end
+  context "for a dataset file" do
+    context "add_to_github" do
+      before(:each) do
+        @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+        @file = create(:dataset_file, title: "Example", file: @tempfile)
 
-  it "updates a file in Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
-    repo = dataset.instance_variable_get(:@repo)
+        @dataset = build(:dataset, repo: "my-repo", user: @user)
+        @dataset.dataset_files << @file
+        @jekyll_service = JekyllService.new(@dataset, nil)
+      end
 
-    expect(repo).to receive(:update_file).with("my-file", "File contents")
-    jekyll_service = JekyllService.new(dataset, repo)
-    jekyll_service.update_file_in_repo("my-file", "File contents")
+      it "adds data file to Github" do
+        expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
+        @jekyll_service.add_to_github(@file.filename, @tempfile)
+      end
+
+      it "adds jekyll file to Github" do
+        expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+        @jekyll_service.add_jekyll_to_github(@file.filename)
+      end
+    end
+
+    context "update_in_github" do
+      before(:each) do
+        @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
+        @file = create(:dataset_file, title: "Example", file: @tempfile)
+        @jekyll_service = JekyllService.new(@dataset, nil)
+        @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
+      end
+
+      it "updates a data file in Github" do
+        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.csv", File.read(@path))
+        @jekyll_service.update_in_github(@file.filename, @file.file)
+        # update_in_github(filename, file)
+        # @file.send(:update_in_github)
+      end
+
+      it "updates a jekyll file in Github" do
+        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+        @jekyll_service.update_jekyll_in_github(@file.filename)
+  #      @file.send(:update_jekyll_in_github)
+      end
+    end
   end
 
   context "sends the correct files to Github" do

@@ -42,53 +42,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
-  context "add_to_github" do
-
-    before(:each) do
-      @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
-      @file = create(:dataset_file, title: "Example", file: @tempfile)
-
-      @dataset = build(:dataset, repo: "my-repo", user: @user)
-      @dataset.dataset_files << @file
-      @jekyll_service = JekyllService.new(@dataset, nil)
-    end
-
-    it "adds data file to Github" do
-      expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.csv", File.read(@path))
-      @jekyll_service.add_to_github(@file.filename, @tempfile)
-    end
-
-    it "adds jekyll file to Github" do
-      expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-      @jekyll_service.add_jekyll_to_github(@file.filename)
-    end
-
-  end
-
-  context "update_in_github" do
-
-    before(:each) do
-      @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
-      @file = create(:dataset_file, title: "Example", file: @tempfile)
-      @jekyll_service = JekyllService.new(@dataset, nil)
-      @dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
-    end
-
-    it "updates a data file in Github" do
-      expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.csv", File.read(@path))
-      @jekyll_service.update_in_github(@file.filename, @file.file)
-      # update_in_github(filename, file)
-      # @file.send(:update_in_github)
-    end
-
-    it "updates a jekyll file in Github" do
-      expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-      @jekyll_service.update_jekyll_in_github(@file.filename)
-#      @file.send(:update_jekyll_in_github)
-    end
-
-  end
-
   context "delete_from_github" do
 
     it "deletes a file from github" do
