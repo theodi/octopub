@@ -107,10 +107,10 @@ class Dataset < ApplicationRecord
 
     # This is a callback
     def create_repo_and_populate
-      p "in create_repo_and_populate"
+      logger.info "in create_repo_and_populate"
       @repo = RepoService.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      p "Now updated with github details - call commit!"
+      logger.info "Now updated with github details - call commit!"
       jekyll_service.add_files_to_repo_and_push_to_github
     end
 
@@ -164,7 +164,7 @@ class Dataset < ApplicationRecord
     end
 
     def jekyll_service
-      p "jekyll_service called, so set with #{repo}"
+      logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
 

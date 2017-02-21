@@ -90,10 +90,12 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      logger.info "IN CHECK SCHEMA"
+      logger.info "In check schema"
       if dataset_file_schema
 
         if dataset_file_schema.is_schema_valid?
+
+          logger.info "we have schema and schema is valid"
 
           # TODO this could use the cached schema in the object, but for now...
           schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
