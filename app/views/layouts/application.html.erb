@@ -45,6 +45,7 @@
           </p>
         <% else %>
           <p class="navbar-text navbar-right">
+            <%= bs_button_to 'Register/sign in', new_user_session_path, style: "primary" %>
             <%= bs_button_to 'Sign in with Github', '/auth/github', style: "primary" %>
           </p>
         <% end %>

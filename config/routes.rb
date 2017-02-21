@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  devise_for :users
   root 'application#index'
 
   get '/api-docs' => 'application#api'#, :as => :api
