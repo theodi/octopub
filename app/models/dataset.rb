@@ -130,7 +130,6 @@ class Dataset < ApplicationRecord
     # This is a callback
     def delete_dataset_in_github
       jekyll_service.delete_dataset_in_github
-  #    @repo.delete if @repo
     end
 
     def check_repo
