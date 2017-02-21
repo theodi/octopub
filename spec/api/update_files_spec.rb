@@ -7,19 +7,17 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
 
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
-   
 
     @user = create(:user, name: "User McUser", email: "user@user.com")
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, title: "Test Data")
     ])
+
     @file = @dataset.dataset_files.last
     args = {}
     @repo = double(GitData)
-  #  allow_any_instance_of(User).to receive(:octokit_client).and_return { @repo }
-    # allow(@user).to receive(:octokit_client).with(any_args).and_return { p "ARGH" && Octokit::Client.new('1234') }
-   allow(@dataset).to receive(:fetch_repo)#.and_return { @repo }
 
+    allow(@dataset).to receive(:fetch_repo)
     expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
   end
 
@@ -60,5 +58,4 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
       }
     }, headers: {'Authorization' => "Token token=#{@user.api_key}"}
   end
-
 end
