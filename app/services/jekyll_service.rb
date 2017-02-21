@@ -7,13 +7,12 @@ class JekyllService
   end
 
   def add_files_to_repo_and_push_to_github
-    p "in add_files_to_repo_and_push_to_github"
+    Rails.logger.info "in add_files_to_repo_and_push_to_github"
     create_data_files
     push_to_github
   end
 
   def create_data_files
-    p "in create_data_files"
     Rails.logger.info "Create data files and add to github"
     @dataset.dataset_files.each { |d| add_to_github(d.filename, d.file) }
     Rails.logger.info "Create datapackage and add to repo"
@@ -61,7 +60,7 @@ class JekyllService
   end
 
   def update_in_github(filename, file)
-    p 'update_in_github'
+    Rails.logger.info 'update_in_github'
     update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
@@ -88,7 +87,7 @@ class JekyllService
 
   def update_dataset_in_github
     # Update files
-    p 'update_dataset_in_github'
+    Rails.logger.info 'update_dataset_in_github'
     @dataset.dataset_files.each do |d|
       if d.file
         update_in_github(d.filename, d.file)

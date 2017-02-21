@@ -3,7 +3,7 @@ class RepoService
   attr_accessor :repo
 
   def initialize(repo)
-    p "Repo service initialised"
+    Rails.logger.info "Repo service initialised"
     @repo = repo
   end
 
@@ -18,7 +18,7 @@ class RepoService
   def update_file(filename, file)
     @repo.update_file(filename, file) if @repo
   end
-  
+
   def save
     @repo.save
   end
