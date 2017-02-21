@@ -9,7 +9,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
   }
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     OmniAuth.config.mock_auth[:github]
     sign_in @user
     allow_any_instance_of(User).to receive(:organizations) { organizations }
@@ -29,7 +29,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       click_link "Add dataset"
       expect(page).to have_content "Dataset name"
       within 'form' do
-        expect(page).to have_content "user-mcuser"
+        expect(page).to have_content @user.github_username
       end
     end
 
@@ -42,7 +42,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         expect(page).to have_content "good schema"
         expect(page).to have_content "Or upload a new one"
         expect(page).to have_content "No schema required"
-        expect(page).to have_content "user-mcuser"
+        expect(page).to have_content @user.github_username
       end
     end
 
@@ -66,7 +66,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       before_datasets = Dataset.count
       expect(page).to have_selector(:link_or_button, "Submit")
       within 'form' do
-        expect(page).to have_content "user-mcuser"
+        expect(page).to have_content @user.github_username
         expect(page).to have_content "Upload a schema for this Data File"
         complete_form(page, common_name, data_file)
       end

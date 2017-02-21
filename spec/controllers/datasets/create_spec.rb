@@ -13,7 +13,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     Sidekiq::Testing.inline!
     skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     sign_in @user
 
     @name = "My cool dataset"

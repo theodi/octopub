@@ -16,7 +16,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     Sidekiq::Testing.inline!
     skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     sign_in @user
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }

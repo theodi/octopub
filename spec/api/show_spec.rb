@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'GET /datasets/:id', vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   it 'gets a file with a particular id' do

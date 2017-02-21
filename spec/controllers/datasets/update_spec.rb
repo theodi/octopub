@@ -9,7 +9,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
   before(:each) do
     Sidekiq::Testing.inline!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }

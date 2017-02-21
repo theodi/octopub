@@ -7,7 +7,7 @@ describe 'PUT /datasets/:id' do
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
    
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, filename: 'test-data.csv')
     ])

@@ -5,7 +5,7 @@ RSpec.describe "Dataset creation", type: :request, vcr: { :match_requests_on => 
     Sidekiq::Testing.fake!
     skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     sign_in @user
 
     @name = "My cool dataset"
