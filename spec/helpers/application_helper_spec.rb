@@ -64,9 +64,9 @@ describe ApplicationHelper do
   it 'gets user option' do
     expect(helper.user_option).to eq(
       [
-        'user',
+        @user.github_username,
         nil,
-        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
+        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> #{@user.github_username}" }
       ]
     )
   end
@@ -74,9 +74,9 @@ describe ApplicationHelper do
   it 'gets all options' do
     expect(helper.organization_select_options).to eq([
       [
-        'user',
+        @user.github_username,
         nil,
-        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> user" }
+        { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> #{@user.github_username}" }
       ],
       [
         'org1',
