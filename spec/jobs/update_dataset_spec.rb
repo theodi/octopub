@@ -17,9 +17,6 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(@worker).to receive(:get_dataset).with(@dataset.id, @user) {
       @dataset
     }
-
-    expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-
     expect(@worker).to receive(:jid) {
       "84855ffe6a7e1d6dacf6685e"
     }
@@ -91,5 +88,4 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(Error.first.messages).to eq(["Dataset files is invalid", "Your file 'My File' does not appear to be a valid CSV. Please check your file and try again."])
     end
   end
-
 end

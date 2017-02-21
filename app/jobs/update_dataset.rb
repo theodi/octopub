@@ -20,16 +20,18 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
-    dataset.fetch_repo(user.octokit_client)
+    @repo = dataset.fetch_repo(user.octokit_client)
     dataset
   end
 
   def handle_files(files)
+    jekyll_service = JekyllService.new(@dataset, @repo)
+
     files.each do |file|
       if file["id"]
         update_file(file["id"], file)
       else
-        add_file(file)
+        add_file(jekyll_service, file)
       end
     end
   end
@@ -47,10 +49,7 @@ class UpdateDataset
     f.update_file(file)
   end
 
-  def add_file(file)
-
-    @repo = @dataset.fetch_repo
-
+  def add_file(jekyll_service, file)
     f = DatasetFile.new_file(file)
     if file["schema"]
       # Create schema
@@ -59,12 +58,10 @@ class UpdateDataset
       f.dataset_file_schema_id = schema.id
     end
 
-    jekyll_service = JekyllService.new(@dataset, @repo)
-
     @dataset.dataset_files << f
     if f.save
       jekyll_service.add_to_github(f.filename, f.file)
-      jekyll_service.add_jekyll_to_github(f.filename)    
+      jekyll_service.add_jekyll_to_github(f.filename)
       f.file = nil
     end
   end
