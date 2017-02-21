@@ -33,7 +33,7 @@ class Dataset < ApplicationRecord
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
   after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
-  after_destroy :delete_in_github
+  after_destroy :delete_dataset_in_github
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -128,8 +128,9 @@ class Dataset < ApplicationRecord
     end
 
     # This is a callback
-    def delete_in_github
-      @repo.delete if @repo
+    def delete_dataset_in_github
+      jekyll_service.delete_dataset_in_github
+  #    @repo.delete if @repo
     end
 
     def check_repo

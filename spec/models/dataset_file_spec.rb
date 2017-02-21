@@ -343,7 +343,5 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.errors.messages[:file].first).to eq('does not appear to be a valid CSV. Please check your file and try again.')
       expect(@dataset.valid?).to eq(false)
     end
-
   end
-
 end

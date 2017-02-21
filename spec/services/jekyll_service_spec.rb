@@ -2,10 +2,9 @@ require 'rails_helper'
 
 describe JekyllService do
 
-  contet "for a dataset" do
+  context "for a dataset" do
     it "creates a file in Github" do
       dataset = build(:dataset, user: @user, repo: "repo")
-      #repo = dataset.instance_variable_get(:@repo)
       repo = double(GitData)
       expect(repo).to receive(:add_file).once.with("my-file", "File contents")
       jekyll_service = JekyllService.new(dataset, repo)
@@ -15,7 +14,6 @@ describe JekyllService do
 
     it "creates a file in a folder in Github" do
       dataset = build(:dataset, user: @user, repo: "repo")
-   #   repo = dataset.instance_variable_get(:@repo)
       repo = double(GitData)
       expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
       jekyll_service = JekyllService.new(dataset, repo)
@@ -33,6 +31,13 @@ describe JekyllService do
   end
 
   context "for a dataset file" do
+
+    before(:each) do
+      @user = create(:user, name: "user-mcuser", email: "user@user.com")
+      @path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+    end
+
+
     context "add_to_github" do
       before(:each) do
         @tempfile = Rack::Test::UploadedFile.new(@path, "text/csv")
@@ -65,14 +70,11 @@ describe JekyllService do
       it "updates a data file in Github" do
         expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.csv", File.read(@path))
         @jekyll_service.update_in_github(@file.filename, @file.file)
-        # update_in_github(filename, file)
-        # @file.send(:update_in_github)
       end
 
       it "updates a jekyll file in Github" do
         expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
         @jekyll_service.update_jekyll_in_github(@file.filename)
-  #      @file.send(:update_jekyll_in_github)
       end
     end
   end
@@ -83,7 +85,6 @@ describe JekyllService do
                                 dataset_files: [
                                   create(:dataset_file)
                                 ]
-
 
       jekyll_service = JekyllService.new(dataset, nil)
 
@@ -120,7 +121,6 @@ describe JekyllService do
 
       jekyll_service = JekyllService.new(dataset, nil)
       allow_any_instance_of(RepoService).to receive(:add_file).with(:param_one, :param_two).and_return { nil }
-
 
       expect(jekyll_service).to receive(:add_file_to_repo).with("data/my-awesome-dataset.csv", File.open(data_file).read)
       expect(jekyll_service).to receive(:add_file_to_repo).with("datapackage.json", jekyll_service.create_json_datapackage) { {content: {} }}
@@ -197,7 +197,6 @@ describe JekyllService do
   context "schemata" do
 
     let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json') }
-
     let(:bad_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json') }
     let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
 
@@ -219,8 +218,6 @@ describe JekyllService do
       create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
 
       expect(DatasetFile.count).to be 1
-
-
     end
 
     it 'adds the schema to the datapackage' do
@@ -377,5 +374,3 @@ describe JekyllService do
     end
   end
 end
-
-

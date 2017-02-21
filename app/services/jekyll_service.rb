@@ -28,7 +28,7 @@ class JekyllService
       end
     end
 
-  end 
+  end
 
   def push_to_github
     Rails.logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
@@ -99,7 +99,11 @@ class JekyllService
     push_to_github
   end
 
- def create_json_datapackage
+  def delete_dataset_in_github
+    @repo.delete if @repo
+  end
+
+  def create_json_datapackage
     name = @dataset.name
     datapackage = {}
 
