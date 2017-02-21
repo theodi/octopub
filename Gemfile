@@ -8,10 +8,8 @@ gem 'rails', '~> 5.0.1'
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier'
-
 # Postgres default
 gem 'pg'
-
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -24,8 +22,11 @@ gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rai
 gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
 gem 'csvlint'
+
+# User related
 gem 'omniauth-github'
-gem 'dotenv-rails'
+gem 'devise'
+gem 'devise-bootstrap-views'
 
 # Bootstrap and view stuff
 gem 'bootstrap-sass', '~> 3.2.0'
@@ -35,9 +36,6 @@ gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem 'will_paginate-bootstrap'
-# For syntax highlighting
-gem 'coderay'
-
 
 # Logging and debug
 gem 'awesome_print'
@@ -51,14 +49,20 @@ gem 'pusher'
 gem 'sidekiq'
 gem 'open_uri_redirections'
 gem 'certificate-factory'
+
+# API functionality
 gem 'grape'
 gem 'grape-route-helpers'
 gem 'grape-swagger'
 gem 'grape-swagger-entity'
+
+# Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'
 gem 'rouge'
-gem 'twitter'
+gem 'coderay'
 
+gem 'twitter'
+gem 'dotenv-rails'
 gem 'airbrake'
 
 group :doc do
