@@ -4,7 +4,7 @@ describe UsersController, type: :controller do
   render_views
 
   before(:each) do
-    @user = create(:user, email: "test@example.com", name: "TestyMcTest")
+    @user = create(:user)
   end
 
   it 'returns 403 if user is not logged in' do

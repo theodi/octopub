@@ -7,8 +7,8 @@ describe SessionsController, type: :controller do
       "provider" => "github",
       "uid" => "1213232",
       "info" => {
-        "nickname" => "user-mcuser",
-        "email" => "user@example.com"
+          "nickname" => Faker::Name.unique.name,
+          "email" => Faker::Internet.unique.email
       },
       "credentials" => {
         "token" => "21312313233"

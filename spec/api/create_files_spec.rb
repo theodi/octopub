@@ -6,7 +6,7 @@ describe 'POST /datasets/:id/files' do
     Sidekiq::Testing.inline!
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, filename: 'test-data.csv')
     ])
