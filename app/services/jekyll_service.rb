@@ -149,46 +149,46 @@ class JekyllService
     Odlifier::License.define(@dataset.license)
   end
 
-    def for_each_file_in_schema(file, schema, &block)
-      return unless schema.class == Csvlint::Csvw::TableGroup
-      # Generate JSON outputs
-      schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
-      # Add individual files to dataset
-      (files || []).each do |filename, content|
-        # Strip leading slash and create filename with extension
-        filename = filename[1..-1]
-        filename = "index" if filename == ""
-        filename += ".json"
-        # Strip leading slashes from urls and add json
-        ([content].flatten).each do |content_item|
-          if content_item["url"]
-            content_item["url"] = content_item["url"].gsub(/^\//,"")
-            content_item["url"] += ".json"
-          end
-        end
-        # call the block
-        block.call(filename, content)
-      end
-    end
-
-    def create_json_api_files(file, schema)
-      for_each_file_in_schema(file, schema) do |filename, content|
-        # Store data as JSON in file
-        add_file_to_repo(filename, content.to_json)
-      end
-    end
-
-    def create_json_jekyll_files(file, schema)
-      for_each_file_in_schema(file, schema) do |filename, content|
-        # Add human readable template
-        unless filename == "index.json"
-          if filename.scan('/').count > 0
-            add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
-          else
-            add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
-          end
+  def for_each_file_in_schema(file, schema, &block)
+    return unless schema.class == Csvlint::Csvw::TableGroup
+    # Generate JSON outputs
+    schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+    files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
+    # Add individual files to dataset
+    (files || []).each do |filename, content|
+      # Strip leading slash and create filename with extension
+      filename = filename[1..-1]
+      filename = "index" if filename == ""
+      filename += ".json"
+      # Strip leading slashes from urls and add json
+      ([content].flatten).each do |content_item|
+        if content_item["url"]
+          content_item["url"] = content_item["url"].gsub(/^\//,"")
+          content_item["url"] += ".json"
         end
       end
+      # call the block
+      block.call(filename, content)
     end
+  end
+
+  def create_json_api_files(file, schema)
+    for_each_file_in_schema(file, schema) do |filename, content|
+      # Store data as JSON in file
+      add_file_to_repo(filename, content.to_json)
+    end
+  end
+
+  def create_json_jekyll_files(file, schema)
+    for_each_file_in_schema(file, schema) do |filename, content|
+      # Add human readable template
+      unless filename == "index.json"
+        if filename.scan('/').count > 0
+          add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
+        else
+          add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
+        end
+      end
+    end
+  end
 end
