@@ -5,7 +5,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
   before(:each) do
     Sidekiq::Testing.inline!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, title: "Test Data")
     ])

@@ -6,7 +6,7 @@ describe 'POST /datasets' do
     Sidekiq::Testing.inline!
     skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
 
     @name = "My cool dataset"
     @description = "This is a description"

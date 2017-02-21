@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe DatasetFileSchemaService do
 
-  let(:user) { create(:user, name: "user-mcuser", email: "user@user.com") }
+  let(:user) { create(:user) }
   let(:good_schema_file) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json') }
   let(:good_schema_file_as_json) { File.read(good_schema_file).strip }
   let(:good_schema_url) { url_with_stubbed_get_for(good_schema_file) }

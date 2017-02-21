@@ -22,12 +22,14 @@ describe User do
   context "find_for_github_oauth" do
 
     before(:each) do
+      @user_name = Faker::Name.unique.name
+      @email = Faker::Internet.unique.email
       @auth = {
         "provider" => "github",
         "uid" => "1213232",
         "info" => {
-          "nickname" => "user-mcuser",
-          "email" => "user@example.com"
+          "nickname" => @user_name,
+          "email" => @email
         },
         "credentials" => {
           "token" => "21312313233"
@@ -38,8 +40,8 @@ describe User do
     it "creates a user from Github oauth" do
       user = User.find_for_github_oauth(@auth)
 
-      expect(user.name).to eq("user-mcuser")
-      expect(user.email).to eq("user@example.com")
+      expect(user.name).to eq(@user_name)
+      expect(user.email).to eq(@email)
       expect(user.token).to eq("21312313233")
       expect(user.api_key).to match /[a-z0-9]{20}/
     end
@@ -78,7 +80,7 @@ describe User do
     it "gets a user's github user details" do
       user = User.find_for_github_oauth(@auth)
 
-      expect(Rails.configuration.octopub_admin).to receive(:user).with('user-mcuser') {
+      expect(Rails.configuration.octopub_admin).to receive(:user).with(@user_name.parameterize) {
         {}
       }.once
 
@@ -92,8 +94,10 @@ describe User do
 
     before(:each) do
       @user = create(:user, token: ENV['GITHUB_TOKEN'])
+      @user2 = create(:user)
+
       @dataset1 = create(:dataset, full_name: "octopub/api-sandbox", user: @user)
-      @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
+      @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: @user2)
     end
 
     it "gets all datasets for a user's orgs" do

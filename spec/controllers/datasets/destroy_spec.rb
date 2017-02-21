@@ -3,7 +3,7 @@ require 'rails_helper'
 describe DatasetsController, type: :controller do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   describe 'destroy' do

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'GET /datasets/:id' do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   it 'shows all files for a particular dataset' do
