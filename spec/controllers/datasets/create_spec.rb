@@ -24,8 +24,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     @frequency = "Monthly"
     @files ||= []
 
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
 
   after(:each) do

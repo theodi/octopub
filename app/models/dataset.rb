@@ -32,8 +32,8 @@ class Dataset < ApplicationRecord
   has_many :dataset_files
 
   after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
-  after_update :update_in_github, :make_repo_public_if_appropriate, :publish_public_views
-  after_destroy :delete_in_github
+  after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
+  after_destroy :delete_dataset_in_github
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -61,14 +61,6 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def add_file_to_repo(filename, file)
-    @repo.add_file(filename, file)
-  end
-
-  def update_file_in_repo(filename, file)
-    @repo.update_file(filename, file)
-  end
-
   def delete_file_from_repo(filename)
     @repo.delete_file(filename)
   end
@@ -77,97 +69,12 @@ class Dataset < ApplicationRecord
     File.join([folder,filename].reject { |n| n.blank? })
   end
 
-  def create_data_files
-    logger.info "Create data files and add to github"
-    dataset_files.each { |d| d.add_to_github }
-    logger.info "Create datapackage and add to repo"
-    create_json_datapackage_and_add_to_repo
-
-    dataset_files.each do |dataset_file|
-      dataset_file.validate
-      if dataset_file.dataset_file_schema
-        add_file_to_repo("#{dataset_file.dataset_file_schema.name.downcase.parameterize}.schema.json", dataset_file.dataset_file_schema.schema)
-        # For ref, does a send as it's a private method
-        dataset_file.send(:create_json_api_files, dataset_file.dataset_file_schema.parsed_schema)
-      end
-    end
-
-  end
-
-  def create_jekyll_files
-    dataset_files.each { |d| d.add_jekyll_to_github }
-    add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
-    add_file_to_repo("_config.yml", config)
-    add_file_to_repo("css/style.css", File.open(File.join(Rails.root, "extra", "stylesheets", "style.css")).read)
-    add_file_to_repo("_layouts/default.html", File.open(File.join(Rails.root, "extra", "html", "default.html")).read)
-    add_file_to_repo("_layouts/resource.html", File.open(File.join(Rails.root, "extra", "html", "resource.html")).read)
-    add_file_to_repo("_layouts/api-item.html", File.open(File.join(Rails.root, "extra", "html", "api-item.html")).read)
-    add_file_to_repo("_layouts/api-list.html", File.open(File.join(Rails.root, "extra", "html", "api-list.html")).read)
-    add_file_to_repo("_includes/data_table.html", File.open(File.join(Rails.root, "extra", "html", "data_table.html")).read)
-    add_file_to_repo("js/papaparse.min.js", File.open(File.join(Rails.root, "extra", "js", "papaparse.min.js")).read)
-
-    dataset_files.each do |f|
-      # For ref, does a send as it's a private method
-      f.send(:create_json_jekyll_files, f.dataset_file_schema.parsed_schema) unless f.dataset_file_schema.nil?
-    end
-  end
-
-  def create_json_datapackage_and_add_to_repo
-    add_file_to_repo("datapackage.json", create_json_datapackage)
-  end
-
-  def update_datapackage
-    update_file_in_repo("datapackage.json", create_json_datapackage)
-  end
-
-  def create_json_datapackage
-    datapackage = {}
-
-    datapackage["name"] = name.downcase.parameterize
-    datapackage["title"] = name
-    datapackage["description"] = description
-    datapackage["licenses"] = [{
-      "url"   => license_details.url,
-      "title" => license_details.title
-    }]
-    datapackage["publishers"] = [{
-      "name"   => publisher_name,
-      "web" => publisher_url
-    }]
-
-    datapackage["resources"] = []
-
-    dataset_files.each do |file|
-      datapackage["resources"] << {
-        "name" => file.title,
-        "mediatype" => 'text/csv',
-        "description" => file.description,
-        "path" => "data/#{file.filename}",
-        "schema" => json_schema_for_datapackage(file.dataset_file_schema)
-      }.delete_if { |k,v| v.nil? }
-    end
-
-    datapackage.to_json
-  end
-
-  def json_schema_for_datapackage(dataset_file_schema)
-    return if dataset_file_schema.nil? || dataset_file_schema.is_schema_otw?
-    schema_hash = JSON.parse(dataset_file_schema.schema)
-    schema_hash["name"] = dataset_file_schema.name
-    schema_hash["description"] = dataset_file_schema.description
-    schema_hash
-  end
-
   def config
     {
       "data_dir" => '.',
       "update_frequency" => frequency,
       "permalink" => 'pretty'
     }.to_yaml
-  end
-
-  def license_details
-    Odlifier::License.define(license)
   end
 
   def github_url
@@ -198,32 +105,21 @@ class Dataset < ApplicationRecord
 
   private
 
+    # This is a callback
     def create_repo_and_populate
-
-      @repo = GitData.create(repo_owner, name, restricted: restricted, client: user.octokit_client)
+      logger.info "in create_repo_and_populate"
+      @repo = RepoService.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       logger.info "Now updated with github details - call commit!"
-
-      add_files_to_repo_and_push_to_github
+      jekyll_service.add_files_to_repo_and_push_to_github
     end
 
-    def add_files_to_repo_and_push_to_github
-      create_data_files
-      push_to_github
+    # This is a callback
+    def update_dataset_in_github
+      jekyll_service.update_dataset_in_github
     end
 
-    def update_in_github
-      # Update files
-      dataset_files.each do |d|
-        if d.file
-          d.update_in_github
-          d.update_jekyll_in_github unless restricted?
-        end
-      end
-      update_datapackage
-      push_to_github
-    end
-
+    # This is a callback
     def make_repo_public_if_appropriate
       # Should the repo be made public?
       if restricted_changed? && restricted == false
@@ -231,13 +127,9 @@ class Dataset < ApplicationRecord
       end
     end
 
-    def delete_in_github
-      @repo.delete if @repo
-    end
-
-    def push_to_github
-      logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
-      @repo.save
+    # This is a callback
+    def delete_dataset_in_github
+      jekyll_service.delete_dataset_in_github
     end
 
     def check_repo
@@ -271,18 +163,25 @@ class Dataset < ApplicationRecord
       end
     end
 
+    def jekyll_service
+      logger.info "jekyll_service called, so set with #{repo}"
+      @jekyll_service ||= JekyllService.new(self, @repo)
+    end
+
+    # This is a callback
     def publish_public_views
       return if restricted
       if id_changed? || restricted_changed?
         # This is either a new record or has just been made public
+
         create_public_views
       end
       # updates to existing public repos are handled in #update_in_github
     end
 
     def create_public_views
-      create_jekyll_files
-      push_to_github
+      jekyll_service.create_jekyll_files
+      jekyll_service.push_to_github
       wait_for_gh_pages_build
       create_certificate
     end
@@ -319,8 +218,7 @@ class Dataset < ApplicationRecord
       }.to_yaml
 
       fetch_repo(user.octokit_client)
-      update_file_in_repo('_config.yml', config)
-      push_to_github
+      jekyll_service.update_file_in_repo('_config.yml', config)
+      jekyll_service.push_to_github
     end
-
 end

@@ -5,18 +5,26 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
   before(:each) do
     Sidekiq::Testing.inline!
 
+    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
+
     @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, title: "Test Data")
     ])
-    @file = @dataset.dataset_files.last
 
+    @file = @dataset.dataset_files.last
+    args = {}
     @repo = double(GitData)
-    expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+
+    allow(@dataset).to receive(:fetch_repo)
+    expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
   end
 
   after(:each) do
     Sidekiq::Testing.fake!
+    Dataset.set_callback(:create, :after, :create_repo_and_populate)
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
   it 'updates the description of a file' do
@@ -32,7 +40,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
   end
 
   it 'updates a file' do
-    Dataset.set_callback(:update, :after, :update_in_github)
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
 
     filename = 'shoes-cotw.csv'
     path = File.join(Rails.root, 'spec', 'fixtures', filename)
@@ -50,5 +58,4 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
       }
     }, headers: {'Authorization' => "Token token=#{@user.api_key}"}
   end
-
 end

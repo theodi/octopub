@@ -18,8 +18,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     @user = create(:user)
     sign_in @user
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
 
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 

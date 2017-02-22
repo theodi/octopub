@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe UpdateDataset do
+describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
   before(:each) do
-    skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
+    skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
     @worker = UpdateDataset.new
     @user = create(:user)
     @dataset = create(:dataset, name: "My Awesome Dataset",
@@ -17,7 +17,6 @@ describe UpdateDataset do
     expect(@worker).to receive(:get_dataset).with(@dataset.id, @user) {
       @dataset
     }
-
     expect(@worker).to receive(:jid) {
       "84855ffe6a7e1d6dacf6685e"
     }
@@ -43,7 +42,7 @@ describe UpdateDataset do
   end
 
   after(:each) do
-    Dataset.set_callback(:update, :after, :update_in_github)
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
   it 'sets a job id' do
@@ -89,5 +88,4 @@ describe UpdateDataset do
       expect(Error.first.messages).to eq(["Dataset files is invalid", "Your file 'My File' does not appear to be a valid CSV. Please check your file and try again."])
     end
   end
-
 end
