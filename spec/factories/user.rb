@@ -1,10 +1,13 @@
 FactoryGirl.define do
   factory :user do
-    provider "github"
-    uid "1234556"
     email   { Faker::Internet.unique.email }
     name    { Faker::Name.unique.name }
-    token "rwefsadasfesesds3454353few"
-    password "this-has-to-be-longer-than-six-characters"
+    password { Devise.friendly_token[0,20] }
+
+    factory :github_user do
+      token { Faker::Crypto.md5 }
+      provider "github"
+      uid "1234556"
+    end
   end
 end

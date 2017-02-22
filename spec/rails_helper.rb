@@ -15,6 +15,7 @@ require 'factory_girl'
 require 'omniauth'
 require 'support/vcr_helper'
 require 'support/fake_data'
+require 'support/warden_spec_helper'
 require 'webmock/rspec'
 require 'sidekiq/testing'
 
@@ -86,6 +87,7 @@ RSpec.configure do |config|
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
+  config.include WardenSpecHelper, type: :feature
 end
 
 def sign_in(user)

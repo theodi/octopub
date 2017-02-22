@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
 
   devise_for :users
+
   root 'application#index'
 
   get '/api-docs' => 'application#api'#, :as => :api
 
   get "/auth/:provider/callback" => "sessions#create", :as => :callback
-  get "/signout" => "sessions#destroy", :as => :signout
+  get "/signout" => "sessions#destroy", :as => :github_signout
   get "/redirect" => "sessions#redirect", :as => :redirect
 
   resources :datasets do

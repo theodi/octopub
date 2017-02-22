@@ -41,7 +41,11 @@
         <% if current_user %>
           <p class="navbar-text navbar-right">
             Signed in as <%= link_to current_user.name, main_app.me_path %>
-            <%= bs_button_to 'Logout', main_app.signout_path, style: "primary" %>
+            <% if current_user.github_user? %>
+              <%= bs_button_to 'Logout', main_app.github_signout_path, style: "primary" %>
+            <% else %>
+              <%= bs_button_to 'Logout', main_app.destroy_user_session_path, method: :delete, style: "primary" %>
+            <% end %>
           </p>
         <% else %>
           <p class="navbar-text navbar-right">
