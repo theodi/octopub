@@ -46,6 +46,16 @@ describe User do
       expect(user.api_key).to match /[a-z0-9]{20}/
     end
 
+    it "identifies whether it is a github user" do
+      user = create(:user)
+      expect(user.github_user?).to be false
+    end
+
+    it "identifies whether it is not a github user" do
+      user = create(:github_user)
+      expect(user.github_user?).to be true
+    end
+
     it "finds a user from Github oauth" do
       user = create(:user, provider: "github", uid: "1213232")
 

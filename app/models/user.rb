@@ -55,6 +55,10 @@ class User < ApplicationRecord
     @github_user ||= Rails.configuration.octopub_admin.user(github_username)
   end
 
+  def github_user?
+    provider == 'github'
+  end
+
   def avatar
     github_user.avatar_url
   end
