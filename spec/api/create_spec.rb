@@ -15,9 +15,9 @@ describe 'POST /datasets' do
     @license = "OGL-UK-3.0"
     @frequency = "Monthly"
 
-    allow_any_instance_of(DatasetFile).to receive(:add_to_github) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:add_to_github) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
 
     name = 'Test Data'
     description = Faker::Company.bs

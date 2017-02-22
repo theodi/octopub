@@ -74,20 +74,12 @@ class DatasetFile < ApplicationRecord
     self.update(update_hash)
   end
 
-  def add_to_github
-    dataset.add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def add_file_to_repo(repo, filename, file)
+    dataset.jekyll_service.add_file_to_repo(filename, file)
   end
 
-  def add_jekyll_to_github
-    dataset.add_file_to_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-  end
-
-  def update_in_github
-    dataset.update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
-  end
-
-  def update_jekyll_in_github
-    dataset.update_file_in_repo("data/#{File.basename(filename, '.*')}.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
+  def update_file_in_repo(repo, filename, file)
+    dataset.jekyll_service.update_file_to_repo(filename, file)
   end
 
   def delete_from_github(file)
@@ -98,10 +90,12 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      logger.info "IN CHECK SCHEMA"
+      logger.info "In check schema"
       if dataset_file_schema
 
         if dataset_file_schema.is_schema_valid?
+
+          logger.info "we have schema and schema is valid"
 
           # TODO this could use the cached schema in the object, but for now...
           schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
@@ -137,49 +131,6 @@ class DatasetFile < ApplicationRecord
 
     def get_file_for_validation_from_file
       File.new(file.tempfile)
-    end
-
-    def for_each_file_in_schema schema, &block
-      return unless schema.class == Csvlint::Csvw::TableGroup
-      # Generate JSON outputs
-      schema.tables["file:#{file.tempfile.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-      files = Csv2rest.generate schema, base_url: File.dirname(schema.tables.first[0])
-      # Add individual files to dataset
-      (files || []).each do |filename, content|
-        # Strip leading slash and create filename with extension
-        filename = filename[1..-1]
-        filename = "index" if filename == ""
-        filename += ".json"
-        # Strip leading slashes from urls and add json
-        ([content].flatten).each do |content_item|
-          if content_item["url"]
-            content_item["url"] = content_item["url"].gsub(/^\//,"")
-            content_item["url"] += ".json"
-          end
-        end
-        # call the block
-        block.call(filename, content)
-      end
-    end
-
-    def create_json_api_files schema
-      for_each_file_in_schema(schema) do |filename, content|
-        # Store data as JSON in file
-        dataset.add_file_to_repo(filename, content.to_json)
-      end
-    end
-
-    def create_json_jekyll_files schema
-      for_each_file_in_schema(schema) do |filename, content|
-        # Add human readable template
-        unless filename == "index.json"
-          if filename.scan('/').count > 0
-            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-item.md")).read)
-          else
-            dataset.add_file_to_repo(filename.gsub('json', 'md'), File.open(File.join(Rails.root, "extra", "html", "api-list.md")).read)
-          end
-        end
-      end
     end
 
     def check_csv

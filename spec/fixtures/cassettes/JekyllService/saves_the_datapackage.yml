@@ -1,0 +1,267 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://licenses.opendefinition.org/licenses/OGL-UK-3.0.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Content-Type:
+      - application/json; charset=utf-8
+      Last-Modified:
+      - Mon, 19 Jan 2015 04:59:03 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Expires:
+      - Tue, 21 Feb 2017 10:08:09 GMT
+      Cache-Control:
+      - max-age=600
+      X-Github-Request-Id:
+      - DE48:61E7:8FE0B53:B4CF5EE:58AC0F30
+      Content-Length:
+      - '261'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 21 Feb 2017 10:15:52 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '234'
+      Connection:
+      - keep-alive
+      X-Served-By:
+      - cache-lhr6344-LHR
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1487672152.712858,VS0,VE0
+      Vary:
+      - Accept-Encoding
+      X-Fastly-Request-Id:
+      - 7fce77e4ed927978e2ce32aad7a70ceb2b77eab4
+    body:
+      encoding: ASCII-8BIT
+      string: "{\n  \"domain_content\": true, \n  \"domain_data\": true, \n  \"domain_software\":
+        true, \n  \"family\": \"\", \n  \"id\": \"OGL-UK-3.0\", \n  \"is_generic\":
+        false, \n  \"od_conformance\": \"approved\", \n  \"osd_conformance\": \"not
+        reviewed\", \n  \"maintainer\": \"UK Government\", \n  \"status\": \"active\",
+        \n  \"title\": \"Open Government Licence 3.0 (United Kingdom)\", \n  \"url\":
+        \"https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\"\n}\n"
+    http_version: 
+  recorded_at: Tue, 21 Feb 2017 10:15:52 GMT
+- request:
+    method: get
+    uri: http://licenses.opendefinition.org/licenses/OGL-UK-3.0.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Content-Type:
+      - application/json; charset=utf-8
+      Last-Modified:
+      - Mon, 19 Jan 2015 04:59:03 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Expires:
+      - Tue, 21 Feb 2017 10:08:09 GMT
+      Cache-Control:
+      - max-age=600
+      X-Github-Request-Id:
+      - DE48:61E7:8FE0B53:B4CF5EE:58AC0F30
+      Content-Length:
+      - '261'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 21 Feb 2017 10:15:52 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '234'
+      Connection:
+      - keep-alive
+      X-Served-By:
+      - cache-lhr6336-LHR
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1487672152.750620,VS0,VE0
+      Vary:
+      - Accept-Encoding
+      X-Fastly-Request-Id:
+      - f0c461d7112d59e8eebcd33f72f930eacbc2821b
+    body:
+      encoding: ASCII-8BIT
+      string: "{\n  \"domain_content\": true, \n  \"domain_data\": true, \n  \"domain_software\":
+        true, \n  \"family\": \"\", \n  \"id\": \"OGL-UK-3.0\", \n  \"is_generic\":
+        false, \n  \"od_conformance\": \"approved\", \n  \"osd_conformance\": \"not
+        reviewed\", \n  \"maintainer\": \"UK Government\", \n  \"status\": \"active\",
+        \n  \"title\": \"Open Government Licence 3.0 (United Kingdom)\", \n  \"url\":
+        \"https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\"\n}\n"
+    http_version: 
+  recorded_at: Tue, 21 Feb 2017 10:15:52 GMT
+- request:
+    method: get
+    uri: http://licenses.opendefinition.org/licenses/OGL-UK-3.0.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Content-Type:
+      - application/json; charset=utf-8
+      Last-Modified:
+      - Mon, 19 Jan 2015 04:59:03 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Expires:
+      - Tue, 21 Feb 2017 10:08:09 GMT
+      Cache-Control:
+      - max-age=600
+      X-Github-Request-Id:
+      - DE48:61E7:8FE0B53:B4CF5EE:58AC0F30
+      Content-Length:
+      - '261'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 21 Feb 2017 10:15:52 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '234'
+      Connection:
+      - keep-alive
+      X-Served-By:
+      - cache-lhr6351-LHR
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1487672152.791309,VS0,VE0
+      Vary:
+      - Accept-Encoding
+      X-Fastly-Request-Id:
+      - 0c17442594c04ee1ba78b69823bbbec2712ff990
+    body:
+      encoding: ASCII-8BIT
+      string: "{\n  \"domain_content\": true, \n  \"domain_data\": true, \n  \"domain_software\":
+        true, \n  \"family\": \"\", \n  \"id\": \"OGL-UK-3.0\", \n  \"is_generic\":
+        false, \n  \"od_conformance\": \"approved\", \n  \"osd_conformance\": \"not
+        reviewed\", \n  \"maintainer\": \"UK Government\", \n  \"status\": \"active\",
+        \n  \"title\": \"Open Government Licence 3.0 (United Kingdom)\", \n  \"url\":
+        \"https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\"\n}\n"
+    http_version: 
+  recorded_at: Tue, 21 Feb 2017 10:15:52 GMT
+- request:
+    method: get
+    uri: http://licenses.opendefinition.org/licenses/OGL-UK-3.0.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Content-Type:
+      - application/json; charset=utf-8
+      Last-Modified:
+      - Mon, 19 Jan 2015 04:59:03 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Expires:
+      - Tue, 21 Feb 2017 10:08:09 GMT
+      Cache-Control:
+      - max-age=600
+      X-Github-Request-Id:
+      - DE48:61E7:8FE0B53:B4CF5EE:58AC0F30
+      Content-Length:
+      - '261'
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 21 Feb 2017 10:15:52 GMT
+      Via:
+      - 1.1 varnish
+      Age:
+      - '234'
+      Connection:
+      - keep-alive
+      X-Served-By:
+      - cache-lhr6345-LHR
+      X-Cache:
+      - HIT
+      X-Cache-Hits:
+      - '1'
+      X-Timer:
+      - S1487672152.821927,VS0,VE0
+      Vary:
+      - Accept-Encoding
+      X-Fastly-Request-Id:
+      - 88e7a460d2c98b589a7fbff2e8c30a6456779b47
+    body:
+      encoding: ASCII-8BIT
+      string: "{\n  \"domain_content\": true, \n  \"domain_data\": true, \n  \"domain_software\":
+        true, \n  \"family\": \"\", \n  \"id\": \"OGL-UK-3.0\", \n  \"is_generic\":
+        false, \n  \"od_conformance\": \"approved\", \n  \"osd_conformance\": \"not
+        reviewed\", \n  \"maintainer\": \"UK Government\", \n  \"status\": \"active\",
+        \n  \"title\": \"Open Government Licence 3.0 (United Kingdom)\", \n  \"url\":
+        \"https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\"\n}\n"
+    http_version: 
+  recorded_at: Tue, 21 Feb 2017 10:15:52 GMT
+recorded_with: VCR 3.0.3

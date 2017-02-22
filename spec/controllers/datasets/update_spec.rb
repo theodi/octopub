@@ -12,8 +12,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
     @user = create(:user)
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
 
   before(:each, schema: true) do
@@ -43,7 +43,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         description: "New description",
         publisher_name: "New Publisher",
         publisher_url: "http://new.publisher.com",
-        license: "OGL-UK-3",
+        license: "OGL-UK-3.0",
         frequency: "annual"
       }
     end
@@ -51,24 +51,22 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
     context('successful update') do
       before(:each) do
         @repo = double(GitData)
+        @dataset_filename = 'valid-schema.csv'
+        @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
 
         expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
-        expect(@dataset).to receive(:update_datapackage)
-        expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+        allow(@repo).to receive(:update_file).with(any_args)
         expect(@repo).to receive(:save)
-        Dataset.set_callback(:update, :after, :update_in_github)
+        Dataset.set_callback(:update, :after, :update_dataset_in_github)
       end
 
       context('with schema', :schema) do
         context 'with schema-compliant csv' do
 
           it 'updates a file in Github' do
-            filename = 'valid-schema.csv'
-            path = File.join(Rails.root, 'spec', 'fixtures', filename)
-            file = url_with_stubbed_get_for(path)
-
-            expect(@dataset_file).to receive(:update_in_github)
-            expect(@dataset_file).to receive(:update_jekyll_in_github)
+            file = url_with_stubbed_get_for(@path)
+            expect(@repo).to receive(:update_file).with(any_args)
+            expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
@@ -79,17 +77,16 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           context 'adds a new file in Github' do
 
             before :each do
-              @dataset_file.file = nil
+              expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
-              @dataset_filename = 'valid-schema.csv'
-              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
+              @dataset_file.file = nil
+              expect_any_instance_of(JekyllService).to receive(:update_datapackage)
               @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
-
               expect(DatasetFile).to receive(:new_file) { file }
-              expect(file).to receive(:add_to_github)
-              expect(file).to receive(:add_jekyll_to_github)
+              expect_any_instance_of(JekyllService).to receive(:add_to_github)
+              expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
             end
 
             it 'via a browser' do
@@ -118,6 +115,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         it 'updates a dataset' do
           @dataset_file.file = nil
 
+          expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @dataset_file.id,
             description: "New description"
@@ -129,7 +127,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           expect(@dataset.description).to eq("New description")
           expect(@dataset.publisher_name).to eq("New Publisher")
           expect(@dataset.publisher_url).to eq("http://new.publisher.com")
-          expect(@dataset.license).to eq("OGL-UK-3")
+          expect(@dataset.license).to eq("OGL-UK-3.0")
           expect(@dataset.frequency).to eq("annual")
           expect(@dataset.dataset_files.count).to eq(1)
           expect(@dataset.dataset_files.first.description).to eq("New description")
@@ -137,6 +135,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
 
         it 'returns 202 when async is set to true' do
           @dataset_file.file = nil
+          expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @dataset_file.id,
@@ -147,12 +146,13 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         end
 
         it 'updates a file in Github' do
+          expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
           filename = 'test-data.csv'
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = url_with_stubbed_get_for(path)
 
-          expect(@dataset_file).to receive(:update_in_github)
-          expect(@dataset_file).to receive(:update_jekyll_in_github)
+          expect_any_instance_of(JekyllService).to receive(:update_in_github)
+          expect_any_instance_of(JekyllService).to receive(:update_jekyll_in_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
@@ -170,8 +170,9 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
           expect(DatasetFile).to receive(:new_file) { new_file }
-          expect(new_file).to receive(:add_to_github)
-          expect(new_file).to receive(:add_jekyll_to_github)
+          expect_any_instance_of(JekyllService).to receive(:add_to_github)
+          expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
+          expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
@@ -193,11 +194,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
 
     end
 
-    context('unsuccessful update') do
-
+    context 'unsuccessful update' do
       context 'with non-compliant csv', :schema do
-
-
 
         before(:each) do
           @repo = double(GitData)
@@ -209,7 +207,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           @dataset_file.file = nil
           file = url_with_stubbed_get_for(data_file_not_matching_schema)
 
-          expect(@dataset_file).to_not receive(:update_in_github)
+          expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
