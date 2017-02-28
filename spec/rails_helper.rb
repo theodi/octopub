@@ -108,6 +108,13 @@ def url_with_stubbed_get_for(path)
   url
 end
 
+def url_with_stubbed_get_for_fixture_file(file_name)
+  path = File.join(Rails.root, 'spec', 'fixtures', file_name)
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
 def url_for_schema_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/schema.json"
   stub_request(:get, url).to_return(body: File.read(path))

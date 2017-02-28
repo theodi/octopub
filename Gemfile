@@ -64,7 +64,7 @@ gem 'redcarpet'
 gem 'rouge'
 gem 'twitter'
 
-gem 'airbrake'
+gem 'airbrake-ruby', '1.7.1'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
