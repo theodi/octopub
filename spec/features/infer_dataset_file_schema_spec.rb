@@ -12,7 +12,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     sign_in @user
     allow_any_instance_of(User).to receive(:organizations) { organizations }
     allow_any_instance_of(User).to receive(:github_user) { github_user }
-    allow_any_instance_of(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(read_fixture_schema_file('good-schema.json'))
+    allow_any_instance_of(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(File.read(data_file))
   end
 
   context "logged in visitors has no schemas" do
@@ -28,9 +28,9 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
-        fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
-        fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
-        attach_file('dataset_file_schema_url_in_s3', data_file)
+        fill_in 'name', with: "#{common_name}-schema-name"
+        fill_in 'description', with: "#{common_name}-schema-description"
+        attach_file('_url_in_s3', data_file)
 
         click_on 'Submit'
       end

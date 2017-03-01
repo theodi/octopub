@@ -17,11 +17,7 @@ describe DatasetFileSchemasInferenceController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: {
-        dataset_file_schema: {
-          name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url
-        }
-      }
+      post :create, params: { name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url  }
 
       dataset_file_schema = DatasetFileSchema.last
       expect(dataset_file_schema.name).to eq schema_name
@@ -33,32 +29,8 @@ describe DatasetFileSchemasInferenceController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: {
-        dataset_file_schema: {
-          name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url
-        }
-      }
+      post :create, params: { name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url }
       expect(response).to redirect_to(dataset_file_schemas_path)
-    end
-  end
-
-  describe 'create failure' do
-
-    before(:each) do
-      allow(controller).to receive(:current_user) { user }
-    end
-
-    it "returns to new page if schema does not validate" do
-      pending "not ready"
-      # schema_name = 'schema-name'
-      # description = 'schema-description'
-
-      # post :create, params: {
-      #   dataset_file_schema: {
-      #     name: schema_name, description: description, user_id: user.id
-      #   }
-      # }
-      # expect(response).to render_template("new")
     end
   end
 end
