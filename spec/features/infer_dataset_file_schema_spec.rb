@@ -4,7 +4,7 @@ require 'features/user_and_organisations'
 feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
   include_context 'user and organisations'
 
-  let(:data_file) {File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
+  let(:data_file) { get_fixture_schema_file('valid-schema.csv') }
 
   before(:each) do
     @user = create(:user)
@@ -15,17 +15,13 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     allow_any_instance_of(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(read_fixture_schema_file('good-schema.json'))
   end
 
-
-
-  
-
   context "logged in visitors has no schemas" do
-    scenario "and can add a dataset file schema on it's own" do
+    scenario "and can infer a dataset file schema from a data file" do
       visit root_path
 
       click_link 'List my dataset file schemas'
       expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
-      click_link 'Add a new dataset file schema'
+      click_link 'Infer a new dataset file schema'
       common_name = 'Fri1437'
 
       before_datasets = DatasetFileSchema.count
