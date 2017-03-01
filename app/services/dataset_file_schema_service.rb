@@ -15,6 +15,15 @@ class DatasetFileSchemaService
     @dataset_file_schema
   end
 
+  def infer_dataset_file_schema_from_csv(csv_url)
+    ap read_file_with_utf_8(csv_url)
+    data = CSV.parse(read_file_with_utf_8(csv_url))
+    headers = data.shift
+    inferer = JsonTableSchema::Infer.new(headers, data, explicit: true)
+    schema = inferer.schema
+
+  end
+
   def update_dataset_file_schema_with_json_schema
     Rails.logger.info "URL #{@dataset_file_schema.url_in_s3}"
     @dataset_file_schema.update(schema: load_json_from_s3)

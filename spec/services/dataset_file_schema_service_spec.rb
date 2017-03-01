@@ -6,6 +6,7 @@ describe DatasetFileSchemaService do
   let(:good_schema_file) { get_fixture_schema_file('good-schema.json') }
   let(:good_schema_file_as_json) { File.read(good_schema_file).strip }
   let(:good_schema_url) { url_with_stubbed_get_for(good_schema_file) }
+  let(:infer_schema_csv_url) { url_with_stubbed_get_for_fixture_file('schemas/infer-from/data_infer.csv')}
 
   before(:each) do
     @schema_service = DatasetFileSchemaService.new
@@ -13,8 +14,8 @@ describe DatasetFileSchemaService do
 
   context "can infer a schema" do
     it "given a valid CSV file" do
-      
-
+      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      expect(schema.get_field('id')['constraints']).to_not be_nil
     end
   end
 
