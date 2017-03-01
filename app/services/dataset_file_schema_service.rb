@@ -16,12 +16,10 @@ class DatasetFileSchemaService
   end
 
   def infer_dataset_file_schema_from_csv(csv_url)
-    ap read_file_with_utf_8(csv_url)
     data = CSV.parse(read_file_with_utf_8(csv_url))
     headers = data.shift
     inferer = JsonTableSchema::Infer.new(headers, data, explicit: true)
     schema = inferer.schema
-
   end
 
   def update_dataset_file_schema_with_json_schema

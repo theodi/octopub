@@ -3,19 +3,41 @@ require 'rails_helper'
 describe DatasetFileSchemaService do
 
   let(:user) { create(:user) }
+  let(:infer_schema_filename) { @filename || 'schemas/infer-from/data_infer.csv' }
   let(:good_schema_file) { get_fixture_schema_file('good-schema.json') }
   let(:good_schema_file_as_json) { File.read(good_schema_file).strip }
   let(:good_schema_url) { url_with_stubbed_get_for(good_schema_file) }
-  let(:infer_schema_csv_url) { url_with_stubbed_get_for_fixture_file('schemas/infer-from/data_infer.csv')}
+  let(:infer_schema_csv_url) { url_with_stubbed_get_for_fixture_file(infer_schema_filename)}
 
   before(:each) do
     @schema_service = DatasetFileSchemaService.new
   end
 
   context "can infer a schema" do
-    it "given a valid CSV file" do
+    it "if given a valid CSV file" do
       schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
       expect(schema.get_field('id')['constraints']).to_not be_nil
+    end
+
+    it 'with international characters' do
+      @filename = 'schemas/infer-from/data_infer_utf8.csv'
+      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+
+      expect(schema.get_field('id')['type']).to eq('integer')
+      expect(schema.get_field('id')['format']).to eq('default')
+
+      expect(schema.get_field('age')['type']).to eq('integer')
+      expect(schema.get_field('age')['format']).to eq('default')
+
+      expect(schema.get_field('name')['type']).to eq('string')
+      expect(schema.get_field('name')['format']).to eq('default')
+    end
+  end
+
+  context "cannot infer a schema" do
+    it "if given an inconsistent CSV file" do
+      @filename = 'schemas/good-schema.json'
+      expect { @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url) }.to raise_error CSV::MalformedCSVError
     end
   end
 
