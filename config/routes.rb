@@ -20,6 +20,12 @@ Rails.application.routes.draw do
   end
 
   resources :dataset_file_schemas, only: [:index, :new, :create]
+
+  get '/dataset_file_schemas/infer/new' => 'dataset_file_schemas_inference#new', as: :new_nfer_dataset_file_schema
+  post '/dataset_file_schemas/infer' => 'dataset_file_schemas_inference#create'
+
+
+  resources :dataset_file_schemas, only: [:index, :new, :create]  
   resources :jobs, only: [:show]
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
