@@ -24,13 +24,14 @@ class DatasetFileSchemaService
 
   def infer_and_create_dataset_file_schema(csv_url, user, schema_name, description)
     inferred_schema = infer_dataset_file_schema_from_csv(csv_url)
-    filename = '' # this should be based on csv_url filename
+    filename = "#{schema_name.parameterize}.json"
+
     url_in_s3 = upload_inferred_schema_to_s3(inferred_schema.to_json, filename)
-    user.dataset_file_schemas.create(url_in_s3: url_in_s3, name: schema_name, description: description, schema: inferred_schema.to_json)
+    user.dataset_file_schemas.create(url_in_s3: url_in_s3.public_url, name: schema_name, description: description, schema: inferred_schema.to_json)
   end
 
-  def upload_inferred_schema_to_s3(inferred_schema, filename, uuid = nil)
-    key = object_key(filename, uuid)
+  def upload_inferred_schema_to_s3(inferred_schema, filename)
+    key = object_key(filename)
     obj = S3_BUCKET.object(key)
     obj.put(body: inferred_schema)
     obj
@@ -56,9 +57,8 @@ class DatasetFileSchemaService
 
   private
 
-  def object_key(filename, uuid =nil)
-    uuid = SecureRandom.uuid if uuid == nil
-    "uploads/#{uuid}/#{filename}"
+  def object_key(filename)
+    "uploads/#{SecureRandom.uuid}/#{filename}"
   end
 
 end
