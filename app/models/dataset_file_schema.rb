@@ -49,8 +49,6 @@ class DatasetFileSchema < ApplicationRecord
   end
 
   def new_parsed_schema
-    JsonTableSchema::Schema.new(url)
+    @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
   end
 end
-
-
