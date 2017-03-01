@@ -23,7 +23,12 @@ gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rails.git'
 gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
-gem 'csvlint'
+gem 'csvlint', git: 'https://github.com/jamesjefferies/csvlint.rb.git', branch: 'ruby-2.4-rails-5.0-compatibility' 
+#gem 'csvlint', '~> 0.3.2'
+
+# New way of validating schemas
+gem 'jsontableschema'
+
 gem 'omniauth-github'
 gem 'dotenv-rails'
 
@@ -59,7 +64,7 @@ gem 'redcarpet'
 gem 'rouge'
 gem 'twitter'
 
-gem 'airbrake'
+gem 'airbrake-ruby', '1.7.1'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

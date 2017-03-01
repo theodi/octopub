@@ -43,6 +43,12 @@ class DatasetFileSchema < ApplicationRecord
   def is_valid?
     errors.add :schema, 'is invalid' unless is_schema_valid?
   end
+
+  def new_is_schema_valid?
+    new_parsed_schema.valid?
+  end
+
+  def new_parsed_schema
+    @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
+  end
 end
-
-
