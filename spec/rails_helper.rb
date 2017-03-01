@@ -98,11 +98,30 @@ def set_api_key(user)
   request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)
 end
 
+def read_fixture_schema_file(file_name)
+  File.read(get_fixture_schema_file(file_name))
+end
+
+def get_fixture_schema_file(file_name)
+  get_fixture_file("schemas/#{file_name}") 
+end
+
+def get_fixture_file(file_name) 
+  File.join(Rails.root, 'spec', 'fixtures', file_name)
+end
+
 def get_json_from_url(url)
   JSON.generate(JSON.load(open(url).read.force_encoding("UTF-8")))
 end
 
 def url_with_stubbed_get_for(path)
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
+def url_with_stubbed_get_for_fixture_file(file_name)
+  path = File.join(Rails.root, 'spec', 'fixtures', file_name)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))
   url

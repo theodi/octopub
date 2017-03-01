@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe JekyllService do
+describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
   context "for a dataset" do
     it "creates a file in Github" do

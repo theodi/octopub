@@ -68,11 +68,8 @@ guard :rspec, cmd: "spring rspec", failed_mode: :focus  do
   watch(rails.view_dirs)     { |m| rspec.spec.call("features/#{m[1]}") }
   watch(rails.layouts)       { |m| rspec.spec.call("features/#{m[1]}") }
 
-  # Turnip features and steps
-  watch(%r{^spec/acceptance/(.+)\.feature$})
-  watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$}) do |m|
-    Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
-  end
+  watch(%r{^spec/features/(.+)\._spec.rb})
+
 end
 
 # Guard-Rails supports a lot options with default values:
