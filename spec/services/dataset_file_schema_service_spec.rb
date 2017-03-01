@@ -53,6 +53,24 @@ describe DatasetFileSchemaService do
     end
   end
 
+  context 'can infer and create a schema' do
+    it 'from a valid csv file' do
+      schema_name = Faker::Cat.name
+      description = Faker::Cat.breed
+      expect(DatasetFileSchema.count).to be 0
+      @schema_service.infer_and_create_dataset_file_schema(infer_schema_csv_url, user, schema_name, description)
+      expect(DatasetFileSchema.count).to be 1
+      dataset_file_schema = DatasetFileSchema.first
+      expect(dataset_file_schema.user).to eq user
+      expect(dataset_file_schema.name).to eq schema_name
+      expect(dataset_file_schema.description).to eq description
+
+      schema = JSON.parse(dataset_file_schema.schema)
+      expect(schema['fields'].count).to eq 3
+      expect(schema['fields'][0]['name']).to eq 'id'
+    end
+  end
+
   context "when no user is set" do
 
     before(:each) do

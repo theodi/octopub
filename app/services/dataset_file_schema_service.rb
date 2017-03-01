@@ -22,11 +22,11 @@ class DatasetFileSchemaService
     schema = inferer.schema
   end
 
-  def infer_dataset_file_schema(csv_url, user, schema_name, description)
+  def infer_and_create_dataset_file_schema(csv_url, user, schema_name, description)
     inferred_schema = infer_dataset_file_schema_from_csv(csv_url)
     filename = '' # this should be based on csv_url filename
-    url_in_s3 = upload_inferred_schema_to_s3(inferred_schema, filename)
-    user.dataset_file_schemas.create(url_in_s3: url_in_s3, name: schema_name, description: description)
+    url_in_s3 = upload_inferred_schema_to_s3(inferred_schema.to_json, filename)
+    user.dataset_file_schemas.create(url_in_s3: url_in_s3, name: schema_name, description: description, schema: inferred_schema.to_json)
   end
 
   def upload_inferred_schema_to_s3(inferred_schema, filename, uuid = nil)
