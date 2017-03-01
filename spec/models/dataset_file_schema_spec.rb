@@ -79,7 +79,6 @@ describe DatasetFileSchema do
     end
 
     it "returns array of errors if invalid" do
-      ap @dataset_file_schema_with_empty_schema_url_in_repo.new_parsed_schema
       expect(@dataset_file_schema_with_pk_no_fields.new_is_schema_valid?).to be false
       expect(@dataset_file_schema_with_pk_no_fields.new_parsed_schema.messages.count).to eq 3
     end
