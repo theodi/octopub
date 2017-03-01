@@ -24,9 +24,8 @@ class DatasetFileSchemaService
 
   def infer_and_create_dataset_file_schema(csv_url, user, schema_name, description)
     inferred_schema = infer_dataset_file_schema_from_csv(csv_url)
-    filename = "#{schema_name.parameterize}.json"
 
-    url_in_s3 = upload_inferred_schema_to_s3(inferred_schema.to_json, filename)
+    url_in_s3 = upload_inferred_schema_to_s3(inferred_schema.to_json, inferred_schema_filename(schema_name))
     user.dataset_file_schemas.create(url_in_s3: url_in_s3.public_url, name: schema_name, description: description, schema: inferred_schema.to_json)
   end
 
@@ -35,6 +34,10 @@ class DatasetFileSchemaService
     obj = S3_BUCKET.object(key)
     obj.put(body: inferred_schema)
     obj
+  end
+
+  def inferred_schema_filename(schema_name)
+    "#{schema_name.parameterize}.json"
   end
 
   def update_dataset_file_schema_with_json_schema
