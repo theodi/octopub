@@ -3,13 +3,19 @@ require 'rails_helper'
 describe DatasetFileSchemaService do
 
   let(:user) { create(:user) }
-  let(:good_schema_file) { File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json') }
+  let(:good_schema_file) { get_fixture_schema_file('good-schema.json') }
   let(:good_schema_file_as_json) { File.read(good_schema_file).strip }
   let(:good_schema_url) { url_with_stubbed_get_for(good_schema_file) }
-  #let(:bad_schema_url) { url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')) }
 
   before(:each) do
     @schema_service = DatasetFileSchemaService.new
+  end
+
+  context "can infer a schema" do
+    it "given a valid CSV file" do
+      
+
+    end
   end
 
   context "when no user is set" do
