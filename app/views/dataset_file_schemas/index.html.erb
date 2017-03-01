@@ -1,4 +1,8 @@
-<h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small><span class='pull-right'><%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "submit", class: "btn-default" %></span></h1>
+<h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small></h1>
+<div>
+<p><%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %></p>
+<p><%= bs_button_to 'Infer a new dataset file schema', new_infer_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-default" %></p>
+</div>
 
 <% if @dataset_file_schemas.any? %>
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

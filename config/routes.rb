@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   resources :dataset_file_schemas, only: [:index, :new, :create]
 
-  get '/dataset_file_schemas/infer/new' => 'dataset_file_schemas_inference#new', as: :new_nfer_dataset_file_schema
+  get '/dataset_file_schemas/infer/new' => 'dataset_file_schemas_inference#new', as: :new_infer_dataset_file_schema
   post '/dataset_file_schemas/infer' => 'dataset_file_schemas_inference#create'
 
 

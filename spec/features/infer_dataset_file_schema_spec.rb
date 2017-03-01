@@ -4,7 +4,7 @@ require 'features/user_and_organisations'
 feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
   include_context 'user and organisations'
 
-  let(:data_file) { get_fixture_schema_file('valid-schema.csv') }
+  let(:data_file) { get_fixture_file('valid-schema.csv') }
 
   before(:each) do
     @user = create(:user)
@@ -22,6 +22,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       click_link 'List my dataset file schemas'
       expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
       click_link 'Infer a new dataset file schema'
+      expect(page).to have_content 'Create a new Dataset File Schema from an existing Data File'
       common_name = 'Fri1437'
 
       before_datasets = DatasetFileSchema.count
