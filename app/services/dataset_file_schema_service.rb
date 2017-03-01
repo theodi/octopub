@@ -29,11 +29,11 @@ class DatasetFileSchemaService
     user.dataset_file_schemas.create(url_in_s3: url_in_s3, name: schema_name, description: description)
   end
 
-  def upload_inferred_schema_to_s3(inferred_schema, filename)
-    key = object_key(filename)
+  def upload_inferred_schema_to_s3(inferred_schema, filename, uuid = nil)
+    key = object_key(filename, uuid)
     obj = S3_BUCKET.object(key)
     obj.put(body: inferred_schema)
-    obj.public_url
+    obj
   end
 
   def update_dataset_file_schema_with_json_schema
@@ -56,12 +56,9 @@ class DatasetFileSchemaService
 
   private
 
-  def object_key(filename)
-    "uploads/#{SecureRandom.uuid}/${filename}"
-  end
-
-  def bucket_attributes(filename)
-    { key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read' }
+  def object_key(filename, uuid =nil)
+    uuid = SecureRandom.uuid if uuid == nil
+    "uploads/#{uuid}/#{filename}"
   end
 
 end

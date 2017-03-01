@@ -23,8 +23,6 @@ describe DatasetFileSchemaService do
       @filename = 'schemas/infer-from/data_infer_utf8.csv'
       schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
 
-      ap schema.to_json
-
       expect(schema.get_field('id')['type']).to eq('integer')
       expect(schema.get_field('id')['format']).to eq('default')
 
@@ -33,6 +31,18 @@ describe DatasetFileSchemaService do
 
       expect(schema.get_field('name')['type']).to eq('string')
       expect(schema.get_field('name')['format']).to eq('default')
+    end
+
+    it 'and upload it to S3' do
+      uuid = 'd42c4843-bc5b-4c62-b161-a55356125b59'
+      filename = '8d2e0f5f0ee8c242b3f163408edef651ec8058312'
+
+      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      json_schema = schema.to_json
+
+      expect_any_instance_of(Aws::S3::Object).to receive(:put).with({ body: json_schema })
+      s3_object = @schema_service.upload_inferred_schema_to_s3(json_schema, filename, uuid)
+      expect(s3_object.key).to eq "uploads/#{uuid}/#{filename}"
     end
   end
 
