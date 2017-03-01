@@ -23,6 +23,8 @@ describe DatasetFileSchemaService do
       @filename = 'schemas/infer-from/data_infer_utf8.csv'
       schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
 
+      ap schema.to_json
+
       expect(schema.get_field('id')['type']).to eq('integer')
       expect(schema.get_field('id')['format']).to eq('default')
 
