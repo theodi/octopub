@@ -28,9 +28,9 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
-        fill_in 'name', with: "#{common_name}-schema-name"
-        fill_in 'description', with: "#{common_name}-schema-description"
-        attach_file('_url_in_s3', data_file)
+        fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
+        fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
+        attach_file('inferred_dataset_file_schema_csv_url', data_file)
 
         click_on 'Submit'
       end

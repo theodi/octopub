@@ -1,14 +1,16 @@
 <h1 class="page-header">Create a new Dataset File Schema from an existing Data File</h1>
 <p>Upload an existing data file in CSV format, with headers and Octopub will infer a Schema from it</p>
 
-<%= bootstrap_form_tag url: dataset_file_schemas_infer_path, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+<%= bootstrap_form_for @inferred_dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+
+<%#= bootstrap_form_tag url: dataset_file_schemas_infer_path, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
 
   <%= f.text_field :name, required: true %>
   <%= f.text_area :description %>
   <%= f.select :user_id, organization_select_options_schema, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <div class="schema-panel">
     <fieldset class="file bg-upload">
-      <%= f.file_field :url_in_s3, label: "CSV Data File", accept: ".csv" %>
+      <%= f.file_field :csv_url, label: "CSV Data File", accept: ".csv" %>
     </fieldset>
   </div>
   <button type="submit" class="btn btn-primary btn-lg btn-block">

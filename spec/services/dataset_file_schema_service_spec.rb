@@ -10,7 +10,9 @@ describe DatasetFileSchemaService do
   let(:infer_schema_csv_url) { url_with_stubbed_get_for_fixture_file(infer_schema_filename)}
   let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
   let(:schema_name) { Faker::Cat.name }
+  let(:description) { Faker::Cat.breed }
   let(:s3_object_key) { "uploads/#{uuid}/#{schema_name.parameterize}.json" }
+  let(:inferred_dataset_file_schema) { InferredDatasetFileSchema.new(name: schema_name, description: description, csv_url: infer_schema_csv_url, user_id: user.id)}
 
   before(:each) do
     @schema_service = DatasetFileSchemaService.new
@@ -56,9 +58,9 @@ describe DatasetFileSchemaService do
 
   context 'can infer and create a schema' do
     it 'from a valid csv file' do
-      description = Faker::Cat.breed
+
       expect(DatasetFileSchema.count).to be 0
-      @schema_service.infer_and_create_dataset_file_schema(infer_schema_csv_url, user, schema_name, description)
+      @schema_service.infer_and_create_dataset_file_schema(inferred_dataset_file_schema)
       expect(DatasetFileSchema.count).to be 1
       dataset_file_schema = DatasetFileSchema.first
       expect(dataset_file_schema.user).to eq user

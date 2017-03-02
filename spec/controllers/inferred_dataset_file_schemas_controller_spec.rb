@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DatasetFileSchemasInferenceController, type: :controller do
+describe InferredDatasetFileSchemasController, type: :controller do
 
   let(:data_file_url) { url_with_stubbed_get_for_fixture_file('schemas/infer-from/data_infer.csv') }
   let(:user) { create(:user) }
@@ -17,7 +17,7 @@ describe DatasetFileSchemasInferenceController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: { name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url  }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: data_file_url } }
 
       dataset_file_schema = DatasetFileSchema.last
       expect(dataset_file_schema.name).to eq schema_name
@@ -29,7 +29,7 @@ describe DatasetFileSchemasInferenceController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: { name: schema_name, description: description, user_id: user.id, url_in_s3: data_file_url }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: data_file_url } }
       expect(response).to redirect_to(dataset_file_schemas_path)
     end
   end
