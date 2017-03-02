@@ -17,7 +17,7 @@ class DatasetFileSchemaService
 
   def self.update_dataset_file_schema_with_json_schema(dataset_file_schema)
     Rails.logger.info "URL #{dataset_file_schema.url_in_s3}"
-    dataset_file_schema.update(schema: dataset_file_schema.url_in_s3)
+    dataset_file_schema.update(schema: load_json_from_s3(dataset_file_schema.url_in_s3))
   end
 
   def self.load_json_from_s3(url_in_s3)
