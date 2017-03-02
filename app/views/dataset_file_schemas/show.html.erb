@@ -4,6 +4,7 @@
 <p><%= bs_button_to 'Infer a new dataset file schema', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-default" %></p>
 </div>
 
-
-<%= @dataset_file_schema.user.name %>
-<%= @dataset_file_schema.name %>
+<div class="panel-body">
+  <h3><%= @dataset_file_schema.description %></h3>
+  <%= markdown_json(@dataset_file_schema.schema) %>
+</div>
