@@ -20,7 +20,7 @@ class DatasetsController < ApplicationController
 
   def dashboard
     @dashboard = true
-    @datasets = current_user.all_datasets + current_user.all_datasets
+    @datasets = current_user.all_datasets
   end
 
   def refresh
