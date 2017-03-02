@@ -7,7 +7,7 @@ class InferredDatasetFileSchemasController < ApplicationController
 
   def create
     infer = InferredDatasetFileSchema.new(create_params)
-    @dataset_file_schema = DatasetFileSchemaService.new.infer_and_create_dataset_file_schema(infer )
+    @dataset_file_schema = InferredDatasetFileSchemaCreationService.new(infer).perform
 
     redirect_to dataset_file_schemas_path
   end
