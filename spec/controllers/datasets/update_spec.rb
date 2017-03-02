@@ -37,7 +37,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
       schema = url_with_stubbed_get_for(good_schema_path)
 
       @dataset_file = @dataset.dataset_files.first
-      dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema('schema-name', 'schema-name-description', schema)
+      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
 
       @dataset_hash = {
         description: "New description",

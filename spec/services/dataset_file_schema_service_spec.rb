@@ -10,22 +10,23 @@ describe DatasetFileSchemaService do
   let(:infer_schema_csv_url) { url_with_stubbed_get_for_fixture_file(infer_schema_filename)}
   let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
   let(:schema_name) { Faker::Cat.name }
+  let(:description) { Faker::Cat.name }
   let(:s3_object_key) { "uploads/#{uuid}/#{schema_name.parameterize}.json" }
 
   before(:each) do
-    @schema_service = DatasetFileSchemaService.new
+    @schema_service = DatasetFileSchemaService.new(schema_name, description, good_schema_url, user)
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
   context "can infer a schema" do
     it "if given a valid CSV file" do
-      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      schema = DatasetFileSchemaService.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
       expect(schema.get_field('id')['constraints']).to_not be_nil
     end
 
     it 'with international characters' do
       @filename = 'schemas/infer-from/data_infer_utf8.csv'
-      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      schema = DatasetFileSchemaService.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
 
       expect(schema.get_field('id')['type']).to eq('integer')
       expect(schema.get_field('id')['format']).to eq('default')
@@ -38,7 +39,7 @@ describe DatasetFileSchemaService do
     end
 
     it 'and upload it to S3' do
-      schema = @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      schema = DatasetFileSchemaService.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
       json_schema = schema.to_json
 
       expect_any_instance_of(Aws::S3::Object).to receive(:put).with({ body: json_schema })
@@ -50,7 +51,7 @@ describe DatasetFileSchemaService do
   context "cannot infer a schema" do
     it "if given an inconsistent CSV file" do
       @filename = 'schemas/good-schema.json'
-      expect { @schema_service.infer_dataset_file_schema_from_csv(infer_schema_csv_url) }.to raise_error CSV::MalformedCSVError
+      expect { DatasetFileSchemaService.infer_dataset_file_schema_from_csv(infer_schema_csv_url) }.to raise_error CSV::MalformedCSVError
     end
   end
 
@@ -72,27 +73,10 @@ describe DatasetFileSchemaService do
     end
   end
 
-  context "when no user is set" do
-
-    before(:each) do
-      @thing = @schema_service.create_dataset_file_schema('schema name', 'schema description', good_schema_url)
-    end
-
-    it "creates a new dataset file schema" do
-      expect(@thing).to be_instance_of(DatasetFileSchema)
-      expect(@thing.id).to_not be nil
-      expect(@thing.user).to be nil
-    end
-
-    it 'creates a new dataset and updates schema as json' do
-      expect(@thing.schema).to eq good_schema_file_as_json
-    end
-  end
-
   context "when a user is set" do
 
     before(:each) do
-      @thing = @schema_service.create_dataset_file_schema('schema name', 'schema description', good_schema_url, user)
+      @thing = @schema_service.create_dataset_file_schema
     end
 
     it "creates a new dataset file schema" do
@@ -113,7 +97,7 @@ describe DatasetFileSchemaService do
   context 'returns a parsed schema' do
 
     before(:each) do
-      @thing = @schema_service.create_dataset_file_schema('schema name', 'schema description', good_schema_url)
+      @thing = @schema_service.create_dataset_file_schema
     end
 
     it 'when requested' do
