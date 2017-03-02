@@ -39,7 +39,7 @@ gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
-gem 'will_paginate-bootstrap'
+gem "bootstrap-table-rails"
 # For syntax highlighting
 gem 'coderay'
 
