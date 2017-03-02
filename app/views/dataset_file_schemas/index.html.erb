@@ -5,30 +5,24 @@
 </div>
 
 <% if @dataset_file_schemas.any? %>
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id=<%= "heading-#{index}" %>>
-          <h4 class="panel-title">
-            <% if index == 0 %>
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="true" aria-controls="<%= "collapse#{index}" %>">
-              <%= dataset_file_schema.name %>
-            </a>
-            <% else %>
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="false" aria-controls="<%= "collapse#{index}" %>">
-              <%= dataset_file_schema.name %>
-            </a>
-            <% end %>
-          </h4>
-        </div>
-        <div id="<%= "collapse#{index}" %>" class="panel-collapse collapse <%= 'in' if index == 0 %>" role="tabpanel" aria-labelledby="headingOne">
-          <div class="panel-body">
-            <h3><%= dataset_file_schema.description %></h3>
-            <%= markdown_json(dataset_file_schema.schema) %>
-          </div>
-        </div>
-      </div>
+
+  <table class="table">
+    <tr>
+      <th>Owner</th> 
+      <th>Name</th>
+      <th>Link</th>   
+    </tr>
+    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>       
+      <tr>
+      <td><%= dataset_file_schema.user.name %></td>
+      <td><%= dataset_file_schema.name %></td>
+      <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+      </tr>
     <% end %>
+  </table>
+
+  <div class="text-center">
+    <%= will_paginate @dataset_file_schemas, renderer: BootstrapPagination::Rails %>
   </div>
 
 <% else %>
