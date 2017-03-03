@@ -40,7 +40,7 @@ gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
-gem 'will_paginate-bootstrap'
+gem "bootstrap-table-rails"
 # For syntax highlighting
 gem 'coderay'
 
@@ -88,6 +88,9 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # Adds some nice rake tasks for generating migrations
+  gem 'lol_dba'
 end
 
 group :test do

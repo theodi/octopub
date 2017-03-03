@@ -129,6 +129,7 @@ GEM
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bootstrap-select-rails (1.6.3)
+    bootstrap-table-rails (1.11.0)
     bootstrap_form (2.6.0)
     buftok (0.2.0)
     builder (3.2.3)
@@ -269,6 +270,10 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
+    lol_dba (2.1.1)
+      actionpack (>= 3.0)
+      activerecord (>= 3.0)
+      railties (>= 3.0)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.11)
@@ -493,9 +498,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    will_paginate (3.1.5)
-    will_paginate-bootstrap (1.0.1)
-      will_paginate (>= 3.0.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -513,6 +515,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.2.0)
   bootstrap-select-rails
+  bootstrap-table-rails
   bootstrap_form
   certificate-factory
   coderay
@@ -539,6 +542,7 @@ DEPENDENCIES
   jquery-rails
   jsontableschema
   letter_opener
+  lol_dba
   octokit
   odlifier
   omniauth-github
@@ -567,7 +571,6 @@ DEPENDENCIES
   uglifier
   vcr
   webmock
-  will_paginate-bootstrap
 
 RUBY VERSION
    ruby 2.4.0p0

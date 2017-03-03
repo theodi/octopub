@@ -15,12 +15,12 @@ class DatasetsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
-    @datasets = Dataset.where(restricted: false).paginate(page: params[:page], per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.where(restricted: false).order(created_at: :desc)
   end
 
   def dashboard
     @dashboard = true
-    @datasets = current_user.all_datasets.paginate(page: params[:page])
+    @datasets = current_user.all_datasets
   end
 
   def refresh

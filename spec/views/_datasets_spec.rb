@@ -15,7 +15,7 @@ describe 'datasets/_datasets.html.erb' do
         owner_avatar: "http://example.org/avatar.png"
       )
     end
-    @datasets = Dataset.paginate(page: 1, per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.order(created_at: :desc)
     render :partial => 'datasets/datasets.html.erb'
 
     page = Nokogiri::HTML(rendered)
@@ -23,7 +23,7 @@ describe 'datasets/_datasets.html.erb' do
   end
 
   it "should display a message if there are no datasets" do
-    @datasets = Dataset.paginate(page: 1, per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.order(created_at: :desc)
     render :partial => 'datasets/datasets.html.erb'
 
     expect(rendered).to match /You currently have no datasets/
