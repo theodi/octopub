@@ -37,30 +37,32 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do
-        click_link 'Add a new dataset file schema'
-        expect(page).to have_content 'Add a new Dataset File Schema'
+        click_link 'Infer a new dataset file schema'
+        expect(page).to have_content 'Create a new Dataset File Schema from an existing Data File'
       end
 
       it "errors if no name" do
         within 'form' do
-          fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
-          attach_file('dataset_file_schema_url_in_s3', data_file)
+
+          fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
+          attach_file('inferred_dataset_file_schema_csv_url', data_file)
+
           click_on 'Submit'
         end
 
-        expect(page).to have_content 'Add a new Dataset File Schema'
+        expect(page).to have_content 'Create a new Dataset File Schema from an existing Data File'
         expect(page).to have_content 'Please give the schema a meaningful name'
       end
 
       it "errors if no file" do
         within 'form' do
-          fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
-          fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
+          fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
+          fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
           click_on 'Submit'
         end
 
-        expect(page).to have_content 'Add a new Dataset File Schema'
-        expect(page).to have_content 'You must have a schema file'
+        expect(page).to have_content 'Create a new Dataset File Schema from an existing Data File'
+        expect(page).to have_content 'You must have a data file'
       end
     end
   end

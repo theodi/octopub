@@ -6,8 +6,8 @@ class InferredDatasetFileSchemasController < ApplicationController
   end
 
   def create
-    infer = InferredDatasetFileSchema.new(create_params)
-    if infer.valid? && InferredDatasetFileSchemaCreationService.new(infer).perform.success?
+    @inferred_dataset_file_schema = InferredDatasetFileSchema.new(create_params)
+    if @inferred_dataset_file_schema.valid? && InferredDatasetFileSchemaCreationService.new(@inferred_dataset_file_schema).perform.success?
       redirect_to dataset_file_schemas_path
     else
       failed_create

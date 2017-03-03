@@ -3,7 +3,7 @@ class InferredDatasetFileSchema
 
   attr_accessor :user_id, :name, :description, :csv_url
 
-  validates :user_id, presence: true
-  validates :name, presence: true
-  validates :csv_url, presence: true
+  validates_presence_of :csv_url, message: 'You must have a data file'
+  validates_presence_of :name, message: 'Please give the schema a meaningful name'
+  validates_presence_of :user_id, message: 'Please select an owner'
 end
