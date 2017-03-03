@@ -4,7 +4,7 @@ describe UsersController, type: :controller do
   render_views
 
   before(:each) do
-    @user = create(:user)
+    @user = create(:user, name: "Molly O'Woof woof")
   end
 
   it 'returns 403 if user is not logged in' do
@@ -17,8 +17,7 @@ describe UsersController, type: :controller do
     sign_in @user
 
     get :edit
-
-    expect(response.body).to match(/#{@user.name}/)
+    expect(CGI.unescapeHTML(response.body)).to match(/#{@user.name}/)
     expect(response.body).to match(/#{@user.email}/)
     expect(response.body).to match(/#{@user.api_key}/)
   end
