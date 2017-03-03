@@ -11,11 +11,15 @@ describe DatasetFileSchema do
     @empty_schema_url = url_with_stubbed_get_for_fixture_file('schemas/empty-schema.json')
     @schema_with_pk_no_fields_url = url_with_stubbed_get_for_fixture_file('schemas/invalid-schema-pk-no-fields.json')
 
-    @dataset_file_schema_with_url_in_repo = build(:dataset_file_schema, url_in_repo: @good_schema_url)
+    @dataset_file_schema_with_url_in_repo = build(:dataset_file_schema, url_in_repo: @good_schema_url, user: @user)
     @dataset_file_schema_with_bad_schema_url_in_repo = build(:dataset_file_schema, url_in_repo: @bad_schema_url)
     @dataset_file_schema_with_empty_schema_url_in_repo = build(:dataset_file_schema, url_in_repo: @empty_schema_url)
     @dataset_file_schema_with_pk_no_fields = build(:dataset_file_schema, url_in_repo: @schema_with_pk_no_fields_url)
 
+  end
+
+  it "returns owner's name" do
+    expect(@dataset_file_schema_with_url_in_repo.owner_name).to eq @user.name
   end
 
   context "has at least one url" do
