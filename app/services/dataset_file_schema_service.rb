@@ -32,11 +32,4 @@ class DatasetFileSchemaService
   def self.get_parsed_schema_from_csv_lint(url)
     Csvlint::Schema.load_from_json(url)
   end
-
-  private
-
-  def object_key(filename)
-    "uploads/#{SecureRandom.uuid}/#{filename}"
-  end
-
 end
