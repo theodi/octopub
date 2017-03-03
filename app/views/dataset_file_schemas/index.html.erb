@@ -10,11 +10,11 @@
 
   <table class="table">
     <tr>
-      <th>Owner</th> 
+      <th>Owner</th>
       <th>Name</th>
-      <th>Link</th>   
+      <th>Link</th>
     </tr>
-    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>       
+    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
       <tr>
       <td><%= dataset_file_schema.user.name %></td>
       <td><%= dataset_file_schema.name %></td>
@@ -22,11 +22,6 @@
       </tr>
     <% end %>
   </table>
-
-  <div class="text-center">
-    <%= will_paginate @dataset_file_schemas, renderer: BootstrapPagination::Rails %>
-  </div>
-
 <% else %>
   <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>
 <% end %>
