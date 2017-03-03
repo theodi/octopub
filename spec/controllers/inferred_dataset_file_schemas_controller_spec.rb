@@ -69,5 +69,14 @@ describe InferredDatasetFileSchemasController, type: :controller do
       }
       expect(response).to render_template("new")
     end
+
+    it "returns to new page if csv does not infer a schema" do
+      post :create, params: {
+        inferred_dataset_file_schema: {
+          name: schema_name, description: description, csv_url: url_with_stubbed_get_for_fixture_file('schemas/good-schema.json'), user_id: user.id
+        }
+      }
+      expect(response).to render_template("new")
+    end
   end
 end

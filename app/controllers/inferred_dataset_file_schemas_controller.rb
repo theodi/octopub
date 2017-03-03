@@ -1,22 +1,25 @@
 class InferredDatasetFileSchemasController < ApplicationController
+
   def new
-    @dataset_file_schema = DatasetFileSchema.new
     @inferred_dataset_file_schema = InferredDatasetFileSchema.new
     @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
   end
 
   def create
     infer = InferredDatasetFileSchema.new(create_params)
-    if infer.valid?
-      @dataset_file_schema = InferredDatasetFileSchemaCreationService.new(infer).perform
+    if infer.valid? && InferredDatasetFileSchemaCreationService.new(infer).perform.success?
       redirect_to dataset_file_schemas_path
     else
-      @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
-      render :new
+      failed_create
     end
   end
 
   private
+
+  def failed_create
+    @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
+    render :new
+  end
 
   def bucket_attributes
     { key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read' }
