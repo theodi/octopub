@@ -1,7 +1,7 @@
 class DatasetFileSchemasController < ApplicationController
 
   def index
-    @dataset_file_schemas = DatasetFileSchema.where(user: current_user)#.paginate(page: params[:page], per_page: 7).order(name: :asc)
+    @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
   end
 
   def new
