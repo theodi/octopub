@@ -1,32 +1,28 @@
-<h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small><span class='pull-right'><%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "submit", class: "btn-default" %></span></h1>
+<h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small></h1>
 
-<% if @dataset_file_schemas.any? %>
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id=<%= "heading-#{index}" %>>
-          <h4 class="panel-title">
-            <% if index == 0 %>
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="true" aria-controls="<%= "collapse#{index}" %>">
-              <%= dataset_file_schema.name %>
-            </a>
-            <% else %>
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#<%= "collapse#{index}" %>" aria-expanded="false" aria-controls="<%= "collapse#{index}" %>">
-              <%= dataset_file_schema.name %>
-            </a>
-            <% end %>
-          </h4>
-        </div>
-        <div id="<%= "collapse#{index}" %>" class="panel-collapse collapse <%= 'in' if index == 0 %>" role="tabpanel" aria-labelledby="headingOne">
-          <div class="panel-body">
-            <h3><%= dataset_file_schema.description %></h3>
-            <%= markdown_json(dataset_file_schema.schema) %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-<% else %>
-  <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>
-<% end %>
+<div>
+  <% if @dataset_file_schemas.any? %>
+    <table class="table" data-toggle="table" data-pagination="true" data-search="true" data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Owner</th>
+          <th data-sortable="true">Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
+          <tr>
+            <td><%= dataset_file_schema.owner_name %></td>
+            <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>
+  <% end %>
+</div>
+<div class="btn-group" role="group">
+<%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
+<%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
+</div>

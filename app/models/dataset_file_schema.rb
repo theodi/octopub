@@ -26,6 +26,10 @@ class DatasetFileSchema < ApplicationRecord
     url_in_repo.nil? ? url_in_s3 : url_in_repo
   end
 
+  def owner_name
+    user.name
+  end
+
   # TODO maybe persist this?
   def is_schema_otw?
     parsed_schema.class == Csvlint::Csvw::TableGroup

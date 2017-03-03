@@ -4,6 +4,10 @@ class DatasetFileSchemasController < ApplicationController
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
   end
 
+  def show
+    @dataset_file_schema = DatasetFileSchema.find(params[:id])
+  end
+
   def new
     @dataset_file_schema = DatasetFileSchema.new
     @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
