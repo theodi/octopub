@@ -79,13 +79,18 @@ describe User do
 
     it "gets a user's github user details" do
       user = User.find_for_github_oauth(@auth)
+      avatar_url = 'http://example.com/my-cool-organization.png'
 
       expect(Rails.configuration.octopub_admin).to receive(:user).with(@user_name.parameterize) {
-        {}
+        double = double(Sawyer::Resource)
+        expect(double).to receive(:avatar_url) { avatar_url }
+        double
       }.once
 
+      # Load
       user.github_user
-      user.github_user
+      # Lazy load
+      expect(user.avatar).to eq avatar_url
     end
 
   end
