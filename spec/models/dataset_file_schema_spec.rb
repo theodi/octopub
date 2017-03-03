@@ -69,7 +69,7 @@ describe DatasetFileSchema do
     end
   end
 
-   context "returns new style validity " do
+  context "returns new style validity " do
     it "as invalid for a bad schema" do
       expect(@dataset_file_schema_with_bad_schema_url_in_repo.new_is_schema_valid?).to be false
     end
@@ -90,5 +90,28 @@ describe DatasetFileSchema do
     it "returns thing if valid" do
       expect(@dataset_file_schema_with_url_in_repo.is_valid?).to be_nil
     end
+  end
+
+  it "nullifies associated foreign keys when deleted" do
+
+    @dataset_file_schema_with_url_in_repo.save
+    dataset_file_schema_id = @dataset_file_schema_with_url_in_repo.id
+    ap @dataset_file_schema_with_url_in_repo
+
+    file_path = get_fixture_file('valid-schema.csv')
+    dataset_file_1 = create(:dataset_file,
+      dataset_file_schema: @dataset_file_schema_with_url_in_repo,
+      file: Rack::Test::UploadedFile.new(file_path, "text/csv")
+    )
+    dataset_file_2 = create(:dataset_file)
+    expect(dataset_file_1.dataset_file_schema).to eq @dataset_file_schema_with_url_in_repo
+    expect(dataset_file_2.dataset_file_schema).to be nil
+
+    @dataset_file_schema_with_url_in_repo.delete
+    expect { DatasetFileSchema.find(dataset_file_schema_id) }.to raise_error ActiveRecord::RecordNotFound
+
+    dataset_file_1.reload
+    expect(dataset_file_1.dataset_file_schema).to be nil
+    expect(dataset_file_2.dataset_file_schema).to be nil
   end
 end

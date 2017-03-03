@@ -13,6 +13,8 @@
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
+  has_many :dataset_files, dependent: :nullify
+
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
 
