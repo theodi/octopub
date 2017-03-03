@@ -1,9 +1,5 @@
 <h1 class="page-header">Dataset File Schema <small>for <%= current_user.name %></small></h1>
-
-<div class="btn-group" role="group">
-<%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
-<%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
-</div>
+<h2><%= @dataset_file_schema.name %></h2>
 
 <div class="panel-body">
   <h3><%= @dataset_file_schema.description %></h3>

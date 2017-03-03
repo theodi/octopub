@@ -12,12 +12,10 @@
     <tr>
       <th>Owner</th>
       <th>Name</th>
-      <th>Link</th>
     </tr>
     <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
       <tr>
       <td><%= dataset_file_schema.user.name %></td>
-      <td><%= dataset_file_schema.name %></td>
       <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
       </tr>
     <% end %>
