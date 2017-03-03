@@ -33,4 +33,41 @@ describe InferredDatasetFileSchemasController, type: :controller do
       expect(response).to redirect_to(dataset_file_schemas_path)
     end
   end
+
+  describe 'create failure' do
+
+    let(:schema_name) { Faker::Lorem.word }
+    let(:description) { Faker::Lorem.sentence }
+
+    before(:each) do
+      allow(controller).to receive(:current_user) { user }
+    end
+
+    it "returns to new page if fields are missing - no file" do
+      post :create, params: {
+        inferred_dataset_file_schema: {
+          name: schema_name, description: description, user_id: user.id
+        }
+      }
+      expect(response).to render_template("new")
+    end
+
+    it "returns to new page if fields are missing - no name" do
+      post :create, params: {
+        inferred_dataset_file_schema: {
+          description: description, user_id: user.id
+        }
+      }
+      expect(response).to render_template("new")
+    end
+
+    it "returns to new page if fields are missing - no user" do
+      post :create, params: {
+        inferred_dataset_file_schema: {
+          name: schema_name, description: description, csv_url: data_file_url
+        }
+      }
+      expect(response).to render_template("new")
+    end
+  end
 end

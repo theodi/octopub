@@ -7,9 +7,13 @@ class InferredDatasetFileSchemasController < ApplicationController
 
   def create
     infer = InferredDatasetFileSchema.new(create_params)
-    @dataset_file_schema = InferredDatasetFileSchemaCreationService.new(infer).perform
-
-    redirect_to dataset_file_schemas_path
+    if infer.valid?
+      @dataset_file_schema = InferredDatasetFileSchemaCreationService.new(infer).perform
+      redirect_to dataset_file_schemas_path
+    else
+      @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
+      render :new
+    end
   end
 
   private
