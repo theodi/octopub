@@ -17,7 +17,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
 
 
-  
+
 
   context "logged in visitors has no schemas" do
     scenario "and can add a dataset file schema on it's own" do
@@ -38,7 +38,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         click_on 'Submit'
       end
 
-      expect(page).to have_content "Dataset File Schemas for #{@user.name}"
+      expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
       expect(DatasetFileSchema.count).to be before_datasets + 1
       expect(DatasetFileSchema.last.name).to eq "#{common_name}-schema-name"
     end

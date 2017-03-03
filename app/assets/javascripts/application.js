@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require bootstrap-sprockets
 //= require bootstrap-select
+//= require bootstrap-table
 //= require jquery.ui.widget
 //= require jquery.fileupload
 //= require pusher.min
