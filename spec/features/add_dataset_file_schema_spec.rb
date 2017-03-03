@@ -12,7 +12,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     sign_in @user
     allow_any_instance_of(User).to receive(:organizations) { organizations }
     allow_any_instance_of(User).to receive(:github_user) { github_user }
-    allow_any_instance_of(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')))
+    allow(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(File.read(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')))
   end
 
   context "logged in visitors has no schemas" do

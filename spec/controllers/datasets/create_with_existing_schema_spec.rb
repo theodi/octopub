@@ -23,12 +23,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-    @dataset_file_schema = DatasetFileSchemaService.new.create_dataset_file_schema(
+    @dataset_file_schema = DatasetFileSchemaService.new(
       'existing schema',
       'existing schema description',
       @url_for_schema,
       @user
-    )
+    ).create_dataset_file_schema
 
 
     @files ||= []
