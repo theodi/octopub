@@ -13,7 +13,7 @@ class DatasetFileSchemasController < ApplicationController
     @dataset_file_schema = DatasetFileSchema.new(create_params)
     if @dataset_file_schema.save
 
-      DatasetFileSchemaService.new(@dataset_file_schema).update_dataset_file_schema_with_json_schema
+      DatasetFileSchemaService.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
       redirect_to dataset_file_schemas_path
     else
       @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
