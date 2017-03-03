@@ -40,7 +40,7 @@
 
         <% if current_user %>
           <p class="navbar-text navbar-right">
-            Signed in as <%= link_to current_user.name.force_encoding("UTF-8"), main_app.me_path %>
+            Signed in as <%= link_to current_user.name, main_app.me_path %>
             <%= bs_button_to 'Logout', main_app.signout_path, style: "primary" %>
           </p>
         <% else %>
