@@ -257,7 +257,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(@dataset).to receive(:fetch_repo)
       expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
         "data_source" => ".",
-        "update_frequency" => "One-off",
+        "update_frequency" => @dataset.frequency,
         "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
       }.to_yaml)
       expect_any_instance_of(JekyllService).to receive(:push_to_github)

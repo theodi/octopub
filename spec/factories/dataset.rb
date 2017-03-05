@@ -4,8 +4,8 @@ FactoryGirl.define do
     description "An awesome dataset"
     publisher_name "Awesome Inc"
     publisher_url "http://awesome.com"
-    license "OGL-UK-3.0"
-    frequency "One-off"
+    license "OGL-UK-3.0" # BTW This is currently hardcoded for VCR purposes
+    frequency { Octopub::PUBLICATION_FREQUENCIES.sample }
 
     association :user, factory: :user
 
