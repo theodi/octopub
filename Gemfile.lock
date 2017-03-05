@@ -270,6 +270,10 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
+    lograge (0.4.1)
+      actionpack (>= 4, < 5.1)
+      activesupport (>= 4, < 5.1)
+      railties (>= 4, < 5.1)
     lol_dba (2.1.1)
       actionpack (>= 3.0)
       activerecord (>= 3.0)
@@ -542,6 +546,7 @@ DEPENDENCIES
   jquery-rails
   jsontableschema
   letter_opener
+  lograge
   lol_dba
   octokit
   odlifier

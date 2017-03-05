@@ -73,24 +73,28 @@ group :doc do
 end
 
 group :development do
-  gem 'spring-commands-rspec'
   gem 'pry-remote'
   gem 'letter_opener'
   gem 'term-ansicolor'
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'guard'
-  gem 'guard-rspec', require: false
-  gem 'guard-rails', require: false
-  gem 'terminal-notifier-guard', '~> 1.6.1'
+
+  # Adds some nice rake tasks for generating migrations
+  gem 'lol_dba'
+end
+
+group :development, :test do
+  gem 'lograge'
 
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-
-  # Adds some nice rake tasks for generating migrations
-  gem 'lol_dba'
+  gem 'spring-commands-rspec'
+  gem 'guard'
+  gem 'guard-rspec', require: false
+  gem 'guard-rails', require: false
+  gem 'terminal-notifier-guard', '~> 1.6.1'
 end
 
 group :test do

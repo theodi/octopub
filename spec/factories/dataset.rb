@@ -32,8 +32,10 @@ FactoryGirl.define do
       }
     end
 
-
+    factory :dataset_with_files do
+      after(:create) do |dataset, evaluator|
+        create_list(:dataset_file, 5, dataset: dataset)
+      end
+    end
   end
-
-
 end
