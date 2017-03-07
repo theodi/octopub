@@ -3,6 +3,7 @@ class CreateDataset
   sidekiq_options retry: false
 
   def perform(dataset_params, files, user_id, options = {})
+    Rails.logger.info "CreateDataset: In perform"
     files = [files] if files.class == Hash
 
     user = find_user(user_id)
@@ -21,7 +22,7 @@ class CreateDataset
           dataset_file_creation_hash["schema_description"],
           dataset_file_creation_hash["schema"],
           user).create_dataset_file_schema
-        
+
         dataset_file.dataset_file_schema = schema
       elsif dataset_file_creation_hash["dataset_file_schema_id"]
         dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
