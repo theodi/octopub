@@ -115,7 +115,7 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in create_repo_and_populate"
       @repo = RepoService.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      logger.info "Now updated with github details - call commit!"
+      Rails.logger.info "Now updated with github details - call commit!"
       jekyll_service.add_files_to_repo_and_push_to_github
     end
 
