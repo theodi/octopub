@@ -40,7 +40,6 @@ describe InferredDatasetFileSchemaCreationService do
       schema = InferredDatasetFileSchemaCreationService.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
       json_schema = schema.to_json
 
-      expect_any_instance_of(Aws::S3::Object).to receive(:put).with({ body: json_schema })
       s3_object = @schema_service.upload_inferred_schema_to_s3(json_schema, @schema_service.inferred_schema_filename(schema_name))
       expect(s3_object.key).to eq s3_object_key
     end
