@@ -30,21 +30,26 @@ class DatasetsController < ApplicationController
   end
 
   def created
+    logger.info "DatasetsController: In created"
   end
 
   def edited
+    logger.info "DatasetsController: In edited"
   end
 
   def new
+    logger.info "DatasetsController: In new"
     @dataset = Dataset.new
     @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
   end
 
   def create
+    logger.info "DatasetsController: In create"
     files_array = get_files_as_array_for_serialisation
     job = CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     if params[:async]
+      logger.info "DatasetsController: In create with params aysnc"
       head :accepted
     else
       redirect_to created_datasets_path
@@ -59,6 +64,7 @@ class DatasetsController < ApplicationController
   end
 
   def update
+    logger.info "DatasetsController: In update"
     files_array = get_files_as_array_for_serialisation
     job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
@@ -90,7 +96,8 @@ class DatasetsController < ApplicationController
   end
 
   def check_mandatory_fields
-    check_files 
+    logger.info "DatasetsController: In check_mandatory_fields"
+    check_files
     check_publisher
     render 'new' unless flash.empty?
   end
@@ -108,6 +115,7 @@ class DatasetsController < ApplicationController
   end
 
   def process_files
+    logger.info "DatasetsController: In process_files"
     @files.each do |f|
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
         key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"

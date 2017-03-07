@@ -39,15 +39,18 @@ class Dataset < ApplicationRecord
   validates_associated :dataset_files
 
   def report_status(channel_id)
-    logger.info "report_status #{channel_id}"
+    Rails.logger.info "Dataset: in report_status #{channel_id}"
+    Rails.logger.info "Dataset: file count: #{dataset_files.count}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
-      logger.info "Valid so now do the save and trigger the after creates"
+      Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
     else
+      Rails.logger.info "Dataset: In valid, so push to pusher"
       messages = errors.full_messages
       dataset_files.each do |file|
         unless file.valid?
+          Rails.logger.info "Dataset: Check file is valid"
           (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
           end
@@ -95,10 +98,12 @@ class Dataset < ApplicationRecord
 
   def fetch_repo(client = user.octokit_client)
     begin
+      Rails.logger.info "in fetch_repo"
       @repo = GitData.find(repo_owner, self.name, client: client)
       # This is in for backwards compatibility at the moment required for API
 
     rescue Octokit::NotFound
+      Rails.logger.info "in fetch_repo - not found"
       @repo = nil
     end
   end
@@ -107,7 +112,7 @@ class Dataset < ApplicationRecord
 
     # This is a callback
     def create_repo_and_populate
-      logger.info "in create_repo_and_populate"
+      Rails.logger.info "in create_repo_and_populate"
       @repo = RepoService.create_repo(repo_owner, name, restricted, user)
       self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
       logger.info "Now updated with github details - call commit!"
@@ -121,6 +126,7 @@ class Dataset < ApplicationRecord
 
     # This is a callback
     def make_repo_public_if_appropriate
+      Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
       if restricted_changed? && restricted == false
         @repo.make_public
@@ -133,6 +139,7 @@ class Dataset < ApplicationRecord
     end
 
     def check_repo
+      Rails.logger.info "in check_repo"
       repo_name = "#{repo_owner}/#{name.parameterize}"
       if user.octokit_client.repository?(repo_name)
         errors.add :repository_name, 'already exists'
@@ -140,6 +147,7 @@ class Dataset < ApplicationRecord
     end
 
     def set_owner_avatar
+      Rails.logger.info "in set_owner_avatar"
       if owner.blank?
         update_column :owner_avatar, user.avatar
       else
@@ -148,10 +156,12 @@ class Dataset < ApplicationRecord
     end
 
     def send_success_email
+      Rails.logger.info "in send_success_email"
       DatasetMailer.success(self).deliver
     end
 
     def send_tweet_notification
+      Rails.logger.info "in send_tweet_notification"
       if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
         twitter_client = Twitter::REST::Client.new do |config|
           config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
@@ -164,12 +174,13 @@ class Dataset < ApplicationRecord
     end
 
     def jekyll_service
-      logger.info "jekyll_service called, so set with #{repo}"
+      Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
 
     # This is a callback
     def publish_public_views
+      Rails.logger.info "in publish_public_views"
       return if restricted
       if id_changed? || restricted_changed?
         # This is either a new record or has just been made public
@@ -180,6 +191,7 @@ class Dataset < ApplicationRecord
     end
 
     def create_public_views
+      Rails.logger.info "in create_public_views"
       jekyll_service.create_jekyll_files
       jekyll_service.push_to_github
       wait_for_gh_pages_build
@@ -187,14 +199,17 @@ class Dataset < ApplicationRecord
     end
 
     def wait_for_gh_pages_build(delay = 5)
+      Rails.logger.info "in wait_for_gh_pages_build"
       sleep(delay) while !gh_pages_built?
     end
 
     def gh_pages_built?
+      Rails.logger.info "in gh_pages_built"
       user.octokit_client.pages(full_name).status == "built"
     end
 
     def create_certificate
+      Rails.logger.info "in create_certificate"
       cert = CertificateFactory::Certificate.new gh_pages_url
 
       gen = cert.generate

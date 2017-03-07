@@ -28,6 +28,7 @@ class DatasetFile < ApplicationRecord
   attr_accessor :file
 
   def self.file_from_url(file)
+    Rails.logger.info "DatasetFile: In file_from_url"
     tempfile = Tempfile.new 'uploaded'
     tempfile.write read_file_with_utf_8(file)
     tempfile.rewind
@@ -41,12 +42,12 @@ class DatasetFile < ApplicationRecord
   end
 
   def self.new_file(dataset_file_creation_hash)
-
+    Rails.logger.info "DatasetFile: In new_file"
     # allow use of hashes or strings for keys
     dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
     dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
 
-    logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
+    Rails.logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
     # Do the actual create here
     create(
       title: dataset_file_creation_hash[:title],
@@ -64,6 +65,7 @@ class DatasetFile < ApplicationRecord
   end
 
   def update_file(file)
+    Rails.logger.info "DatasetFile: In update_file"
     file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
     update_hash = {
       description: file["description"],
@@ -75,10 +77,12 @@ class DatasetFile < ApplicationRecord
   end
 
   def add_file_to_repo(repo, filename, file)
+    Rails.logger.info "DatasetFile: In add_file_to_repo #{filename}"
     dataset.jekyll_service.add_file_to_repo(filename, file)
   end
 
   def update_file_in_repo(repo, filename, file)
+    Rails.logger.info "DatasetFile: In update_file_in_repo #{filename}"
     dataset.jekyll_service.update_file_to_repo(filename, file)
   end
 
@@ -90,12 +94,12 @@ class DatasetFile < ApplicationRecord
   private
 
     def check_schema
-      logger.info "In check schema"
+      Rails.logger.info "DatasetFile: In check schema"
       if dataset_file_schema
 
         if dataset_file_schema.is_schema_valid?
 
-          logger.info "we have schema and schema is valid"
+          Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
 
           # TODO this could use the cached schema in the object, but for now...
           schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
@@ -122,6 +126,8 @@ class DatasetFile < ApplicationRecord
           # logger.ap errors
 
           errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+          Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+          errors
           #logger.ap errors
         else
           errors.add(:schema, 'is not valid')
