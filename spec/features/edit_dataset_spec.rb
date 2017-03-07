@@ -42,21 +42,31 @@ feature "Edit dataset page", type: :feature, vcr: { :match_requests_on => [:host
     visit dashboard_path
     expect(page).to have_content dataset_name
     expect(page).to have_content 'Edit'
-    ap @dataset.license
     click_link 'Edit'
 
     expect(page).to have_content 'Edit Dataset'
   end
 
   context "logged in visitor has datasets and" do
-    scenario "can view them" do
+    scenario "can edit the description" do
       new_description = Faker::Lorem.sentence
-      fill_in 'dataset[description]', with:new_description
+      fill_in 'dataset[description]', with: new_description
       click_on 'Submit'
       expect(page).to have_content 'Your edits have been queued for creation'
-
       @dataset.reload
       expect(@dataset.description).to eq new_description
+    end
+
+    scenario "can edit the file description" do
+      new_description = Faker::Lorem.sentence
+      within 'div.visible' do
+        fill_in 'files[][description]', with: new_description
+      end
+      #expect_any_instance_of(RepoService).to receive(:save)
+      click_on 'Submit'
+      expect(page).to have_content 'Your edits have been queued for creation'
+      @dataset.reload
+      expect(@dataset.dataset_files.first.description).to eq new_description
     end
   end
 end
