@@ -7,9 +7,18 @@ class InferredDatasetFileSchemasController < ApplicationController
 
   def create
     @inferred_dataset_file_schema = InferredDatasetFileSchema.new(create_params)
-    if @inferred_dataset_file_schema.valid? && InferredDatasetFileSchemaCreationService.new(@inferred_dataset_file_schema).perform.success?
-      redirect_to dataset_file_schemas_path
+
+    if @inferred_dataset_file_schema.valid?
+      creation_result = InferredDatasetFileSchemaCreationService.new(@inferred_dataset_file_schema).perform
+      if creation_result.success?
+        redirect_to dataset_file_schemas_path
+      else
+        Rails.logger.info "failed to create, no success #{creation_result.error} "
+        @inferred_dataset_file_schema.errors.add(:csv_url, "Inferring schema from dataset failed: #{creation_result.error}")
+        failed_create
+      end
     else
+      Rails.logger.info "failed to validate dataset file schema"
       failed_create
     end
   end
