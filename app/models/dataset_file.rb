@@ -95,7 +95,7 @@ class DatasetFile < ApplicationRecord
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
-      if dataset_file_schema
+      if dataset_file_schema && file
 
         if dataset_file_schema.is_schema_valid?
 
@@ -104,26 +104,10 @@ class DatasetFile < ApplicationRecord
           # TODO this could use the cached schema in the object, but for now...
           schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-          # logger.info "Dataset file schema.url:"
-          # logger.ap dataset_file_schema.url
-          # logger.info "Dataset file schema.url - JSON parsed"
-          # logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
-          # logger.info "Loaded, linted schema object"
-          # logger.ap schema
-          # logger.ap the_data_file.read
-          # logger.ap file.tempfile.path
-
           # TODO what does this do?
           schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
 
           validation = Csvlint::Validator.new(get_file_for_validation_from_file, {}, schema)
-
-          # logger.ap schema.uri
-          # logger.ap schema
-          # logger.ap validation.valid?
-          # #validation.validate
-          # logger.ap validation.info_messages
-          # logger.ap errors
 
           errors.add(:file, 'does not match the schema you provided') unless validation.valid?
           Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
