@@ -52,7 +52,13 @@ class JekyllService
   end
 
   def add_to_github(filename, file)
-    add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    #TODO remove string hack
+    if file.instance_of? String
+      add_file_to_repo("data/#{filename}", file)
+    else
+      add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    end
+    
   end
 
   def add_jekyll_to_github(filename)

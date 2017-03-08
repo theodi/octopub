@@ -28,6 +28,16 @@ class DatasetFile < ApplicationRecord
 
   attr_accessor :file
 
+  # def file
+  #   Rails.logger.error "file has been called #{@file}"
+  #   @file
+  # end
+
+  # def file=(str)
+  #   Rails.logger.error "file has been set #{str}"
+  #   @file = str
+  # end
+
   def self.file_from_url(file)
     Rails.logger.info "DatasetFile: In file_from_url"
     tempfile = Tempfile.new 'uploaded'
@@ -39,6 +49,7 @@ class DatasetFile < ApplicationRecord
   end
 
   def self.read_file_with_utf_8(file)
+    #S3_BUCKET.object(self.storage_key).get.body.read
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
@@ -66,14 +77,22 @@ class DatasetFile < ApplicationRecord
     "#{dataset.gh_pages_url}/data/#{filename}"
   end
 
-  def update_file(file)
+# {
+#           "title" => "Wed1428",
+#     "description" => "Wed1428MeepMoop",
+#              "id" => "1",
+#            "file" => "https://jj-octopub-development.s3-eu-west-1.amazonaws.com/uploads/a67e7845-8660-4b31-86c2-3e470c76a0c6/australian-open-data-publishers-2.csv",
+#     "storage_key" => "uploads/a67e7845-8660-4b31-86c2-3e470c76a0c6/australian-open-data-publishers-2.csv"
+# }
+  def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
-    file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
+    file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file']) if file_update_hash["file"].class == String
     update_hash = {
-      description: file["description"],
-      file: file["file"],
-      dataset_file_schema_id: file["dataset_file_schema_id"]
-    }.delete_if { |k,v| v.nil? }
+      description: file_update_hash["description"],
+      file: file_update_hash["file"],
+      dataset_file_schema_id: file_update_hash["dataset_file_schema_id"],
+      storage_key: file_update_hash["storage_key"]
+    }.delete_if { |_k,v| v.nil? }
 
     self.update(update_hash)
   end
@@ -98,59 +117,70 @@ class DatasetFile < ApplicationRecord
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
       if dataset_file_schema
-
         if dataset_file_schema.is_schema_valid?
-
-          Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
-
-          # TODO this could use the cached schema in the object, but for now...
-          schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
-
-          # logger.info "Dataset file schema.url:"
-          # logger.ap dataset_file_schema.url
-          # logger.info "Dataset file schema.url - JSON parsed"
-          # logger.ap JSON.generate(JSON.load(open(dataset_file_schema.url).read.force_encoding("UTF-8")))
-          # logger.info "Loaded, linted schema object"
-          # logger.ap schema
-          # logger.ap the_data_file.read
-          # logger.ap file.tempfile.path
-
-          # TODO what does this do?
-          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-
-          validation = Csvlint::Validator.new(get_file_for_validation_from_file, {}, schema)
-
-          # logger.ap schema.uri
-          # logger.ap schema
-          # logger.ap validation.valid?
-          # #validation.validate
-          # logger.ap validation.info_messages
-          # logger.ap errors
-
-          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-          Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
-          errors
-          #logger.ap errors
+          if dataset_file_schema.is_schema_otw?
+            validate_schema_cotw
+          else
+            validate_schema_non_cotw
+          end
         else
           errors.add(:schema, 'is not valid')
         end
       end
     end
 
+    def validate_schema_cotw
+      Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
+
+      # TODO this could use the cached schema in the object, but for now...
+      schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
+
+      if schema.respond_to? :tables
+        schema.tables["file:#{storage_key}"] = schema.tables.delete(schema.tables.keys.first)
+      end
+
+      string_io = get_file_for_validation_from_file
+
+      validation = Csvlint::Validator.new(string_io, {}, schema)
+
+      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+      errors
+    end
+
+    def validate_schema_non_cotw
+      Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
+
+      # TODO this could use the cached schema in the object, but for now...
+      schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
+
+      string_io = FileStorageService.get_string_io(storage_key)  
+      validation = Csvlint::Validator.new(string_io, {}, schema)
+
+      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+      errors
+    end
+
     def get_file_for_validation_from_file
       File.new(file.tempfile)
     end
 
+    def get_string_io_for_validation_from_file(storage_key)
+      S3_BUCKET.object(storage_key).get.body
+    end
+
     def check_csv
       if dataset && file
+        string_io = FileStorageService.get_string_io(storage_key)
         begin
-          CSV.parse(file.tempfile.read.encode("UTF-8", invalid: :replace))
+          CSV.parse(string_io.read)
         rescue CSV::MalformedCSVError
           errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
         rescue
           errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
         ensure
-          file.tempfile.rewind
+          string_io.rewind
         end
       end
     end

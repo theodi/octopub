@@ -73,6 +73,9 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+    allow(FileStorageService).to receive(:get_string_io) do |storage_key|
+      get_string_io_from_fixture_file(storage_key)
+    end
   end
 
   # This overrides always true in the spec_helper file
@@ -106,6 +109,10 @@ def get_fixture_schema_file(file_name)
   get_fixture_file("schemas/#{file_name}") 
 end
 
+def read_fixture_file(file_name)
+  File.read(get_fixture_file(file_name))
+end
+
 def get_fixture_file(file_name) 
   File.join(Rails.root, 'spec', 'fixtures', file_name)
 end
@@ -114,9 +121,20 @@ def get_json_from_url(url)
   JSON.generate(JSON.load(open(url).read.force_encoding("UTF-8")))
 end
 
+def get_string_io_from_fixture_file(storage_key)
+  filename = storage_key.split('/').last
+  StringIO.new(read_fixture_file(filename))
+end
+
 def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
+def url_with_stubbed_get_for_storage_key(storage_key, file_name)
+  url = "https://example.org/#{storage_key}"
+  stub_request(:get, url).to_return(body: read_fixture_file(file_name))
   url
 end
 
