@@ -58,7 +58,7 @@ class JekyllService
     else
       add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
     end
-    
+
   end
 
   def add_jekyll_to_github(filename)
@@ -67,7 +67,12 @@ class JekyllService
 
   def update_in_github(filename, file)
     Rails.logger.info 'update_in_github'
-    update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+    #TODO remove string hack
+    if file.instance_of? String
+       update_file_in_repo("data/#{filename}", file)
+     else
+      update_file_in_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+     end
   end
 
   def update_jekyll_in_github(filename)

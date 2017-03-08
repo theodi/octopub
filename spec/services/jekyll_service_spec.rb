@@ -3,7 +3,7 @@ require 'rails_helper'
 describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
   let(:user) { create(:user) }
-  let(:path) { get_fixture_file('test-data.csv') } 
+  let(:path) { get_fixture_file('test-data.csv') }
 
   context "for a dataset" do
     it "creates a file in Github" do
@@ -56,16 +56,27 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     context "update_in_github" do
+
+    # let(:filename) { 'valid-schema.csv' }
+    # let(:storage_key) { filename }
+    # let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+
       before(:each) do
+
+        @filename = 'valid-schema.csv'
+        storage_key = @filename
+        @url_for_data_file = url_with_stubbed_get_for_storage_key(storage_key, @filename)
         @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
-        @file = create(:dataset_file, title: "Example", file: @tempfile)
+        @file = build(:dataset_file, title: "Example", file: @url_for_data_file, filename: @filename, storage_key: storage_key)
+
+       # @file = create(:dataset_file, title: "Example", file: @file, storage_key: storage_key)
         @jekyll_service = JekyllService.new(@dataset, nil)
-        @dataset = create(:dataset, repo: "my-repo", user: user, dataset_files: [@file])
+        @dataset = build(:dataset, repo: "my-repo", user: user, dataset_files: [@file])
       end
 
       it "updates a data file in Github" do
-        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.csv", File.read(path))
-        @jekyll_service.update_in_github(@file.filename, @file.file)
+        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/#{@filename}", File.read(path))
+        @jekyll_service.update_in_github(@file.filename, @url_for_data_file)
       end
 
       it "updates a jekyll file in Github" do
@@ -76,11 +87,16 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   context "sends the correct files to Github" do
+
+    let(:filename) { 'valid-schema.csv' }
+    let(:storage_key) { filename }
+    let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+
     it "without a schema" do
       dataset = build :dataset, user: user,
-                                dataset_files: [
-                                  create(:dataset_file)
-                                ]
+        dataset_files: [
+          create(:dataset_file, filename: filename, file: url_for_data_file, storage_key: storage_key)
+        ]
 
       jekyll_service = JekyllService.new(dataset, nil)
 
