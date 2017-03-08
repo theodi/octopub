@@ -1,4 +1,17 @@
 # == Schema Information
+#
+# Table name: dataset_file_schemas
+#
+#  id          :integer          not null, primary key
+#  name        :text
+#  description :text
+#  url_in_s3   :text
+#  url_in_repo :text
+#  schema      :json
+#  user_id     :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
 
 require 'rails_helper'
 

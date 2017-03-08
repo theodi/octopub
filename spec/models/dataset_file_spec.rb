@@ -13,6 +13,7 @@
 #  file_sha               :text
 #  view_sha               :text
 #  dataset_file_schema_id :integer
+#  storage_key            :string
 #
 
 require 'rails_helper'
