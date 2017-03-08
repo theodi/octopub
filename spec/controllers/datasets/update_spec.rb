@@ -237,7 +237,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         {
           title: "New file",
           description: "New file description",
-          file: "http://example.com/new-file.csv"
+          file: "http://example.com/new-file.csv",
+          storage_key: 'new-file.csv'
         },
         {
           title: "This should get binned"
@@ -253,7 +254,8 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
           {
             "title" => "New file",
             "description" => "New file description",
-            "file" => "http://example.com/new-file.csv"
+            "file" => "http://example.com/new-file.csv",
+            "storage_key" => "new-file.csv"
           }
         ], channel_id: nil
       ) { build(:dataset) }

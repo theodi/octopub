@@ -120,6 +120,14 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         expect(@repo).to receive(:save)
       end
 
+      def creation_assertions
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        ap @user.datasets.first.dataset_files.first
+        expect(@user.datasets.first.dataset_files.first.storage_key).to_not be_nil
+      end
 
       it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
@@ -135,10 +143,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a restricted dataset' do
@@ -156,10 +161,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           restricted: true,
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a dataset in an organization' do
@@ -179,10 +181,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           owner: organization
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'returns 202 when async is set to true' do
@@ -232,10 +231,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
             }
           ]}
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'handles non-url files' do
@@ -258,10 +254,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
     end
   end

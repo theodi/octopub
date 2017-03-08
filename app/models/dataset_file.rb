@@ -48,12 +48,13 @@ class DatasetFile < ApplicationRecord
     dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
     dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
 
-    Rails.logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
+    Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
     create(
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
-      file: dataset_file_creation_hash[:file]
+      file: dataset_file_creation_hash[:file],
+      storage_key: dataset_file_creation_hash[:storage_key]
     )
   end
 
