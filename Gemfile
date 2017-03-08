@@ -72,6 +72,10 @@ group :doc do
   gem 'sdoc', '~> 0.4.0'
 end
 
+group :development, :test do
+  gem 'lograge'
+end
+
 group :development do
   gem 'pry-remote'
   gem 'letter_opener'
