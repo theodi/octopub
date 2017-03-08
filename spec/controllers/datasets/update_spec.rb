@@ -2,9 +2,18 @@ require 'rails_helper'
 
 describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host, :method] } do
 
-  let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
-  let(:data_file_not_matching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
-  let(:good_schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+  let(:filename) { 'valid-schema.csv' }
+  let(:storage_key) { filename }
+  let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+  let(:good_schema_path) { get_fixture_schema_file('good-schema.json') }
+  let(:new_filename) { 'valid-schema-2.csv' }
+  let(:new_storage_key) { new_filename }
+  let(:new_url_for_data_file) { url_with_stubbed_get_for_storage_key(new_storage_key, new_filename) }
+  let(:not_matching_filename) { 'invalid-schema.csv' }
+  let(:not_matching_storage_key) { not_matching_filename }
+  let(:url_for_not_matching_data_file) { url_with_stubbed_get_for_storage_key(not_matching_storage_key, not_matching_storage_key) }
+  let(:schema_path) { get_fixture_schema_file('good-schema.json') }
+
 
   before(:each) do
     Sidekiq::Testing.inline!
@@ -31,7 +40,7 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
     before(:each) do
       sign_in @user
       @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
-        create(:dataset_file, filename: 'test-data.csv')
+        create(:dataset_file, filename: filename, storage_key: storage_key)
       ])
 
       schema = url_with_stubbed_get_for(good_schema_path)
@@ -64,13 +73,13 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
         context 'with schema-compliant csv' do
 
           it 'updates a file in Github' do
-            file = url_with_stubbed_get_for(@path)
+
             expect(@repo).to receive(:update_file).with(any_args)
             expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
-                file: file
+                file: new_url_for_data_file
             }]}
           end
 
@@ -147,16 +156,13 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
 
         it 'updates a file in Github' do
           expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-          filename = 'test-data.csv'
-          path = File.join(Rails.root, 'spec', 'fixtures', filename)
-          file = url_with_stubbed_get_for(path)
 
           expect_any_instance_of(JekyllService).to receive(:update_in_github)
           expect_any_instance_of(JekyllService).to receive(:update_jekyll_in_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
-              file: file
+              file: new_url_for_data_file
           }]}
         end
 
@@ -205,13 +211,12 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
 
         it 'does not update a file in Github' do
           @dataset_file.file = nil
-          file = url_with_stubbed_get_for(data_file_not_matching_schema)
 
           expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
-              file: file,
+              file: url_for_not_matching_data_file,
               schema_name: 'schema name',
               schema_description: 'schema description',
               schema: @url_for_schema
