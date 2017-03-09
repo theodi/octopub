@@ -154,7 +154,7 @@ class DatasetFile < ApplicationRecord
       # TODO this could use the cached schema in the object, but for now...
       schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
-      string_io = FileStorageService.get_string_io(storage_key)  
+      string_io = FileStorageService.get_string_io(storage_key)
       validation = Csvlint::Validator.new(string_io, {}, schema)
 
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
@@ -171,16 +171,19 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      if dataset && file
+      if dataset && file && storage_key
+
         string_io = FileStorageService.get_string_io(storage_key)
-        begin
-          CSV.parse(string_io.read)
-        rescue CSV::MalformedCSVError
-          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
-        rescue
-          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
-        ensure
-          string_io.rewind
+        unless string_io.nil?
+          begin
+            CSV.parse(string_io.read)
+          rescue CSV::MalformedCSVError
+            errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+          rescue
+            errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+          ensure
+            string_io.rewind
+          end
         end
       end
     end
