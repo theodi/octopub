@@ -13,6 +13,7 @@
 #  file_sha               :text
 #  view_sha               :text
 #  dataset_file_schema_id :integer
+#  storage_key            :string
 #
 
 class DatasetFile < ApplicationRecord
@@ -27,6 +28,16 @@ class DatasetFile < ApplicationRecord
 
   attr_accessor :file
 
+  # def file
+  #   Rails.logger.error "file has been called #{@file}"
+  #   @file
+  # end
+
+  # def file=(str)
+  #   Rails.logger.error "file has been set #{str}"
+  #   @file = str
+  # end
+
   def self.file_from_url(file)
     Rails.logger.info "DatasetFile: In file_from_url"
     tempfile = Tempfile.new 'uploaded'
@@ -38,6 +49,7 @@ class DatasetFile < ApplicationRecord
   end
 
   def self.read_file_with_utf_8(file)
+    #S3_BUCKET.object(self.storage_key).get.body.read
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
@@ -47,12 +59,13 @@ class DatasetFile < ApplicationRecord
     dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
     dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
 
-    Rails.logger.info "Dataset file created using new file #{ dataset_file_creation_hash[:file]}"
+    Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
     create(
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
-      file: dataset_file_creation_hash[:file]
+      file: dataset_file_creation_hash[:file],
+      storage_key: dataset_file_creation_hash[:storage_key]
     )
   end
 
@@ -64,14 +77,15 @@ class DatasetFile < ApplicationRecord
     "#{dataset.gh_pages_url}/data/#{filename}"
   end
 
-  def update_file(file)
+  def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
-    file['file'] = DatasetFile.file_from_url(file['file']) if file["file"].class == String
+    file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file']) if file_update_hash["file"].class == String
     update_hash = {
-      description: file["description"],
-      file: file["file"],
-      dataset_file_schema_id: file["dataset_file_schema_id"]
-    }.delete_if { |k,v| v.nil? }
+      description: file_update_hash["description"],
+      file: file_update_hash["file"],
+      dataset_file_schema_id: file_update_hash["dataset_file_schema_id"],
+      storage_key: file_update_hash["storage_key"]
+    }.delete_if { |_k,v| v.nil? }
 
     self.update(update_hash)
   end
@@ -95,44 +109,71 @@ class DatasetFile < ApplicationRecord
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
-      if dataset_file_schema && file
-
+      if dataset_file_schema
         if dataset_file_schema.is_schema_valid?
-
-          Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
-
-          # TODO this could use the cached schema in the object, but for now...
-          schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
-
-          # TODO what does this do?
-          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
-
-          validation = Csvlint::Validator.new(get_file_for_validation_from_file, {}, schema)
-
-          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-          Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
-          errors
-          #logger.ap errors
+          if dataset_file_schema.is_schema_otw?
+            validate_schema_cotw
+          else
+            validate_schema_non_cotw
+          end
         else
           errors.add(:schema, 'is not valid')
         end
       end
     end
 
+    def validate_schema_cotw
+      Rails.logger.info "DatasetFile: we have COTW schema and schema is valid, so validate"
+
+      schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
+      tempfile = get_file_for_validation_from_file
+
+      if schema.respond_to? :tables
+        schema.tables["file:#{tempfile.path}"] = schema.tables.delete(schema.tables.keys.first)
+      end
+      validation = Csvlint::Validator.new(tempfile, {}, schema)
+
+      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+      errors
+    end
+
+
+    def validate_schema_non_cotw
+      Rails.logger.info "DatasetFile: we have non COTW schema and schema is valid, so validate"
+
+      schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
+
+      string_io = FileStorageService.get_string_io(storage_key)
+      validation = Csvlint::Validator.new(string_io, {}, schema)
+
+      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+      errors
+
+    end
+
     def get_file_for_validation_from_file
       File.new(file.tempfile)
     end
 
+    def get_string_io_for_validation_from_file(storage_key)
+      S3_BUCKET.object(storage_key).get.body
+    end
+
     def check_csv
-      if dataset && file
-        begin
-          CSV.parse(file.tempfile.read.encode("UTF-8", invalid: :replace))
-        rescue CSV::MalformedCSVError
-          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
-        rescue
-          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
-        ensure
-          file.tempfile.rewind
+      if dataset && storage_key
+        string_io = FileStorageService.get_string_io(storage_key)
+        unless string_io.nil?
+          begin
+            CSV.parse(string_io.read)
+          rescue CSV::MalformedCSVError
+            errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+          rescue
+            errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+          ensure
+            string_io.rewind
+          end
         end
       end
     end

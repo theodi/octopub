@@ -24,6 +24,10 @@ describe 'POST /datasets' do
     filename = 'test-data.csv'
     @path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
+    @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
+    allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(filename) }
+
+
     Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
     @repo = double(GitData)
@@ -35,7 +39,8 @@ describe 'POST /datasets' do
     @file = {
       :title => name,
       :description => description,
-      :file => fixture_file_upload(@path)
+      :file => fixture_file_upload(@path),
+      :storage_key => @storage_key
     }
   end
 
@@ -124,6 +129,10 @@ describe 'POST /datasets' do
     before(:each) do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')
       @schema = url_with_stubbed_get_for(schema_path)
+
+      @filename = 'valid-schema.csv'
+      @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
+      allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(@filename) }
     end
 
     it 'creates a dataset sucessfully' do
@@ -132,7 +141,7 @@ describe 'POST /datasets' do
       expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
       expect(@repo).to receive(:save)
 
-      path = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+      path = File.join(Rails.root, 'spec', 'fixtures', @filename)
 
       good_schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
       stubbed_schema_url = url_with_stubbed_get_for(good_schema_path)
@@ -143,6 +152,7 @@ describe 'POST /datasets' do
         title: 'My File',
         description: 'My Description',
         file: fixture_file_upload(path),
+        storage_key: @storage_key,
         schema_name: 'schema name',
         schema_description: 'schema description',
         schema: stubbed_schema_url
@@ -168,7 +178,11 @@ describe 'POST /datasets' do
 
     it 'errors if a file does not match the schema' do
 
-      path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv')
+      @filename = 'invalid-schema.csv'
+      @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
+      allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(@filename) }
+
+      path = File.join(Rails.root, 'spec', 'fixtures', @filename)
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
       good_schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
@@ -178,6 +192,7 @@ describe 'POST /datasets' do
         title: 'My File',
         description: 'My Description',
         file: Rack::Test::UploadedFile.new(path, "text/csv"),
+        storage_key: @storage_key,
         schema_name: 'schema name',
         schema_description: 'schema description',
         schema: stubbed_schema_url

@@ -9,6 +9,8 @@
 #  url_in_repo :text
 #  schema      :json
 #  user_id     :integer
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 
 class DatasetFileSchema < ApplicationRecord

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
   let(:user) { create(:user) }
-  let(:path) { get_fixture_file('test-data.csv') } 
+  let(:path) { get_fixture_file('test-data.csv') }
 
   context "for a dataset" do
     it "creates a file in Github" do
@@ -56,31 +56,42 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     context "update_in_github" do
+
       before(:each) do
-        @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
-        @file = create(:dataset_file, title: "Example", file: @tempfile)
+
+        @filename = 'valid-schema.csv'
+        storage_key = @filename
+        @url_for_data_file = url_with_stubbed_get_for_storage_key(storage_key, @filename)
+        @tempfile = get_string_io_from_fixture_file(@filename)
+        @file = build(:dataset_file, title: "Example", file: @tempfile, storage_key: storage_key, filename: @filename)
         @jekyll_service = JekyllService.new(@dataset, nil)
-        @dataset = create(:dataset, repo: "my-repo", user: user, dataset_files: [@file])
+        @dataset = build(:dataset, repo: "my-repo", user: user, dataset_files: [@file])
       end
 
       it "updates a data file in Github" do
-        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.csv", File.read(path))
-        @jekyll_service.update_in_github(@file.filename, @file.file)
+        expect(@jekyll_service).to receive(:update_file_in_repo).with("data/#{@filename}", @tempfile.read)
+        @jekyll_service.update_in_github(@file.filename, @tempfile)
       end
 
       it "updates a jekyll file in Github" do
         expect(@jekyll_service).to receive(:update_file_in_repo).with("data/example.md", File.open(File.join(Rails.root, "extra", "html", "data_view.md")).read)
-        @jekyll_service.update_jekyll_in_github(@file.filename)
+        @jekyll_service.update_jekyll_in_github('example.csv')
       end
     end
   end
 
   context "sends the correct files to Github" do
+
+    let(:filename) { 'test-data.csv' }
+    let(:storage_key) { filename }
+    let(:string_io_for_data_file) { get_string_io_from_fixture_file(filename) }
+
     it "without a schema" do
+
       dataset = build :dataset, user: user,
-                                dataset_files: [
-                                  create(:dataset_file)
-                                ]
+        dataset_files: [
+          create(:dataset_file, filename: filename, file: string_io_for_data_file, storage_key: storage_key)
+        ]
 
       jekyll_service = JekyllService.new(dataset, nil)
 
@@ -111,7 +122,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
       dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, user).create_dataset_file_schema
 
-      dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
+      dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
 
       dataset = build(:dataset, user: user, dataset_files: [dataset_file])
 
@@ -199,7 +210,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     it 'is unhappy with a duff schema' do
       bad_schema = url_for_schema_with_stubbed_get_for(bad_schema_path)
       dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', bad_schema, user).create_dataset_file_schema
-      expect { create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv")) }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Schema is not valid')
+      expect { create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv') }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Schema is not valid')
     end
 
     it 'is happy with a good schema' do
@@ -211,7 +222,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
       good_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
       dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', good_schema, user).create_dataset_file_schema
-      create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
+      create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
 
       expect(DatasetFile.count).to be 1
     end
@@ -219,7 +230,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     it 'adds the schema to the datapackage' do
       url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
       @dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, user).create_dataset_file_schema
-      @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"))
+      @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
       @dataset = build(:dataset, user: user, dataset_files: [@dataset_file])
 
       jekyll_service = JekyllService.new(@dataset, nil)

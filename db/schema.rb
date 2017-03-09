@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170303112528) do
+ActiveRecord::Schema.define(version: 20170308121958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "dataset_file_schemas", force: :cascade do |t|
-    t.text    "name"
-    t.text    "description"
-    t.text    "url_in_s3"
-    t.text    "url_in_repo"
-    t.json    "schema"
-    t.integer "user_id"
+    t.text     "name"
+    t.text     "description"
+    t.text     "url_in_s3"
+    t.text     "url_in_repo"
+    t.json     "schema"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id"], name: "index_dataset_file_schemas_on_user_id", using: :btree
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170303112528) do
     t.text     "file_sha"
     t.text     "view_sha"
     t.integer  "dataset_file_schema_id"
+    t.string   "storage_key"
     t.index ["dataset_file_schema_id"], name: "index_dataset_files_on_dataset_file_schema_id", using: :btree
     t.index ["dataset_id"], name: "index_dataset_files_on_dataset_id", using: :btree
   end

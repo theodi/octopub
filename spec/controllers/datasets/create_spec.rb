@@ -103,13 +103,17 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         description = Faker::Company.bs
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
+        @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
+        allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(filename) }
+
 
         Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
         @files << {
           :title => name,
           :description => description,
-          :file => url_with_stubbed_get_for(path)
+          :file => url_with_stubbed_get_for_storage_key(@storage_key, filename),
+          :storage_key => @storage_key
         }
 
         @repo = double(GitData)
@@ -118,8 +122,17 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         expect(@repo).to receive(:name) { nil }
         expect(@repo).to receive(:full_name) { nil }
         expect(@repo).to receive(:save)
+
+      
       end
 
+      def creation_assertions
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.first.storage_key).to_not be_nil
+      end
 
       it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
@@ -135,10 +148,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a restricted dataset' do
@@ -156,10 +166,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           restricted: true,
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a dataset in an organization' do
@@ -179,10 +186,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           owner: organization
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'returns 202 when async is set to true' do
@@ -232,10 +236,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
             }
           ]}
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'handles non-url files' do
@@ -248,6 +249,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
         @files.first["file"] = fixture_file_upload('test-data.csv')
+        @files.first["storage_key"] = @storage_key
 
         request = post :create, params: { dataset: {
           name: dataset_name,
@@ -258,10 +260,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
     end
   end
