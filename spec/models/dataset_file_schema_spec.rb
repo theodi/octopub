@@ -11,6 +11,7 @@
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
+#  storage_key :string
 #
 
 require 'rails_helper'
