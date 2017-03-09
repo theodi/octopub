@@ -76,6 +76,14 @@ RSpec.configure do |config|
     allow(FileStorageService).to receive(:get_string_io) do |storage_key|
       get_string_io_from_fixture_file(storage_key)
     end
+    allow(FileStorageService).to receive(:create_and_upload_public_object) do |filename, body|
+      obj = double(Aws::S3::Object)
+      expect(obj).to receive(:public_url) { "https://example.org/uploads/1234/#{filename}" }
+      expect(obj).to receive(:key) do |filename|
+        "uploads/1234/#{filename}"
+      end
+      obj
+    end
   end
 
   # This overrides always true in the spec_helper file

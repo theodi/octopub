@@ -2,8 +2,11 @@ require 'rails_helper'
 
 describe InferredDatasetFileSchemasController, type: :controller do
 
-  let(:data_file_url) { url_with_stubbed_get_for_fixture_file('schemas/infer-from/data_infer.csv') }
   let(:user) { create(:user) }
+  let(:infer_schema_filename) { 'schemas/infer-from/data_infer.csv' }
+  let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
+  let(:csv_storage_key) { "uploads/#{uuid}/data_infer.csv" }
+  let(:infer_schema_csv_url) { url_with_stubbed_get_for_storage_key(csv_storage_key, infer_schema_filename) }
 
   describe 'new' do
     it "returns http success" do
@@ -17,7 +20,7 @@ describe InferredDatasetFileSchemasController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: data_file_url } }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url } }
 
       dataset_file_schema = DatasetFileSchema.last
       expect(dataset_file_schema.name).to eq schema_name
@@ -29,7 +32,7 @@ describe InferredDatasetFileSchemasController, type: :controller do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: data_file_url } }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url } }
       expect(response).to redirect_to(dataset_file_schemas_path)
     end
   end
@@ -64,7 +67,7 @@ describe InferredDatasetFileSchemasController, type: :controller do
     it "returns to new page if fields are missing - no user" do
       post :create, params: {
         inferred_dataset_file_schema: {
-          name: schema_name, description: description, csv_url: data_file_url
+          name: schema_name, description: description, csv_url: infer_schema_csv_url
         }
       }
       expect(response).to render_template("new")
