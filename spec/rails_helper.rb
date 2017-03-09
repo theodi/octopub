@@ -128,6 +128,13 @@ def get_string_io_from_fixture_file(storage_key)
   end
 end
 
+def get_string_io_schema_from_fixture_file(storage_key)
+  unless storage_key.nil?
+    filename = storage_key.split('/').last
+    StringIO.new(read_fixture_file("schemas/#{filename}"))
+  end
+end
+
 def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))

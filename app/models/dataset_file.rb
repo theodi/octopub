@@ -130,16 +130,25 @@ class DatasetFile < ApplicationRecord
     end
 
     def validate_schema_cotw
-      Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
+      Rails.logger.info "DatasetFile: we have COTW schema and schema is valid, so validate"
+      p "DatasetFile: we have COTW schema and schema is valid, so validate"
 
+      ap dataset_file_schema.url
       # TODO this could use the cached schema in the object, but for now...
       schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
+      string_io = get_file_for_validation_from_file
 
       if schema.respond_to? :tables
-        schema.tables["file:#{storage_key}"] = schema.tables.delete(schema.tables.keys.first)
+        ap schema.tables.keys
+        ap '*' * 25
+        ap self
+        ap '*' * 25
+        schema.tables["file:#{string_io.path}"] = schema.tables.delete(schema.tables.keys.first)
       end
 
-      string_io = get_file_for_validation_from_file
+      ap schema.tables.keys
+
+   #   string_io = get_file_for_validation_from_file
 
       validation = Csvlint::Validator.new(string_io, {}, schema)
 
@@ -149,7 +158,8 @@ class DatasetFile < ApplicationRecord
     end
 
     def validate_schema_non_cotw
-      Rails.logger.info "DatasetFile: we have schema and schema is valid, so validate"
+      Rails.logger.info "DatasetFile: we have non COTW schema and schema is valid, so validate"
+      p "DatasetFile: we have non COTW schema and schema is valid, so validate"
 
       # TODO this could use the cached schema in the object, but for now...
       schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
@@ -171,11 +181,16 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      if dataset && file && storage_key
-
+      p 'check csv'
+      ap dataset
+      ap file
+      ap storage_key
+      if dataset && storage_key
+        p'Woof'
         string_io = FileStorageService.get_string_io(storage_key)
         unless string_io.nil?
           begin
+            p 'Rarr'
             CSV.parse(string_io.read)
           rescue CSV::MalformedCSVError
             errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
