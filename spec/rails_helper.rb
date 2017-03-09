@@ -106,14 +106,14 @@ def read_fixture_schema_file(file_name)
 end
 
 def get_fixture_schema_file(file_name)
-  get_fixture_file("schemas/#{file_name}") 
+  get_fixture_file("schemas/#{file_name}")
 end
 
 def read_fixture_file(file_name)
   File.read(get_fixture_file(file_name))
 end
 
-def get_fixture_file(file_name) 
+def get_fixture_file(file_name)
   File.join(Rails.root, 'spec', 'fixtures', file_name)
 end
 
@@ -122,8 +122,10 @@ def get_json_from_url(url)
 end
 
 def get_string_io_from_fixture_file(storage_key)
-  filename = storage_key.split('/').last
-  StringIO.new(read_fixture_file(filename))
+  unless storage_key.nil?
+    filename = storage_key.split('/').last
+    StringIO.new(read_fixture_file(filename))
+  end
 end
 
 def url_with_stubbed_get_for(path)
