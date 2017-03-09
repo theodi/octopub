@@ -139,16 +139,22 @@ class DatasetFile < ApplicationRecord
         schema.tables["file:#{tempfile.path}"] = schema.tables.delete(schema.tables.keys.first)
       end
 
+<<<<<<< HEAD
       validation = Csvlint::Validator.new(tempfile, {}, schema)
 
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
+=======
+          # TODO what does this do?
+          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
+>>>>>>> master
 
     def validate_schema_non_cotw
       Rails.logger.info "DatasetFile: we have non COTW schema and schema is valid, so validate"
 
+<<<<<<< HEAD
       schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
       string_io = FileStorageService.get_string_io(storage_key)
@@ -157,6 +163,16 @@ class DatasetFile < ApplicationRecord
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
+=======
+          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
+          Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+          errors
+          #logger.ap errors
+        else
+          errors.add(:schema, 'is not valid')
+        end
+      end
+>>>>>>> master
     end
 
     def get_file_for_validation_from_file
