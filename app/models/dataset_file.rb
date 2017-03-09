@@ -77,13 +77,6 @@ class DatasetFile < ApplicationRecord
     "#{dataset.gh_pages_url}/data/#{filename}"
   end
 
-# {
-#           "title" => "Wed1428",
-#     "description" => "Wed1428MeepMoop",
-#              "id" => "1",
-#            "file" => "https://jj-octopub-development.s3-eu-west-1.amazonaws.com/uploads/a67e7845-8660-4b31-86c2-3e470c76a0c6/australian-open-data-publishers-2.csv",
-#     "storage_key" => "uploads/a67e7845-8660-4b31-86c2-3e470c76a0c6/australian-open-data-publishers-2.csv"
-# }
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file']) if file_update_hash["file"].class == String
@@ -138,23 +131,17 @@ class DatasetFile < ApplicationRecord
       if schema.respond_to? :tables
         schema.tables["file:#{tempfile.path}"] = schema.tables.delete(schema.tables.keys.first)
       end
-
-<<<<<<< HEAD
       validation = Csvlint::Validator.new(tempfile, {}, schema)
 
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
-=======
-          # TODO what does this do?
-          schema.tables["file:#{get_file_for_validation_from_file.path}"] = schema.tables.delete schema.tables.keys.first if schema.respond_to? :tables
->>>>>>> master
+
 
     def validate_schema_non_cotw
       Rails.logger.info "DatasetFile: we have non COTW schema and schema is valid, so validate"
 
-<<<<<<< HEAD
       schema = Csvlint::Schema.load_from_json(URI.escape dataset_file_schema.url)
 
       string_io = FileStorageService.get_string_io(storage_key)
@@ -163,16 +150,7 @@ class DatasetFile < ApplicationRecord
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
-=======
-          errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-          Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
-          errors
-          #logger.ap errors
-        else
-          errors.add(:schema, 'is not valid')
-        end
-      end
->>>>>>> master
+
     end
 
     def get_file_for_validation_from_file
