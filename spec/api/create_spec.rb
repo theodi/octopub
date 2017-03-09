@@ -35,6 +35,9 @@ describe 'POST /datasets' do
     allow(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
       @repo
     }
+    allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }
 
     @file = {
       :title => name,

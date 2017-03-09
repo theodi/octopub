@@ -112,11 +112,12 @@ class Dataset < ApplicationRecord
 
     # This is a callback
     def create_repo_and_populate
-      Rails.logger.info "in create_repo_and_populate"
-      @repo = RepoService.create_repo(repo_owner, name, restricted, user)
-      self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      Rails.logger.info "Now updated with github details - call commit!"
-      jekyll_service.add_files_to_repo_and_push_to_github
+      Rails.logger.info "in NEW create_repo_and_populate"
+      CreateRepository.perform_async(id)
+      # @repo = RepoService.create_repo(repo_owner, name, restricted, user)
+      # self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
+      # Rails.logger.info "Now updated with github details - call commit!"
+      # jekyll_service.add_files_to_repo_and_push_to_github
     end
 
     # This is a callback

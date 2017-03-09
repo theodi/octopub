@@ -31,6 +31,11 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   before(:each) do
     @user = create(:user)
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+    Sidekiq::Testing.inline!
+  end
+
+  after(:each) do
+    Sidekiq::Testing.fake!
   end
 
   it "creates a valid public dataset" do
@@ -61,18 +66,23 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it "creates a repo in Github" do
+
     name = "My Awesome Dataset"
     html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
     dataset = build(:dataset, :with_callback, user: @user, name: name)
 
+    obj = double(GitData)
     expect(GitData).to receive(:create).with(@user.github_username, name, restricted: false, client: a_kind_of(Octokit::Client)) {
-      obj = double(GitData)
+
       expect(obj).to receive(:add_file) { nil }
       expect(obj).to receive(:save) { nil }
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
       expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
+      obj
+    }
+    allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
       obj
     }
 
@@ -85,17 +95,22 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
+
   end
 
   it "creates a repo with an organization" do
     name = "My Awesome Dataset"
     dataset = build(:dataset, :with_callback, user: @user, name: name, owner: "my-cool-organization")
     html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
+    obj = double(GitData)
     expect(GitData).to receive(:create).with('my-cool-organization', name, restricted: false, client: a_kind_of(Octokit::Client)) {
-      obj = double(GitData)
+
       expect(obj).to receive(:html_url) { html_url }
       expect(obj).to receive(:name) { name.parameterize }
       expect(obj).to receive(:full_name) { "my-cool-organization/#{name.parameterize}" }
+      obj
+    }
+    allow(GitData).to receive(:find).with('my-cool-organization', name, client: a_kind_of(Octokit::Client)) {
       obj
     }
 
@@ -289,12 +304,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
       dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
-
+      obj = double(GitData)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
-        obj = double(GitData)
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
         expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
+        obj
+      }
+      allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
         obj
       }
 
@@ -314,14 +331,17 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
       dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
+      obj = double(GitData)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
-        obj = double(GitData)
         expect(obj).to receive(:add_file).once { nil }
         expect(obj).to receive(:save) { nil }
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
         expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
 
+        obj
+      }
+      allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
         obj
       }
 
