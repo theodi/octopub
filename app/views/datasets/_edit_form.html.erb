@@ -17,7 +17,9 @@
         <div class="hidden">
           <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
         </div>
+        <div class="visible">
         <%= render partial: "dataset_files/edit_form", locals: { file: file, f: f, i: i } %>
+        </div>
       <% end %>
     <% end %>
   </div>
