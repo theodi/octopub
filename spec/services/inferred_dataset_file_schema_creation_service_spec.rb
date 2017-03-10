@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'webmock/rspec'
 
 describe InferredDatasetFileSchemaCreationService do
 
@@ -14,6 +15,14 @@ describe InferredDatasetFileSchemaCreationService do
   before(:each) do
     @schema_service = InferredDatasetFileSchemaCreationService.new(inferred_dataset_file_schema)
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
+  end
+
+  it "can push a file using http send request" do
+    body = "woof"
+    this_uri = URI.parse('http://example.org/woof')
+    stub_request(:put, this_uri).with(body: body)
+    @schema_service.http_send_request(this_uri, body)
+    expect(a_request(:put, this_uri).with(body: body)).to have_been_made.once
   end
 
   context "can infer a schema" do
