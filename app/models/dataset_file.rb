@@ -21,7 +21,8 @@ class DatasetFile < ApplicationRecord
   belongs_to :dataset
   belongs_to :dataset_file_schema
 
-  validate :check_schema, :check_csv
+  validate :check_schema, if: :dataset_file_schema
+  validate :check_csv
   validates_presence_of :title
 
   after_validation :set_filename
