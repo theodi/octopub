@@ -8,9 +8,13 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
   let(:publisher_url) { "http://example.com"}
   let(:license) { "OGL-UK-3.0" }
   let(:frequency) { "Monthly" }
-  let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
-  let(:data_file_not_marching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
-  let(:schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
+  let(:filename) { 'valid-schema.csv' }
+  let(:storage_key) { filename }
+  let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+  let(:not_matching_filename) { 'invalid-schema.csv' }
+  let(:not_matching_storage_key) { not_matching_filename }
+  let(:url_for_not_matching_data_file) { url_with_stubbed_get_for_storage_key(not_matching_storage_key, not_matching_storage_key) }
+  let(:schema_path) { get_fixture_schema_file('good-schema.json') }
 
   before(:each) do
     Sidekiq::Testing.inline!
@@ -37,7 +41,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         @files << {
           title: 'My File',
           description: 'My Description',
-          file: url_with_stubbed_get_for(data_file_not_marching_schema),
+          file: url_for_not_matching_data_file,
+          storage_key: not_matching_storage_key,
           schema_name: 'schema name',
           schema_description: 'schema description',
           schema: @url_for_schema
@@ -81,7 +86,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       @files << {
         title: 'My File',
         description: 'My Description',
-        file: url_with_stubbed_get_for(data_file),
+        file: url_for_data_file,
+        storage_key: storage_key,
         schema_name: 'schem nme',
         schema_description: 'schema description',
         schema: @url_for_schema

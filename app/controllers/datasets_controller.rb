@@ -121,7 +121,10 @@ class DatasetsController < ApplicationController
         key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
         obj = S3_BUCKET.object(key)
         obj.put(body: f["file"].read, acl: 'public-read')
+        f["storage_key"] = key
         f["file"] = obj.public_url
+      else
+        f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
       end
     end
   end

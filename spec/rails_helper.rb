@@ -73,6 +73,9 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+    allow(FileStorageService).to receive(:get_string_io) do |storage_key|
+      get_string_io_from_fixture_file(storage_key)
+    end
   end
 
   # This overrides always true in the spec_helper file
@@ -103,10 +106,14 @@ def read_fixture_schema_file(file_name)
 end
 
 def get_fixture_schema_file(file_name)
-  get_fixture_file("schemas/#{file_name}") 
+  get_fixture_file("schemas/#{file_name}")
 end
 
-def get_fixture_file(file_name) 
+def read_fixture_file(file_name)
+  File.read(get_fixture_file(file_name))
+end
+
+def get_fixture_file(file_name)
   File.join(Rails.root, 'spec', 'fixtures', file_name)
 end
 
@@ -114,9 +121,29 @@ def get_json_from_url(url)
   JSON.generate(JSON.load(open(url).read.force_encoding("UTF-8")))
 end
 
+def get_string_io_from_fixture_file(storage_key)
+  unless storage_key.nil?
+    filename = storage_key.split('/').last
+    StringIO.new(read_fixture_file(filename))
+  end
+end
+
+def get_string_io_schema_from_fixture_file(storage_key)
+  unless storage_key.nil?
+    filename = storage_key.split('/').last
+    StringIO.new(read_fixture_file("schemas/#{filename}"))
+  end
+end
+
 def url_with_stubbed_get_for(path)
   url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
   stub_request(:get, url).to_return(body: File.read(path))
+  url
+end
+
+def url_with_stubbed_get_for_storage_key(storage_key, file_name)
+  url = "https://example.org/#{storage_key}"
+  stub_request(:get, url).to_return(body: read_fixture_file(file_name))
   url
 end
 
@@ -141,18 +168,11 @@ end
 
 def skip_dataset_callbacks!
   skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
-  skip_callback_if_exists(Dataset, :create, :after, :set_owner_avatar)
-  skip_callback_if_exists(Dataset, :create, :after, :publish_public_views)
-  skip_callback_if_exists(Dataset, :create, :after, :send_success_email)
 end
 
 def set_dataset_callbacks!
   Dataset.set_callback(:create, :after, :create_repo_and_populate)
-  Dataset.set_callback(:create, :after, :set_owner_avatar)
-  Dataset.set_callback(:create, :after, :publish_public_views)
-  Dataset.set_callback(:create, :after, :send_success_email)
 end
-
 
 def skip_callback_if_exists(thing, name, kind, filter)
   if name == :create && any_callbacks?(thing._create_callbacks, name, kind, filter)
