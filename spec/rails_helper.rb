@@ -73,8 +73,10 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
-    allow(FileStorageService).to receive(:get_string_io) do |storage_key|
-      get_string_io_from_fixture_file(storage_key)
+    unless example.example_group.description == 'FileStorageService' 
+      allow(FileStorageService).to receive(:get_string_io) do |storage_key|
+        get_string_io_from_fixture_file(storage_key)
+      end
     end
     allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
   end
