@@ -109,8 +109,9 @@ class Dataset < ApplicationRecord
   end
 
   def complete_publishing
+    fetch_repo
     set_owner_avatar 
-    publish_public_views
+    publish_public_views(true)
     send_success_email
     send_tweet_notification
   end
@@ -184,10 +185,10 @@ class Dataset < ApplicationRecord
     end
 
     # This is a callback
-    def publish_public_views
+    def publish_public_views(new_record = false)
       Rails.logger.info "in publish_public_views"
       return if restricted
-      if id_changed? || restricted_changed?
+      if new_record || restricted_changed?
         # This is either a new record or has just been made public
 
         create_public_views
