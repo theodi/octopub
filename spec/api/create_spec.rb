@@ -29,11 +29,20 @@ describe 'POST /datasets' do
 
 
     Dataset.set_callback(:create, :after, :create_repo_and_populate)
+    allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     @repo = double(GitData)
 
     allow(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
       @repo
+    }
+    allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }    
+    allow_any_instance_of(User).to receive(:github_user) {
+      OpenStruct.new(
+        avatar_url: "http://www.example.org/avatar2.png"
+      )
     }
 
     @file = {

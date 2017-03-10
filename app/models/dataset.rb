@@ -31,7 +31,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_repo_and_populate, :set_owner_avatar, :publish_public_views, :send_success_email, :send_tweet_notification
+  after_create :create_repo_and_populate
   after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
   after_destroy :delete_dataset_in_github
 
@@ -108,19 +108,25 @@ class Dataset < ApplicationRecord
     end
   end
 
+  def complete_publishing
+    fetch_repo
+    set_owner_avatar 
+    publish_public_views(true)
+    send_success_email
+    send_tweet_notification
+  end
+
   private
 
     # This is a callback
     def create_repo_and_populate
-      Rails.logger.info "in create_repo_and_populate"
-      @repo = RepoService.create_repo(repo_owner, name, restricted, user)
-      self.update_columns(url: @repo.html_url, repo: @repo.name, full_name: @repo.full_name)
-      Rails.logger.info "Now updated with github details - call commit!"
-      jekyll_service.add_files_to_repo_and_push_to_github
+      Rails.logger.info "in NEW create_repo_and_populate"
+      CreateRepository.perform_async(id)
     end
 
     # This is a callback
     def update_dataset_in_github
+      Rails.logger.info "in update_dataset_in_github"
       jekyll_service.update_dataset_in_github
     end
 
@@ -150,7 +156,7 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in set_owner_avatar"
       if owner.blank?
         update_column :owner_avatar, user.avatar
-      else
+      else 
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
       end
     end
@@ -179,10 +185,10 @@ class Dataset < ApplicationRecord
     end
 
     # This is a callback
-    def publish_public_views
+    def publish_public_views(new_record = false)
       Rails.logger.info "in publish_public_views"
       return if restricted
-      if id_changed? || restricted_changed?
+      if new_record || restricted_changed?
         # This is either a new record or has just been made public
 
         create_public_views
