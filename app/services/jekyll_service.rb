@@ -14,7 +14,7 @@ class JekyllService
 
   def create_data_files
     Rails.logger.info "Create data files and add to github"
-    @dataset.dataset_files.each { |d| add_to_github(d.filename, d.file) }
+    @dataset.dataset_files.each { |dataset_file| add_to_github(dataset_file) }
     Rails.logger.info "Create datapackage and add to repo"
     create_json_datapackage_and_add_to_repo
 
@@ -30,11 +30,12 @@ class JekyllService
   end
 
   def push_to_github
-    Rails.logger.info "In push_to_github method, @repo.save - @repo is a GitData object"
+    Rails.logger.info "In push_to_github method #{@repo_service}" 
     @repo_service.save
   end
 
   def create_jekyll_files
+    Rails.logger.info "In create_jekyll_files"
     @dataset.dataset_files.each { |d| add_jekyll_to_github(d.filename) }
     add_file_to_repo("index.html", File.open(File.join(Rails.root, "extra", "html", "index.html")).read)
     add_file_to_repo("_config.yml", @dataset.config)
@@ -51,12 +52,9 @@ class JekyllService
     end
   end
 
-  def add_to_github(filename, file)
-    #TODO remove string hack
-    if file.instance_of? StringIO
-      file.rewind if file.eof?
-    end
-    add_file_to_repo("data/#{filename}", file.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
+  def add_to_github(dataset_file)
+    string_io = FileStorageService.get_string_io(dataset_file.storage_key)
+    add_file_to_repo("data/#{dataset_file.filename}", string_io.read.encode('UTF-8', :invalid => :replace, :undef => :replace))
   end
 
   def add_jekyll_to_github(filename)
@@ -188,6 +186,7 @@ class JekyllService
   end
 
   def create_json_jekyll_files(file, schema)
+    Rails.logger.info "In create_jekyll_files"
     for_each_file_in_schema(file, schema) do |filename, content|
       # Add human readable template
       unless filename == "index.json"

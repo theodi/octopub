@@ -5,6 +5,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
   let(:user) { create(:user) }
   let(:path) { get_fixture_file('test-data.csv') }
 
+
   context "for a dataset" do
     it "creates a file in Github" do
       dataset = build(:dataset, user: @user, repo: "repo")
@@ -37,7 +38,8 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     context "add_to_github" do
       before(:each) do
         @tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
-        @file = create(:dataset_file, title: "Example", file: @tempfile)
+        @storage_key = 'test-data.csv'
+        @file = create(:dataset_file, title: "Example", file: @tempfile, storage_key: @storage_key)
 
         @dataset = build(:dataset, repo: "my-repo", user: user)
         @dataset.dataset_files << @file
@@ -46,7 +48,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
       it "adds data file to Github" do
         expect(@jekyll_service).to receive(:add_file_to_repo).with("data/example.csv", File.read(path))
-        @jekyll_service.add_to_github(@file.filename, @tempfile)
+        @jekyll_service.add_to_github(@file)
       end
 
       it "adds jekyll file to Github" do
@@ -344,6 +346,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
                                      dataset: dataset,
                                      file: Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'fixtures', 'valid-cotw.csv'), "text/csv"),
                                      filename: "valid-cotw.csv",
+                                     storage_key: "valid-cotw.csv",
                                      title: "My Awesome File",
                                      description: "My Awesome File Description")
 

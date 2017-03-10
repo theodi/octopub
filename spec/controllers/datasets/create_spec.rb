@@ -24,6 +24,21 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     @frequency = "Monthly"
     @files ||= []
 
+    @repo = double(GitData)
+
+    allow(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }
+    allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }
+    allow_any_instance_of(User).to receive(:github_user) {
+      OpenStruct.new(
+        avatar_url: "http://www.example.org/avatar2.png"
+      )
+    }
+
+    allow_any_instance_of(Dataset).to receive(:complete_publishing)
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
@@ -123,7 +138,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         expect(@repo).to receive(:full_name) { nil }
         expect(@repo).to receive(:save)
 
-      
+
       end
 
       def creation_assertions
@@ -173,6 +188,9 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         organization = 'my-cool-organization'
 
         expect(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
+        expect(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
           @repo
         }
 
