@@ -78,7 +78,10 @@ RSpec.configure do |config|
         get_string_io_from_fixture_file(storage_key)
       end
     end
-    allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
+
+    unless example.description == 'can push a file using http send request'
+      allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
+    end
   end
 
   # This overrides always true in the spec_helper file
