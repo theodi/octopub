@@ -180,6 +180,7 @@ class Dataset < ApplicationRecord
     end
 
     def jekyll_service
+   #   fetch_repo if @rep.nil?
       Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
@@ -198,16 +199,14 @@ class Dataset < ApplicationRecord
 
     def create_public_views
       Rails.logger.info "in create_public_views"
-      jekyll_service.create_jekyll_files
-      jekyll_service.push_to_github
-      wait_for_gh_pages_build
+      jekyll_service.create_public_views(self) 
       create_certificate
     end
 
-    def wait_for_gh_pages_build(delay = 5)
-      Rails.logger.info "in wait_for_gh_pages_build"
-      sleep(delay) while !gh_pages_built?
-    end
+    # def wait_for_gh_pages_build(delay = 5)
+    #   Rails.logger.info "in wait_for_gh_pages_build"
+    #   sleep(delay) while !gh_pages_built?
+    # end
 
     def gh_pages_built?
       Rails.logger.info "in gh_pages_built"
