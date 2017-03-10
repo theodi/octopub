@@ -27,6 +27,31 @@ class InferredDatasetFileSchemaCreationService
     end
   end
 
+  def upload_inferred_schema_to_s3(inferred_schema, filename)
+    key = object_key(filename)
+    obj = S3_BUCKET.object(key)
+    uri = URI.parse(obj.presigned_url(:put, acl: 'public-read'))
+    body = inferred_schema
+    http_send_request(uri, body)
+    obj
+  end
+
+  def http_send_request(uri, body)
+    Net::HTTP.start(uri.host) do |http|
+      http.send_request("PUT", uri.request_uri, body, {
+        # This is required, or Net::HTTP will add a default unsigned content-type.
+        "content-type" => "",
+      })
+    end
+  end
+
+  # def upload_inferred_schema_to_private_s3(inferred_schema, filename)
+  #   key = object_key(filename)
+  #   obj = S3_BUCKET.object(key)
+  #   obj.put(body: inferred_schema)
+  #   obj
+  # end
+
   def inferred_schema_filename(schema_name)
     "#{schema_name.parameterize}.json"
   end
