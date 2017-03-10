@@ -32,7 +32,13 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
       @repo
     }
+    allow_any_instance_of(User).to receive(:github_user) {
+      OpenStruct.new(
+        avatar_url: "http://www.example.org/avatar2.png"
+      )
+    }
 
+    allow_any_instance_of(Dataset).to receive(:send_success_email)
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
@@ -186,6 +192,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
         expect(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
           @repo
+        }
+
+        expect(Rails.configuration.octopub_admin).to receive(:organization).with(organization) {
+          double = double(Sawyer::Resource)
+          expect(double).to receive(:avatar_url) { 'http://example.com/my-cool-organization.png' }
+          double
         }
 
         request = post :create, params: { dataset: {

@@ -168,18 +168,11 @@ end
 
 def skip_dataset_callbacks!
   skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
-  skip_callback_if_exists(Dataset, :create, :after, :set_owner_avatar)
-  skip_callback_if_exists(Dataset, :create, :after, :publish_public_views)
-  skip_callback_if_exists(Dataset, :create, :after, :send_success_email)
 end
 
 def set_dataset_callbacks!
   Dataset.set_callback(:create, :after, :create_repo_and_populate)
-  Dataset.set_callback(:create, :after, :set_owner_avatar)
-  Dataset.set_callback(:create, :after, :publish_public_views)
-  Dataset.set_callback(:create, :after, :send_success_email)
 end
-
 
 def skip_callback_if_exists(thing, name, kind, filter)
   if name == :create && any_callbacks?(thing._create_callbacks, name, kind, filter)

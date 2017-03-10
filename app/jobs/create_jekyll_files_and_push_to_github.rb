@@ -9,5 +9,8 @@ class CreateJekyllFilesAndPushToGithub
 
     jekyll_service = JekyllService.new(dataset, repo)
     jekyll_service.add_files_to_repo_and_push_to_github
+
+    dataset.complete_publishing
+
   end
 end

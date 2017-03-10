@@ -88,7 +88,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     jekyll_service = JekyllService.new(dataset, nil)
 
-    expect(dataset).to receive(:create_public_views)
+    allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     dataset.save
     dataset.reload
@@ -115,7 +115,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     }
 
     expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
-    expect(dataset).to receive(:create_public_views)
+    expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
     dataset.save
   end
@@ -130,30 +130,22 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it "sets the user's avatar" do
-    dataset = build(:dataset, :with_avatar_callback, user: @user)
+    dataset = create(:dataset, user: @user)
+    expect(@user).to receive(:avatar) { 'http://example.com/avatar.png' }
 
-    expect(@user).to receive(:avatar) {
-      'http://example.com/avatar.png'
-    }
-
-    dataset.save
-
+    dataset.send(:set_owner_avatar)
     expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
   end
 
   it "sets the owner's avatar" do
-    dataset = build(:dataset, :with_avatar_callback, user: @user, owner: 'my-cool-organization')
-
+    dataset = create(:dataset, user: @user, owner: 'my-cool-organization')
     expect(Rails.configuration.octopub_admin).to receive(:organization).with('my-cool-organization') {
       double = double(Sawyer::Resource)
-      expect(double).to receive(:avatar_url) {
-        'http://example.com/my-cool-organization.png'
-      }
+      expect(double).to receive(:avatar_url) { 'http://example.com/my-cool-organization.png' }
       double
     }
 
-    dataset.save
-
+    dataset.send(:set_owner_avatar)
     expect(dataset.owner_avatar).to eq('http://example.com/my-cool-organization.png')
   end
 
@@ -316,7 +308,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       }
 
       expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
-      expect(dataset).not_to receive(:create_public_views)
+      expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
       dataset.save
       dataset.reload
@@ -345,13 +337,15 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
         obj
       }
 
-      expect(dataset).to_not receive(:create_public_views)
+      expect_any_instance_of(Dataset).to receive(:complete_publishing)
       dataset.save
 
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
-      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
 
+    #  expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
+
+      expect(updated_dataset).to receive(:update_dataset_in_github).once
       expect(updated_dataset).to receive(:create_public_views).once
       updated_dataset.restricted = false
       repo = double(GitData)
@@ -391,6 +385,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                          license: "OGL-UK-3.0",
                          frequency: "One-off",
                          user: @tweeter)
+
+        dataset.send(:send_tweet_notification)
       end
 
       it "doesn't send twitter notification to non twitter users" do
@@ -402,6 +398,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                          license: "OGL-UK-3.0",
                          frequency: "One-off",
                          user: @nontweeter)
+        dataset.send(:send_tweet_notification)
       end
     end
 
