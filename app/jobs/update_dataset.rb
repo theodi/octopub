@@ -60,7 +60,7 @@ class UpdateDataset
 
     @dataset.dataset_files << f
     if f.save
-      jekyll_service.add_to_github(f.filename, f.file)
+      jekyll_service.add_to_github(f)
       jekyll_service.add_jekyll_to_github(f.filename)
       f.file = nil
     end
