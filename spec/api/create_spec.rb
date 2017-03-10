@@ -29,7 +29,7 @@ describe 'POST /datasets' do
 
 
     Dataset.set_callback(:create, :after, :create_repo_and_populate)
-    allow_any_instance_of(Dataset).to receive(:send_success_email)
+    allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     @repo = double(GitData)
 
