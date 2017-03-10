@@ -76,6 +76,7 @@ RSpec.configure do |config|
     allow(FileStorageService).to receive(:get_string_io) do |storage_key|
       get_string_io_from_fixture_file(storage_key)
     end
+    allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
   end
 
   # This overrides always true in the spec_helper file
