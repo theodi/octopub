@@ -120,6 +120,16 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset.save
   end
 
+  it "completes publishing" do
+    dataset = build(:dataset)
+    expect(dataset).to receive(:fetch_repo)
+    expect(dataset).to receive(:set_owner_avatar)
+    expect(dataset).to receive(:publish_public_views).with(true)
+    expect(dataset).to receive(:send_success_email)
+    expect(dataset).to receive(:send_tweet_notification)
+    dataset.complete_publishing
+  end
+
   it "deletes a repo in github" do
     dataset = create(:dataset, user: @user, owner: "foo-bar")
     repo = dataset.instance_variable_get(:@repo)
