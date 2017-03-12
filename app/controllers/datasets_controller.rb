@@ -122,7 +122,7 @@ class DatasetsController < ApplicationController
         Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
         storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
 
-        f["storage_key"] = storage_object.key
+        f["storage_key"] = storage_object.key(f["file"].original_filename)
         f["file"] = storage_object.public_url
       else
         Rails.logger.info "file is not an http uploaded file, it's a URL"
