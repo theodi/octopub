@@ -31,7 +31,7 @@ class FileStorageService
 
   def self.create_and_upload_private_object(filename, body)
     key = object_key(filename)
-    obj = S3_BUCKET.object(key)
+    obj = get_object(key)
     obj.put(body: body)
     obj
   end

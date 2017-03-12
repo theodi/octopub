@@ -43,12 +43,24 @@ describe FileStorageService do
     expect(FileStorageService.object_key(filename, uuid)).to match "uploads/#{uuid}/#{filename}"
   end
 
-  it "uploads a file" do
+  it "uploads a public file" do
     expect_any_instance_of(Net::HTTP).to receive(:send_request).with(
       "PUT",
       "/uploads/1234/this-is-the-filename",
       @body,
       { "content-type" => "" })
     FileStorageService.create_and_upload_public_object(filename, @body)
+  end
+
+  it "uploads a private file" do
+    allow(FileStorageService).to receive(:get_object) {
+      @object = double(Aws::S3::Object)
+      @got_object = double(Aws::S3::Types::GetObjectOutput)
+      expect(@object).to receive(:put) { @body }
+      expect(@object).to_not receive(:presigned_url) { "https://example.org/uploads/1234/#{filename}" }
+      @object
+    }
+    object = FileStorageService.create_and_upload_private_object(filename, @body)
+    expect(object).to be @object
   end
 end
