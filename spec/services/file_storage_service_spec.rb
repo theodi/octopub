@@ -8,11 +8,11 @@ describe FileStorageService do
   before(:each) do
     @body = StringIO.new "woof"
     @storage_key = 'the key, the secret'
-    allow(FileStorageService).to receive(:get_bucket) {
-      @bucket = double(Aws::S3::Bucket)
-
-    }
+    @bucket = double(Aws::S3::Bucket)
     @object = double(Aws::S3::Object)
+
+    allow(FileStorageService).to receive(:get_bucket) { @bucket }
+
     allow(FileStorageService).to receive(:get_object) {
       @object = double(Aws::S3::Object)
       @got_object = double(Aws::S3::Types::GetObjectOutput)
@@ -62,5 +62,14 @@ describe FileStorageService do
     }
     object = FileStorageService.create_and_upload_private_object(filename, @body)
     expect(object).to be @object
+  end
+
+  it "gets an object from the bucket" do
+    @storage_key = 'the key, the secret'
+    @bucket = double(Aws::S3::Bucket)
+    expect(FileStorageService).to receive(:get_bucket) { @bucket }
+    expect(@bucket).to receive(:object).with(@storage_key)
+    expect(FileStorageService).to receive(:get_object).and_call_original
+    FileStorageService.get_object(@storage_key)
   end
 end
