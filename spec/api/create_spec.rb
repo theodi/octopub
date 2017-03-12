@@ -186,7 +186,6 @@ describe 'POST /datasets' do
 
       @filename = 'invalid-schema.csv'
       @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
-      allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(@filename) }
 
       path = File.join(Rails.root, 'spec', 'fixtures', @filename)
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
