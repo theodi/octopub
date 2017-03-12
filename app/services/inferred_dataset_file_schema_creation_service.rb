@@ -4,7 +4,12 @@ class InferredDatasetFileSchemaCreationService
 
   def initialize(inferred_dataset_file_schema)
     @inferred_dataset_file_schema = inferred_dataset_file_schema
-    @csv_storage_key = FileStorageService.get_storage_key_from_public_url(@inferred_dataset_file_schema.csv_url)
+    @csv_storage_key = sort_out_storage_key(@inferred_dataset_file_schema.csv_url)
+  end
+
+  def sort_out_storage_key(csv_url)
+    ap csv_url
+    FileStorageService.get_storage_key_from_public_url(csv_url)
   end
 
   def self.infer_dataset_file_schema_from_csv(csv_storage_key)
