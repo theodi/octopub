@@ -19,7 +19,6 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
 
   before(:each) do
-    allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:get_object_key).and_return(csv_storage_key)
     visit root_path
     click_link 'List my dataset file schemas'
     expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
@@ -76,7 +75,6 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       end
 
       it "errors if file is wrong format" do
-        allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:get_object_key).and_return(wonky_storage_key)
         within 'form' do
           fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
           fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"

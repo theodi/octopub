@@ -79,9 +79,6 @@ RSpec.configure do |config|
       end
     end
 
-    unless example.description == 'can push a file using http send request'
-      allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
-    end
     allow(FileStorageService).to receive(:create_and_upload_public_object) do |filename, body|
       obj = double(Aws::S3::Object)
       expect(obj).to receive(:public_url) { "https://example.org/uploads/1234/#{filename}" }

@@ -4,7 +4,7 @@ class InferredDatasetFileSchemaCreationService
 
   def initialize(inferred_dataset_file_schema)
     @inferred_dataset_file_schema = inferred_dataset_file_schema
-    @csv_storage_key = get_object_key(@inferred_dataset_file_schema.csv_url)
+    @csv_storage_key = FileStorageService.get_storage_key_from_public_url(@inferred_dataset_file_schema.csv_url)
   end
 
   def self.infer_dataset_file_schema_from_csv(csv_storage_key)
@@ -28,45 +28,12 @@ class InferredDatasetFileSchemaCreationService
   end
 
   def upload_inferred_schema_to_s3(inferred_schema, filename)
-    key = object_key(filename)
-    obj = S3_BUCKET.object(key)
-    uri = URI.parse(obj.presigned_url(:put, acl: 'public-read'))
-    body = inferred_schema
-    http_send_request(uri, body)
+    obj = FileStorageService.create_and_upload_public_object(filename, inferred_schema)
     obj
   end
-
-  def http_send_request(uri, body)
-    Net::HTTP.start(uri.host) do |http|
-      http.send_request("PUT", uri.request_uri, body, {
-        # This is required, or Net::HTTP will add a default unsigned content-type.
-        "content-type" => "",
-      })
-    end
-  end
-
-  # def upload_inferred_schema_to_private_s3(inferred_schema, filename)
-  #   key = object_key(filename)
-  #   obj = S3_BUCKET.object(key)
-  #   obj.put(body: inferred_schema)
-  #   obj
-  # end
 
   def inferred_schema_filename(schema_name)
     "#{schema_name.parameterize}.json"
   end
 
-  private
-
-  def self.read_file_with_utf_8(url)
-    open(url).read.force_encoding("UTF-8")
-  end
-
-  def get_object_key(storage_url)
-    URI(storage_url).path.gsub(/^\//, '') unless storage_url.nil?
-  end
-
-  def object_key(filename)
-    "uploads/#{SecureRandom.uuid}/#{filename}"
-  end
 end

@@ -117,13 +117,15 @@ class DatasetsController < ApplicationController
   def process_files
     logger.info "DatasetsController: In process_files"
     @files.each do |f|
+
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
-        key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
-        obj = S3_BUCKET.object(key)
-        obj.put(body: f["file"].read, acl: 'public-read')
-        f["storage_key"] = key
-        f["file"] = obj.public_url
+        Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
+        storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
+
+        f["storage_key"] = storage_object.key
+        f["file"] = storage_object.public_url
       else
+        Rails.logger.info "file is not an http uploaded file, it's a URL"
         f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
       end
     end
@@ -142,7 +144,7 @@ class DatasetsController < ApplicationController
   end
 
   def set_direct_post
-    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+    @s3_direct_post = FileStorageService.presigned_post
   end
 
   def check_permissions
