@@ -189,15 +189,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset.path("filename", "folder")).to eq("folder/filename")
   end
 
-  it "deletes a file in Github" do
-    dataset = build(:dataset, user: @user, repo: "repo")
-    repo = dataset.instance_variable_get(:@repo)
-
-    expect(repo).to receive(:delete_file).with("my-file")
-
-    dataset.delete_file_from_repo("my-file")
-  end
-
   it "generates the correct config" do
     dataset = build(:dataset, frequency: "weekly")
     config = YAML.load dataset.config
