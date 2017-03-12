@@ -159,7 +159,7 @@ class DatasetFile < ApplicationRecord
     end
 
     def get_string_io_for_validation_from_file(storage_key)
-      S3_BUCKET.object(storage_key).get.body
+      FileStorageService.get_string_io(storage_key)
     end
 
     def check_csv

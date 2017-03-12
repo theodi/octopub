@@ -11,12 +11,16 @@
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
+#  storage_key :string
 #
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
+ # validates_presence_of :storage_key
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
+
+ # before_validation :set_storage_key
 
   attr_accessor :parsed_schema
 
@@ -56,5 +60,23 @@ class DatasetFileSchema < ApplicationRecord
 
   def new_parsed_schema
     @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
+  end
+
+  private
+
+  def set_storage_key
+    self.storage_key = get_storage_key
+  end
+
+  def get_storage_key
+    return if url_in_s3.nil? || storage_key
+    begin
+      uri = URI.parse(url_in_s3)
+      uri.path.gsub(/^\//, '')
+    rescue URI::BadURIError
+      throw :abort
+    rescue URI::InvalidURIError
+      throw :abort
+    end
   end
 end
