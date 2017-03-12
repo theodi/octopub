@@ -18,9 +18,8 @@ class FileStorageService
 
   def self.create_and_upload_public_object(filename, body)
     key = object_key(filename)
-    obj = get_bucket.object(key)
+    obj = get_object(key)
     url = URI.parse(obj.presigned_url(:put, acl: 'public-read'))
-
     Net::HTTP.start(url.host) do |http|
       http.send_request("PUT", url.request_uri, body, {
         # This is required, or Net::HTTP will add a default unsigned content-type.

@@ -77,15 +77,14 @@ RSpec.configure do |config|
       allow(FileStorageService).to receive(:get_string_io) do |storage_key|
         get_string_io_from_fixture_file(storage_key)
       end
-    end
-
-    allow(FileStorageService).to receive(:create_and_upload_public_object) do |filename, body|
-      obj = double(Aws::S3::Object)
-      allow(obj).to receive(:public_url) { "https://example.org/uploads/1234/#{filename}" }
-      allow(obj).to receive(:key) do |filename|
-        "uploads/1234/#{filename}"
+      allow(FileStorageService).to receive(:create_and_upload_public_object) do |filename, body|
+        obj = double(Aws::S3::Object)
+        allow(obj).to receive(:public_url) { "https://example.org/uploads/1234/#{filename}" }
+        allow(obj).to receive(:key) do |filename|
+          "uploads/1234/#{filename}"
+        end
+        obj
       end
-      obj
     end
   end
 
