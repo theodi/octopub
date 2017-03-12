@@ -37,6 +37,12 @@ describe FileStorageService do
     expect(FileStorageService.object_key(filename)).to match "uploads/"
   end
 
+  it "creates a unique object key with a predefined uuid" do
+    filename = 'this-is-the-filename'
+    uuid = SecureRandom.uuid
+    expect(FileStorageService.object_key(filename, uuid)).to match "uploads/#{uuid}/#{filename}"
+  end
+
   it "uploads a file" do
     expect_any_instance_of(Net::HTTP).to receive(:send_request).with(
       "PUT",
