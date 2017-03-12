@@ -61,22 +61,4 @@ class DatasetFileSchema < ApplicationRecord
   def new_parsed_schema
     @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
   end
-
-  private
-
-  def set_storage_key
-    self.storage_key = get_storage_key
-  end
-
-  def get_storage_key
-    return if url_in_s3.nil? || storage_key
-    begin
-      uri = URI.parse(url_in_s3)
-      uri.path.gsub(/^\//, '')
-    rescue URI::BadURIError
-      throw :abort
-    rescue URI::InvalidURIError
-      throw :abort
-    end
-  end
 end
