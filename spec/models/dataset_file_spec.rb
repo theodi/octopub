@@ -48,18 +48,18 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
-  context "delete_from_github" do
+  # context "delete_from_github" do
 
-    it "deletes a file from github" do
-      dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
+  #   it "deletes a file from github" do
+  #     dataset = create(:dataset, repo: "my-repo", user: @user, dataset_files: [@file])
 
-      expect(dataset).to receive(:delete_file_from_repo).with('example.csv')
-      expect(dataset).to receive(:delete_file_from_repo).with('example.md')
+  #     expect(dataset).to receive(:delete_file_from_repo).with('example.csv')
+  #     expect(dataset).to receive(:delete_file_from_repo).with('example.md')
 
-      @file.send(:delete_from_github, @file)
-    end
+  #     @file.send(:delete_from_github, @file)
+  #   end
 
-  end
+  # end
 
   context "self.new_file" do
     context "with uploaded file" do

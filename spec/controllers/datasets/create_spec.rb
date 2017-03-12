@@ -119,8 +119,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
         @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
-        allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(filename) }
-
 
         Dataset.set_callback(:create, :after, :create_repo_and_populate)
 

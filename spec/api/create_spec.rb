@@ -25,8 +25,6 @@ describe 'POST /datasets' do
     @path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
     @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
-    allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(filename) }
-
 
     Dataset.set_callback(:create, :after, :create_repo_and_populate)
     allow_any_instance_of(Dataset).to receive(:complete_publishing)
@@ -38,7 +36,7 @@ describe 'POST /datasets' do
     }
     allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
       @repo
-    }    
+    }
     allow_any_instance_of(User).to receive(:github_user) {
       OpenStruct.new(
         avatar_url: "http://www.example.org/avatar2.png"
@@ -141,7 +139,6 @@ describe 'POST /datasets' do
 
       @filename = 'valid-schema.csv'
       @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
-      allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(@filename) }
     end
 
     it 'creates a dataset sucessfully' do

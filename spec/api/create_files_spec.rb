@@ -8,7 +8,6 @@ describe 'POST /datasets/:id/files' do
 
     @filename = 'test-data.csv'
     @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
-    allow_any_instance_of(DatasetFile).to receive(:get_string_io_for_validation_from_file).with(@storage_key) { get_string_io_from_fixture_file(@filename) }
 
     @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
