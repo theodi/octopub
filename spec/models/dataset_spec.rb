@@ -238,9 +238,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
 
     it 'waits for the page build to finish then creates certificate' do
-      expect(@dataset).to receive(:gh_pages_built?).and_return(false).once
+      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(false)
       expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect(@dataset).to receive(:gh_pages_built?).and_return(true).once
+      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(true)
       expect(@dataset).to receive(:create_certificate).once
 
       @dataset.send :create_public_views

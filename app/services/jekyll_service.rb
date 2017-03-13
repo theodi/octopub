@@ -27,25 +27,21 @@ class JekyllService
     @dataset.owner.presence || @dataset.user.github_username
   end
 
-  def create_public_views(dataset) 
+  def create_public_views(dataset)
     @dataset = dataset
 
     create_jekyll_files
     push_to_github
     wait_for_gh_pages_build(5, @dataset)
-    #create_certificate
   end
-
 
   def wait_for_gh_pages_build(delay = 5, dataset)
     Rails.logger.info "in wait_for_gh_pages_build #{delay}, #{dataset}"
-    ap "in wait_for_gh_pages_build #{delay}, #{dataset}"  
     sleep(delay) while ! gh_pages_building?(dataset)
   end
 
   def gh_pages_building?(dataset)
     Rails.logger.info "in gh_pages_building?"
-    ap "in gh_pages_building? #{dataset.user.octokit_client.pages(dataset.full_name)}"  
     dataset.user.octokit_client.pages(dataset.full_name).status != "built"
   end
 
@@ -73,7 +69,7 @@ class JekyllService
   end
 
   def push_to_github
-    Rails.logger.info "In push_to_github method #{@repo_service}" 
+    Rails.logger.info "In push_to_github method #{@repo_service}"
     repo_service.save
   end
 
