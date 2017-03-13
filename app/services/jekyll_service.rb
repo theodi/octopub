@@ -235,7 +235,7 @@ class JekyllService
       # Add human readable template
       unless filename == "index.json"
         if filename.scan('/').count > 0
-          add_file_to_repo(filename.gsub('json', 'md'), read_extra_file("html/api-list.md"))
+          add_file_to_repo(filename.gsub('json', 'md'), read_extra_file("html/api-item.md"))
         else
           add_file_to_repo(filename.gsub('json', 'md'), read_extra_file("html/api-list.md"))
         end
