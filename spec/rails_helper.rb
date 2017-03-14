@@ -73,14 +73,18 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
-    unless example.example_group.description == 'FileStorageService' 
+    unless example.example_group.description == 'FileStorageService'
       allow(FileStorageService).to receive(:get_string_io) do |storage_key|
         get_string_io_from_fixture_file(storage_key)
       end
-    end
-
-    unless example.description == 'can push a file using http send request'
-      allow_any_instance_of(InferredDatasetFileSchemaCreationService).to receive(:http_send_request)
+      allow(FileStorageService).to receive(:create_and_upload_public_object) do |filename, body|
+        obj = double(Aws::S3::Object)
+        allow(obj).to receive(:public_url) { "https://example.org/uploads/1234/#{filename}" }
+        allow(obj).to receive(:key) do |filename|
+          "uploads/1234/#{filename}"
+        end
+        obj
+      end
     end
   end
 
