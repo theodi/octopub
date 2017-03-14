@@ -126,7 +126,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
     expect(dataset).to receive(:send_success_email)
-    expect(dataset).to receive(:send_tweet_notification)
+    expect_any_instance_of(SendTweetService).to receive(:perform)
     dataset.complete_publishing
   end
 
@@ -283,10 +283,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
 
-    #  expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
-
       expect(updated_dataset).to receive(:update_dataset_in_github).once
-      expect(updated_dataset).to receive(:create_public_views).once
+      expect_any_instance_of(JekyllService).to receive(:create_public_views).once
       updated_dataset.restricted = false
       repo = double(GitData)
 
@@ -295,74 +293,5 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       updated_dataset.save
     end
   end
-
-  context "notifying via twitter" do
-
-    before(:all) do
-      @tweeter = create(:user, twitter_handle: "bob")
-      @nontweeter = create(:user, twitter_handle: nil)
-    end
-
-    before(:each) do
-      allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
-    end
-
-    context "with twitter creds" do
-
-      before(:all) do
-        ENV["TWITTER_CONSUMER_KEY"] = "test"
-        ENV["TWITTER_CONSUMER_SECRET"] = "test"
-        ENV["TWITTER_TOKEN"] = "test"
-        ENV["TWITTER_SECRET"] = "test"
-      end
-
-      it "sends twitter notification to twitter users" do
-        expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://#{@tweeter.github_username}.github.io/").once
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @tweeter)
-
-        dataset.send(:send_tweet_notification)
-      end
-
-      it "doesn't send twitter notification to non twitter users" do
-        expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @nontweeter)
-        dataset.send(:send_tweet_notification)
-      end
-    end
-
-    context "without twitter creds" do
-
-      before(:all) do
-        ENV.delete("TWITTER_CONSUMER_KEY")
-        ENV.delete("TWITTER_CONSUMER_SECRET")
-        ENV.delete("TWITTER_TOKEN")
-        ENV.delete("TWITTER_SECRET")
-      end
-
-      it "doesn't send twitter notification" do
-        expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @tweeter)
-      end
-    end
-  end
-
 end
 

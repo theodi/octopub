@@ -109,7 +109,7 @@ class Dataset < ApplicationRecord
     set_owner_avatar
     publish_public_views(true)
     send_success_email
-    send_tweet_notification
+    SendTweetService.new(self).perform
   end
 
   private
@@ -162,21 +162,7 @@ class Dataset < ApplicationRecord
       DatasetMailer.success(self).deliver
     end
 
-    def send_tweet_notification
-      Rails.logger.info "in send_tweet_notification"
-      if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
-        twitter_client = Twitter::REST::Client.new do |config|
-          config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
-          config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
-          config.access_token        = ENV["TWITTER_TOKEN"]
-          config.access_token_secret = ENV["TWITTER_SECRET"]
-        end
-        twitter_client.update("@#{user.twitter_handle} your dataset \"#{self.name}\" is now published at #{self.gh_pages_url}")
-      end
-    end
-
     def jekyll_service
-   #   fetch_repo if @rep.nil?
       Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
@@ -187,16 +173,9 @@ class Dataset < ApplicationRecord
       return if restricted
       if new_record || restricted_changed?
         # This is either a new record or has just been made public
-
-        create_public_views
+        jekyll_service.create_public_views(self)
       end
       # updates to existing public repos are handled in #update_in_github
     end
 
-    def create_public_views
-      Rails.logger.info "in create_public_views"
-      jekyll_service.create_public_views(self)
-      Rails.logger.info "in create_certificate"
-      jekyll_service.create_certificate(self)
-    end
 end
