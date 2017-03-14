@@ -40,21 +40,11 @@ context 'creating certificates for public datasets' do
 
     it 'waits for the page build to finish' do
       user = @dataset.user
-      expect(@jekyll_service).to receive(:push_to_github)
-      expect(@jekyll_service).to receive(:add_file_to_repo).exactly(9).times
-
-      allow(user).to receive(:octokit_client) do
-        client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name).and_return {
-          OpenStruct.new(status: 'pending')
-        }
-      end
 
       expect(@jekyll_service).to receive(:gh_pages_building?).with(@dataset).once.and_return(false)
       expect(@jekyll_service).to receive(:sleep).with(5)
       expect(@jekyll_service).to receive(:gh_pages_building?).with(@dataset).once.and_return(true)
-
-      @jekyll_service.create_public_views(@dataset)
+      @jekyll_service.wait_for_gh_pages_build(5, @dataset)
     end
 
     it 'creates a certificate' do

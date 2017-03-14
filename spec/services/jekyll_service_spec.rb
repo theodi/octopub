@@ -36,12 +36,16 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     it 'waits for the page build to finish then creates certificate' do
       dataset = build(:dataset, user: user, repo: "repo")
 
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(false)
-      expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(true)
-      expect_any_instance_of(JekyllService).to receive(:create_certificate).once
+      jekyll_service = JekyllService.new(dataset, nil)
 
-      dataset.send :create_public_views
+      expect(jekyll_service).to receive(:gh_pages_building?).once.and_return(false)
+      expect_any_instance_of(Object).to receive(:sleep).with(5)
+      expect(jekyll_service).to receive(:gh_pages_building?).once.and_return(true)
+      expect(jekyll_service).to receive(:create_jekyll_files).once
+      expect(jekyll_service).to receive(:push_to_github).once
+      expect(jekyll_service).to receive(:create_certificate).once
+
+      jekyll_service.create_public_views(dataset)
     end
 
     it 'creates a certificate' do
