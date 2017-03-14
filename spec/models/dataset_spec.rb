@@ -126,7 +126,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
     expect(dataset).to receive(:send_success_email)
-    expect(dataset).to receive(:send_tweet_notification)
+    expect_any_instance_of(SendTweetService).to receive(:perform)
     dataset.complete_publishing
   end
 
@@ -214,67 +214,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
-
-    it "checks if page build is finished" do
-      allow_any_instance_of(User).to receive(:octokit_client) do
-        client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) do
-          OpenStruct.new(status: 'pending')
-        end
-        client
-      end
-      expect(@dataset.send(:gh_pages_built?)).to be false
-    end
-
-    it "confirms page build is finished" do
-      allow_any_instance_of(User).to receive(:octokit_client) do
-        client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) do
-          OpenStruct.new(status: 'built')
-        end
-        client
-      end
-      expect(@dataset.send(:gh_pages_built?)).to be true
-    end
-
-
-    it 'waits for the page build to finish then creates certificate' do
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(false)
-      expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(true)
-      expect(@dataset).to receive(:create_certificate).once
-
-      @dataset.send :create_public_views
-    end
-
-    it 'creates a certificate' do
-      factory = double(CertificateFactory::Certificate)
-
-      expect(CertificateFactory::Certificate).to receive(:new).with(@dataset.gh_pages_url) {
-        factory
-      }
-
-      expect(factory).to receive(:generate) {{ success: 'pending' }}
-      expect(factory).to receive(:result) {{ certificate_url: @certificate_url }}
-      expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
-
-      @dataset.send(:create_certificate)
-    end
-
-    it 'adds the badge url to the repo' do
-      expect(@dataset).to receive(:fetch_repo)
-      expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
-        "data_source" => ".",
-        "update_frequency" => @dataset.frequency,
-        "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
-      }.to_yaml)
-      expect_any_instance_of(JekyllService).to receive(:push_to_github)
-
-      @dataset.send(:add_certificate_url, @certificate_url)
-
-      expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
-    end
-
   end
 
   context "creating restricted datasets" do
@@ -344,10 +283,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
 
-    #  expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
-
       expect(updated_dataset).to receive(:update_dataset_in_github).once
-      expect(updated_dataset).to receive(:create_public_views).once
+      expect_any_instance_of(JekyllService).to receive(:create_public_views).once
       updated_dataset.restricted = false
       repo = double(GitData)
 
@@ -356,74 +293,5 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       updated_dataset.save
     end
   end
-
-  context "notifying via twitter" do
-
-    before(:all) do
-      @tweeter = create(:user, twitter_handle: "bob")
-      @nontweeter = create(:user, twitter_handle: nil)
-    end
-
-    before(:each) do
-      allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
-    end
-
-    context "with twitter creds" do
-
-      before(:all) do
-        ENV["TWITTER_CONSUMER_KEY"] = "test"
-        ENV["TWITTER_CONSUMER_SECRET"] = "test"
-        ENV["TWITTER_TOKEN"] = "test"
-        ENV["TWITTER_SECRET"] = "test"
-      end
-
-      it "sends twitter notification to twitter users" do
-        expect_any_instance_of(Twitter::REST::Client).to receive(:update).with("@bob your dataset \"My Awesome Dataset\" is now published at http://#{@tweeter.github_username}.github.io/").once
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @tweeter)
-
-        dataset.send(:send_tweet_notification)
-      end
-
-      it "doesn't send twitter notification to non twitter users" do
-        expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @nontweeter)
-        dataset.send(:send_tweet_notification)
-      end
-    end
-
-    context "without twitter creds" do
-
-      before(:all) do
-        ENV.delete("TWITTER_CONSUMER_KEY")
-        ENV.delete("TWITTER_CONSUMER_SECRET")
-        ENV.delete("TWITTER_TOKEN")
-        ENV.delete("TWITTER_SECRET")
-      end
-
-      it "doesn't send twitter notification" do
-        expect_any_instance_of(Twitter::REST::Client).to_not receive(:update)
-        dataset = create(:dataset, name: "My Awesome Dataset",
-                         description: "An awesome dataset",
-                         publisher_name: "Awesome Inc",
-                         publisher_url: "http://awesome.com",
-                         license: "OGL-UK-3.0",
-                         frequency: "One-off",
-                         user: @tweeter)
-      end
-    end
-  end
-
 end
 
