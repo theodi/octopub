@@ -214,67 +214,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
       allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
     end
-
-    it "checks if page build is finished" do
-      allow_any_instance_of(User).to receive(:octokit_client) do
-        client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) do
-          OpenStruct.new(status: 'pending')
-        end
-        client
-      end
-      expect(@dataset.send(:gh_pages_built?)).to be false
-    end
-
-    it "confirms page build is finished" do
-      allow_any_instance_of(User).to receive(:octokit_client) do
-        client = double(Octokit::Client)
-        allow(client).to receive(:pages).with(@dataset.full_name) do
-          OpenStruct.new(status: 'built')
-        end
-        client
-      end
-      expect(@dataset.send(:gh_pages_built?)).to be true
-    end
-
-
-    it 'waits for the page build to finish then creates certificate' do
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(false)
-      expect_any_instance_of(Object).to receive(:sleep).with(5)
-      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(true)
-      expect(@dataset).to receive(:create_certificate).once
-
-      @dataset.send :create_public_views
-    end
-
-    it 'creates a certificate' do
-      factory = double(CertificateFactory::Certificate)
-
-      expect(CertificateFactory::Certificate).to receive(:new).with(@dataset.gh_pages_url) {
-        factory
-      }
-
-      expect(factory).to receive(:generate) {{ success: 'pending' }}
-      expect(factory).to receive(:result) {{ certificate_url: @certificate_url }}
-      expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
-
-      @dataset.send(:create_certificate)
-    end
-
-    it 'adds the badge url to the repo' do
-      expect(@dataset).to receive(:fetch_repo)
-      expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
-        "data_source" => ".",
-        "update_frequency" => @dataset.frequency,
-        "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
-      }.to_yaml)
-      expect_any_instance_of(JekyllService).to receive(:push_to_github)
-
-      @dataset.send(:add_certificate_url, @certificate_url)
-
-      expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
-    end
-
   end
 
   context "creating restricted datasets" do

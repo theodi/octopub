@@ -242,4 +242,34 @@ class JekyllService
       end
     end
   end
+
+  def create_certificate(dataset)
+    Rails.logger.info "in create_certificate"
+    cert = CertificateFactory::Certificate.new(dataset.gh_pages_url)
+
+    gen = cert.generate
+
+    if gen[:success] == 'pending'
+      result = cert.result
+      add_certificate_url(result[:certificate_url], dataset)
+    end
+  end
+
+  def add_certificate_url(url, dataset)
+    return if url.nil?
+
+    url = url.gsub('.json', '')
+    dataset.update_column(:certificate_url, url)
+
+    config = {
+      "data_source" => ".",
+      "update_frequency" => dataset.frequency,
+      "certificate_url" => "#{dataset.certificate_url}/badge.js"
+    }.to_yaml
+
+    fetch_repo(dataset.user.octokit_client)
+    update_file_in_repo('_config.yml', config)
+    push_to_github
+  end
+
 end

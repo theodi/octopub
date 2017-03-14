@@ -8,7 +8,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
   context "for a dataset" do
     it "creates a file in Github" do
-      dataset = build(:dataset, user: @user, repo: "repo")
+      dataset = build(:dataset, user: user, repo: "repo")
       repo = double(GitData)
       expect(repo).to receive(:add_file).once.with("my-file", "File contents")
       jekyll_service = JekyllService.new(dataset, repo)
@@ -17,7 +17,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it "creates a file in a folder in Github" do
-      dataset = build(:dataset, user: @user, repo: "repo")
+      dataset = build(:dataset, user: user, repo: "repo")
       repo = double(GitData)
       expect(repo).to receive(:add_file).with("folder/my-file", "File contents")
       jekyll_service = JekyllService.new(dataset, repo)
@@ -25,12 +25,68 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it "updates a file in Github" do
-      dataset = build(:dataset, user: @user, repo: "repo")
+      dataset = build(:dataset, user: user, repo: "repo")
       repo = dataset.instance_variable_get(:@repo)
 
       expect(repo).to receive(:update_file).with("my-file", "File contents")
       jekyll_service = JekyllService.new(dataset, repo)
       jekyll_service.update_file_in_repo("my-file", "File contents")
+    end
+
+    it 'waits for the page build to finish then creates certificate' do
+      dataset = build(:dataset, user: user, repo: "repo")
+
+      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(false)
+      expect_any_instance_of(Object).to receive(:sleep).with(5)
+      expect_any_instance_of(JekyllService).to receive(:gh_pages_building?).once.and_return(true)
+      expect_any_instance_of(JekyllService).to receive(:create_certificate).once
+
+      dataset.send :create_public_views
+    end
+
+    it 'creates a certificate' do
+      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
+      dataset = build(:dataset, user: user, repo: "repo")
+
+      repo = double(GitData)
+      jekyll_service = JekyllService.new(dataset, repo)
+
+      allow(dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
+      allow(dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
+
+      factory = double(CertificateFactory::Certificate)
+
+      expect(CertificateFactory::Certificate).to receive(:new).with(dataset.gh_pages_url) {
+        factory
+      }
+
+      expect(factory).to receive(:generate) {{ success: 'pending' }}
+      expect(factory).to receive(:result) {{ certificate_url: @certificate_url }}
+      expect(jekyll_service).to receive(:add_certificate_url).with(@certificate_url, dataset)
+
+      jekyll_service.create_certificate(dataset)
+    end
+
+    it 'adds the badge url to the repo' do
+
+      expect_any_instance_of(Dataset).to receive(:check_repo)
+
+      dataset = create(:dataset, user: user, repo: "repo")
+      repo = double(GitData)
+      jekyll_service = JekyllService.new(dataset, repo)
+
+      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
+
+      expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
+        "data_source" => ".",
+        "update_frequency" => dataset.frequency,
+        "certificate_url" => "http://staging.certificates.theodi.org/en/datasets/162441/certificate/badge.js"
+      }.to_yaml)
+      expect(jekyll_service).to receive(:push_to_github)
+
+      jekyll_service.add_certificate_url(@certificate_url, dataset)
+
+      expect(dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
   end
 

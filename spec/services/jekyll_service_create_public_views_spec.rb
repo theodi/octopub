@@ -66,13 +66,14 @@ context 'creating certificates for public datasets' do
 
       expect(factory).to receive(:generate) {{ success: 'pending' }}
       expect(factory).to receive(:result) {{ certificate_url: @certificate_url }}
-      expect(@dataset).to receive(:add_certificate_url).with(@certificate_url)
+      expect(@jekyll_service).to receive(:add_certificate_url).with(@certificate_url, @dataset)
 
-      @dataset.send(:create_certificate)
+      @jekyll_service.create_certificate(@dataset)
     end
 
     it 'adds the badge url to the repo' do
-      expect(@dataset).to receive(:fetch_repo)
+      expect(@jekyll_service).to receive(:fetch_repo)
+
       expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
         "data_source" => ".",
         "update_frequency" => @dataset.frequency,
@@ -80,8 +81,7 @@ context 'creating certificates for public datasets' do
       }.to_yaml)
       expect_any_instance_of(JekyllService).to receive(:push_to_github)
 
-      @dataset.send(:add_certificate_url, @certificate_url)
-
+      @jekyll_service.add_certificate_url( @certificate_url, @dataset)
       expect(@dataset.certificate_url).to eq('http://staging.certificates.theodi.org/en/datasets/162441/certificate')
     end
   end
