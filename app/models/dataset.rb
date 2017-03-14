@@ -64,10 +64,6 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def delete_file_from_repo(filename)
-    @repo.delete_file(filename)
-  end
-
   def path(filename, folder = "")
     File.join([folder,filename].reject { |n| n.blank? })
   end
@@ -110,7 +106,7 @@ class Dataset < ApplicationRecord
 
   def complete_publishing
     fetch_repo
-    set_owner_avatar 
+    set_owner_avatar
     publish_public_views(true)
     send_success_email
     send_tweet_notification
@@ -156,7 +152,7 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in set_owner_avatar"
       if owner.blank?
         update_column :owner_avatar, user.avatar
-      else 
+      else
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
       end
     end

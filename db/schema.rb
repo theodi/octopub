@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20170308121958) do
     t.text     "url_in_repo"
     t.json     "schema"
     t.integer  "user_id"
+    t.string   "storage_key"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["user_id"], name: "index_dataset_file_schemas_on_user_id", using: :btree

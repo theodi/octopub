@@ -101,11 +101,6 @@ class DatasetFile < ApplicationRecord
     dataset.jekyll_service.update_file_to_repo(filename, file)
   end
 
-  def delete_from_github(file)
-    dataset.delete_file_from_repo(file.filename)
-    dataset.delete_file_from_repo("#{File.basename(file.filename, '.*')}.md")
-  end
-
   private
 
     def check_schema
@@ -156,10 +151,6 @@ class DatasetFile < ApplicationRecord
 
     def get_file_for_validation_from_file
       File.new(file.tempfile)
-    end
-
-    def get_string_io_for_validation_from_file(storage_key)
-      S3_BUCKET.object(storage_key).get.body
     end
 
     def check_csv

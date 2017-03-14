@@ -1,11 +1,14 @@
 class InferredDatasetFileSchemasController < ApplicationController
 
+  # TODO needs to handle files and URLs like Dataset controller
+
   def new
     @inferred_dataset_file_schema = InferredDatasetFileSchema.new
-    @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
+    @s3_direct_post = FileStorageService.presigned_post
   end
 
   def create
+    # TODO refactor this logic, it's a bit messy at the moment
     @inferred_dataset_file_schema = InferredDatasetFileSchema.new(create_params)
 
     if @inferred_dataset_file_schema.valid?
@@ -26,12 +29,8 @@ class InferredDatasetFileSchemasController < ApplicationController
   private
 
   def failed_create
-    @s3_direct_post = S3_BUCKET.presigned_post(bucket_attributes)
+    @s3_direct_post = FileStorageService.presigned_post
     render :new
-  end
-
-  def bucket_attributes
-    { key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read' }
   end
 
   def create_params
