@@ -42,7 +42,7 @@ class UpdateDataset
     if file["schema"]
       # Create schema
       # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      schema = DatasetFileSchemaService.new(file["schema_name"], file["schema_description"], file["schema"], @user).create_dataset_file_schema
       file["dataset_file_schema_id"] = schema.id
     end
 
@@ -54,13 +54,13 @@ class UpdateDataset
     if file["schema"]
       # Create schema
       # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      schema = DatasetFileSchemaService.new(file["schema_name"], file["schema_description"], file["schema"], @user).create_dataset_file_schema
       f.dataset_file_schema_id = schema.id
     end
 
     @dataset.dataset_files << f
     if f.save
-      jekyll_service.add_to_github(f.filename, f.file)
+      jekyll_service.add_to_github(f)
       jekyll_service.add_jekyll_to_github(f.filename)
       f.file = nil
     end

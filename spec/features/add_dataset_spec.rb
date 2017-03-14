@@ -4,41 +4,30 @@ require 'features/user_and_organisations'
 feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
   include_context 'user and organisations'
 
-  let(:data_file) {
-    File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
-  }
+  let(:data_file) { get_fixture_file('valid-schema.csv') }
 
   before(:each) do
-    @user = create(:user)
-    OmniAuth.config.mock_auth[:github]
-    sign_in @user
-    allow_any_instance_of(User).to receive(:organizations) { organizations }
-    allow_any_instance_of(User).to receive(:github_user) { github_user }
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    visit root_path
   end
 
   context "logged in visitor has schemas and" do
 
     before(:each) do
-      good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
+      good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
       create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
+      click_link "Add dataset"
+      expect(page).to have_content "Dataset name"
     end
 
     scenario "can access add dataset page" do
-      visit root_path
-      click_link "Add dataset"
-      expect(page).to have_content "Dataset name"
       within 'form' do
         expect(page).to have_content @user.github_username
       end
     end
 
     scenario "can access add dataset page see they have the form options for a schema" do
-      visit root_path
-      click_link "Add dataset"
-      expect(page).to have_content "Dataset name"
       within 'form' do
-
         expect(page).to have_content "good schema"
         expect(page).to have_content "Or upload a new one"
         expect(page).to have_content "No schema required"
@@ -50,8 +39,6 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
   context "logged in visitors has no schemas" do
     scenario "and can complete a simple dataset form without adding a schema" do
-
-      visit root_path
       click_link "Add dataset"
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(data_file))

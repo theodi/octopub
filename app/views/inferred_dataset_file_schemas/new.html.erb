@@ -1,0 +1,23 @@
+<h1 class="page-header">Create a new Schema <small>from a CSV Data File</small></h1>
+
+<p>Upload a small, example data file in CSV format, with headers and Octopub will infer a Schema from it.</p>
+<div class="alert alert-warning" role="alert"><b>Note: </b>Please use a small data file, say with 10 lines of data.</div>
+
+<%= bootstrap_form_for @inferred_dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+  <%= f.text_field :name, required: true, label: 'Schema name' %>
+  <%= f.text_area :description, label: 'Schema description' %>
+  <%= f.select :user_id, organization_select_options_schema, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+  <div class="schema-panel">
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+    <fieldset class="file bg-upload">
+      <%= f.file_field :csv_url, label: 'CSV Data File', accept: ".csv" %>
+    </fieldset>
+    </div>
+
+  </div>
+  <button type="submit" class="btn btn-primary btn-lg btn-block"> Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i></button>
+<% end %>

@@ -41,20 +41,21 @@ describe 'datasets/_dataset.html.erb' do
 
   it 'displays access icon in the dashboard' do
     @dashboard = true
-    
+
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect(page.css('tr')[0].css('td').count).to eq(6)
-    expect(page.css('tr')[0].css('td')[1].inner_html).to match('<i class="fa fa-globe" title="public"></i>')
+    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-globe');
+    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="public"]');
   end
 
   it 'displays private icon in the dashboard' do
     @dashboard = true
-    
+
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @restricted_dataset}
     page = Nokogiri::HTML(rendered)
     expect(page.css('tr')[0].css('td').count).to eq(6)
-    expect(page.css('tr')[0].css('td')[1].inner_html).to match('<i class="fa fa-lock" title="private"></i>')
+    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-lock');
+    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="private"]');
   end
-
 end

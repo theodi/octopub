@@ -1,4 +1,22 @@
 GIT
+  remote: https://github.com/jamesjefferies/csvlint.rb.git
+  revision: 117c0eab2d86f3124e51827ed6a769d13e5fa1a5
+  branch: ruby-2.4-rails-5.0-compatibility
+  specs:
+    csvlint (0.3.3)
+      activesupport
+      addressable
+      colorize
+      escape_utils
+      mime-types
+      net-http-persistent (< 3.0)
+      open_uri_redirections
+      rack
+      thor
+      typhoeus
+      uri_template
+
+GIT
   remote: https://github.com/pezholio/grape-swagger-rails.git
   revision: 2b474ff5f848906b67674edae9eff1a822d04312
   branch: change-layout-test-branch
@@ -44,62 +62,59 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    actioncable (5.0.1)
-      actionpack (= 5.0.1)
-      nio4r (~> 1.2)
+    actioncable (5.0.2)
+      actionpack (= 5.0.2)
+      nio4r (>= 1.2, < 3.0)
       websocket-driver (~> 0.6.1)
-    actionmailer (5.0.1)
-      actionpack (= 5.0.1)
-      actionview (= 5.0.1)
-      activejob (= 5.0.1)
+    actionmailer (5.0.2)
+      actionpack (= 5.0.2)
+      actionview (= 5.0.2)
+      activejob (= 5.0.2)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 2.0)
-    actionpack (5.0.1)
-      actionview (= 5.0.1)
-      activesupport (= 5.0.1)
+    actionpack (5.0.2)
+      actionview (= 5.0.2)
+      activesupport (= 5.0.2)
       rack (~> 2.0)
       rack-test (~> 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionview (5.0.1)
-      activesupport (= 5.0.1)
+    actionview (5.0.2)
+      activesupport (= 5.0.2)
       builder (~> 3.1)
       erubis (~> 2.7.0)
       rails-dom-testing (~> 2.0)
-      rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    activejob (5.0.1)
-      activesupport (= 5.0.1)
+      rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    activejob (5.0.2)
+      activesupport (= 5.0.2)
       globalid (>= 0.3.6)
-    activemodel (5.0.1)
-      activesupport (= 5.0.1)
-    activerecord (5.0.1)
-      activemodel (= 5.0.1)
-      activesupport (= 5.0.1)
+    activemodel (5.0.2)
+      activesupport (= 5.0.2)
+    activerecord (5.0.2)
+      activemodel (= 5.0.2)
+      activesupport (= 5.0.2)
       arel (~> 7.0)
-    activesupport (5.0.1)
+    activesupport (5.0.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.0)
-      public_suffix (~> 2.0, >= 2.0.2)
-    airbrake (5.6.1)
-      airbrake-ruby (~> 1.6)
-    airbrake-ruby (1.7.0)
+    addressable (2.3.8)
+    airbrake-ruby (1.7.1)
     annotate (2.7.1)
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 12.0)
     arel (7.1.4)
-    autoprefixer-rails (6.6.1)
+    autoprefixer-rails (6.7.7)
       execjs
     awesome_print (1.7.0)
-    aws-sdk (2.6.48)
-      aws-sdk-resources (= 2.6.48)
-    aws-sdk-core (2.6.48)
+    aws-sdk (2.8.7)
+      aws-sdk-resources (= 2.8.7)
+    aws-sdk-core (2.8.7)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.48)
-      aws-sdk-core (= 2.6.48)
+    aws-sdk-resources (2.8.7)
+      aws-sdk-core (= 2.8.7)
     aws-sigv4 (1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -115,10 +130,11 @@ GEM
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bootstrap-select-rails (1.6.3)
-    bootstrap_form (2.5.3)
+    bootstrap-table-rails (1.11.1.1)
+    bootstrap_form (2.6.0)
     buftok (0.2.0)
     builder (3.2.3)
-    capybara (2.12.0)
+    capybara (2.12.1)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -134,20 +150,11 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
-    concurrent-ruby (1.0.4)
+    concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    csvlint (0.3.2)
-      activesupport
-      addressable
-      colorize
-      escape_utils
-      mime-types
-      open_uri_redirections
-      thor
-      typhoeus
-      uri_template
+    currencies (0.4.2)
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
     descendants_tracker (0.0.4)
@@ -161,13 +168,13 @@ GEM
     devise-bootstrap-views (0.0.10)
     diff-lcs (1.3)
     docile (1.1.5)
-    domain_name (0.5.20161129)
+    domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.1.2)
-    dotenv-rails (2.1.2)
-      dotenv (= 2.1.2)
+    dotenv (2.2.0)
+    dotenv-rails (2.2.0)
+      dotenv (= 2.2.0)
       railties (>= 3.2, < 5.1)
-    equalizer (0.0.11)
+    equalizer (0.0.10)
     erubis (2.7.0)
     escape_utils (1.2.1)
     ethon (0.10.1)
@@ -178,11 +185,11 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faker (1.7.2)
+    faker (1.7.3)
       i18n (~> 0.5)
-    faraday (0.10.1)
+    faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.17)
+    ffi (1.9.18)
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
     foreman (0.83.0)
@@ -210,10 +217,10 @@ GEM
       rake
     grape-swagger (0.26.0)
       grape (>= 0.16.2)
-    grape-swagger-entity (0.1.5)
+    grape-swagger-entity (0.1.6)
       grape-entity
       grape-swagger (>= 0.20.4)
-    guard (2.14.0)
+    guard (2.14.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
       lumberjack (~> 1.0)
@@ -231,8 +238,8 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hashdiff (0.3.2)
-    hashie (3.4.6)
-    http (2.1.0)
+    hashie (3.5.5)
+    http (1.0.4)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
       http-form_data (~> 1.0.1)
@@ -244,10 +251,10 @@ GEM
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (0.7.0)
+    i18n (0.8.1)
     ice_nine (0.11.2)
-    jbuilder (2.6.1)
-      activesupport (>= 3.0.0, < 5.1)
+    jbuilder (2.6.3)
+      activesupport (>= 3.0.0, < 5.2)
       multi_json (~> 1.2)
     jmespath (1.3.1)
     jquery-rails (4.2.2)
@@ -255,6 +262,13 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.6)
+    json-schema (2.6.2)
+      addressable (~> 2.3.8)
+    jsontableschema (0.2.0)
+      currencies (~> 0.4.2)
+      json-schema (~> 2.6.0)
+      tod (~> 2.1.0)
+      uuid (~> 2.3.8)
     jwt (1.5.6)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -264,9 +278,19 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
+    lograge (0.4.1)
+      actionpack (>= 4, < 5.1)
+      activesupport (>= 4, < 5.1)
+      railties (>= 4, < 5.1)
+    lol_dba (2.1.1)
+      actionpack (>= 3.0)
+      activerecord (>= 3.0)
+      railties (>= 3.0)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    lumberjack (1.0.10)
+    lumberjack (1.0.11)
+    macaddr (1.7.1)
+      systemu (~> 2.6.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     memoizable (0.4.2)
@@ -286,14 +310,15 @@ GEM
       mustermann (= 0.4.0)
     naught (1.1.0)
     nenv (0.3.0)
-    nio4r (1.2.1)
+    net-http-persistent (2.9.4)
+    nio4r (2.0.0)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    oauth2 (1.3.0)
-      faraday (>= 0.8, < 0.11)
+    oauth2 (1.3.1)
+      faraday (>= 0.8, < 0.12)
       jwt (~> 1.0)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
@@ -302,18 +327,18 @@ GEM
       sawyer (~> 0.8.0, >= 0.5.3)
     odlifier (0.1.1)
       httparty
-    omniauth (1.3.2)
-      hashie (>= 1.2, < 4)
-      rack (>= 1.0, < 3)
-    omniauth-github (1.1.2)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
+    omniauth (1.6.1)
+      hashie (>= 3.4.6, < 3.6.0)
+      rack (>= 1.6.2, < 3)
+    omniauth-github (1.2.3)
+      omniauth (~> 1.5)
+      omniauth-oauth2 (>= 1.4.0, < 2.0)
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
     open_uri_redirections (0.2.1)
     orm_adapter (0.5.0)
-    pg (0.19.0)
+    pg (0.20.0)
     poltergeist (1.13.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -325,8 +350,7 @@ GEM
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
-    public_suffix (2.0.5)
-    puma (3.6.2)
+    puma (3.8.1)
     pusher (1.3.0)
       httpclient (~> 2.7)
       multi_json (~> 1.0)
@@ -339,17 +363,17 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rails (5.0.1)
-      actioncable (= 5.0.1)
-      actionmailer (= 5.0.1)
-      actionpack (= 5.0.1)
-      actionview (= 5.0.1)
-      activejob (= 5.0.1)
-      activemodel (= 5.0.1)
-      activerecord (= 5.0.1)
-      activesupport (= 5.0.1)
+    rails (5.0.2)
+      actioncable (= 5.0.2)
+      actionmailer (= 5.0.2)
+      actionpack (= 5.0.2)
+      actionview (= 5.0.2)
+      activejob (= 5.0.2)
+      activemodel (= 5.0.2)
+      activerecord (= 5.0.2)
+      activesupport (= 5.0.2)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 5.0.1)
+      railties (= 5.0.2)
       sprockets-rails (>= 2.0.0)
     rails-bootstrap-helpers (0.1.0)
       rails (>= 3.2.11)
@@ -367,19 +391,19 @@ GEM
       rails_stdout_logging
     rails_serve_static_assets (0.0.5)
     rails_stdout_logging (0.0.5)
-    railties (5.0.1)
-      actionpack (= 5.0.1)
-      activesupport (= 5.0.1)
+    railties (5.0.2)
+      actionpack (= 5.0.2)
+      activesupport (= 5.0.2)
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.3.0)
     rb-fsevent (0.9.8)
-    rb-inotify (0.9.7)
+    rb-inotify (0.9.8)
       ffi (>= 0.5.0)
     rdoc (4.3.0)
     redcarpet (3.4.0)
-    redis (3.3.2)
+    redis (3.3.3)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     rouge (2.0.7)
@@ -413,9 +437,9 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sawyer (0.8.1)
+    sawyer (0.8.0)
       addressable (>= 2.3.5, < 2.6)
-      faraday (~> 0.8, < 1.0)
+      faraday (~> 0.8, < 0.10)
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
@@ -443,41 +467,46 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    systemu (2.6.5)
     term-ansicolor (1.4.0)
       tins (~> 1.0)
     terminal-notifier-guard (1.6.4)
     thor (0.19.4)
-    thread_safe (0.3.5)
-    tilt (2.0.5)
+    thread_safe (0.3.6)
+    tilt (2.0.6)
     tins (1.13.2)
+    tod (2.1.0)
     tool (0.2.3)
-    twitter (6.0.0)
-      addressable (~> 2.5)
+    twitter (5.17.0)
+      addressable (~> 2.3)
       buftok (~> 0.2.0)
-      equalizer (= 0.0.11)
-      faraday (~> 0.10.0)
-      http (~> 2.1)
+      equalizer (= 0.0.10)
+      faraday (~> 0.9.0)
+      http (~> 1.0)
       http_parser.rb (~> 0.6.0)
-      memoizable (~> 0.4.2)
-      naught (~> 1.1)
-      simple_oauth (~> 0.3.1)
+      json (~> 1.8)
+      memoizable (~> 0.4.0)
+      naught (~> 1.0)
+      simple_oauth (~> 0.3.0)
     typhoeus (1.1.2)
       ethon (>= 0.9.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.0.4)
+    uglifier (3.1.7)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
     uri_template (0.7.0)
+    uuid (2.3.8)
+      macaddr (~> 1.0)
     vcr (3.0.3)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
-    warden (1.2.6)
+    warden (1.2.7)
       rack (>= 1.0)
     webmock (2.3.2)
       addressable (>= 2.3.6)
@@ -486,9 +515,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    will_paginate (3.1.5)
-    will_paginate-bootstrap (1.0.1)
-      will_paginate (>= 3.0.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -496,7 +522,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake
+  airbrake-ruby (= 1.7.1)
   alternate_rails (~> 5.0.0)!
   annotate
   autoprefixer-rails
@@ -506,13 +532,14 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.2.0)
   bootstrap-select-rails
+  bootstrap-table-rails
   bootstrap_form
   certificate-factory
   coderay
   coveralls!
   csv2json!
   csv2rest!
-  csvlint
+  csvlint!
   database_cleaner
   devise
   devise-bootstrap-views
@@ -524,15 +551,18 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger
-  grape-swagger-entity
+  grape-swagger (= 0.26.0)
+  grape-swagger-entity (~> 0.1.5)
   grape-swagger-rails!
   guard
   guard-rails
   guard-rspec
   jbuilder (~> 2.0)
   jquery-rails
+  jsontableschema
   letter_opener
+  lograge
+  lol_dba
   octokit
   odlifier
   omniauth-github
@@ -543,7 +573,7 @@ DEPENDENCIES
   pry-remote
   puma
   pusher
-  rails (~> 5.0.1)
+  rails (~> 5.0.2)
   rails-bootstrap-helpers
   rails-controller-testing
   rails_12factor
@@ -561,7 +591,6 @@ DEPENDENCIES
   uglifier
   vcr
   webmock
-  will_paginate-bootstrap
 
 RUBY VERSION
    ruby 2.4.0p0

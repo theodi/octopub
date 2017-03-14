@@ -9,12 +9,18 @@
 #  url_in_repo :text
 #  schema      :json
 #  user_id     :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  storage_key :string
 #
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
+ # validates_presence_of :storage_key
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
+
+ # before_validation :set_storage_key
 
   attr_accessor :parsed_schema
 
@@ -24,6 +30,10 @@ class DatasetFileSchema < ApplicationRecord
 
   def url
     url_in_repo.nil? ? url_in_s3 : url_in_repo
+  end
+
+  def owner_name
+    user.name
   end
 
   # TODO maybe persist this?
@@ -43,6 +53,12 @@ class DatasetFileSchema < ApplicationRecord
   def is_valid?
     errors.add :schema, 'is invalid' unless is_schema_valid?
   end
+
+  def new_is_schema_valid?
+    new_parsed_schema.valid?
+  end
+
+  def new_parsed_schema
+    @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
+  end
 end
-
-

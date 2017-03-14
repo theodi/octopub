@@ -6,9 +6,12 @@ describe 'POST /datasets/:id/files' do
     Sidekiq::Testing.inline!
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
 
+    @filename = 'test-data.csv'
+    @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
+
     @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
-      create(:dataset_file, filename: 'test-data.csv')
+      create(:dataset_file, filename: @filename, storage_key: @storage_key)
     ])
 
     @repo = double(GitData)
@@ -33,7 +36,8 @@ describe 'POST /datasets/:id/files' do
       file: {
         :title => 'My single file',
         :description => 'My super descriptive description',
-        :file => fixture_file_upload(path)
+        :file => fixture_file_upload(path),
+        :storage_key => @storage_key
       }
     },
     headers: {'Authorization' => "Token token=#{@user.api_key}" }

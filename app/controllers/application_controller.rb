@@ -58,14 +58,7 @@ class ApplicationController < ActionController::Base
     end
 
     def set_licenses
-      @licenses = [
-                    "cc-by",
-                    "cc-by-sa",
-                    "cc0",
-                    "OGL-UK-3.0",
-                    "odc-by",
-                    "odc-pddl"
-                  ].map do |id|
+      @licenses = Octopub::WEB_LICENCES.map do |id|
                     license = Odlifier::License.define(id)
                     [license.title, license.id]
                   end

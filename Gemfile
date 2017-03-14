@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
+
 ruby '2.4.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.1'
+gem 'rails', '~> 5.0.2'
 # Use SCSS for stylesheets
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -21,9 +22,13 @@ gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rails.git'
 gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
-gem 'csvlint'
-
 # User related
+gem 'csvlint', git: 'https://github.com/jamesjefferies/csvlint.rb.git', branch: 'ruby-2.4-rails-5.0-compatibility'
+#gem 'csvlint', '~> 0.3.2'
+
+# New way of validating schemas
+gem 'jsontableschema'
+
 gem 'omniauth-github'
 gem 'devise'
 gem 'devise-bootstrap-views'
@@ -35,7 +40,7 @@ gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
-gem 'will_paginate-bootstrap'
+gem "bootstrap-table-rails"
 
 # Logging and debug
 gem 'awesome_print'
@@ -53,8 +58,8 @@ gem 'certificate-factory'
 # API functionality
 gem 'grape'
 gem 'grape-route-helpers'
-gem 'grape-swagger'
-gem 'grape-swagger-entity'
+gem 'grape-swagger', '0.26.0'
+gem 'grape-swagger-entity', '~> 0.1.5'
 
 # Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'
@@ -63,11 +68,15 @@ gem 'coderay'
 
 gem 'twitter'
 gem 'dotenv-rails'
-gem 'airbrake'
+gem 'airbrake-ruby', '1.7.1'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', '~> 0.4.0'
+end
+
+group :development, :test do
+  gem 'lograge'
 end
 
 group :development do
@@ -86,6 +95,9 @@ group :development do
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # Adds some nice rake tasks for generating migrations
+  gem 'lol_dba'
 end
 
 group :test do

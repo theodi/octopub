@@ -23,14 +23,16 @@ describe 'PUT /datasets/:id' do
   end
 
   it 'updates a dataset sucessfully' do
+    license = Octopub::API_LICENCES.sample
+    frequency = Octopub::PUBLICATION_FREQUENCIES.sample
     put "/api/datasets/#{@dataset.id}", params:
     {
       dataset: {
         description: "My new description",
         publisher_name: "New Publisher",
         publisher_url: "http://www2.example.org",
-        license: "cc0",
-        frequency: "Annual"
+        license: license,
+        frequency: frequency
       }
     },
     headers: {'Authorization' => "Token token=#{@user.api_key}"}
@@ -40,8 +42,8 @@ describe 'PUT /datasets/:id' do
     expect(@dataset.description).to eq("My new description")
     expect(@dataset.publisher_name).to eq("New Publisher")
     expect(@dataset.publisher_url).to eq("http://www2.example.org")
-    expect(@dataset.license).to eq("cc0")
-    expect(@dataset.frequency).to eq("Annual")
+    expect(@dataset.license).to eq(license)
+    expect(@dataset.frequency).to eq(frequency)
 
     expect(response.code).to eq '202'
   end

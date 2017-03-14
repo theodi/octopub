@@ -32,6 +32,14 @@ describe DatasetFileSchemasController, type: :controller do
     end
   end
 
+  describe 'show' do
+    it "returns http success" do
+      dataset_file_schema = create(:dataset_file_schema, user: @user)
+      get :show, params: { id: dataset_file_schema.id }
+      expect(response).to be_success
+    end
+  end
+
   describe 'new' do
     it "returns http success" do
       get :new

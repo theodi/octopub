@@ -122,7 +122,7 @@ function setUpFileUpload() {
   });
 }
 
-function setUpCloneAndFileUpload() {
+function addAnotherDataFileButtonClick() {
   var file = $('div.file-panel:first').clone();
 
   // Clone button to create another file to upload
@@ -131,13 +131,23 @@ function setUpCloneAndFileUpload() {
     e.preventDefault();
     var clone = $(file).clone();
     clone.find('.title').attr('required', 'required');
+    // Add delete file button
+    var buttonAndSpan = $('<span class="pull-right"><button type="button" class="btn btn-danger btn-xs">Delete file</button></span>');
+    clone.find('div[name="data_file_heading"]').append(buttonAndSpan);
+    buttonAndSpan.click(function(event) {
+      var parentSection = $(event.target).closest('div.file-panel');
+      parentSection.remove();
+    });
+
     clone.appendTo('#files');
     clone.find('.bg-upload').each(function(i, elem) {
       bgUpload(elem);
     });
   });
+}
 
-  // Do ajax form uploading
+function addAjaxFormUploading() {
+ // Do ajax form uploading
   $('form').submit(function(e) {
     $('#spinner').removeClass('hidden');
 
@@ -151,7 +161,11 @@ function setUpCloneAndFileUpload() {
 
     e.preventDefault();
   });
+}
 
+function setUpCloneAndFileUpload() {
+  addAnotherDataFileButtonClick();
+  addAjaxFormUploading();
   setUpFileUpload();
 }
 

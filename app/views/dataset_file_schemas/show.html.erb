@@ -1,0 +1,7 @@
+<h1 class="page-header">Dataset File Schema <small>for <%= current_user.name %></small></h1>
+<h2><%= @dataset_file_schema.name %></h2>
+
+<div class="panel-body">
+  <h3><%= @dataset_file_schema.description %></h3>
+  <%= markdown_json(@dataset_file_schema.schema) %>
+</div>
