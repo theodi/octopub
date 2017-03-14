@@ -30,31 +30,31 @@ http_interactions:
       - default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src
         'self'
       X-Github-Request-Id:
-      - 828C:7E95:7320D94:9197D1B:589A2ADF
+      - 5DEC:06EE:28A1EAE:33A2F10:58C1C688
       Content-Length:
       - '5310'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '823'
+      - '1247'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1133-LCY
+      - cache-lcy1121-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '2'
+      - '1'
       X-Timer:
-      - S1486499352.692750,VS0,VE0
+      - S1489095527.636214,VS0,VE2
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - e8ab16333fef15644bfefbc9dd60f27f212fafbf
+      - 91b7be8f125fd230d69d105bbd92b3bf73e028b3
     body:
       encoding: ASCII-8BIT
       string: |
@@ -147,7 +147,7 @@ http_interactions:
           </body>
         </html>
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/groups/all.json
@@ -175,35 +175,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:28 GMT
+      - Thu, 09 Mar 2017 21:28:00 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 1900:6978:635DF2B:80CA7A2:589A2AE0
+      - F834:355F:1F220BE:29038AC:58C1C687
       Content-Length:
       - '4440'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '211'
+      - '2'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1120-LCY
+      - cache-lcy1146-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '4'
+      - '2'
       X-Timer:
-      - S1486499352.739707,VS0,VE0
+      - S1489095527.689674,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 053e858912182d1a9a1f6a3146aa71eb042cb76a
+      - 0efcff092feb80ded5579faaaa0a4ac4dc1722bf
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"AAL\": {\n    \"domain_content\": false, \n    \"domain_data\":
@@ -785,7 +785,7 @@ http_interactions:
         \"active\", \n    \"title\": \"UK PSI Public Sector Information\", \n    \"url\":
         \"http://www.opendefinition.org/licenses/ukpsi\"\n  }\n}"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/cc-by-sa.json
@@ -816,31 +816,31 @@ http_interactions:
       - default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src
         'self'
       X-Github-Request-Id:
-      - 3052:2B054:ADE0DD9:ECF2909:589A2AE1
+      - 8F72:1B5BD:38184EB:4A6B1AB:58C1C683
       Content-Length:
       - '5310'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '823'
+      - '1247'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1133-LCY
+      - cache-lcy1147-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
       - '1'
       X-Timer:
-      - S1486499352.788174,VS0,VE0
+      - S1489095527.748786,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - f15828e2fb61abf1740bf395222200b1e5a6b42c
+      - 714492f3fc3083c12f8f55d0ca24abc2d4fe7665
     body:
       encoding: ASCII-8BIT
       string: |
@@ -933,7 +933,7 @@ http_interactions:
           </body>
         </html>
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/groups/all.json
@@ -961,35 +961,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:28 GMT
+      - Thu, 09 Mar 2017 21:28:00 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 1900:6978:635DF2B:80CA7A2:589A2AE0
+      - F834:355F:1F220BE:29038AC:58C1C687
       Content-Length:
       - '4440'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '212'
+      - '2'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1144-LCY
+      - cache-lcy1135-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '3'
+      - '1'
       X-Timer:
-      - S1486499352.835004,VS0,VE0
+      - S1489095527.801381,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 8a64e4cd123080b77b65ae8e9ee520b39cfa53a0
+      - da11898a0b7d548e46aad7efc5ace2cb651faaca
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"AAL\": {\n    \"domain_content\": false, \n    \"domain_data\":
@@ -1571,7 +1571,7 @@ http_interactions:
         \"active\", \n    \"title\": \"UK PSI Public Sector Information\", \n    \"url\":
         \"http://www.opendefinition.org/licenses/ukpsi\"\n  }\n}"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/cc0.json
@@ -1595,38 +1595,38 @@ http_interactions:
       Content-Type:
       - text/html; charset=utf-8
       Etag:
-      - W/"58389366-247c"
+      - W/"583c90dd-247c"
       Access-Control-Allow-Origin:
       - "*"
       Content-Security-Policy:
       - default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src
         'self'
       X-Github-Request-Id:
-      - B9A0:415A:9F64868:D75F719:589A2AE2
+      - EB96:04D3:3880147:4D19B07:58C1C689
       Content-Length:
       - '5310'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '822'
+      - '1247'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1135-LCY
+      - cache-lcy1145-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
       - '1'
       X-Timer:
-      - S1486499352.886684,VS0,VE0
+      - S1489095527.856204,VS0,VE8
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 44b49f8e321a010e0cf52a9db46fc7cb8697b1ab
+      - cd0c7b06686215d15e95ecb56b4be4ac2ad45d46
     body:
       encoding: ASCII-8BIT
       string: |
@@ -1719,7 +1719,7 @@ http_interactions:
           </body>
         </html>
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/groups/all.json
@@ -1747,35 +1747,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:28 GMT
+      - Thu, 09 Mar 2017 21:28:00 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 1900:6978:635DF2B:80CA7A2:589A2AE0
+      - F834:355F:1F220BE:29038AC:58C1C687
       Content-Length:
       - '4440'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '212'
+      - '2'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1121-LCY
+      - cache-lcy1138-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '3'
+      - '2'
       X-Timer:
-      - S1486499352.936948,VS0,VE0
+      - S1489095527.921753,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 745ad55302dc85830574b4a19bae544b76687d51
+      - f801b83c796fbc287cf09b35c4feb21cb11a705e
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"AAL\": {\n    \"domain_content\": false, \n    \"domain_data\":
@@ -2357,7 +2357,7 @@ http_interactions:
         \"active\", \n    \"title\": \"UK PSI Public Sector Information\", \n    \"url\":
         \"http://www.opendefinition.org/licenses/ukpsi\"\n  }\n}"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/OGL-UK-3.0.json
@@ -2385,35 +2385,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:31 GMT
+      - Thu, 09 Mar 2017 21:28:01 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 41C6:7E94:2A7D15E:35EC65E:589A2AE2
+      - EFFE:06EC:3FC431E:510005B:58C1C689
       Content-Length:
       - '261'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:12 GMT
+      - Thu, 09 Mar 2017 21:38:47 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '12'
+      - '2'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1137-LCY
+      - cache-lcy1151-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
       - '1'
       X-Timer:
-      - S1486499352.988332,VS0,VE0
+      - S1489095527.980181,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 60665f5a5a638ba756f60ea9df0b2871f834170f
+      - a03b004f6089c1a5c8de38f42db337d297601884
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"domain_content\": true, \n  \"domain_data\": true, \n  \"domain_software\":
@@ -2423,7 +2423,7 @@ http_interactions:
         \n  \"title\": \"Open Government Licence 3.0 (United Kingdom)\", \n  \"url\":
         \"https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\"\n}\n"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:12 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/odc-by.json
@@ -2447,38 +2447,38 @@ http_interactions:
       Content-Type:
       - text/html; charset=utf-8
       Etag:
-      - W/"58389366-247c"
+      - W/"583c90dd-247c"
       Access-Control-Allow-Origin:
       - "*"
       Content-Security-Policy:
       - default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src
         'self'
       X-Github-Request-Id:
-      - 8D80:415A:9F648E8:D75F76D:589A2AE2
+      - 5BEA:04D4:226E09F:2EED796:58C1C685
       Content-Length:
       - '5310'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:13 GMT
+      - Thu, 09 Mar 2017 21:38:48 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '822'
+      - '1246'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1137-LCY
+      - cache-lcy1145-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
       - '1'
       X-Timer:
-      - S1486499353.037269,VS0,VE0
+      - S1489095528.032191,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 2f15efe0684f1cf4d80dc0273ac5a9b80bbc0c1f
+      - b268ecefb8dba20731ede6f75ea1e868fe34320b
     body:
       encoding: ASCII-8BIT
       string: |
@@ -2571,7 +2571,7 @@ http_interactions:
           </body>
         </html>
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:13 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/groups/all.json
@@ -2599,35 +2599,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:28 GMT
+      - Thu, 09 Mar 2017 21:28:00 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 1900:6978:635DF2B:80CA7A2:589A2AE0
+      - F834:355F:1F220BE:29038AC:58C1C687
       Content-Length:
       - '4440'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:13 GMT
+      - Thu, 09 Mar 2017 21:38:48 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '212'
+      - '3'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1130-LCY
+      - cache-lcy1136-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
       - '2'
       X-Timer:
-      - S1486499353.088741,VS0,VE0
+      - S1489095528.086415,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 4c3a4f7ab5ae89f3d1635fe1a36aecb657703ea6
+      - 8297387ad85f03eeb5184abde1f8e691a8d25732
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"AAL\": {\n    \"domain_content\": false, \n    \"domain_data\":
@@ -3209,7 +3209,7 @@ http_interactions:
         \"active\", \n    \"title\": \"UK PSI Public Sector Information\", \n    \"url\":
         \"http://www.opendefinition.org/licenses/ukpsi\"\n  }\n}"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:13 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/odc-pddl.json
@@ -3240,31 +3240,31 @@ http_interactions:
       - default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src
         'self'
       X-Github-Request-Id:
-      - 9D32:2C511:1EFABFB:28CE252:589A2AE3
+      - A25A:1B5BD:381853F:4A6B4B7:58C1C689
       Content-Length:
       - '5310'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:13 GMT
+      - Thu, 09 Mar 2017 21:38:48 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '821'
+      - '1246'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1145-LCY
+      - cache-lcy1142-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '3'
+      - '1'
       X-Timer:
-      - S1486499353.142161,VS0,VE0
+      - S1489095528.145407,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - '0638f005e76239958ab72642030c604727b31217'
+      - e545bdd977d8bd35536360feb23c11683bb05969
     body:
       encoding: ASCII-8BIT
       string: |
@@ -3357,7 +3357,7 @@ http_interactions:
           </body>
         </html>
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:13 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 - request:
     method: get
     uri: http://licenses.opendefinition.org/licenses/groups/all.json
@@ -3385,35 +3385,35 @@ http_interactions:
       Access-Control-Allow-Origin:
       - "*"
       Expires:
-      - Tue, 07 Feb 2017 20:25:28 GMT
+      - Thu, 09 Mar 2017 21:28:00 GMT
       Cache-Control:
       - max-age=600
       X-Github-Request-Id:
-      - 1900:6978:635DF2B:80CA7A2:589A2AE0
+      - F834:355F:1F220BE:29038AC:58C1C687
       Content-Length:
       - '4440'
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 07 Feb 2017 20:29:13 GMT
+      - Thu, 09 Mar 2017 21:38:48 GMT
       Via:
       - 1.1 varnish
       Age:
-      - '212'
+      - '3'
       Connection:
       - keep-alive
       X-Served-By:
-      - cache-lcy1140-LCY
+      - cache-lcy1124-LCY
       X-Cache:
       - HIT
       X-Cache-Hits:
-      - '4'
+      - '1'
       X-Timer:
-      - S1486499353.189600,VS0,VE0
+      - S1489095528.196467,VS0,VE0
       Vary:
       - Accept-Encoding
       X-Fastly-Request-Id:
-      - 3ceb20dad36bc876c536e94a836a431dbfa07dc3
+      - f397dc2da0f307b82fabadabb8aa0cea6198de45
     body:
       encoding: ASCII-8BIT
       string: "{\n  \"AAL\": {\n    \"domain_content\": false, \n    \"domain_data\":
@@ -3995,5 +3995,5 @@ http_interactions:
         \"active\", \n    \"title\": \"UK PSI Public Sector Information\", \n    \"url\":
         \"http://www.opendefinition.org/licenses/ukpsi\"\n  }\n}"
     http_version: 
-  recorded_at: Tue, 07 Feb 2017 20:29:13 GMT
+  recorded_at: Thu, 09 Mar 2017 21:38:47 GMT
 recorded_with: VCR 3.0.3

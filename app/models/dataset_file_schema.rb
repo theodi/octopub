@@ -9,6 +9,9 @@
 #  url_in_repo :text
 #  schema      :json
 #  user_id     :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#  storage_key :string
 #
 
 class DatasetFileSchema < ApplicationRecord
@@ -16,7 +19,10 @@ class DatasetFileSchema < ApplicationRecord
   has_many :dataset_files, dependent: :nullify
 
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
+ # validates_presence_of :storage_key
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
+
+ # before_validation :set_storage_key
 
   attr_accessor :parsed_schema
 

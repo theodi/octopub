@@ -2,6 +2,11 @@ require 'rails_helper'
 
 describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
+  let(:filename) { 'valid-schema.csv' }
+  let(:storage_key) { filename }
+  let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+  let(:good_schema_path) { get_fixture_schema_file('good-schema.json') }
+
   before(:each) do
     skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
     @worker = UpdateDataset.new
@@ -21,9 +26,6 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
       "84855ffe6a7e1d6dacf6685e"
     }
 
-    filename = 'valid-schema.csv'
-    path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
     @dataset_params = {
       description: "Another awesome dataset",
       publisher_name: "Awesome Incorporated",
@@ -36,7 +38,8 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
       {
         'title' => 'My File',
         'description' => Faker::Company.bs,
-        'file' => url_with_stubbed_get_for(path)
+        'file' => url_for_data_file,
+        'storage_key' => storage_key
       }
     ]
   end
@@ -47,6 +50,8 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it 'sets a job id' do
     expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect_any_instance_of(JekyllService).to receive(:add_to_github)
+    expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
 
     @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
 
@@ -55,21 +60,26 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it 'reports success' do
     expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect_any_instance_of(JekyllService).to receive(:add_to_github)
+    expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
 
     dataset = @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
   end
 
   context 'reports errors' do
 
+    let(:filename) { 'datapackage.json' }
+    let(:storage_key) { filename }
+    let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+
     before(:each) do
-      filename = 'schemas/bad-schema.json'
-      path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
       @bad_files = [
         {
           'title' => 'My File',
           'description' => Faker::Company.bs,
-          'file' => url_with_stubbed_get_for(path)
+          'file' => url_for_data_file,
+          'storage_key' => storage_key
         }
       ]
     end
