@@ -17,6 +17,8 @@
 
 class User < ApplicationRecord
 
+  enum role: [:publisher, :superuser, :admin]
+
   has_many :datasets
   has_many :dataset_file_schemas
 
