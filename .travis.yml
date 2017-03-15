@@ -7,6 +7,9 @@ rvm:
 bundler_args: "--without development --path=~/.bundle"
 before_script:
 - bundle exec rake db:create db:migrate
+script:
+- "bundle exec rake"
+- "bundle exec bundle-audit update && bundle exec bundle-audit check"
 addons:
   postgresql: '9.6'
 notifications:
