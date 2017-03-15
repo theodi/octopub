@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/user-mcuser/dataset
+    uri: https://api.github.com/repos/theodi/blockchain-and-distributed-technology-landscape-research/pages
     body:
       encoding: US-ASCII
       string: ''
@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - GitHub.com
       Date:
-      - Sun, 19 Feb 2017 16:09:57 GMT
+      - Fri, 10 Mar 2017 16:02:25 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -37,9 +37,9 @@ http_interactions:
       X-Ratelimit-Limit:
       - '60'
       X-Ratelimit-Remaining:
-      - '59'
+      - '58'
       X-Ratelimit-Reset:
-      - '1487524197'
+      - '1489162408'
       Access-Control-Expose-Headers:
       - ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset,
         X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
@@ -56,10 +56,10 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - BD02:1EBD1:84B4971:AB37EC4:58A9C355
+      - CB17:04A9:4C83558:6168449:58C2CE11
     body:
       encoding: UTF-8
       string: '{"message":"Bad credentials","documentation_url":"https://developer.github.com/v3"}'
     http_version: 
-  recorded_at: Sun, 19 Feb 2017 16:09:57 GMT
+  recorded_at: Fri, 10 Mar 2017 16:02:25 GMT
 recorded_with: VCR 3.0.3
