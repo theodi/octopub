@@ -74,6 +74,10 @@ class User < ApplicationRecord
     org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
 
+  def available_dataset_file_schemas
+    dataset_file_schemas
+  end
+
   private
 
     def get_user_repos
