@@ -133,6 +133,9 @@ GEM
     bootstrap_form (2.6.0)
     buftok (0.2.0)
     builder (3.2.3)
+    bundler-audit (0.5.0)
+      bundler (~> 1.2)
+      thor (~> 0.18)
     capybara (2.12.1)
       addressable
       mime-types (>= 1.16)
@@ -521,6 +524,7 @@ DEPENDENCIES
   bootstrap-select-rails
   bootstrap-table-rails
   bootstrap_form
+  bundler-audit
   certificate-factory
   coderay
   coveralls!
@@ -536,8 +540,8 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger
-  grape-swagger-entity
+  grape-swagger (= 0.26.0)
+  grape-swagger-entity (~> 0.1.5)
   grape-swagger-rails!
   guard
   guard-rails

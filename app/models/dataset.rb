@@ -109,7 +109,7 @@ class Dataset < ApplicationRecord
     set_owner_avatar
     publish_public_views(true)
     send_success_email
-    send_tweet_notification
+    SendTweetService.new(self).perform
   end
 
   private
@@ -162,21 +162,7 @@ class Dataset < ApplicationRecord
       DatasetMailer.success(self).deliver
     end
 
-    def send_tweet_notification
-      Rails.logger.info "in send_tweet_notification"
-      if ENV["TWITTER_CONSUMER_KEY"] && user.twitter_handle
-        twitter_client = Twitter::REST::Client.new do |config|
-          config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
-          config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
-          config.access_token        = ENV["TWITTER_TOKEN"]
-          config.access_token_secret = ENV["TWITTER_SECRET"]
-        end
-        twitter_client.update("@#{user.twitter_handle} your dataset \"#{self.name}\" is now published at #{self.gh_pages_url}")
-      end
-    end
-
     def jekyll_service
-   #   fetch_repo if @rep.nil?
       Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, @repo)
     end
@@ -187,54 +173,9 @@ class Dataset < ApplicationRecord
       return if restricted
       if new_record || restricted_changed?
         # This is either a new record or has just been made public
-
-        create_public_views
+        jekyll_service.create_public_views(self)
       end
       # updates to existing public repos are handled in #update_in_github
     end
 
-    def create_public_views
-      Rails.logger.info "in create_public_views"
-      jekyll_service.create_public_views(self) 
-      create_certificate
-    end
-
-    # def wait_for_gh_pages_build(delay = 5)
-    #   Rails.logger.info "in wait_for_gh_pages_build"
-    #   sleep(delay) while !gh_pages_built?
-    # end
-
-    def gh_pages_built?
-      Rails.logger.info "in gh_pages_built"
-      user.octokit_client.pages(full_name).status == "built"
-    end
-
-    def create_certificate
-      Rails.logger.info "in create_certificate"
-      cert = CertificateFactory::Certificate.new gh_pages_url
-
-      gen = cert.generate
-
-      if gen[:success] == 'pending'
-        result = cert.result
-        add_certificate_url(result[:certificate_url])
-      end
-    end
-
-    def add_certificate_url(url)
-      return if url.nil?
-
-      url = url.gsub('.json', '')
-      update_column(:certificate_url, url)
-
-      config = {
-        "data_source" => ".",
-        "update_frequency" => frequency,
-        "certificate_url" => "#{certificate_url}/badge.js"
-      }.to_yaml
-
-      fetch_repo(user.octokit_client)
-      jekyll_service.update_file_in_repo('_config.yml', config)
-      jekyll_service.push_to_github
-    end
 end
