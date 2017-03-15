@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  helper_method :current_user
+  helper_method :current_user, :admin_user
 
   include ActionController::HttpAuthentication::Token::ControllerMethods
 
@@ -42,12 +42,20 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def admin_user
+      current_user if current_user.present? && current_user.admin?
+    end
+
     def render_404
       render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
     end
 
     def render_403
       render '403', :status => :forbidden
+    end
+
+    def render_403_permissions
+      render '403_permissions', status: :forbidden
     end
 
     def set_licenses

@@ -5,6 +5,20 @@ FactoryGirl.define do
     email   { Faker::Internet.unique.email }
     name    { Faker::Name.unique.name }
     token "rwefsadasfesesds3454353few"
-    #password "this-has-to-be-longer-than-six-characters"
+    role { :publisher }
+
+    trait :with_twitter_name do
+      after(:build) { |user|
+        user.twitter_handle = Faker::Twitter.user[:name]
+      }
+    end
+
+    factory :superuser do
+      role :superuser
+    end
+
+    factory :admin do
+      role :admin
+    end
   end
 end
