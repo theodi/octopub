@@ -52,8 +52,34 @@
   </table>
 <% end %>
 
-<% if @user.available_dataset_file_schemas.any? %>
+<% if @user.dataset_file_schemas.any? %>
   <h2>User's Dataset File Schemas</h2>
+
+  <table class="table" id="dataset-file-schema-table"
+  data-toggle="table"
+  data-pagination="true"
+  data-search="true"
+  data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Created on</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @user.dataset_file_schemas.each do |dataset_file_schema| %>
+      <tr>
+        <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+
+<% if @user.allocated_dataset_file_schemas.any? %>
+  <h2>Other Dataset File Schemas the User has been allocated</h2>
 
   <table class="table" id="dataset-file-schema-table"
   data-toggle="table"
@@ -68,7 +94,7 @@
       </tr>
     </thead>
     <tbody>
-    <% @user.available_dataset_file_schemas.each do |dataset_file_schema| %>
+    <% @user.allocated_dataset_file_schemas.each do |dataset_file_schema| %>
       <tr>
         <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
         <td><%= dataset_file_schema.user.name %></td>
