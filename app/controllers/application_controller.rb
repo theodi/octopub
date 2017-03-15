@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
           id: l[1],
           name: l[0]
         }
-       end
+      end
     }.to_json
   end
 
