@@ -19,6 +19,14 @@ require 'rails_helper'
 
 describe User do
 
+  context "user can have a single role" do
+    it "by default, publisher" do
+      user = create(:user)
+      expect(user.role).to eq 'publisher'
+      expect(user.publisher?).to be true
+    end
+  end
+
   context "find_for_github_oauth" do
 
     before(:each) do
