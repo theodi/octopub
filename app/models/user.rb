@@ -22,6 +22,7 @@ class User < ApplicationRecord
 
   has_many :datasets
   has_many :dataset_file_schemas
+  has_and_belongs_to_many :allocated_dataset_file_schemas, class_name: 'DatasetFileSchema', join_table: :allocated_dataset_file_schemas_users
 
   before_validation :generate_api_key, on: :create
 
@@ -74,9 +75,9 @@ class User < ApplicationRecord
     org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
 
-  def allocated_dataset_file_schemas
-    Array.new
-  end
+  # def allocated_dataset_file_schemas
+  #   Array.new
+  # end
 
   private
 

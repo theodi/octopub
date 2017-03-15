@@ -56,8 +56,12 @@ describe User do
 
     it "including ones given access to" do
       user = create(:user)
-      dataset_file_schema = create(:dataset_file_schema, user: user)
-      expect(user.allocated_dataset_file_schemas.count).to be 0
+      admin = create(:admin)
+      dataset_file_schema = create(:dataset_file_schema, user: admin)
+      user.allocated_dataset_file_schemas << dataset_file_schema
+      user.reload
+      expect(user.allocated_dataset_file_schemas.count).to be 1
+      expect(user.allocated_dataset_file_schemas.first).to eq dataset_file_schema
     end
   end
 

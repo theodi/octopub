@@ -36,6 +36,20 @@ describe DatasetFileSchema do
     expect(@dataset_file_schema_with_url_in_repo.owner_name).to eq @user.name
   end
 
+  it "can be allocated to a different user than who created it" do
+    other_user = create(:user)
+    @dataset_file_schema_with_url_in_repo.save
+    @dataset_file_schema_with_url_in_repo.allocated_users << other_user
+    @dataset_file_schema_with_url_in_repo.reload
+
+    expect(other_user.allocated_dataset_file_schemas.count).to be 1
+    expect(other_user.allocated_dataset_file_schemas.first).to eq @dataset_file_schema_with_url_in_repo
+
+    expect(@dataset_file_schema_with_url_in_repo.allocated_users.count).to be 1
+    expect(@dataset_file_schema_with_url_in_repo.allocated_users.first).to eq other_user
+    expect(@dataset_file_schema_with_url_in_repo.user).to eq @user
+  end
+
   context "has at least one url" do
     it "returns a url if set in S3" do
       dataset_file_schema = build(:dataset_file_schema, url_in_s3: @good_schema_url)
