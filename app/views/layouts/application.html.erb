@@ -33,9 +33,12 @@
               <li><%= link_to "List my datasets", main_app.dashboard_path %></li>
               <li><%= link_to "List my dataset file schemas", main_app.dataset_file_schemas_path %></li>
             <% end %>
+
             <li><%= link_to "All datasets", main_app.datasets_path %></li>
             <li><%= link_to "API", '/api' %></li>
-
+            <% if admin_user %>
+              <li><%= link_to "Users", main_app.users_path %></li>
+            <% end %>
           </ul>
 
         <% if current_user %>

@@ -24,6 +24,24 @@ describe User do
       user = create(:user)
       expect(user.role).to eq 'publisher'
       expect(user.publisher?).to be true
+      expect(user.superuser?).to be false
+      expect(user.admin?).to be false
+    end
+
+    it "as a superuser" do
+      user = create(:superuser)
+      expect(user.role).to eq 'superuser'
+      expect(user.superuser?).to be true
+      expect(user.publisher?).to be false
+      expect(user.admin?).to be false
+    end
+
+    it "as an admin" do
+      user = create(:admin)
+      expect(user.role).to eq 'admin'
+      expect(user.superuser?).to be false
+      expect(user.publisher?).to be false
+      expect(user.admin?).to be true
     end
   end
 

@@ -19,7 +19,6 @@ describe UsersController, type: :controller do
     end
 
     it "shows a user's details" do
-
       get :edit
       expect(CGI.unescapeHTML(response.body)).to match(/#{@user.name}/)
       expect(response.body).to match(/#{@user.email}/)
@@ -27,17 +26,34 @@ describe UsersController, type: :controller do
     end
 
     it "updates a user's email" do
-
       put :update, params: { user: { email: 'newemail@example.com' }}
       @user.reload
       expect(@user.email).to eq('newemail@example.com')
     end
+  end
 
-    it "shows an index of users" do
-      @user = create(:user, :with_twitter_name)
+  describe "handles permissions" do
+    it "an admin can view list of users" do
+      @admin = create(:admin, :with_twitter_name)
+      sign_in @admin
+      expect(@admin.admin?).to be true
       get :index
-      expect(response.body).to match(/#{@user.email}/)
-      expect(response.body).to match(/#{@user.twitter_handle}/)
+      expect(response.body).to match(/#{@admin.email}/)
+      expect(response.body).to match(/#{@admin.twitter_handle}/)
+    end
+
+    it "a publisher cannot view list of users" do
+      @user = create(:user)
+      sign_in @user
+      get :index
+      expect(response.body).to have_content "You do not have permission to view that page or resource"
+    end
+
+    it "a superuser cannot view list of users" do
+      @user = create(:superuser)
+      sign_in @user
+      get :index
+      expect(response.body).to have_content "You do not have permission to view that page or resource"
     end
   end
 end
