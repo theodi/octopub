@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
       if session[:user_id]
         User.find(session[:user_id])
       elsif request.headers['HTTP_AUTHORIZATION']
-        authenticate_or_request_with_http_token do |token, options|
+        authenticate_or_request_with_http_token do |token, _options|
           User.find_by_api_key token
         end
       end
