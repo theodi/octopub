@@ -1,6 +1,3 @@
-# require_relative "../features/user_and_organisations.rb"
-# require_relative "../spec_helper.rb"
-# require_relative "../rails_helper.rb"
 require 'webmock/rspec'
 
 FactoryGirl.define do
@@ -25,4 +22,3 @@ FactoryGirl.define do
     end
   end
 end
-
