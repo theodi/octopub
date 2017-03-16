@@ -1,3 +1,5 @@
+require 'webmock/rspec'
+
 FactoryGirl.define do
   factory :dataset_file do
     title 'My Awesome Dataset'

@@ -21,5 +21,17 @@ FactoryGirl.define do
         dataset.class.set_callback(:update, :after, :update_dataset_in_github)
       }
     end
+
+    trait :with_avatar_callback do
+      after(:build) { |dataset|
+        dataset.class.set_callback(:create, :after, :set_owner_avatar)
+      }
+    end
+
+    factory :dataset_with_files do
+      after(:create) do |dataset, evaluator|
+        create_list(:dataset_file, 5, dataset: dataset)
+      end
+    end
   end
 end
