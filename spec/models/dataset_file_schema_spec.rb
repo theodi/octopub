@@ -31,11 +31,21 @@ describe DatasetFileSchema do
     @dataset_file_schema_with_bad_schema_url_in_repo = build(:dataset_file_schema, url_in_repo: @bad_schema_url)
     @dataset_file_schema_with_empty_schema_url_in_repo = build(:dataset_file_schema, url_in_repo: @empty_schema_url)
     @dataset_file_schema_with_pk_no_fields = build(:dataset_file_schema, url_in_repo: @schema_with_pk_no_fields_url)
-
   end
 
-  it "returns owner's name" do
+  it "returns owner's name if it's the creator" do
     expect(@dataset_file_schema_with_url_in_repo.owner_name).to eq @user.name
+  end
+
+  it "returns creator's name" do
+    expect(@dataset_file_schema_with_url_in_repo.creator_name).to eq @user.name
+  end
+
+  it "returns owner's name if it is not the creator" do
+    organisation_name = Faker::Internet.user_name
+    dataset_file_schema = build(:dataset_file_schema, user: @user, owner_username: organisation_name)
+    expect(dataset_file_schema.creator_name).to eq @user.name
+    expect(dataset_file_schema.owner_username).to eq organisation_name
   end
 
   context "has at least one url" do

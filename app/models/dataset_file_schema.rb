@@ -21,6 +21,8 @@ class DatasetFileSchema < ApplicationRecord
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
  # validates_presence_of :storage_key
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
+  validates_presence_of :user_id # Hidden field
+  validates_presence_of :owner_username, message: 'Please select an owner for the schema'
 
  # before_validation :set_storage_key
 
@@ -34,8 +36,12 @@ class DatasetFileSchema < ApplicationRecord
     url_in_repo.nil? ? url_in_s3 : url_in_repo
   end
 
-  def owner_name
+  def creator_name
     user.name
+  end
+
+  def owner_name
+    owner_username
   end
 
   # TODO maybe persist this?
