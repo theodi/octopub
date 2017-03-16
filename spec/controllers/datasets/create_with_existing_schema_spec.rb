@@ -31,7 +31,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       'existing schema',
       'existing schema description',
       @url_for_schema,
-      @user
+      @user,
+      @user.name
     ).create_dataset_file_schema
 
     @files ||= []

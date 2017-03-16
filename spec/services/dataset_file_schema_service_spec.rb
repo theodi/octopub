@@ -9,9 +9,9 @@ describe DatasetFileSchemaService do
   let(:good_schema_url) { url_with_stubbed_get_for(good_schema_file) }
   let(:schema_name) { Faker::Cat.name }
   let(:description) { Faker::Cat.name }
-  
+
   before(:each) do
-    @schema_service = DatasetFileSchemaService.new(schema_name, description, good_schema_url, user)
+    @schema_service = DatasetFileSchemaService.new(schema_name, description, good_schema_url, user, user.name)
   end
 
   context "when a user is set" do

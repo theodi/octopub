@@ -15,7 +15,7 @@ describe InferredDatasetFileSchemaCreationService do
   let(:description) { Faker::Cat.breed }
   let(:schema_filename) { "#{schema_name.parameterize}.json" }
   let(:s3_object_key) { "uploads/#{uuid}/#{schema_filename}" }
-  let(:inferred_dataset_file_schema) { InferredDatasetFileSchema.new(name: schema_name, description: description, csv_url: infer_schema_csv_url, user_id: user.id)}
+  let(:inferred_dataset_file_schema) { InferredDatasetFileSchema.new(name: schema_name, description: description, csv_url: infer_schema_csv_url, user_id: user.id, owner_username: user.name)}
 
   before(:each) do
     @schema_service = InferredDatasetFileSchemaCreationService.new(inferred_dataset_file_schema)
