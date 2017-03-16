@@ -100,6 +100,15 @@ describe DatasetFileSchemasController, type: :controller do
     end
   end
 
+  describe 'destroy' do
+    it "works" do
+      dataset_file_schema = create(:dataset_file_schema, user: @user)
+      get :destroy, params: { id: dataset_file_schema.id }
+      expect(response).to be_success
+      expect(DatasetFileSchema.find(dataset_file_schema.id)).to be nil
+    end
+  end
+
   describe 'create failure' do
     it "returns to new page if schema does not validate" do
 

@@ -27,6 +27,12 @@ class DatasetFileSchemasController < ApplicationController
     end
   end
 
+  def destroy
+    @dataset_file_schema = DatasetFileSchema.find(params[:id])
+    @dataset_file_schema.destroy
+    redirect_to dataset_file_schemas_path, :notice => "Dataset File Schema '#{@dataset_file_schema.name}' deleted sucessfully"
+  end
+
   private
 
   def create_params
