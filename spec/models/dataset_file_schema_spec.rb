@@ -119,14 +119,15 @@ describe DatasetFileSchema do
   end
 
   it "nullifies associated foreign keys when deleted" do
-
+    storage_key = 'valid-schema.csv'
     @dataset_file_schema_with_url_in_repo.save
     dataset_file_schema_id = @dataset_file_schema_with_url_in_repo.id
-    ap @dataset_file_schema_with_url_in_repo
 
-    file_path = get_fixture_file('valid-schema.csv')
+    file_path = get_fixture_file(storage_key)
+
     dataset_file_1 = create(:dataset_file,
       dataset_file_schema: @dataset_file_schema_with_url_in_repo,
+      storage_key: storage_key,
       file: Rack::Test::UploadedFile.new(file_path, "text/csv")
     )
     dataset_file_2 = create(:dataset_file)
