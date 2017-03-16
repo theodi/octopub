@@ -15,7 +15,7 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
 
   context "with an existing schema" do
     before(:each) do
-      DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user).create_dataset_file_schema
+      DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user, @user.name).create_dataset_file_schema
       visit root_path
     end
 
