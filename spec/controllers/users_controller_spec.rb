@@ -39,7 +39,7 @@ describe UsersController, type: :controller do
       expect(@admin.admin?).to be true
       get :index
       expect(response.body).to match(/#{@admin.email}/)
-      expect(response.body).to match(/#{@admin.twitter_handle}/)
+      expect(CGI.unescapeHTML(response.body)).to match(/#{@admin.twitter_handle}/)
     end
 
     it "a publisher cannot view list of users" do
