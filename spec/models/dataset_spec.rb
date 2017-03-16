@@ -25,8 +25,10 @@
 #
 
 require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
 describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   before(:each) do
     @user = create(:user)
