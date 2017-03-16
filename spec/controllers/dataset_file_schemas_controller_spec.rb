@@ -103,7 +103,7 @@ describe DatasetFileSchemasController, type: :controller do
   describe 'destroy' do
     it "works" do
       dataset_file_schema = create(:dataset_file_schema, user: @user)
-      ap dataset_file_schema.errors
+
       get :destroy, params: { id: dataset_file_schema.id }
       expect(response).to redirect_to(dataset_file_schemas_path)
       expect{ DatasetFileSchema.find(dataset_file_schema.id) }.to raise_exception(ActiveRecord::RecordNotFound)
