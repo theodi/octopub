@@ -68,7 +68,7 @@ feature "Update dataset page", type: :feature, vcr: { :match_requests_on => [:ho
       @dataset_file_schema = DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user).create_dataset_file_schema
 
       @dataset = Dataset.create(name: Faker::Lorem.word, description: Faker::Lorem.sentence, user: @user)
-      @dataset_file = DatasetFile.new(title: Faker::Lorem.word, description: Faker::Lorem.sentence, file: good_file, dataset_file_schema: @dataset_file_schema, dataset: @dataset)
+      @dataset_file = DatasetFile.new(title: Faker::Lorem.word, description: Faker::Lorem.sentence, file: good_file, dataset_file_schema: @dataset_file_schema, dataset: @dataset, storage_key: 'valid-schema.csv' )
       @dataset_file.save(validate: false)
 
       expect(Dataset.count).to be 1
@@ -90,7 +90,7 @@ feature "Update dataset page", type: :feature, vcr: { :match_requests_on => [:ho
       allow_any_instance_of(Dataset).to receive(:create_repo_and_populate)
       allow_any_instance_of(Dataset).to receive(:fetch_repo)
 
-    end  
+    end
 
     after(:each) do
       set_dataset_callbacks!
