@@ -10,6 +10,7 @@
     <table class="table" data-toggle="table" data-pagination="true" data-search="true" data-filter-control="true">
       <thead>
         <tr>
+          <th data-sortable="true">Creator</th>
           <th data-sortable="true">Owner</th>
           <th data-sortable="true">Name</th>
         </tr>
@@ -17,6 +18,7 @@
       <tbody>
         <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
           <tr>
+            <td><%= dataset_file_schema.user.name %></td>
             <td><%= dataset_file_schema.owner_name %></td>
             <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
           </tr>
