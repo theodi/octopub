@@ -28,6 +28,8 @@ require 'git_data'
 
 class Dataset < ApplicationRecord
 
+  # Note it is the user who is logged in and creates the dataset
+  # It can be owned by someone else
   belongs_to :user
   has_many :dataset_files
 
