@@ -20,6 +20,7 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(1)
     end
 
+    # TODO look at this a bit more
     it 'gets all user and org repos', :vcr do
       request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:github]
 
@@ -27,6 +28,8 @@ describe DatasetsController, type: :controller do
 
       @dataset1 = create(:dataset, full_name: 'octopub/api-sandbox', user: @user)
       @dataset2 = create(:dataset, full_name: 'octopub-data/juan-test', user: create(:user))
+
+      expect(@user).to receive(:user_repos) { [@dataset1.id, @dataset2.id] }
 
       sign_in @user
       @user.send(:get_user_repos)

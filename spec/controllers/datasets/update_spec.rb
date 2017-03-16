@@ -1,6 +1,8 @@
 require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
-describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host, :method] } do
+describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   let(:filename) { 'valid-schema.csv' }
   let(:storage_key) { filename }
@@ -13,7 +15,6 @@ describe DatasetsController, type: :controller, vcr: { match_requests_on: [:host
   let(:not_matching_storage_key) { not_matching_filename }
   let(:url_for_not_matching_data_file) { url_with_stubbed_get_for_storage_key(not_matching_storage_key, not_matching_storage_key) }
   let(:schema_path) { get_fixture_schema_file('good-schema.json') }
-
 
   before(:each) do
     Sidekiq::Testing.inline!
