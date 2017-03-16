@@ -45,8 +45,6 @@ class FileStorageService
     URI(public_url).path.gsub(/^\//, '')
   end
 
-  private
-
   def self.bucket_attributes(uuid)
     { key: "uploads/#{uuid}/${filename}", success_action_status: '201', acl: 'public-read' }
   end

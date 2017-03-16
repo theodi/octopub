@@ -91,16 +91,6 @@ class DatasetFile < ApplicationRecord
     self.update(update_hash)
   end
 
-  def add_file_to_repo(repo, filename, file)
-    Rails.logger.info "DatasetFile: In add_file_to_repo #{filename}"
-    dataset.jekyll_service.add_file_to_repo(filename, file)
-  end
-
-  def update_file_in_repo(repo, filename, file)
-    Rails.logger.info "DatasetFile: In update_file_in_repo #{filename}"
-    dataset.jekyll_service.update_file_to_repo(filename, file)
-  end
-
   private
 
     def check_schema

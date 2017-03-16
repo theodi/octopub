@@ -22,7 +22,7 @@ class InferredDatasetFileSchemaCreationService
     data = CSV.parse(FileStorageService.get_string_io(csv_storage_key))
     headers = data.shift
     inferer = JsonTableSchema::Infer.new(headers, data, explicit: true)
-    schema = inferer.schema
+    inferer.schema
   end
 
   def perform
