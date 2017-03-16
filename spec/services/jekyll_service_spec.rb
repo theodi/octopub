@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'support/odlifier_licence_mock'
+
 
 describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   let(:user) { create(:user) }
   let(:path) { get_fixture_file('test-data.csv') }

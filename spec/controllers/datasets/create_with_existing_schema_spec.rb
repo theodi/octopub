@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
 describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
+
 
   let(:dataset_name) { "My cool dataset" }
   let(:description) { "This is a description" }
