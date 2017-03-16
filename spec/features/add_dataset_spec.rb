@@ -1,8 +1,10 @@
 require "rails_helper"
 require 'features/user_and_organisations'
+require 'support/odlifier_licence_mock'
 
 feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
   include_context 'user and organisations'
+  include_context 'odlifier licence mock'
 
   let(:data_file) { get_fixture_file('valid-schema.csv') }
 
