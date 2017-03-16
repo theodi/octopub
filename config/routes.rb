@@ -19,9 +19,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :dataset_file_schemas, only: [:index, :new, :create, :show]
+  resources :dataset_file_schemas, only: [:index, :new, :create, :show, :destroy]
   resources :inferred_dataset_file_schemas, only: [:new, :create]
   resources :jobs, only: [:show]
+  resources :users, only: [:index, :show, :edit ,:update]
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
 

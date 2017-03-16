@@ -13,11 +13,38 @@
 #  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
+#  role            :integer          default("publisher"), not null
 #
 
 require 'rails_helper'
 
 describe User do
+
+  context "user can have a single role" do
+    it "by default, publisher" do
+      user = create(:user)
+      expect(user.role).to eq 'publisher'
+      expect(user.publisher?).to be true
+      expect(user.superuser?).to be false
+      expect(user.admin?).to be false
+    end
+
+    it "as a superuser" do
+      user = create(:superuser)
+      expect(user.role).to eq 'superuser'
+      expect(user.superuser?).to be true
+      expect(user.publisher?).to be false
+      expect(user.admin?).to be false
+    end
+
+    it "as an admin" do
+      user = create(:admin)
+      expect(user.role).to eq 'admin'
+      expect(user.superuser?).to be false
+      expect(user.publisher?).to be false
+      expect(user.admin?).to be true
+    end
+  end
 
   context "find_for_github_oauth" do
 

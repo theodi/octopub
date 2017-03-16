@@ -20,6 +20,8 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
+        expect(page).to have_content @user.github_username
+        select @user.github_username, :from => "dataset_file_schema_owner_username"
         fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
         fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
         attach_file('dataset_file_schema_url_in_s3', data_file)

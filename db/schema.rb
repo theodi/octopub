@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20170308121958) do
     t.text     "view_sha"
     t.integer  "dataset_file_schema_id"
     t.string   "storage_key"
+    t.text     "owner_username"
+    t.text     "owner_avatar_url"
     t.index ["dataset_file_schema_id"], name: "index_dataset_files_on_dataset_file_schema_id", using: :btree
     t.index ["dataset_id"], name: "index_dataset_files_on_dataset_id", using: :btree
   end
@@ -83,6 +85,7 @@ ActiveRecord::Schema.define(version: 20170308121958) do
     t.string   "api_key",         limit: 255
     t.text     "org_dataset_ids",             default: [], array: true
     t.string   "twitter_handle",  limit: 255
+    t.integer  "role",            default: 0,  null: false
   end
 
 end

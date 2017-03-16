@@ -22,7 +22,7 @@ class InferredDatasetFileSchemaCreationService
     data = CSV.parse(FileStorageService.get_string_io(csv_storage_key))
     headers = data.shift
     inferer = JsonTableSchema::Infer.new(headers, data, explicit: true)
-    schema = inferer.schema
+    inferer.schema
   end
 
   def perform
@@ -30,7 +30,14 @@ class InferredDatasetFileSchemaCreationService
       inferred_schema = self.class.infer_dataset_file_schema_from_csv(@csv_storage_key)
       user = User.find(@inferred_dataset_file_schema.user_id)
       storage_object = FileStorageService.create_and_upload_public_object(inferred_schema_filename(@inferred_dataset_file_schema.name), inferred_schema.to_json)
-      dataset_file_schema = user.dataset_file_schemas.create(url_in_s3: storage_object.public_url, storage_key: storage_object.key, name: @inferred_dataset_file_schema.name, description: @inferred_dataset_file_schema.description, schema: inferred_schema.to_json)
+      dataset_file_schema = user.dataset_file_schemas.create(
+        url_in_s3: storage_object.public_url,
+        storage_key: storage_object.key,
+        name: @inferred_dataset_file_schema.name,
+        description: @inferred_dataset_file_schema.description,
+        schema: inferred_schema.to_json,
+        owner_username: @inferred_dataset_file_schema.owner_username
+      )
     rescue => exception
       OpenStruct.new(success?: false, dataset_file_schema: dataset_file_schema, error: exception)
     else

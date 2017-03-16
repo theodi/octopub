@@ -1,19 +1,28 @@
 <h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small></h1>
+<div>
 
+<%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
+<%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
+
+</div>
 <div>
   <% if @dataset_file_schemas.any? %>
     <table class="table" data-toggle="table" data-pagination="true" data-search="true" data-filter-control="true">
       <thead>
         <tr>
+          <th data-sortable="true">Creator</th>
           <th data-sortable="true">Owner</th>
           <th data-sortable="true">Name</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
           <tr>
+            <td><%= dataset_file_schema.user.name %></td>
             <td><%= dataset_file_schema.owner_name %></td>
             <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+            <td><%= link_to("Delete", dataset_file_schema_path(dataset_file_schema), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "btn btn-danger btn-sm") %></td>
           </tr>
         <% end %>
       </tbody>
@@ -22,7 +31,4 @@
     <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>
   <% end %>
 </div>
-<div class="btn-group" role="group">
-<%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
-<%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
-</div>
+

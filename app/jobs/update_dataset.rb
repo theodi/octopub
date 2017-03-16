@@ -37,7 +37,7 @@ class UpdateDataset
   end
 
   def update_file(id, file)
-    f = @dataset.dataset_files.find { |f| f.id == id.to_i }
+    f = @dataset.dataset_files.find { |this_file| this_file.id == id.to_i }
 
     if file["schema"]
       # Create schema

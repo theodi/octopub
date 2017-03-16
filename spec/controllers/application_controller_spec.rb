@@ -17,6 +17,20 @@ describe ApplicationController, type: :controller, vcr: { :match_requests_on => 
        expect(controller.instance_eval{ @current_user }).to eq(user)
      end
 
+      it "gets the admin user if logged in" do
+       user = create(:admin)
+       controller.session[:user_id] = user.id
+       controller.instance_eval{ admin_user }
+       expect(controller.instance_eval{ @current_user }).to eq(user)
+     end
+
+    it "does not get the admin user if the user isn't an admin" do
+       user = create(:user)
+       controller.session[:user_id] = user.id
+       controller.instance_eval{ admin_user }
+       expect(controller.instance_eval{ admin_user }).to be_nil
+     end
+
      it "gets the current user from an api key" do
        user = create(:user, id: 456)
        controller.request.headers['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(user.api_key)

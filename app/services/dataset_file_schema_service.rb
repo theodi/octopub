@@ -1,16 +1,17 @@
 class DatasetFileSchemaService
 
-  def initialize(schema_name, description, url_in_s3, user)
+  def initialize(schema_name, description, url_in_s3, user, owner_username = user.name)
     @schema_name = schema_name
     @description = description
     @url_in_s3 = url_in_s3
     @user = user
+    @owner_username = owner_username
   end
 
   def create_dataset_file_schema
     Rails.logger.info "In create #{@url_in_s3}"
 
-    @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description)
+    @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username)
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
     @dataset_file_schema
   end

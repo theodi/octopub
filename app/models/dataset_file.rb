@@ -24,6 +24,7 @@ class DatasetFile < ApplicationRecord
   validate :check_schema, if: :dataset_file_schema
   validate :check_csv
   validates_presence_of :title
+  validates_presence_of :storage_key
 
   after_validation :set_filename
 
@@ -89,16 +90,6 @@ class DatasetFile < ApplicationRecord
     }.delete_if { |_k,v| v.nil? }
 
     self.update(update_hash)
-  end
-
-  def add_file_to_repo(repo, filename, file)
-    Rails.logger.info "DatasetFile: In add_file_to_repo #{filename}"
-    dataset.jekyll_service.add_file_to_repo(filename, file)
-  end
-
-  def update_file_in_repo(repo, filename, file)
-    Rails.logger.info "DatasetFile: In update_file_in_repo #{filename}"
-    dataset.jekyll_service.update_file_to_repo(filename, file)
   end
 
   private

@@ -46,7 +46,7 @@ class DatasetsController < ApplicationController
   def create
     logger.info "DatasetsController: In create"
     files_array = get_files_as_array_for_serialisation
-    job = CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
+    CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     if params[:async]
       logger.info "DatasetsController: In create with params aysnc"
@@ -66,7 +66,7 @@ class DatasetsController < ApplicationController
   def update
     logger.info "DatasetsController: In update"
     files_array = get_files_as_array_for_serialisation
-    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
+    UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
