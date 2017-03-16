@@ -1,8 +1,10 @@
 require "rails_helper"
 require 'features/user_and_organisations'
+require 'support/odlifier_licence_mock'
 
-feature "Update dataset page", type: :feature, vcr: { :match_requests_on => [:host, :method] } do
+feature "Update dataset page", type: :feature do
   include_context 'user and organisations'
+  include_context 'odlifier licence mock'
 
   let(:data_file) { get_fixture_file('valid-schema.csv') }
   let(:schema_name) { Faker::Lorem.word }
@@ -13,6 +15,12 @@ feature "Update dataset page", type: :feature, vcr: { :match_requests_on => [:ho
     Dataset.set_callback(:update, :after, :create_repo_and_populate)
     skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     visit root_path
+    allow_any_instance_of(JekyllService).to receive(:license_details) {
+      object = double(Object)
+      allow(object).to receive(:url) { 'https://example.org'}
+      allow(object).to receive(:title) { 'licence' }
+      object
+    }
   end
 
   after(:each) do
