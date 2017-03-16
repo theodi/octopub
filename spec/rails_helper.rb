@@ -13,11 +13,15 @@ require 'git_data'
 require 'database_cleaner'
 require 'factory_girl'
 require 'omniauth'
-require 'support/vcr_helper'
-require 'support/fake_data'
+
 require 'webmock/rspec'
 require 'sidekiq/testing'
 
+require 'features/user_and_organisations'
+
+require 'support/odlifier_licence_mock'
+require 'support/vcr_helper'
+require 'support/fake_data'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -43,6 +47,9 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  config.include_context 'user and organisations', :include_shared => true
+  config.include_context 'odlifier licence mock', :include_shared => true
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -73,6 +80,7 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+
     unless example.example_group.description == 'FileStorageService'
       allow(FileStorageService).to receive(:get_string_io) do |storage_key|
         get_string_io_from_fixture_file(storage_key)
@@ -86,6 +94,44 @@ RSpec.configure do |config|
         obj
       end
     end
+
+    # allow(Odlifier::License).to receive(:define).with("cc-by") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "Creative Commons Attribution 4.0" }
+    #   allow(obj).to receive(:id) { "CC-BY-4.0" }
+    #   obj
+    # }
+    # allow(Odlifier::License).to receive(:define).with("cc-by-sa") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "Creative Commons Attribution Share-Alike 4.0" }
+    #   allow(obj).to receive(:id) { "CC-BY-SA-4.0" }
+    #   obj
+    # }
+    # allow(Odlifier::License).to receive(:define).with("cc0") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "CC0 1.0" }
+    #   allow(obj).to receive(:id) { "CC0-1.0" }
+    #   obj
+    # }
+    # allow(Odlifier::License).to receive(:define).with("OGL-UK-3.0") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "Open Government Licence 3.0 (United Kingdom)" }
+    #   allow(obj).to receive(:id) { "OGL-UK-3.0" }
+    #   obj
+    # }
+    # allow(Odlifier::License).to receive(:define).with("odc-by") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "Open Data Commons Attribution License 1.0" }
+    #   allow(obj).to receive(:id) { "ODC-BY-1.0" }
+    #   obj
+    # }
+    # allow(Odlifier::License).to receive(:define).with("odc-pddl") {
+    #   obj = double(Odlifier::License)
+    #   allow(obj).to receive(:title) { "Open Data Commons Public Domain Dedication and Licence 1.0" }
+    #   allow(obj).to receive(:id) { "ODC-PDDL-1.0" }
+    #   obj
+    # }
+
   end
 
   # This overrides always true in the spec_helper file
