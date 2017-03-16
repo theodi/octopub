@@ -5,6 +5,44 @@ describe DatasetFileSchemasController, type: :controller do
   before(:each) do
     @user = create(:user)
     @good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
+    allow(controller).to receive(:current_user) { @user }
+  end
+
+  describe 'can be created with organisation' do
+
+    let(:organization) { 'my-cool-organization' }
+
+    it "returns http success" do
+
+      # expect(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
+      #   @repo
+      # }
+      # expect(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
+      #   @repo
+      # }
+      # allow(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
+      #   @repo
+      # }
+      # allow(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
+      #   @repo
+      # }
+      # organiz
+
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url, owner_username: organization
+        }
+      }
+
+      dataset_file_schema = DatasetFileSchema.last
+      expect(DatasetFileSchema.count).to be 1
+      expect(dataset_file_schema.name).to eq schema_name
+      expect(dataset_file_schema.description).to eq description
+      expect(dataset_file_schema.user).to eq @user
+    end
   end
 
   describe 'index' do
@@ -54,7 +92,7 @@ describe DatasetFileSchemasController, type: :controller do
 
       post :create, params: {
         dataset_file_schema: {
-          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url
+          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url, owner_username: @user.name
         }
       }
 
@@ -70,7 +108,7 @@ describe DatasetFileSchemasController, type: :controller do
 
       post :create, params: {
         dataset_file_schema: {
-          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url
+          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url, owner_username: @user.name
         }
       }
       expect(response).to redirect_to(dataset_file_schemas_path)
@@ -78,12 +116,6 @@ describe DatasetFileSchemasController, type: :controller do
   end
 
   describe 'create failure' do
-  #  render_views
-
-    before(:each) do
-      allow(controller).to receive(:current_user) { @user }
-    end
-
     it "returns to new page if schema does not validate" do
 
       schema_name = 'schema-name'
@@ -95,8 +127,32 @@ describe DatasetFileSchemasController, type: :controller do
         }
       }
       expect(response).to render_template("new")
-  #    expect(response.body).to match /You must have a schema file/
     end
 
+    it "returns to new page if no owner set" do
+
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url
+        }
+      }
+      expect(response).to render_template("new")
+    end
+
+    it "returns to new page if no user set" do
+
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, url_in_s3: @good_schema_url, owner_username: @user.name
+        }
+      }
+      expect(response).to render_template("new")
+    end
   end
 end
