@@ -178,7 +178,7 @@ class JekyllService
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => json_schema_for_datapackage(file.dataset_file_schema)
-      }.delete_if { |k,v| v.nil? }
+      }.delete_if { |k_,v| v.nil? }
     end
 
     datapackage.to_json
@@ -232,7 +232,7 @@ class JekyllService
 
   def create_json_jekyll_files(file, schema)
     Rails.logger.info "In create_jekyll_files"
-    for_each_file_in_schema(file, schema) do |filename, content|
+    for_each_file_in_schema(file, schema) do |filename, _content|
       # Add human readable template
       unless filename == "index.json"
         if filename.scan('/').count > 0

@@ -1,0 +1,31 @@
+<h1 class="page-header">Users</h1>
+<% if @users.count > 0 %>
+  <table class="table" 
+  data-toggle="table" 
+  data-pagination="true" 
+  data-search="true" 
+  data-filter-control="true">
+  <thead>
+    <tr>
+      <th data-sortable="true">Name</th>
+      <th data-sortable="true">Provider</th>
+      <th data-sortable="true">Email</th>
+      <th data-sortable="true">Twitter handle</th>
+      <th data-sortable="true">Role</th>
+      <th data-sortable="true">Created on</th>
+    </tr>
+    </thead>
+    <% @users.each do |user| %>
+    <tr>
+      <td><%= user.name %></td>
+      <td><%= user.provider %></td>
+      <td><%= user.email %></td>
+      <td><%= user.twitter_handle %></td>
+      <td><%= user.role %></td>
+      <td><%= user.created_at.to_formatted_s(:long_ordinal)  %></td>
+    </tr>
+    <% end %>
+  </table>
+<% else %>
+  <p class='text-center lead'>There are no users</p>
+<% end %>
