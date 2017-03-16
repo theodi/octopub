@@ -33,11 +33,5 @@ FactoryGirl.define do
         create_list(:dataset_file, 5, dataset: dataset)
       end
     end
-
-    # factory :dataset_with_schema_and_valid_file do
-    #   after(:create) do |dataset, evaluator|
-    #     create(:dataset_file_with_schema, dataset: dataset)
-    #   end
-    # end
   end
 end
