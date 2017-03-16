@@ -8,6 +8,10 @@ describe InferredDatasetFileSchemasController, type: :controller do
   let(:csv_storage_key) { "uploads/#{uuid}/data_infer.csv" }
   let(:infer_schema_csv_url) { url_with_stubbed_get_for_storage_key(csv_storage_key, infer_schema_filename) }
 
+  before(:each) do
+    allow(controller).to receive(:current_user) { user }
+  end
+
   describe 'new' do
     it "returns http success" do
       get :new
@@ -16,11 +20,11 @@ describe InferredDatasetFileSchemasController, type: :controller do
   end
 
   describe 'create' do
-    it "returns http success" do
+    it "returns http success for the user owned schema" do
       schema_name = 'schema-name'
       description = 'schema-description'
 
-      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url } }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url, owner_username: user.name } }
 
       dataset_file_schema = DatasetFileSchema.last
       expect(dataset_file_schema.name).to eq schema_name
@@ -28,11 +32,26 @@ describe InferredDatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.user).to eq user
     end
 
+    it "returns http success for an organisation owned schema" do
+      schema_name = 'schema-name'
+      description = 'schema-description'
+      organisation = Faker::Internet.user_name
+
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url, owner_username: organisation } }
+
+      dataset_file_schema = DatasetFileSchema.last
+      expect(dataset_file_schema.name).to eq schema_name
+      expect(dataset_file_schema.description).to eq description
+      expect(dataset_file_schema.user).to eq user
+      expect(dataset_file_schema.owner_username).to eq organisation
+    end
+
     it "creates a dataset file schema and redirects back to index" do
       schema_name = 'schema-name'
       description = 'schema-description'
+      organisation = Faker::Internet.user_name
 
-      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url } }
+      post :create, params: { inferred_dataset_file_schema: { name: schema_name, description: description, user_id: user.id, csv_url: infer_schema_csv_url, owner_username: organisation } }
       expect(response).to redirect_to(dataset_file_schemas_path)
     end
   end

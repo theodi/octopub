@@ -32,6 +32,8 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
+        expect(page).to have_content @user.github_username
+        select @user.github_username, :from => "inferred_dataset_file_schema_owner_username"
         fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
         fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
         attach_file('inferred_dataset_file_schema_csv_url', data_file)
@@ -76,6 +78,8 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
       it "errors if file is wrong format" do
         within 'form' do
+          expect(page).to have_content @user.github_username
+          select @user.github_username, :from => "inferred_dataset_file_schema_owner_username"
           fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
           fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
           attach_file('inferred_dataset_file_schema_csv_url', wonky_file)

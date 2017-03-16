@@ -13,21 +13,6 @@ describe DatasetFileSchemasController, type: :controller do
     let(:organization) { 'my-cool-organization' }
 
     it "returns http success" do
-
-      # expect(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
-      #   @repo
-      # }
-      # expect(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
-      #   @repo
-      # }
-      # allow(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
-      #   @repo
-      # }
-      # allow(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
-      #   @repo
-      # }
-      # organiz
-
       schema_name = 'schema-name'
       description = 'schema-description'
 
