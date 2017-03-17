@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308121958) do
+ActiveRecord::Schema.define(version: 20170315152041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "allocated_dataset_file_schemas_users", id: false, force: :cascade do |t|
+    t.integer "dataset_file_schema_id"
+    t.integer "user_id"
+    t.index ["dataset_file_schema_id"], name: "allocated_dataset_file_schema_index", using: :btree
+    t.index ["user_id"], name: "allocated_user_index", using: :btree
+  end
 
   create_table "dataset_file_schemas", force: :cascade do |t|
     t.text     "name"

@@ -46,6 +46,25 @@ describe User do
     end
   end
 
+  context "can have dataset file schemas" do
+    it "including ones created by the user" do
+      user = create(:user)
+      dataset_file_schema = create(:dataset_file_schema, user: user)
+      expect(user.dataset_file_schemas.count).to be 1
+      expect(user.dataset_file_schemas.first).to eq dataset_file_schema
+    end
+
+    it "including ones given access to" do
+      user = create(:user)
+      admin = create(:admin)
+      dataset_file_schema = create(:dataset_file_schema, user: admin)
+      user.allocated_dataset_file_schemas << dataset_file_schema
+      user.reload
+      expect(user.allocated_dataset_file_schemas.count).to be 1
+      expect(user.allocated_dataset_file_schemas.first).to eq dataset_file_schema
+    end
+  end
+
   context "find_for_github_oauth" do
 
     before(:each) do
