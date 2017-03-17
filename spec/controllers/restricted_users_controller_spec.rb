@@ -30,7 +30,14 @@ describe RestrictedUsersController, type: :controller do
     it "updates a user's email" do
       put :update, params: { id: @user.id, user: { email: 'newemail@example.com' }}
       @user.reload
-      expect(@user.email).to eq('newemail@example.com')
+      expect(@user.email).to eq 'newemail@example.com'
+    end
+
+    it "updates a user's role" do
+      expect(@user.role).to eq 'publisher'
+      put :update, params: { id: @user.id, user: { role: 'superuser' }}
+      @user.reload
+      expect(@user.role).to eq 'superuser'
     end
   end
 end

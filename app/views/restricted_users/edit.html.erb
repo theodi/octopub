@@ -6,6 +6,18 @@
   <%= f.text_field "user[api_key]", label: "API Key", value: @user.api_key, required: true, disabled: true %>
   <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: @user.twitter_handle, required: false, prepend: '@' %>
 
-  <button type="submit" class="btn btn-primary btn-lg btn-block">Update</button>
+  <div class="form-group">
+      <label class="control-label" for="user[role]">Role</label>
+      <%= select(:user, :role, options_for_select(User.roles.map {|role_name, _role_integer| [role_name.titleize, role_name]}, @user.role), {}, { class: 'form-control' }) %>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="allocated_dataset_file_schema_ids">Allocated dataset file schemas</label>
 
+    <%= collection_check_boxes(:user, :allocated_dataset_file_schema_ids, DatasetFileSchema.all, :id, :name, include_hidden: false) do |b| %>
+      <div class="checkbox">
+        <%=  b.label { b.check_box + b.text } %>
+      </div>
+    <% end %>
+  </div>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Update</button>
 <% end %>
