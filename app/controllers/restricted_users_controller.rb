@@ -3,6 +3,7 @@ class RestrictedUsersController < ApplicationController
   before_action :check_signed_in?, only: [:edit, :update]
 
   def edit
+    render_403_permissions unless admin_user
     @user = User.find(params[:id])
   end
 
