@@ -17,6 +17,10 @@
   </div>
 </div>
 
+<div>
+  <%= link_to 'Edit user and allocate schemas', edit_restricted_user_path(@user), class: "btn btn-primary" %>
+</div>
+
 <% if @user.datasets %>
   <h2>User's Datasets</h2>
 

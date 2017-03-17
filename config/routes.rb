@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :inferred_dataset_file_schemas, only: [:new, :create]
   resources :jobs, only: [:show]
   resources :users, only: [:index, :show, :edit ,:update]
+  resources :restricted_users, only: [:edit, :update]
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
 

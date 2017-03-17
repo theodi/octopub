@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :check_signed_in?, only: [:edit, :update, :organizations]
 
   def index
-    render_403_permissions unless current_user.present? && current_user.admin?
+    render_403_permissions unless admin_user
     @users = User.all
   end
 
