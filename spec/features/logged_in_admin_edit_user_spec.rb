@@ -36,5 +36,24 @@ feature "Logged in admin can edit user", type: :feature do
     @publisher.reload
     expect(@publisher.role).to eq 'superuser'
   end
+
+  scenario "logged in admins can allocated schemas" do
+    dataset_file_schema_1 = create(:dataset_file_schema)
+    dataset_file_schema_2 = create(:dataset_file_schema)
+    @publisher.allocated_dataset_file_schemas << dataset_file_schema_1
+    @publisher.reload
+    expect(@publisher.allocated_dataset_file_schemas.count).to be 1
+
+    visit edit_restricted_user_path(@publisher)
+    expect(page.has_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_1.id}"))
+    expect(page.has_no_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_2.id}"))
+
+    page.check("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_2.id}")
+    click_on 'Update'
+    @publisher.reload
+
+    expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+    expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+  end
 end
 
