@@ -13,7 +13,7 @@
   <div class="form-group">
     <label class="control-label" for="allocated_dataset_file_schema_ids">Allocated dataset file schemas</label>
 
-    <%= collection_check_boxes(:user, :allocated_dataset_file_schema_ids, DatasetFileSchema.all, :id, :name, include_hidden: false) do |b| %>
+    <%= collection_check_boxes(:user, :allocated_dataset_file_schema_ids, @dataset_file_schemas, :id, :name, include_hidden: false) do |b| %>
       <div class="checkbox">
         <%=  b.label { b.check_box + b.text } %>
       </div>

@@ -4,6 +4,8 @@ class RestrictedUsersController < ApplicationController
 
   def edit
     render_403_permissions unless admin_user
+    # TODO this should be the ones which the user *should* have access to
+    @dataset_file_schemas = DatasetFileSchema.all
     @user = User.find(params[:id])
   end
 
