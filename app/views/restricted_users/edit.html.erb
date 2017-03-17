@@ -1,0 +1,11 @@
+<h1 class="page-header">Edit user and allocate schemas <small><%= @user.name %></small></h1>
+
+<%= bootstrap_form_tag url: restricted_user_path(@user), method: :put do |f| %>
+  <%= f.text_field "user[name]", label: "Username", value: @user.name, required: true, disabled: true %>
+  <%= f.email_field "user[email]", label: "Email", value: @user.email, required: true %>
+  <%= f.text_field "user[api_key]", label: "API Key", value: @user.api_key, required: true, disabled: true %>
+  <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: @user.twitter_handle, required: false, prepend: '@' %>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Update</button>
+
+<% end %>

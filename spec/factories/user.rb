@@ -9,7 +9,7 @@ FactoryGirl.define do
 
     trait :with_twitter_name do
       after(:build) { |user|
-        user.twitter_handle = Faker::Twitter.user[:name]
+        user.twitter_handle = Faker::Twitter.user[:screen_name]
       }
     end
 
