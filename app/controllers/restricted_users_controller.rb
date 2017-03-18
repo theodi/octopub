@@ -18,7 +18,7 @@ class RestrictedUsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :twitter_handle, :role, allocated_dataset_file_schema_ids: [] )
+    params.require(:user).permit(:email, :twitter_handle, :role, :restricted, allocated_dataset_file_schema_ids: [] )
   end
 
   def check_signed_in?

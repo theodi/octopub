@@ -40,6 +40,13 @@ describe RestrictedUsersController, type: :controller do
       expect(@publisher.role).to eq 'superuser'
     end
 
+    it "set's a user to restricted" do
+      expect(@publisher.restricted).to eq false
+      put :update, params: { id: @publisher.id, user: { restricted: true }}
+      @publisher.reload
+      expect(@publisher.restricted).to eq true
+    end
+
     it "updates a user's allocated schemas" do
 
       dataset_file_schema_1 = create(:dataset_file_schema)
