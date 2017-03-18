@@ -10,6 +10,7 @@ feature "Logged in access to pages for restricted publishers", type: :feature do
     OmniAuth.config.mock_auth[:github]
     visit root_path
     sign_in user
+    visit root_path
   end
 
   context "with public dataset already" do
@@ -31,36 +32,12 @@ feature "Logged in access to pages for restricted publishers", type: :feature do
     end
   end
 
-  context "can add a dataset with restricted schema" do
+  # scenario "can add a dataset with restricted schema" do
+  #   click_link "List my dataset file schemas"
+  #   expect(page).to have_content "You currently have no dataset file schemas"
+  #   pending
+  # end
 
 
 
-  end
-
-    scenario "can add a dataset with restricted schema" do
-
-      click_link "List my dataset file schemas"
-      expect(page).to have_content "You currently have no dataset file schemas"
-    end
-
-    scenario "logged in publishers cannot view user list" do
-      expect(page).to_not have_content "Users"
-      visit users_path
-      expect(page).to have_content "You do not have permission to view that page or resource"
-    end
-
-    scenario "logged in publishers cannot edit other users" do
-      other_user = create(:user)
-      visit edit_user_path(other_user)
-      expect(page).to have_content user.name
-      expect(page).to_not have_content other_user.name
-    end
-
-    scenario "logged in publishers cannot edit other restricted users" do
-      @other_user = create(:user)
-      visit edit_restricted_user_path(@other_user)
-      expect(page).to have_content "You do not have permission to view that page or resource"
-    end
-  end
 end
-
