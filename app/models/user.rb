@@ -14,6 +14,7 @@
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
 #  role            :integer          default("publisher"), not null
+#  restricted      :boolean          default(FALSE)
 #
 
 class User < ApplicationRecord

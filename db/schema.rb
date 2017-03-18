@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315152041) do
+ActiveRecord::Schema.define(version: 20170318143152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170315152041) do
     t.text     "org_dataset_ids",             default: [], array: true
     t.string   "twitter_handle",  limit: 255
     t.integer  "role",            default: 0,  null: false
+    t.boolean  "restricted",      default: false
   end
 
 end
