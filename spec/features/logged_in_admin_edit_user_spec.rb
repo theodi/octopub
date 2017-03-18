@@ -37,6 +37,15 @@ feature "Logged in admin can edit user", type: :feature do
     expect(@publisher.role).to eq 'superuser'
   end
 
+  scenario "logged in admins can change the user to a restricted user" do
+    expect(@publisher.restricted).to be false
+    expect(page.has_no_checked_field?('_user[restricted]'))
+    page.check('_user[restricted]')
+    click_on 'Update'
+    @publisher.reload
+    expect(@publisher.restricted).to be true
+  end
+
   scenario "logged in admins can allocated schemas" do
     dataset_file_schema_1 = create(:dataset_file_schema)
     dataset_file_schema_2 = create(:dataset_file_schema)
