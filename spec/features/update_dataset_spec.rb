@@ -12,8 +12,6 @@ feature "Update dataset page", type: :feature do
   let(:good_schema_url) { url_with_stubbed_get_for_fixture_file('schemas/good-schema.json') }
 
   before(:each) do
-    Dataset.set_callback(:update, :after, :create_repo_and_populate)
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     visit root_path
     allow_any_instance_of(JekyllService).to receive(:license_details) {
       object = double(Object)
@@ -21,10 +19,6 @@ feature "Update dataset page", type: :feature do
       allow(object).to receive(:title) { 'licence' }
       object
     }
-  end
-
-  after(:each) do
-    skip_callback_if_exists(Dataset, :update, :after, :create_repo_and_populate)
   end
 
   context "logged in visitor has a dataset and" do
@@ -46,9 +40,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
-      allow_any_instance_of(Dataset).to receive(:create_repo_and_populate)
       allow_any_instance_of(Dataset).to receive(:fetch_repo)
-
     end
 
     scenario "can access edit dataset page and change description" do
@@ -68,7 +60,6 @@ feature "Update dataset page", type: :feature do
   context "logged in visitor has a dataset with a dataset file schema and" do
 
     before(:each) do
-      skip_dataset_callbacks!
       expect(Dataset.count).to be 0
       @dataset_file_schema = DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user).create_dataset_file_schema
       good_file = url_with_stubbed_get_for_fixture_file('valid-schema.csv')
@@ -95,13 +86,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
-      allow_any_instance_of(Dataset).to receive(:create_repo_and_populate)
       allow_any_instance_of(Dataset).to receive(:fetch_repo)
-
-    end
-
-    after(:each) do
-      set_dataset_callbacks!
     end
 
     scenario "can access edit dataset page and change description" do

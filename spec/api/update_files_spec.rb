@@ -6,8 +6,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
 
   before(:each) do
     Sidekiq::Testing.inline!
-
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    allow_any_instance_of(CreateRepository).to receive(:perform)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
 
     @user = create(:user)
@@ -25,7 +24,6 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
     Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
