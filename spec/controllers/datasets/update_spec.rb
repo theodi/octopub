@@ -18,12 +18,10 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
   before(:each) do
     Sidekiq::Testing.inline!
-
     @user = create(:user)
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
-
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(CreateRepository).to receive(:perform)
   end
 
   before(:each, schema: true) do
@@ -32,8 +30,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
   after(:each) do
     Sidekiq::Testing.fake!
-
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   describe 'update' do

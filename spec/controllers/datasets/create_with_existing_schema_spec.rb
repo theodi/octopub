@@ -21,12 +21,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_dataset_callbacks!
 
     @user = create(:user)
     sign_in @user
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
+    allow_any_instance_of(CreateRepository).to receive(:perform)
 
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
@@ -43,7 +43,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
   after(:each) do
     Sidekiq::Testing.fake!
-    set_dataset_callbacks!
   end
 
   describe 'create dataset with an existing schema' do

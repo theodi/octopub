@@ -13,7 +13,6 @@ describe DatasetsController, type: :controller do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_dataset_callbacks!
 
     @user = create(:user)
     sign_in @user
@@ -47,7 +46,6 @@ describe DatasetsController, type: :controller do
 
   after(:each) do
     Sidekiq::Testing.fake!
-    set_dataset_callbacks!
   end
 
   describe 'do not create dataset' do
@@ -112,7 +110,6 @@ describe DatasetsController, type: :controller do
   end
 
   describe 'create dataset' do
-
     context 'with one file' do
 
       before(:each) do
@@ -121,8 +118,6 @@ describe DatasetsController, type: :controller do
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
         @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
-
-        Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
         @files << {
           :title => name,
@@ -137,8 +132,6 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:name) { nil }
         expect(@repo).to receive(:full_name) { nil }
         expect(@repo).to receive(:save)
-
-
       end
 
       def creation_assertions

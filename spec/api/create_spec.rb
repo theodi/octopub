@@ -4,8 +4,6 @@ describe 'POST /datasets' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_dataset_callbacks!
-
     @user = create(:user)
 
     @name = "My cool dataset"
@@ -26,7 +24,6 @@ describe 'POST /datasets' do
 
     @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
 
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
     allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     @repo = double(GitData)
