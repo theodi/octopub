@@ -6,21 +6,8 @@ class JekyllService
   end
 
   def repo_service
-    fetch_repo if @repo.nil?
+    @repo = RepoService.fetch_repo(repo_owner, @dataset) if @repo.nil?
     @repo_service ||= RepoService.new(@repo)
-  end
-
-  def fetch_repo(client = @dataset.user.octokit_client)
-
-    @repo ||= begin
-      Rails.logger.info "JekyllService: in fetch_repo, look it up"
-      @repo = GitData.find(repo_owner, @dataset.name, client: client)
-      # This is in for backwards compatibility at the moment required for API
-
-    rescue Octokit::NotFound
-      Rails.logger.info "in fetch_repo - not found"
-      @repo = nil
-    end
   end
 
   def repo_owner

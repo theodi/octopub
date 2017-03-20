@@ -124,7 +124,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "completes publishing" do
     dataset = build(:dataset)
-    expect(dataset).to receive(:fetch_repo)
+    expect(RepoService).to receive(:fetch_repo)
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
     expect(dataset).to receive(:send_success_email)

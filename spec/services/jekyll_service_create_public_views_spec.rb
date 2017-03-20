@@ -62,7 +62,7 @@ context 'creating certificates for public datasets' do
     end
 
     it 'adds the badge url to the repo' do
-      expect(@jekyll_service).to receive(:fetch_repo)
+     # expect(RepoService).to receive(:fetch_repo)
 
       expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with('_config.yml', {
         "data_source" => ".",
