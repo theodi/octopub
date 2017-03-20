@@ -1,5 +1,5 @@
 class InferredDatasetFileSchemasController < ApplicationController
-
+  before_action :check_signed_in?
   # TODO needs to handle files and URLs like Dataset controller
 
   def new

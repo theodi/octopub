@@ -1,6 +1,5 @@
 class RestrictedUsersController < ApplicationController
-
-  before_action :check_signed_in?, only: [:edit, :update]
+  before_action :check_signed_in?
 
   def edit
     render_403_permissions unless admin_user
@@ -19,9 +18,5 @@ class RestrictedUsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :twitter_handle, :role, :restricted, allocated_dataset_file_schema_ids: [] )
-  end
-
-  def check_signed_in?
-    render_403 if current_user.nil?
   end
 end

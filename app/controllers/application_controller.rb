@@ -28,6 +28,10 @@ class ApplicationController < ActionController::Base
     }.to_json
   end
 
+  def check_signed_in?
+    render_403 if current_user.nil?
+  end
+
   private
 
   def current_user

@@ -1,4 +1,5 @@
 class DatasetFileSchemasController < ApplicationController
+  before_action :check_signed_in?
 
   def index
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
