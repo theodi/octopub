@@ -16,7 +16,7 @@ describe DatasetsController, type: :controller do
         @dataset
       }
 
-      expect(@dataset).to receive(:fetch_repo)
+      expect(RepoService).to receive(:fetch_repo)
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }

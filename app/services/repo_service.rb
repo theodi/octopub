@@ -23,12 +23,12 @@ class RepoService
     @repo.save
   end
 
-  def self.fetch_repo(repo_owner, dataset)
+  def self.fetch_repo(dataset)
     repo = nil
     client = dataset.user.octokit_client
     begin
       Rails.logger.info "Repo service: in fetch_repo, look it up"
-      repo = GitData.find(repo_owner, dataset.name, client: client)
+      repo = GitData.find(dataset.repo_owner, dataset.name, client: client)
     rescue Octokit::NotFound
       Rails.logger.info "in fetch_repo - not found"
     end

@@ -24,8 +24,6 @@
 #  restricted      :boolean          default(FALSE)
 #
 
-require 'git_data'
-
 class Dataset < ApplicationRecord
 
   # Note it is the user who is logged in and creates the dataset
@@ -95,7 +93,7 @@ class Dataset < ApplicationRecord
   end
 
   def complete_publishing
-    @repo = RepoService.fetch_repo(repo_owner, self)
+    @repo = RepoService.fetch_repo(self)
     set_owner_avatar
     publish_public_views(true)
     send_success_email

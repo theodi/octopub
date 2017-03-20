@@ -16,7 +16,6 @@ describe 'POST /datasets/:id/files' do
 
     @repo = double(GitData)
     expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-
   end
 
   after(:each) do

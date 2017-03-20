@@ -6,7 +6,7 @@ class JekyllService
   end
 
   def repo_service
-    @repo = RepoService.fetch_repo(repo_owner, @dataset) if @repo.nil?
+    @repo = RepoService.fetch_repo(@dataset) if @repo.nil?
     @repo_service ||= RepoService.new(@repo)
   end
 

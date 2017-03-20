@@ -30,16 +30,6 @@ class DatasetFile < ApplicationRecord
 
   attr_accessor :file
 
-  # def file
-  #   Rails.logger.error "file has been called #{@file}"
-  #   @file
-  # end
-
-  # def file=(str)
-  #   Rails.logger.error "file has been set #{str}"
-  #   @file = str
-  # end
-
   def self.file_from_url(file)
     Rails.logger.info "DatasetFile: In file_from_url"
     tempfile = Tempfile.new 'uploaded'

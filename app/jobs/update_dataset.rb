@@ -20,7 +20,7 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
-    @repo = dataset.fetch_repo(user.octokit_client)
+    @repo = RepoService.fetch_repo(dataset)
     dataset
   end
 
