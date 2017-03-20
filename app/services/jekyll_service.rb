@@ -268,9 +268,7 @@ class JekyllService
       "certificate_url" => "#{dataset.certificate_url}/badge.js"
     }.to_yaml
 
-    fetch_repo(dataset.user.octokit_client)
     update_file_in_repo('_config.yml', config)
     push_to_github
   end
-
 end
