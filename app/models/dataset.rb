@@ -33,7 +33,6 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_create :create_repo_and_populate
   after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
   after_destroy :delete_dataset_in_github
 
@@ -47,6 +46,7 @@ class Dataset < ApplicationRecord
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
+      CreateRepository.perform_async(id)
     else
       Rails.logger.info "Dataset: In valid, so push to pusher"
       messages = errors.full_messages
@@ -103,12 +103,6 @@ class Dataset < ApplicationRecord
   end
 
   private
-
-    # This is a callback
-    def create_repo_and_populate
-      Rails.logger.info "in NEW create_repo_and_populate"
-      CreateRepository.perform_async(id)
-    end
 
     # This is a callback
     def update_dataset_in_github

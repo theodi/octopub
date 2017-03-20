@@ -1,12 +1,9 @@
 require 'rails_helper'
 
 describe CreateDataset do
-
   before(:each) do
-    skip_dataset_callbacks!
 
     @worker = CreateDataset.new
-
     @dataset_params = {
       name: "My Awesome Dataset",
       description: "An awesome dataset",
@@ -15,15 +12,10 @@ describe CreateDataset do
       license: "OGL-UK-3.0",
       frequency: "One-off",
     }
-
     @user = create(:user)
   end
 
-  after(:each) do
-    set_dataset_callbacks!
-  end
-
-  context 'without a schema' do 
+  context 'without a schema' do
 
     let(:filename) { 'test-data.csv' }
     let(:storage_key) { filename }

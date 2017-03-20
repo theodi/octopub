@@ -9,7 +9,6 @@ feature "Add dataset page", type: :feature do
   let(:data_file) { get_fixture_file('valid-schema.csv') }
 
   before(:each) do
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     visit root_path
   end
 

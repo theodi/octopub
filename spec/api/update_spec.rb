@@ -4,9 +4,8 @@ describe 'PUT /datasets/:id' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
-   
+    allow_any_instance_of(CreateRepository).to receive(:perform)
     @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, filename: 'test-data.csv')
@@ -18,7 +17,6 @@ describe 'PUT /datasets/:id' do
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
     Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
