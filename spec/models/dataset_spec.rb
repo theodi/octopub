@@ -126,7 +126,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "completes publishing" do
     dataset = build(:dataset)
-    expect(dataset).to receive(:fetch_repo)
+    expect(RepoService).to receive(:fetch_repo)
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
     expect(dataset).to receive(:send_success_email)
@@ -161,39 +161,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     dataset.send(:set_owner_avatar)
     expect(dataset.owner_avatar).to eq('http://example.com/my-cool-organization.png')
-  end
-
-  context('#fetch_repo') do
-
-    before(:each) do
-      @dataset = create(:dataset, user: @user, repo: "repo")
-    end
-
-    context('when repo exists') do
-
-      before(:each) do
-        @double = double(GitData)
-
-        expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) {
-          @double
-        }
-      end
-
-      it "gets a repo from Github" do
-        @dataset.fetch_repo
-        expect(@dataset.instance_variable_get(:@repo)).to eq(@double)
-      end
-
-    end
-
-    it 'returns nil if there is no schema present' do
-      expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)).and_raise(Octokit::NotFound)
-
-      @dataset.fetch_repo
-
-      expect(@dataset.instance_variable_get(:@repo)).to be_nil
-    end
-
   end
 
   it "generates a path" do

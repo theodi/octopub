@@ -16,7 +16,6 @@ describe 'POST /datasets/:id/files' do
 
     @repo = double(GitData)
     expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-
   end
 
   after(:each) do
@@ -53,6 +52,7 @@ describe 'POST /datasets/:id/files' do
     expect(@dataset.dataset_files.last.description).to eq('My super descriptive description')
   end
 
+  # TODO fix this
   # it 'errors if the csv does not match the schema' do
 
   #   schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')

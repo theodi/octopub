@@ -18,8 +18,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     args = {}
     @repo = double(GitData)
 
-    allow(@dataset).to receive(:fetch_repo)
-    expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+    allow(RepoService).to receive(:fetch_repo) { @repo }
   end
 
   after(:each) do

@@ -76,7 +76,7 @@ class DatasetsController < ApplicationController
   end
 
   def destroy
-    @dataset.fetch_repo
+    RepoService.fetch_repo(@dataset)
     @dataset.destroy
     redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
   end
