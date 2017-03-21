@@ -26,6 +26,8 @@
 
 class Dataset < ApplicationRecord
 
+  enum publishing_method: [:github_public, :github_private, :local_private]
+
   # Note it is the user who is logged in and creates the dataset
   # It can be owned by someone else
   belongs_to :user
