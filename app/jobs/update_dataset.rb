@@ -20,49 +20,49 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
-    dataset.fetch_repo(user.octokit_client)
+    @repo = RepoService.fetch_repo(dataset)
     dataset
   end
 
   def handle_files(files)
+    jekyll_service = JekyllService.new(@dataset, @repo)
+
     files.each do |file|
       if file["id"]
         update_file(file["id"], file)
       else
-        add_file(file)
+        add_file(jekyll_service, file)
       end
     end
   end
 
   def update_file(id, file)
-    f = @dataset.dataset_files.find { |f| f.id == id.to_i }
+    f = @dataset.dataset_files.find { |this_file| this_file.id == id.to_i }
 
     if file["schema"]
       # Create schema
       # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      schema = DatasetFileSchemaService.new(file["schema_name"], file["schema_description"], file["schema"], @user).create_dataset_file_schema
       file["dataset_file_schema_id"] = schema.id
     end
 
     f.update_file(file)
   end
 
-  def add_file(file)
-
+  def add_file(jekyll_service, file)
     f = DatasetFile.new_file(file)
     if file["schema"]
       # Create schema
       # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
+      schema = DatasetFileSchemaService.new(file["schema_name"], file["schema_description"], file["schema"], @user).create_dataset_file_schema
       f.dataset_file_schema_id = schema.id
     end
 
     @dataset.dataset_files << f
     if f.save
-      f.add_to_github
-      f.add_jekyll_to_github
+      jekyll_service.add_to_github(f)
+      jekyll_service.add_jekyll_to_github(f.filename)
       f.file = nil
     end
   end
-
 end

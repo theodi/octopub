@@ -2,17 +2,32 @@
 #
 # Table name: dataset_file_schemas
 #
-#  id          :integer          not null, primary key
-#  name        :text
-#  description :text
-#  url_in_s3   :text
-#  url_in_repo :text
-#  schema      :json
-#  user_id     :integer
+#  id               :integer          not null, primary key
+#  name             :text
+#  description      :text
+#  url_in_s3        :text
+#  url_in_repo      :text
+#  schema           :json
+#  user_id          :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#  storage_key      :string
+#  owner_username   :text
+#  owner_avatar_url :text
 #
 
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
+  has_and_belongs_to_many :allocated_users, class_name: 'User', join_table: :allocated_dataset_file_schemas_users
+  has_many :dataset_files, dependent: :nullify
+
+  validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
+ # validates_presence_of :storage_key
+  validates_presence_of :name, message: 'Please give the schema a meaningful name'
+  validates_presence_of :user_id # Hidden field
+  validates_presence_of :owner_username, message: 'Please select an owner for the schema'
+
+ # before_validation :set_storage_key
 
   attr_accessor :parsed_schema
 
@@ -22,6 +37,14 @@ class DatasetFileSchema < ApplicationRecord
 
   def url
     url_in_repo.nil? ? url_in_s3 : url_in_repo
+  end
+
+  def creator_name
+    user.name
+  end
+
+  def owner_name
+    owner_username
   end
 
   # TODO maybe persist this?
@@ -41,6 +64,12 @@ class DatasetFileSchema < ApplicationRecord
   def is_valid?
     errors.add :schema, 'is invalid' unless is_schema_valid?
   end
+
+  def new_is_schema_valid?
+    new_parsed_schema.valid?
+  end
+
+  def new_parsed_schema
+    @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
+  end
 end
-
-

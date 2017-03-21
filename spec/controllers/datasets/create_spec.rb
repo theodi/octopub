@@ -1,12 +1,20 @@
-require 'spec_helper'
+require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
 describe DatasetsController, type: :controller do
+  include_context 'odlifier licence mock'
+
+  let(:dataset_name) { "My cool dataset" }
+  let(:description) { "This is a description" }
+  let(:publisher_name) { "Cool inc"}
+  let(:publisher_url) { "http://example.com"}
+  let(:license) { "OGL-UK-3.0" }
+  let(:frequency) { "Monthly" }
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     sign_in @user
 
     @name = "My cool dataset"
@@ -17,13 +25,27 @@ describe DatasetsController, type: :controller do
     @frequency = "Monthly"
     @files ||= []
 
-    allow_any_instance_of(Dataset).to receive(:create_data_files) { nil }
-    allow_any_instance_of(Dataset).to receive(:create_jekyll_files) { nil }
+    @repo = double(GitData)
+
+    allow(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }
+    allow(GitData).to receive(:find).with(@user.github_username, @name, client: a_kind_of(Octokit::Client)) {
+      @repo
+    }
+    allow_any_instance_of(User).to receive(:github_user) {
+      OpenStruct.new(
+        avatar_url: "http://www.example.org/avatar2.png"
+      )
+    }
+
+    allow_any_instance_of(Dataset).to receive(:complete_publishing)
+    allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+    allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
   end
 
   after(:each) do
     Sidekiq::Testing.fake!
-    set_dataset_callbacks!
   end
 
   describe 'do not create dataset' do
@@ -45,11 +67,11 @@ describe DatasetsController, type: :controller do
       it 'returns an error if no publisher is specified' do
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
         expect(request).to render_template(:new)
@@ -58,12 +80,12 @@ describe DatasetsController, type: :controller do
 
       it 'returns an error if there are no files specified' do
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: [] }
 
         expect(request).to render_template(:new)
@@ -72,11 +94,11 @@ describe DatasetsController, type: :controller do
 
       it 'returns an error if there are no files nor pubslisher specified' do
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: [] }
 
         expect(request).to render_template(:new)
@@ -88,7 +110,6 @@ describe DatasetsController, type: :controller do
   end
 
   describe 'create dataset' do
-
     context 'with one file' do
 
       before(:each) do
@@ -96,13 +117,13 @@ describe DatasetsController, type: :controller do
         description = Faker::Company.bs
         filename = 'test-data.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-        Dataset.set_callback(:create, :after, :create_repo_and_populate)
+        @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
 
         @files << {
           :title => name,
           :description => description,
-          :file => url_with_stubbed_get_for(path)
+          :file => url_with_stubbed_get_for_storage_key(@storage_key, filename),
+          :storage_key => @storage_key
         }
 
         @repo = double(GitData)
@@ -113,6 +134,13 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:save)
       end
 
+      def creation_assertions
+        expect(request).to redirect_to(created_datasets_path)
+        expect(Dataset.count).to eq(1)
+        expect(@user.datasets.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        expect(@user.datasets.first.dataset_files.first.storage_key).to_not be_nil
+      end
 
       it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
@@ -120,18 +148,15 @@ describe DatasetsController, type: :controller do
         }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a restricted dataset' do
@@ -140,19 +165,16 @@ describe DatasetsController, type: :controller do
         }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency,
           restricted: true,
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'creates a dataset in an organization' do
@@ -161,21 +183,21 @@ describe DatasetsController, type: :controller do
         expect(GitData).to receive(:create).with(organization, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
+        expect(GitData).to receive(:find).twice.with(organization, @name, client: a_kind_of(Octokit::Client)) {
+          @repo
+        }
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency,
           owner: organization
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'returns 202 when async is set to true' do
@@ -184,12 +206,12 @@ describe DatasetsController, type: :controller do
         }
 
         post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files, async: true }
 
         expect(response.code).to eq("202")
@@ -203,12 +225,12 @@ describe DatasetsController, type: :controller do
 
         data = {
           dataset: {
-            name: @name,
-            description: @description,
-            publisher_name: @publisher_name,
-            publisher_url: @publisher_url,
-            license: @license,
-            frequency: @frequency
+            name: dataset_name,
+            description: description,
+            publisher_name: publisher_name,
+            publisher_url: publisher_url,
+            license: license,
+            frequency: frequency
           },
           files: [
             {
@@ -225,123 +247,32 @@ describe DatasetsController, type: :controller do
             }
           ]}
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
+        creation_assertions
       end
 
       it 'handles non-url files' do
 
-        path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
+        filename = 'test-data.csv'
+        path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
         allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
-        @files.first["file"] = fixture_file_upload('test-data.csv')
+        @files.first["file"] = fixture_file_upload(filename)
+        @files.first["storage_key"] = filename
 
         request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency
+          name: dataset_name,
+          description: description,
+          publisher_name: publisher_name,
+          publisher_url: publisher_url,
+          license: license,
+          frequency: frequency
         }, files: @files }
 
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
-      end
-    end
-
-    context('with a schema') do
-
-      let(:data_file) { File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv') }
-      let(:data_file_not_marching_schema) { File.join(Rails.root, 'spec', 'fixtures', 'invalid-schema.csv') }
-      let(:schema_path) { File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json') }
-
-      before(:each) do
-        @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
-      end
-
-      context 'returns an error if the file does not match the schema' do
-
-        before(:each) do
-          @files << {
-            title: 'My File',
-            description: 'My Description',
-            file: url_with_stubbed_get_for(data_file_not_marching_schema),
-            schema_name: 'schema name',
-            schema_description: 'schema description',
-            schema: @url_for_schema
-          }
-
-          @dataset = {
-            name: @name,
-            description: @description,
-            publisher_name: @publisher_name,
-            publisher_url: @publisher_url,
-            license: @license,
-            frequency: @frequency
-          }
-        end
-
-        it 'without websockets' do
-
-          post :create, params: { dataset: @dataset, files: @files }
-
-          expect(Dataset.count).to eq(0)
-          expect(Error.count).to eq(1)
-          expect(Error.first.messages).to eq([
-            "Dataset files is invalid",
-            "Your file 'My File' does not match the schema you provided"
-          ])
-        end
-
-        it 'with websockets' do
-
-          mock_client = mock_pusher('foo-bar')
-          expect(mock_client).to receive(:trigger).with('dataset_failed', [
-            "Dataset files is invalid",
-            "Your file 'My File' does not match the schema you provided"
-          ])
-          post :create, params: { dataset: @dataset, files: @files, channel_id: 'foo-bar' }
-        end
-      end
-
-      it 'creates sucessfully if the file matches the schema' do
-
-        @files << {
-          title: 'My File',
-          description: 'My Description',
-          file: url_with_stubbed_get_for(data_file),
-          schema_name: 'schem nme',
-          schema_description: 'schema description',
-          schema: @url_for_schema
-        }
-
-        request = post :create, params: { dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
-        }, files: @files }
-
-        expect(request).to redirect_to(created_datasets_path)
-        expect(Dataset.count).to eq(1)
-        expect(DatasetFileSchema.count).to eq(1)
-
-        expect(@user.dataset_file_schemas.count).to eq(1)
-        expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
-
-        expect(@user.datasets.first.dataset_files.first.dataset_file_schema.url).to eq(@url_for_schema)
+        creation_assertions
       end
     end
   end

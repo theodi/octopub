@@ -20,7 +20,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster) %>">
     <div class="container">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
@@ -29,13 +29,30 @@
 
           <ul class="nav navbar-nav">
             <% if current_user %>
-              <li><%= link_to "Add dataset", main_app.new_dataset_path %></li>
-              <li><%= link_to "List my datasets", main_app.dashboard_path %></li>
-            <% end %>
-            <li><%= link_to "All datasets", main_app.datasets_path %></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">Datasets <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "Add dataset", main_app.new_dataset_path %></li>
+                  <li role="separator" class="divider"></li>
+                  <li><%= link_to "List my datasets", main_app.dashboard_path %></li>
+                  <li><%= link_to "All datasets", main_app.datasets_path %></li>
+                </ul>
+              </li>
+              <li class="dropdown" id="dataset_file_schema_dropdown">
+                <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" id="dataset_file_schema_menu">Dataset File Schemas <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "Add dataset file schema", main_app.new_dataset_path %></li>
+                  <li><%= link_to "Infer dataset file schema", main_app.new_dataset_path %></li>
+                  <li role="separator" class="divider"></li>
+                  <li><%= link_to "List my dataset file schemas", main_app.dataset_file_schemas_path %></li>
+                </ul>
+              </li>          
+            <% else %>
+              <li><%= link_to "All datasets", main_app.datasets_path %></li>
+            <% end %>    
             <li><%= link_to "API", '/api' %></li>
-            <% if Rails.env.development? %>
-              <li><%= link_to "All dataset schemas", main_app.dataset_file_schemas_path %></li>
+            <% if admin_user %>
+              <li><%= link_to "Users", main_app.users_path %></li>
             <% end %>
           </ul>
 
@@ -70,14 +87,11 @@
       <div class="container">
         <div class="row">
           <div class="col-md-10 col-md-offset-1">
-            <img src="https://labs-logo.herokuapp.com/logo.svg" alt="ODI Labs" />
+            <%= image_tag 'labs-72-linked-200px.png', alt: 'ODI Labs' %>
             <p>An <a href="http://theodi.org/labs">ODI Labs</a> experiment</p>
           </div>
         </div>
       </div>
     </footer>
-
-
   </body>
-  <%= yield :extra_js %>
 </html>

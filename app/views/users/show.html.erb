@@ -1,0 +1,110 @@
+<h1 class="page-header">User Details <small><%= @user.name %></small></h1>
+<div class="row">
+  <div class="col-md-6">
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @user.name %></dd>
+      <dt>Email</dt>
+      <dd><%= @user.email %></dd>
+      <% if @user.twitter_handle %>
+        <dt>Twitter Handle</dt>
+        <dd><%= @user.twitter_handle %></dd>
+      <% end %>
+     </dl>
+  </div>
+  <div class="col-md-6">
+    <%= image_tag @user.avatar, height: 100, width: 100 %>
+  </div>
+</div>
+
+<div>
+  <%= link_to 'Edit user and allocate schemas', edit_restricted_user_path(@user), class: "btn btn-primary" %>
+</div>
+
+<% if @user.datasets %>
+  <h2>User's Datasets</h2>
+
+  <table class="table" id="dataset-table"
+  data-toggle="table"
+  data-pagination="true"
+  data-search="true"
+  data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Restricted?</th>
+        <th data-sortable="true">GitHub Pages</th>
+        <th data-sortable="true">Created on</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @user.datasets.each do |dataset| %>
+      <tr>
+        <td><%= dataset.name %></td>
+        <td>
+          <% if dataset.restricted %>
+            <i class='fa fa-lock fa-lg' title="private"></i>
+          <% else %>
+            <i class='fa fa-globe fa-lg' title="public"></i>
+          <% end %>
+        </td>
+        <td><%= link_to dataset.gh_pages_url, dataset.gh_pages_url %></td>
+        <td><%= dataset.created_at.to_formatted_s(:long_ordinal) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<% if @user.dataset_file_schemas.any? %>
+  <h2>User's Dataset File Schemas</h2>
+
+  <table class="table" id="dataset-file-schema-table"
+  data-toggle="table"
+  data-pagination="true"
+  data-search="true"
+  data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Created on</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @user.dataset_file_schemas.each do |dataset_file_schema| %>
+      <tr>
+        <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+
+<% if @user.allocated_dataset_file_schemas.any? %>
+  <h2>Other Dataset File Schemas the User has been allocated</h2>
+
+  <table class="table" id="dataset-file-schema-table"
+  data-toggle="table"
+  data-pagination="true"
+  data-search="true"
+  data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Owned By</th>
+        <th data-sortable="true">Created on</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @user.allocated_dataset_file_schemas.each do |dataset_file_schema| %>
+      <tr>
+        <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+        <td><%= dataset_file_schema.user.name %></td>
+        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

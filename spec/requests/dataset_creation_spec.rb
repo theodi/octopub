@@ -1,11 +1,13 @@
-RSpec.describe "Dataset creation", type: :request do
+require 'support/odlifier_licence_mock'
+
+RSpec.describe "Dataset creation", type: :request, vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   before(:each) do
 
     Sidekiq::Testing.fake!
-    skip_dataset_callbacks!
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     sign_in @user
 
     @name = "My cool dataset"
@@ -27,8 +29,6 @@ RSpec.describe "Dataset creation", type: :request do
     description = Faker::Company.bs
     filename = 'test-data.csv'
     path = File.join(Rails.root, 'spec', 'fixtures', filename)
-
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
 
     @files << {
       :title => file_name,

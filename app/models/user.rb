@@ -13,14 +13,19 @@
 #  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
+#  role            :integer          default("publisher"), not null
+#  restricted      :boolean          default(FALSE)
 #
 
 class User < ApplicationRecord
 
+  enum role: [:publisher, :superuser, :admin]
+
   has_many :datasets
   has_many :dataset_file_schemas
+  has_and_belongs_to_many :allocated_dataset_file_schemas, class_name: 'DatasetFileSchema', join_table: :allocated_dataset_file_schemas_users
 
-  before_create :generate_api_key
+  before_validation :generate_api_key, on: :create
 
   def self.refresh_datasets id, channel_id = nil
     user = User.find id
@@ -29,7 +34,7 @@ class User < ApplicationRecord
   end
 
   def self.find_for_github_oauth(auth)
-    user = User.find_or_create_by(provider: auth["provider"], uid: auth["uid"])
+    user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create
     user.update_attributes(
                            name: auth["info"]["nickname"],
                            email: auth["info"]["email"],
@@ -70,6 +75,10 @@ class User < ApplicationRecord
   def all_dataset_ids
     org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
+
+  # def allocated_dataset_file_schemas
+  #   Array.new
+  # end
 
   private
 

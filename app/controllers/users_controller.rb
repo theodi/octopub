@@ -2,7 +2,13 @@ class UsersController < ApplicationController
 
   before_action :check_signed_in?, only: [:edit, :update, :organizations]
 
-  def new
+  def index
+    render_403_permissions unless admin_user
+    @users = User.all
+  end
+
+  def show
+    @user = User.find(params[:id])
   end
 
   def edit

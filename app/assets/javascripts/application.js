@@ -14,4 +14,11 @@
 //= require jquery_ujs
 //= require bootstrap-sprockets
 //= require bootstrap-select
-//= require_tree .
+//= require bootstrap-table
+//= require jquery.ui.widget
+//= require jquery.fileupload
+//= require pusher.min
+//= require uuid-random.min
+//= require pusher_setup
+//= require file_upload
+//= require dashboard

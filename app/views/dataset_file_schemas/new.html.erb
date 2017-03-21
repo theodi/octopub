@@ -1,0 +1,18 @@
+<h1 class="page-header">Add a new Dataset File Schema</h1>
+
+<%= bootstrap_form_for @dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+  <%= f.hidden_field :user_id, value: @user_id %>
+  <%= f.text_field :name, required: true %>
+  <%= f.text_area :description %>
+  <%= f.select :owner_username, organization_select_options_schema, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+  <div class="schema-panel">
+    <fieldset class="file bg-upload">
+      <%= f.file_field :url_in_s3, label: "File", accept: ".json" %>
+    </fieldset>
+  </div>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
+<% end %>
+
+

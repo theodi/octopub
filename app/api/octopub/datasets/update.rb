@@ -20,8 +20,8 @@ module Octopub
           optional :description, type: String, desc: 'A short description of the dataset'
           optional :publisher_name, type: String, desc: 'The name of the person / organisation publishing the data'
           optional :publisher_url, type: String, desc: 'The website of the person / organisation publishing the data'
-          optional :license, type: String, desc: 'The ID of the dataset\'s license', values: ["cc-by", "cc-by-sa", "cc0", "OGL-UK-3.0", "odc-by", "odc-pddl"]
-          optional :frequency, type: String, desc: 'How freqently the dataset is updated', values: ['One-off', 'Annual', 'Every working day', 'Daily', 'Monthly', 'Every minute', 'Every quarter', 'Half yearly', 'Weekly']
+          optional :license, type: String, desc: 'The ID of the dataset\'s license', values: Octopub::API_LICENCES
+          optional :frequency, type: String, desc: 'How freqently the dataset is updated', values: Octopub::PUBLICATION_FREQUENCIES
         end
       end
       put 'datasets/:id' do

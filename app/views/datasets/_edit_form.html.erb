@@ -7,16 +7,8 @@
   <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, required: true, placeholder: t(:'dataset.publisher_name') %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
   <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-  <%= f.select "dataset[frequency]", [
-                                        "One-off",
-                                        "Annual",
-                                        "Every working day",
-                                        "Daily", "Monthly",
-                                        "Every minute",
-                                        "Every quarter",
-                                        "Half yearly",
-                                        "Weekly"
-                                      ], label: "Publication frequency", selected: dataset.frequency %>
+  <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>
       <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f } %>
@@ -25,7 +17,9 @@
         <div class="hidden">
           <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
         </div>
+        <div class="visible">
         <%= render partial: "dataset_files/edit_form", locals: { file: file, f: f, i: i } %>
+        </div>
       <% end %>
     <% end %>
   </div>
@@ -38,5 +32,3 @@
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>
 <% end %>
-
-<% content_for :extra_js { render 'extra_js' } %>

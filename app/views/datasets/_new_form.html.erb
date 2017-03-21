@@ -11,29 +11,20 @@
                                     ["Yes, make this data available on the public web", false],
                                     ["No, only I should be able to see this data", true]
                                    ], label: "Publish publicly?", selected: dataset.restricted %>
-  <%= f.select "dataset[frequency]", [
-                                        "One-off",
-                                        "Annual",
-                                        "Every working day",
-                                        "Daily", "Monthly",
-                                        "Every minute",
-                                        "Every quarter",
-                                        "Half yearly",
-                                        "Weekly"
-                                      ], label: "Publication frequency", selected: dataset.frequency %>
+  <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>
-      <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f } %>
+      <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
     <% else %>
       <% dataset.dataset_files.each_with_index do |file, i| %>
         <div class="hidden">
-          <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i } %>
+          <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i, dataset_file_schemas: dataset_file_schemas } %>
         </div>
         <%= render partial: "dataset_files/new_form", locals: { file: file, f: f, i: i } %>
       <% end %>
     <% end %>
   </div>
-  <p class="text-right" id="wut">
+  <p class="text-right">
     <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
 
@@ -42,5 +33,3 @@
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>
 <% end %>
-
-<% content_for :extra_js { render 'extra_js' } %>

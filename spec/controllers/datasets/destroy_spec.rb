@@ -1,9 +1,9 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe DatasetsController, type: :controller do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   describe 'destroy' do
@@ -16,7 +16,7 @@ describe DatasetsController, type: :controller do
         @dataset
       }
 
-      expect(@dataset).to receive(:fetch_repo)
+      expect(RepoService).to receive(:fetch_repo)
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }

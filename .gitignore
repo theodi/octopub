@@ -34,10 +34,10 @@ db/*.sqlite3
 /tmp/*
 
 # various artifacts
+/*json
+/*csv
 **.war
 *.rbc
-*.json
-*.csv
 *.sassc
 #.rspec
 .redcar/

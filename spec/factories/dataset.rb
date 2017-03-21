@@ -4,25 +4,25 @@ FactoryGirl.define do
     description "An awesome dataset"
     publisher_name "Awesome Inc"
     publisher_url "http://awesome.com"
-    license "OGL-UK-3.0"
-    frequency "One-off"
+    license { Octopub::WEB_LICENCES.sample }
+    frequency { Octopub::PUBLICATION_FREQUENCIES.sample }
 
     association :user, factory: :user
 
     after(:build) { |dataset|
-      skip_callback_if_exists( Dataset, :create, :after, :create_repo_and_populate)
-      skip_callback_if_exists( Dataset, :create, :after, :publish_public_views)
-      skip_callback_if_exists( Dataset, :create, :after, :send_success_email)
-      skip_callback_if_exists( Dataset, :update, :after, :update_in_github)
-      skip_callback_if_exists( Dataset, :create, :after, :set_owner_avatar)
+      skip_callback_if_exists( Dataset, :update, :after, :update_dataset_in_github)
       dataset.instance_variable_set(:@repo, FakeData.new)
     }
 
     trait :with_callback do
       after(:build) { |dataset|
-        dataset.class.set_callback(:create, :after, :create_repo_and_populate)
-        dataset.class.set_callback(:create, :after, :publish_public_views)
-        dataset.class.set_callback(:update, :after, :update_in_github)
+        dataset.class.set_callback(:update, :after, :update_dataset_in_github)
+      }
+    end
+
+    trait :with_make_public_callback do
+      after(:build) { |dataset|
+        dataset.class.set_callback(:update, :after, :make_repo_public_if_appropriate)
       }
     end
 
@@ -32,8 +32,10 @@ FactoryGirl.define do
       }
     end
 
-
+    factory :dataset_with_files do
+      after(:create) do |dataset, evaluator|
+        create_list(:dataset_file, 5, dataset: dataset)
+      end
+    end
   end
-
-
 end
