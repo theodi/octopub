@@ -42,6 +42,16 @@ body {
   }
 }
 
+/* Non javascript dropdown menu */
+.navbar-nav > li > a:hover {
+  background-color: #90d2ec;
+  color: #666;
+  text-decoration: none;
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 footer {
   margin-top: 60px;
   padding-top: 20px;

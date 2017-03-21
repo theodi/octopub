@@ -93,6 +93,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     dataset.save
+    CreateRepository.new.perform(dataset.id)
     dataset.reload
 
     expect(dataset.repo).to eq(name.parameterize)
@@ -120,6 +121,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
     dataset.save
+    CreateRepository.new.perform(dataset.id)
   end
 
   it "completes publishing" do
@@ -253,6 +255,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
       dataset.save
+      CreateRepository.new.perform(dataset.id)
       dataset.reload
 
       expect(dataset.repo).to eq(name.parameterize)
@@ -281,6 +284,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
       dataset.save
+      CreateRepository.new.perform(dataset.id)
 
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)

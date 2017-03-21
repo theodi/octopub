@@ -17,8 +17,6 @@ feature "Edit dataset page", type: :feature do
     allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d,e|
       UpdateDataset.new.perform(a,b,c,d,e)
     end
-
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
     good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
     create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
     @dataset = create(:dataset, name: dataset_name, user: @user, license: "CC-BY-4.0", description: dataset_description)

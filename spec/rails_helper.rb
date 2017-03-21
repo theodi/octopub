@@ -4,8 +4,6 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
-
-
 require 'spec_helper'
 require 'rspec/rails'
 
@@ -94,44 +92,6 @@ RSpec.configure do |config|
         obj
       end
     end
-
-    # allow(Odlifier::License).to receive(:define).with("cc-by") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "Creative Commons Attribution 4.0" }
-    #   allow(obj).to receive(:id) { "CC-BY-4.0" }
-    #   obj
-    # }
-    # allow(Odlifier::License).to receive(:define).with("cc-by-sa") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "Creative Commons Attribution Share-Alike 4.0" }
-    #   allow(obj).to receive(:id) { "CC-BY-SA-4.0" }
-    #   obj
-    # }
-    # allow(Odlifier::License).to receive(:define).with("cc0") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "CC0 1.0" }
-    #   allow(obj).to receive(:id) { "CC0-1.0" }
-    #   obj
-    # }
-    # allow(Odlifier::License).to receive(:define).with("OGL-UK-3.0") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "Open Government Licence 3.0 (United Kingdom)" }
-    #   allow(obj).to receive(:id) { "OGL-UK-3.0" }
-    #   obj
-    # }
-    # allow(Odlifier::License).to receive(:define).with("odc-by") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "Open Data Commons Attribution License 1.0" }
-    #   allow(obj).to receive(:id) { "ODC-BY-1.0" }
-    #   obj
-    # }
-    # allow(Odlifier::License).to receive(:define).with("odc-pddl") {
-    #   obj = double(Odlifier::License)
-    #   allow(obj).to receive(:title) { "Open Data Commons Public Domain Dedication and Licence 1.0" }
-    #   allow(obj).to receive(:id) { "ODC-PDDL-1.0" }
-    #   obj
-    # }
-
   end
 
   # This overrides always true in the spec_helper file
@@ -220,14 +180,6 @@ def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
   mock_client
-end
-
-def skip_dataset_callbacks!
-  skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
-end
-
-def set_dataset_callbacks!
-  Dataset.set_callback(:create, :after, :create_repo_and_populate)
 end
 
 def skip_callback_if_exists(thing, name, kind, filter)

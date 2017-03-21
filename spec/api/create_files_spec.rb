@@ -4,7 +4,7 @@ describe 'POST /datasets/:id/files' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    allow_any_instance_of(CreateRepository).to receive(:perform)
 
     @filename = 'test-data.csv'
     @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
@@ -21,7 +21,6 @@ describe 'POST /datasets/:id/files' do
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   it 'creates a new file' do
