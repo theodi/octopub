@@ -100,6 +100,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
 
+
+
   end
 
   it "creates a repo with an organization" do
@@ -137,8 +139,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "deletes a repo in github" do
     dataset = create(:dataset, user: @user, owner: "foo-bar")
-    repo = dataset.instance_variable_get(:@repo)
-
+    repo = double(GitData)
+    expect(RepoService).to receive(:fetch_repo) { repo }
     expect(repo).to receive(:delete)
 
     dataset.destroy
@@ -232,7 +234,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
 
     it "can make a private repo public" do  
-      Dataset.set_callback(:update, :after, :update_dataset_in_github)
+      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
+
       # Create dataset
 
       name = "My Awesome Dataset"
@@ -245,7 +248,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
         expect(obj).to receive(:html_url) { html_url }
         expect(obj).to receive(:name) { name.parameterize }
         expect(obj).to receive(:full_name) { "#{@user.name.parameterize}/#{name.parameterize}" }
-
+        expect(obj).to receive(:make_public)
         obj
       }
       allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
@@ -258,6 +261,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
+      expect(updated_dataset.restricted).to be true
 
       expect(updated_dataset).to receive(:update_dataset_in_github).once
       expect_any_instance_of(JekyllService).to receive(:create_public_views).once
@@ -266,7 +270,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       updated_dataset.save
       expect(updated_dataset.restricted).to be false
 
-      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
+      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
     end
   end
 end
