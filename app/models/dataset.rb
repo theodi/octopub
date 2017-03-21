@@ -24,8 +24,6 @@
 #  restricted      :boolean          default(FALSE)
 #
 
-require 'git_data'
-
 class Dataset < ApplicationRecord
 
   # Note it is the user who is logged in and creates the dataset
@@ -94,20 +92,8 @@ class Dataset < ApplicationRecord
     owner.presence || user.github_username
   end
 
-  def fetch_repo(client = user.octokit_client)
-    begin
-      Rails.logger.info "in fetch_repo"
-      @repo = GitData.find(repo_owner, self.name, client: client)
-      # This is in for backwards compatibility at the moment required for API
-
-    rescue Octokit::NotFound
-      Rails.logger.info "in fetch_repo - not found"
-      @repo = nil
-    end
-  end
-
   def complete_publishing
-    fetch_repo
+    @repo = RepoService.fetch_repo(self)
     set_owner_avatar
     publish_public_views(true)
     send_success_email

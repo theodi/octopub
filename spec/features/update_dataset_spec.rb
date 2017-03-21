@@ -40,7 +40,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
-      allow_any_instance_of(Dataset).to receive(:fetch_repo)
+      allow(RepoService).to receive(:fetch_repo)
     end
 
     scenario "can access edit dataset page and change description" do
@@ -86,7 +86,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
-      allow_any_instance_of(Dataset).to receive(:fetch_repo)
+      allow(RepoService).to receive(:fetch_repo)
     end
 
     scenario "can access edit dataset page and change description" do
