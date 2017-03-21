@@ -129,7 +129,7 @@ class JekyllService
     @dataset.dataset_files.each do |d|
       if d.file
         update_in_github(d.filename, d.file)
-        update_jekyll_in_github(d.filename) unless @dataset.restricted?
+        update_jekyll_in_github(d.filename) unless @dataset.restricted
       end
     end
     update_datapackage

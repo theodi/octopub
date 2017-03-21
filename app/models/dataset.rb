@@ -90,6 +90,10 @@ class Dataset < ApplicationRecord
     "#{repo_owner}/#{repo}"
   end
 
+  def restricted
+    ! github_public?
+  end
+
   def repo_owner
     owner.presence || user.github_username
   end
@@ -114,7 +118,7 @@ class Dataset < ApplicationRecord
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
-      if restricted_changed? && restricted == false
+      if publishing_method_changed? && publishing_method == :github_public
         @repo.make_public
       end
     end
@@ -155,7 +159,7 @@ class Dataset < ApplicationRecord
     def publish_public_views(new_record = false)
       Rails.logger.info "in publish_public_views"
       return if restricted
-      if new_record || restricted_changed?
+      if new_record || publishing_method_changed?
         # This is either a new record or has just been made public
         jekyll_service.create_public_views(self)
       end

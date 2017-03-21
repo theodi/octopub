@@ -6,6 +6,7 @@ FactoryGirl.define do
     publisher_url "http://awesome.com"
     license { Octopub::WEB_LICENCES.sample }
     frequency { Octopub::PUBLICATION_FREQUENCIES.sample }
+    publishing_method :github_public
 
     association :user, factory: :user
 

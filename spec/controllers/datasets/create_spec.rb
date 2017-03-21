@@ -171,7 +171,7 @@ describe DatasetsController, type: :controller do
           publisher_url: publisher_url,
           license: license,
           frequency: frequency,
-          restricted: true,
+          publishing_method: :github_private,
         }, files: @files }
 
         creation_assertions
