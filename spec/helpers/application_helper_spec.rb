@@ -65,7 +65,7 @@ describe ApplicationHelper do
     expect(helper.user_option).to eq(
       [
         @user.github_username,
-        nil,
+        @user.github_username,
         { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> #{@user.github_username}" }
       ]
     )
@@ -75,7 +75,7 @@ describe ApplicationHelper do
     expect(helper.organization_select_options).to eq([
       [
         @user.github_username,
-        nil,
+        @user.github_username,
         { 'data-content' => "<img src='http://www.example.org/avatar2.png' height='20' width='20' /> #{@user.github_username}" }
       ],
       [

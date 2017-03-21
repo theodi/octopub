@@ -157,11 +157,11 @@ describe DatasetsController, type: :controller do
           publisher_url: publisher_url,
           license: license,
           frequency: frequency,
-          owner: controller.current_user.github_username
+          owner: controller.send(:current_user).github_username
         }, files: @files }
 
         creation_assertions
-        expect(the_dataset.owner).to eq @user.github_username
+        expect(@user.datasets.first.owner).to eq @user.github_username
       end
 
       it 'creates a restricted dataset' do
