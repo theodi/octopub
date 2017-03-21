@@ -20,12 +20,6 @@ FactoryGirl.define do
       }
     end
 
-    trait :with_make_public_callback do
-      after(:build) { |dataset|
-        dataset.class.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      }
-    end
-
     trait :with_avatar_callback do
       after(:build) { |dataset|
         dataset.class.set_callback(:create, :after, :set_owner_avatar)

@@ -117,7 +117,6 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
       if restricted_changed? && restricted == false
-        ap "IN HERE"
         RepoService.new(actual_repo).make_public
       end
     end

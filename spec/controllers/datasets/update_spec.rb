@@ -61,7 +61,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
 
         expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
-        expect(RepoService).to receive(:fetch_repo) { @repo }
+        expect(RepoService).to receive(:fetch_repo).at_least(:once) { @repo }
 
         Dataset.set_callback(:update, :after, :update_dataset_in_github)
       end
@@ -70,7 +70,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         context 'with schema-compliant csv' do
 
           it 'updates a file in Github' do
-            expect_any_instance_of(RepoService).to receive(:update_file).thrice.with(any_args)
+            expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
@@ -82,13 +82,14 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
             before :each do
               @dataset_file.file = nil
-              expect_any_instance_of(JekyllService).to receive(:update_datapackage)
+
               @new_file = url_with_stubbed_get_for(@path)
 
               file = build(:dataset_file, dataset: @dataset, file: nil)
               expect(DatasetFile).to receive(:new_file) { file }
               expect_any_instance_of(JekyllService).to receive(:add_to_github)
               expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
+              expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
             end
 
             it 'via a browser' do
@@ -115,6 +116,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
         it 'updates a dataset' do
           @dataset_file.file = nil
+          expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
 
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @dataset_file.id,
@@ -135,6 +137,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
         it 'returns 202 when async is set to true' do
           @dataset_file.file = nil
+          expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
 
           put :update, params: { id: @dataset.id.to_s, dataset: @dataset_hash, files: [{
             id: @dataset_file.id,
@@ -148,6 +151,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
           expect_any_instance_of(JekyllService).to receive(:update_in_github)
           expect_any_instance_of(JekyllService).to receive(:update_jekyll_in_github)
+          expect_any_instance_of(JekyllService).to receive(:update_file_in_repo)
+          expect_any_instance_of(JekyllService).to receive(:push_to_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
@@ -167,6 +172,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect_any_instance_of(JekyllService).to receive(:add_to_github)
           expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
+          expect_any_instance_of(JekyllService).to receive(:push_to_github)
+          expect_any_instance_of(JekyllService).to receive(:update_datapackage)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
@@ -260,7 +267,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     before(:each) do
       sign_in @user
       Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      @dataset = create(:dataset, :with_make_public_callback,  name: "Dataset", restricted: true, user: @user, dataset_files: [
+      @dataset = create(:dataset,  name: "Dataset", restricted: true, user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
       @dataset.save
@@ -270,13 +277,14 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     end
 
     after(:each) do
-      skip_callback_if_exists( Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
     end
 
     it 'can update private flag' do
       expect_any_instance_of(RepoService).to receive(:make_public)
       put :update, params: { id: @dataset.id, dataset: { restricted: false }}
       @dataset.reload
+
       expect(@dataset.restricted).to be false
     end
   end
