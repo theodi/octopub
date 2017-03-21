@@ -2,26 +2,26 @@
 #
 # Table name: datasets
 #
-#  id              :integer          not null, primary key
-#  name            :string
-#  url             :string
-#  user_id         :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  repo            :string
-#  description     :text
-#  publisher_name  :string
-#  publisher_url   :string
-#  license         :string
-#  frequency       :string
-#  datapackage_sha :text
-#  owner           :string
-#  owner_avatar    :string
-#  build_status    :string
-#  full_name       :string
-#  certificate_url :string
-#  job_id          :string
-#  restricted      :boolean          default(FALSE)
+#  id                :integer          not null, primary key
+#  name              :string
+#  url               :string
+#  user_id           :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  repo              :string
+#  description       :text
+#  publisher_name    :string
+#  publisher_url     :string
+#  license           :string
+#  frequency         :string
+#  datapackage_sha   :text
+#  owner             :string
+#  owner_avatar      :string
+#  build_status      :string
+#  full_name         :string
+#  certificate_url   :string
+#  job_id            :string
+#  publishing_method :integer          default("github_public"), not null
 #
 
 require 'rails_helper'
