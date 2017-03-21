@@ -23,6 +23,10 @@ class RepoService
     @repo.save
   end
 
+  def make_public
+    @repo.make_public
+  end
+
   def self.fetch_repo(dataset)
     repo = nil
     client = dataset.user.octokit_client

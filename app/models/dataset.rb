@@ -92,8 +92,12 @@ class Dataset < ApplicationRecord
     owner.presence || user.github_username
   end
 
+  def actual_repo
+    @actual_repo ||= RepoService.fetch_repo(self)
+  end
+
   def complete_publishing
-    @repo = RepoService.fetch_repo(self)
+    actual_repo
     set_owner_avatar
     publish_public_views(true)
     send_success_email
@@ -113,7 +117,7 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
       if restricted_changed? && restricted == false
-        @repo.make_public
+        RepoService.new(actual_repo).make_public
       end
     end
 
@@ -146,7 +150,7 @@ class Dataset < ApplicationRecord
 
     def jekyll_service
       Rails.logger.info "jekyll_service called, so set with #{repo}"
-      @jekyll_service ||= JekyllService.new(self, @repo)
+      @jekyll_service ||= JekyllService.new(self, actual_repo)
     end
 
     # This is a callback
