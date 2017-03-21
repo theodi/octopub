@@ -9,6 +9,7 @@ feature "Add dataset page", type: :feature do
   let(:data_file) { get_fixture_file('valid-schema.csv') }
 
   before(:each) do
+    allow_any_instance_of(DatasetsController).to receive(:current_user) { @user }
     visit root_path
   end
 
@@ -69,6 +70,7 @@ feature "Add dataset page", type: :feature do
       expect(page).to have_content "Your dataset has been queued for creation, and you should receive an email with a link to your dataset on Github shortly."
       expect(Dataset.count).to be before_datasets + 1
       expect(Dataset.last.name).to eq "#{common_name}-name"
+      expect(Dataset.last.owner).to eq @user.github_username
     end
 
   end
@@ -78,6 +80,8 @@ feature "Add dataset page", type: :feature do
     dataset_name = "#{common_name}-name"
 
     fill_in 'dataset[name]', with: dataset_name
+    select(@user.github_username, from: '[dataset[owner]]')
+
     fill_in 'dataset[description]', with: "#{common_name}-description"
     fill_in 'dataset[publisher_name]', with: "#{common_name}-publisher-name"
     fill_in 'dataset[publisher_url]', with: "http://#{common_name}-publisher-url.example.com/"
