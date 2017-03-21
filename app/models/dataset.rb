@@ -142,7 +142,7 @@ class Dataset < ApplicationRecord
 
     def set_owner_avatar
       Rails.logger.info "in set_owner_avatar"
-      if owner.blank?
+      if owner.blank? || owner == user.github_username
         update_column :owner_avatar, user.avatar
       else
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url

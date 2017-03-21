@@ -154,6 +154,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
   end
 
+  it "sets the user's avatar even if owner == user" do
+    dataset = create(:dataset, user: @user, owner: @user.github_username)
+    expect(@user).to receive(:avatar) { 'http://example.com/avatar.png' }
+
+    dataset.send(:set_owner_avatar)
+    expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
+  end
+
   it "sets the owner's avatar" do
     dataset = create(:dataset, user: @user, owner: 'my-cool-organization')
     expect(Rails.configuration.octopub_admin).to receive(:organization).with('my-cool-organization') {
