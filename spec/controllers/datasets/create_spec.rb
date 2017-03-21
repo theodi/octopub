@@ -175,6 +175,7 @@ describe DatasetsController, type: :controller do
         }, files: @files }
 
         creation_assertions
+        expect(@user.datasets.first.publishing_method).to eq 'github_private'
       end
 
       it 'creates a dataset in an organization' do
