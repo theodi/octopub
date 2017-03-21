@@ -2,29 +2,31 @@
 #
 # Table name: datasets
 #
-#  id              :integer          not null, primary key
-#  name            :string
-#  url             :string
-#  user_id         :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  repo            :string
-#  description     :text
-#  publisher_name  :string
-#  publisher_url   :string
-#  license         :string
-#  frequency       :string
-#  datapackage_sha :text
-#  owner           :string
-#  owner_avatar    :string
-#  build_status    :string
-#  full_name       :string
-#  certificate_url :string
-#  job_id          :string
-#  restricted      :boolean          default(FALSE)
+#  id                :integer          not null, primary key
+#  name              :string
+#  url               :string
+#  user_id           :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  repo              :string
+#  description       :text
+#  publisher_name    :string
+#  publisher_url     :string
+#  license           :string
+#  frequency         :string
+#  datapackage_sha   :text
+#  owner             :string
+#  owner_avatar      :string
+#  build_status      :string
+#  full_name         :string
+#  certificate_url   :string
+#  job_id            :string
+#  publishing_method :integer          default("github_public"), not null
 #
 
 class Dataset < ApplicationRecord
+
+  enum publishing_method: [:github_public, :github_private, :local_private]
 
   # Note it is the user who is logged in and creates the dataset
   # It can be owned by someone else
@@ -44,6 +46,10 @@ class Dataset < ApplicationRecord
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
+
+      # You only want to do this if it's private or public github
+      # Else you are done and dusted
+      # TODO add logic
       CreateRepository.perform_async(id)
     else
       Rails.logger.info "Dataset: In valid, so push to pusher"
@@ -88,6 +94,10 @@ class Dataset < ApplicationRecord
     "#{repo_owner}/#{repo}"
   end
 
+  def restricted
+    ! github_public?
+  end
+
   def repo_owner
     owner.presence || user.github_username
   end
@@ -116,7 +126,7 @@ class Dataset < ApplicationRecord
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
-      if restricted_changed? && restricted == false
+      if publishing_method_changed? && github_public?
         RepoService.new(actual_repo).make_public
       end
     end
@@ -136,7 +146,7 @@ class Dataset < ApplicationRecord
 
     def set_owner_avatar
       Rails.logger.info "in set_owner_avatar"
-      if owner.blank?
+      if owner.blank? || owner == user.github_username
         update_column :owner_avatar, user.avatar
       else
         update_column :owner_avatar, Rails.configuration.octopub_admin.organization(owner).avatar_url
@@ -157,7 +167,7 @@ class Dataset < ApplicationRecord
     def publish_public_views(new_record = false)
       Rails.logger.info "in publish_public_views"
       return if restricted
-      if new_record || restricted_changed?
+      if new_record || publishing_method_changed?
         # This is either a new record or has just been made public
         jekyll_service.create_public_views(self)
       end

@@ -42,6 +42,8 @@ describe DatasetsController, type: :controller do
     allow_any_instance_of(Dataset).to receive(:complete_publishing)
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
+
+    allow(controller).to receive(:current_user) { @user }
   end
 
   after(:each) do
@@ -138,8 +140,9 @@ describe DatasetsController, type: :controller do
         expect(request).to redirect_to(created_datasets_path)
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.count).to eq(1)
-        expect(@user.datasets.first.dataset_files.first.storage_key).to_not be_nil
+        the_dataset = @user.datasets.first
+        expect(the_dataset.dataset_files.count).to eq(1)
+        expect(the_dataset.dataset_files.first.storage_key).to_not be_nil
       end
 
       it 'creates a dataset with one file' do
@@ -153,10 +156,12 @@ describe DatasetsController, type: :controller do
           publisher_name: publisher_name,
           publisher_url: publisher_url,
           license: license,
-          frequency: frequency
+          frequency: frequency,
+          owner: controller.send(:current_user).github_username
         }, files: @files }
 
         creation_assertions
+        expect(@user.datasets.first.owner).to eq @user.github_username
       end
 
       it 'creates a restricted dataset' do
@@ -171,10 +176,11 @@ describe DatasetsController, type: :controller do
           publisher_url: publisher_url,
           license: license,
           frequency: frequency,
-          restricted: true,
+          publishing_method: :github_private,
         }, files: @files }
 
         creation_assertions
+        expect(@user.datasets.first.publishing_method).to eq 'github_private'
       end
 
       it 'creates a dataset in an organization' do
@@ -198,6 +204,7 @@ describe DatasetsController, type: :controller do
         }, files: @files }
 
         creation_assertions
+        expect(@user.datasets.first.owner).to eq organization
       end
 
       it 'returns 202 when async is set to true' do

@@ -8,7 +8,7 @@ describe 'datasets/_dataset.html.erb' do
     allow(@dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
-    @restricted_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, restricted: true)
+    @restricted_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, publishing_method: :github_private)
     allow(@restricted_dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }

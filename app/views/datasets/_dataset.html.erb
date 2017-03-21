@@ -1,6 +1,6 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <td class="owner">
-    <%= image_tag dataset.owner_avatar, height: 20, width: 20 %>
+    <%= image_tag dataset.owner_avatar, height: 20, width: 20 if dataset.owner_avatar %>
     <%= dataset.repo_owner %>
   </td>
   <% if @dashboard %>

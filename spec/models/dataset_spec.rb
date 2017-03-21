@@ -2,26 +2,26 @@
 #
 # Table name: datasets
 #
-#  id              :integer          not null, primary key
-#  name            :string
-#  url             :string
-#  user_id         :integer
-#  created_at      :datetime
-#  updated_at      :datetime
-#  repo            :string
-#  description     :text
-#  publisher_name  :string
-#  publisher_url   :string
-#  license         :string
-#  frequency       :string
-#  datapackage_sha :text
-#  owner           :string
-#  owner_avatar    :string
-#  build_status    :string
-#  full_name       :string
-#  certificate_url :string
-#  job_id          :string
-#  restricted      :boolean          default(FALSE)
+#  id                :integer          not null, primary key
+#  name              :string
+#  url               :string
+#  user_id           :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  repo              :string
+#  description       :text
+#  publisher_name    :string
+#  publisher_url     :string
+#  license           :string
+#  frequency         :string
+#  datapackage_sha   :text
+#  owner             :string
+#  owner_avatar      :string
+#  build_status      :string
+#  full_name         :string
+#  certificate_url   :string
+#  job_id            :string
+#  publishing_method :integer          default("github_public"), not null
 #
 
 require 'rails_helper'
@@ -49,6 +49,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                      frequency: "One-off",
                      user: @user)
 
+    expect(dataset.publishing_method).to eq :github_public.to_s
     expect(dataset).to be_valid
     expect(dataset.restricted).to be false
   end
@@ -153,6 +154,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
   end
 
+  it "sets the user's avatar even if owner == user" do
+    dataset = create(:dataset, user: @user, owner: @user.github_username)
+    expect(@user).to receive(:avatar) { 'http://example.com/avatar.png' }
+
+    dataset.send(:set_owner_avatar)
+    expect(dataset.owner_avatar).to eq('http://example.com/avatar.png')
+  end
+
   it "sets the owner's avatar" do
     dataset = create(:dataset, user: @user, owner: 'my-cool-organization')
     expect(Rails.configuration.octopub_admin).to receive(:organization).with('my-cool-organization') {
@@ -198,7 +207,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
                        license: "OGL-UK-3.0",
                        frequency: "One-off",
                        user: @user,
-                       restricted: true)
+                       publishing_method: :github_private)
 
       expect(dataset).to be_valid
       expect(dataset.restricted).to be true
@@ -208,7 +217,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
-      dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
+      dataset = build(:dataset, :with_callback, user: @user, name: name, publishing_method: :github_private)
       obj = double(GitData)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         expect(obj).to receive(:html_url) { html_url }
@@ -232,14 +241,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
 
 
-    it "can make a private repo public" do
-
+    it "can make a private repo public" do  
       Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
 
       # Create dataset
+
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
-      dataset = build(:dataset, :with_callback, user: @user, name: name, restricted: true)
+      dataset = build(:dataset, :with_callback, user: @user, name: name, publishing_method: :github_private)
       obj = double(GitData)
       expect(GitData).to receive(:create).with(@user.github_username, name, restricted: true, client: a_kind_of(Octokit::Client)) {
         expect(obj).to receive(:add_file).once { nil }
@@ -264,8 +273,10 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
       expect(updated_dataset).to receive(:update_dataset_in_github).once
       expect_any_instance_of(JekyllService).to receive(:create_public_views).once
-      updated_dataset.restricted = false
+      updated_dataset.publishing_method = :github_public#!# = false
+
       updated_dataset.save
+      expect(updated_dataset.restricted).to be false
 
       skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
     end

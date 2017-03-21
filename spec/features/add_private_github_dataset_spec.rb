@@ -2,41 +2,14 @@ require "rails_helper"
 require 'features/user_and_organisations'
 require 'support/odlifier_licence_mock'
 
-feature "Add dataset page", type: :feature do
+feature "Add private github dataset page", type: :feature do
   include_context 'user and organisations'
   include_context 'odlifier licence mock'
 
   let(:data_file) { get_fixture_file('valid-schema.csv') }
 
   before(:each) do
-    allow_any_instance_of(DatasetsController).to receive(:current_user) { @user }
     visit root_path
-  end
-
-  context "logged in visitor has schemas and" do
-
-    before(:each) do
-      good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
-      create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
-      click_link "Add dataset"
-      expect(page).to have_content "Dataset name"
-    end
-
-    scenario "can access add dataset page" do
-      within 'form' do
-        expect(page).to have_content @user.github_username
-      end
-    end
-
-    scenario "can access add dataset page see they have the form options for a schema" do
-      within 'form' do
-        expect(page).to have_content "good schema"
-        expect(page).to have_content "Or upload a new one"
-        expect(page).to have_content "No schema required"
-        expect(page).to have_content @user.github_username
-      end
-    end
-
   end
 
   context "logged in visitors has no schemas" do
@@ -70,7 +43,7 @@ feature "Add dataset page", type: :feature do
       expect(page).to have_content "Your dataset has been queued for creation, and you should receive an email with a link to your dataset on Github shortly."
       expect(Dataset.count).to be before_datasets + 1
       expect(Dataset.last.name).to eq "#{common_name}-name"
-      expect(Dataset.last.owner).to eq @user.github_username
+      expect(Dataset.last.github_private?).to be true
     end
 
   end
@@ -80,16 +53,14 @@ feature "Add dataset page", type: :feature do
     dataset_name = "#{common_name}-name"
 
     fill_in 'dataset[name]', with: dataset_name
-    select(@user.github_username, from: '[dataset[owner]]')
-
     fill_in 'dataset[description]', with: "#{common_name}-description"
     fill_in 'dataset[publisher_name]', with: "#{common_name}-publisher-name"
     fill_in 'dataset[publisher_url]', with: "http://#{common_name}-publisher-url.example.com/"
     fill_in 'files[][title]', with: "#{common_name}-file-name"
     fill_in 'files[][description]', with: "#{common_name}-file-description"
+    choose('_publishing_method_github_private')
     attach_file("[files[][file]]", data_file)
     expect(page).to have_selector("input[value='#{dataset_name}']")
-
   end
 end
 

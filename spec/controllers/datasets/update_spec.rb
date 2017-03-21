@@ -267,10 +267,10 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     before(:each) do
       sign_in @user
       Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      @dataset = create(:dataset,  name: "Dataset", restricted: true, user: @user, dataset_files: [
+      @dataset = create(:dataset,  name: "Dataset", publishing_method: :github_private, user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
-      @dataset.save
+
       @repo = double(GitData)
       expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
       expect_any_instance_of(JekyllService).to receive(:create_public_views)
@@ -282,7 +282,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     it 'can update private flag' do
       expect_any_instance_of(RepoService).to receive(:make_public)
-      put :update, params: { id: @dataset.id, dataset: { restricted: false }}
+      put :update, params: { id: @dataset.id, dataset: { publishing_method: :github_public }}
       @dataset.reload
 
       expect(@dataset.restricted).to be false
