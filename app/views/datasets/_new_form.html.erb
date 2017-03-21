@@ -11,6 +11,14 @@
                                     ["Yes, make this data available on the public web", false],
                                     ["No, only I should be able to see this data", true]
                                    ], label: "Publish publicly?", selected: dataset.restricted %>
+
+  <%= f.form_group :publishing_method, label: { text: "Publish publicly?" }, help: "Who will be able to see your data" do %>
+    <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true %>
+    <%= f.radio_button :publishing_method, :github_private, label: "No, only I should be able to see this data, in a private GitHub repository" %>
+    <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub" %>
+  <% end %>
+
+
   <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>

@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20170318143152) do
     t.string   "certificate_url", limit: 255
     t.string   "job_id",          limit: 255
     t.boolean  "restricted",                    default: false
+    t.integer  "publishing_method",             default: 0,  null: false
     t.index ["user_id"], name: "index_datasets_on_user_id", using: :btree
   end
 
