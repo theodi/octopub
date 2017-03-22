@@ -56,7 +56,7 @@ gem 'rouge'
 gem 'coderay'
 
 # Exception handling
-gem 'airbrake-ruby', '1.7.1'
+gem 'airbrake'
 
 # External services
 gem 'twitter'
@@ -79,11 +79,6 @@ group :doc do
   gem 'sdoc', '~> 0.4.0'
 end
 
-group :development, :test do
-  gem 'lograge'
-  gem 'bundler-audit'
-end
-
 group :development do
   gem 'pry-remote'
   gem 'letter_opener'
@@ -98,6 +93,7 @@ end
 
 group :development, :test do
   gem 'lograge'
+  gem 'bundler-audit'
 
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
