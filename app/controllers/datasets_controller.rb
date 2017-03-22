@@ -144,7 +144,7 @@ class DatasetsController < ApplicationController
   end
 
   def set_direct_post
-    @s3_direct_post = FileStorageService.presigned_post
+    @s3_direct_post = FileStorageService.private_presigned_post
   end
 
   def check_permissions

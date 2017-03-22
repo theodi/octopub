@@ -4,12 +4,25 @@ class FileStorageService
     get_bucket.object(storage_key)
   end
 
+  def self.make_object_public(storage_key)
+    get_object(storage_key).acl.put({ acl: "public-read" })
+  end
+
+  def self.make_object_public_from_url(url)
+    storage_key = get_storage_key_from_public_url(url)
+    make_object_public(storage_key)
+  end
+
   def self.get_string_io(storage_key)
     get_object(storage_key).get.body
   end
 
   def self.presigned_post(uuid = SecureRandom.uuid)
     get_bucket.presigned_post(bucket_attributes(uuid))
+  end
+
+  def self.private_presigned_post(uuid = SecureRandom.uuid)
+    get_bucket.presigned_post(private_bucket_attributes(uuid))
   end
 
   def self.get_bucket
@@ -47,6 +60,10 @@ class FileStorageService
 
   def self.bucket_attributes(uuid)
     { key: "uploads/#{uuid}/${filename}", success_action_status: '201', acl: 'public-read' }
+  end
+
+  def self.private_bucket_attributes(uuid)
+    { key: "uploads/#{uuid}/${filename}", success_action_status: '201' }
   end
 
 end

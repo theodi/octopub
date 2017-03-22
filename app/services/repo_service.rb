@@ -1,3 +1,5 @@
+require 'git_data'
+
 class RepoService
 
   attr_accessor :repo

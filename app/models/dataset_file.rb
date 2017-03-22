@@ -40,8 +40,16 @@ class DatasetFile < ApplicationRecord
                                            tempfile: tempfile
   end
 
+  def self.file_from_url_with_storage_key(file, storage_key)
+    Rails.logger.info "DatasetFile: In file_from_url_with_storage_key"
+
+    fs_file = FileStorageService.get_string_io(storage_key)
+    ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
+                                           content_type: 'text/csv',
+                                           tempfile: fs_file
+  end
+
   def self.read_file_with_utf_8(file)
-    #S3_BUCKET.object(self.storage_key).get.body.read
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
@@ -49,7 +57,14 @@ class DatasetFile < ApplicationRecord
     Rails.logger.info "DatasetFile: In new_file"
     # allow use of hashes or strings for keys
     dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
-    dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) if dataset_file_creation_hash[:file].class == String
+    
+    if dataset_file_creation_hash[:file].class == String 
+      if dataset_file_creation_hash[:storage_key]
+        dataset_file_creation_hash[:file] = file_from_url_with_storage_key(dataset_file_creation_hash[:file], dataset_file_creation_hash[:storage_key]) 
+      else
+        dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) 
+      end
+    end
 
     Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
@@ -71,7 +86,9 @@ class DatasetFile < ApplicationRecord
 
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
-    file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file']) if file_update_hash["file"].class == String
+    if file_update_hash["file"].class == String
+      file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file'])
+    end 
     update_hash = {
       description: file_update_hash["description"],
       file: file_update_hash["file"],
