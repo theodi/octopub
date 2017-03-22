@@ -75,14 +75,12 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     context "with file at the end of a URL" do
 
       before(:each) do
-        @storage_key = 'theodi/hot-drinks/gh-pages/hot-drinks.csv'
         @url = "https://cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
 
         @file = {
           "title" => 'Hot Drinks',
           "file" => @url,
-          "description" => 'WARNING: Contents may be hot',
-          "storage_key" => @storage_key
+          "description" => 'WARNING: Contents may be hot'
         }
       end
 
@@ -93,9 +91,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
         expect(file.filename).to eq("hot-drinks.csv")
         expect(file.description).to eq(@file["description"])
       end
-
     end
-
   end
 
   context "update_file" do
