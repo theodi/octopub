@@ -48,9 +48,7 @@ class Dataset < ApplicationRecord
       save
 
       # You only want to do this if it's private or public github
-      # Else you are done and dusted
-      # TODO add logic
-      CreateRepository.perform_async(id)
+      CreateRepository.perform_async(id) unless publishing_method == 'local_private'
     else
       Rails.logger.info "Dataset: In valid, so push to pusher"
       messages = errors.full_messages
