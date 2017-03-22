@@ -11,6 +11,8 @@ class DatasetFileSchemaService
   def create_dataset_file_schema
     Rails.logger.info "In create #{@url_in_s3}"
 
+    FileStorageService.make_object_public_from_url(@url_in_s3)
+
     @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username)
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
     @dataset_file_schema
