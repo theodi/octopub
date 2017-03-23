@@ -14,28 +14,7 @@ class DatasetMailer < ActionMailer::Base
     mail(to: @user.email, subject: 'Your Octopub dataset has been created') do |format|
       format.html { render template }
     end
-
   end
-
-  # private
-
-  # def success_public_github
-  #   mail(to: @user.email, subject: 'Your Octopub dataset has been created') do |format|
-  #     format.html { render :success }
-  #   end
-  # end
-
-  # def success_private_github
-  #   mail(to: @user.email, subject: 'Your Octopub dataset has been created') do |format|
-  #     format.html { render :success_private_github }
-  #   end
-  # end
-
-  # def success_private_local
-  #   mail(to: @user.email, subject: 'Your Octopub dataset has been created') do |format|
-  #     format.html { render :success_private_local }
-  #   end
-  # end
 
   def error(dataset)
     @user = dataset.user
