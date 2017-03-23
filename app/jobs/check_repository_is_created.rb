@@ -6,7 +6,7 @@ class CheckRepositoryIsCreated
     Rails.logger.info "in CheckRepositoryIsCreated"
     dataset = Dataset.find(dataset_id)
     # Throws Octokit not found if not there!
-    repo = GitData.find(dataset.repo_owner, dataset.name, client: dataset.user.octokit_client)
+    repo = RepoService.fetch_repo(dataset)
 
     Rails.logger.info "Repo is found in CheckRepositoryIsCreated"
     # Now do the adding to the repository

@@ -179,6 +179,7 @@ end
 def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
+  allow(mock_client).to receive(:trigger)
   mock_client
 end
 

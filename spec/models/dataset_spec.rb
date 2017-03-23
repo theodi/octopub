@@ -214,6 +214,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it "creates a private repo in Github" do
+      mock_client = mock_pusher('beep-beep')
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
@@ -232,16 +233,34 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
-      dataset.save
-      CreateRepository.new.perform(dataset.id)
+      dataset.report_status('beep-beep')
       dataset.reload
 
       expect(dataset.repo).to eq(name.parameterize)
       expect(dataset.url).to eq(html_url)
     end
 
+    it "creates a private local repo" do
+      mock_client = mock_pusher('beep-beep')
+      name = "My Awesome Dataset"
+      html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
+
+      dataset = build(:dataset, :with_callback, user: @user, name: name, publishing_method: :local_private)
+
+      expect(GitData).to_not receive(:create)
+      expect(GitData).to_not receive(:find)
+      expect_any_instance_of(JekyllService).to_not receive(:add_files_to_repo_and_push_to_github)
+      expect_any_instance_of(Dataset).to_not receive(:complete_publishing)
+
+      dataset.report_status('beep-beep')
+      dataset.reload
+
+      expect(dataset.repo).to be_nil
+      expect(dataset.url).to be_nil
+    end
 
     it "can make a private repo public" do  
+      mock_client = mock_pusher('beep-beep')
       Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
 
       # Create dataset
@@ -264,8 +283,8 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       }
 
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
-      dataset.save
-      CreateRepository.new.perform(dataset.id)
+
+      dataset.report_status('beep-beep')
 
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
@@ -282,4 +301,3 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
   end
 end
-
