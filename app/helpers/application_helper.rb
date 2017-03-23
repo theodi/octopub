@@ -59,4 +59,7 @@ module ApplicationHelper
     markdown("```json\n#{pretty_json}")
   end
 
+  def pusher_cluster
+    Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster)
+  end
 end
