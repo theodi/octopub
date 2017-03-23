@@ -5,7 +5,7 @@ namespace :avatars do
       begin
         d.send(:set_owner_avatar)
       rescue Octokit::NotFound
-        Rails.logger.warn "#{d.owner} no longer has a github account"
+        Rails.logger.warn "#{d.owner}: #{d.user.name} no longer has a github account"
       end
     end
   end
