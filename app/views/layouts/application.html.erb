@@ -20,7 +20,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster) %>">
+  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
     <div class="container">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
@@ -48,8 +48,8 @@
               <li class="dropdown" id="dataset_file_schema_dropdown">
                 <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" id="dataset_file_schema_menu">Dataset File Schemas <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><%= link_to "Add dataset file schema", main_app.new_dataset_path %></li>
-                  <li><%= link_to "Infer dataset file schema", main_app.new_dataset_path %></li>
+                  <li><%= link_to "Add dataset file schema", main_app.new_dataset_file_schema_path %></li>
+                  <li><%= link_to "Infer dataset file schema", main_app.new_inferred_dataset_file_schema_path %></li>
                   <li role="separator" class="divider"></li>
                   <li><%= link_to "List my dataset file schemas", main_app.dataset_file_schemas_path %></li>
                 </ul>
@@ -73,7 +73,6 @@
             <%= bs_button_to 'Sign in with Github', '/auth/github', style: "primary" %>
           </p>
         <% end %>
-
       </nav>
 
       <div class="row">
@@ -87,7 +86,6 @@
           <%= yield %>
         </div>
       </div>
-
     </div>
 
     <footer>
