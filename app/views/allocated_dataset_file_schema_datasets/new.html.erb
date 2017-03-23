@@ -1,0 +1,8 @@
+<h1 class="page-header">Add Dataset for <%= @dataset_file_schema.name %><small> as <%= current_user.name %></small></h1>
+
+<%= render 'new_form',
+  url: dataset_file_schema_datasets_path,
+  dataset: @dataset,
+  s3_direct_post: @s3_direct_post,
+  dataset_file_schema_id: @dataset_file_schema_id,
+  method: :post %>

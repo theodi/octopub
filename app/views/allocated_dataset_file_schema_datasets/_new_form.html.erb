@@ -1,0 +1,14 @@
+<%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
+  <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
+  <div class="alert alert-warning" role="alert"><b>Note: </b>Each of these files must match the schema <strong><%= link_to @dataset_file_schema.name, dataset_file_schema_path(@dataset_file_schema) %></strong>.</div>
+  <div id="files">
+    <%= render partial: "new_file_form", locals: { file: DatasetFile.new, f: f, dataset_file_schema_id: dataset_file_schema_id } %>
+  </div>
+  <p class="text-right">
+    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
+<% end %>
