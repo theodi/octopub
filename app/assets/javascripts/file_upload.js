@@ -76,7 +76,7 @@ function bindToPusher(channelID) {
 
   channel.bind('dataset_created', function(data) {
     if (channelID.match(/post/)) {
-      window.location = '/datasets/created';
+      window.location = '/datasets/created?publishing_method=' + data.publishing_method;
     } else {
       window.location = '/datasets/edited';
     }

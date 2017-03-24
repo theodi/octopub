@@ -31,7 +31,7 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
 
     click_on 'Submit'
 
-    expect(page).to have_content "Your dataset has been queued for creation, and you should receive an email with a link to your dataset on Github shortly."
+    expect(page).to have_content "Your dataset has been queued for creation and should be completed shortly."
     expect(Dataset.count).to be before_datasets + 1
     expect(Dataset.last.name).to eq "#{common_name}-name"
     expect(Dataset.last.local_private?).to be true

@@ -44,7 +44,7 @@ feature "Add private github dataset page", type: :feature do
 
     click_on 'Submit'
 
-    expect(page).to have_content "Your dataset has been queued for creation, and you should receive an email with a link to your dataset on Github shortly."
+    expect(page).to have_content "Your dataset has been queued for creation, and you should receive an email with a link to your private repository on Github shortly"
     expect(Dataset.count).to be before_datasets + 1
     expect(Dataset.last.name).to eq "#{common_name}-name"
     expect(Dataset.last.github_private?).to be true

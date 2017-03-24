@@ -30,7 +30,8 @@ class DatasetsController < ApplicationController
   end
 
   def created
-    logger.info "DatasetsController: In created"
+    @publishing_method = params[:publishing_method]
+    logger.info "DatasetsController: In created for publishing_method #{}"
   end
 
   def edited
@@ -52,7 +53,7 @@ class DatasetsController < ApplicationController
       logger.info "DatasetsController: In create with params aysnc"
       head :accepted
     else
-      redirect_to created_datasets_path
+      redirect_to created_datasets_path(publishing_method: dataset_params[:publishing_method])
     end
   end
 
