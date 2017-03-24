@@ -136,8 +136,8 @@ describe DatasetsController, type: :controller do
         expect(@repo).to receive(:save)
       end
 
-      def creation_assertions
-        expect(request).to redirect_to(created_datasets_path)
+      def creation_assertions(publishing_method = :github_public)
+        expect(request).to redirect_to(created_datasets_path(publishing_method: publishing_method))
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         the_dataset = @user.datasets.first
@@ -157,6 +157,7 @@ describe DatasetsController, type: :controller do
           publisher_url: publisher_url,
           license: license,
           frequency: frequency,
+          publishing_method: :github_public,
           owner: controller.send(:current_user).github_username
         }, files: @files }
 
@@ -179,7 +180,7 @@ describe DatasetsController, type: :controller do
           publishing_method: :github_private,
         }, files: @files }
 
-        creation_assertions
+        creation_assertions(:github_private)
         expect(@user.datasets.first.publishing_method).to eq 'github_private'
       end
 
@@ -200,6 +201,7 @@ describe DatasetsController, type: :controller do
           publisher_url: publisher_url,
           license: license,
           frequency: frequency,
+          publishing_method: :github_public,
           owner: organization
         }, files: @files }
 
@@ -218,7 +220,8 @@ describe DatasetsController, type: :controller do
           publisher_name: publisher_name,
           publisher_url: publisher_url,
           license: license,
-          frequency: frequency
+          frequency: frequency,
+          publishing_method: :github_public,
         }, files: @files, async: true }
 
         expect(response.code).to eq("202")
@@ -237,6 +240,7 @@ describe DatasetsController, type: :controller do
             publisher_name: publisher_name,
             publisher_url: publisher_url,
             license: license,
+            publishing_method: :github_public,
             frequency: frequency
           },
           files: [
@@ -276,6 +280,7 @@ describe DatasetsController, type: :controller do
           publisher_name: publisher_name,
           publisher_url: publisher_url,
           license: license,
+          publishing_method: :github_public,
           frequency: frequency
         }, files: @files }
 
