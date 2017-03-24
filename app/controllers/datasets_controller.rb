@@ -15,25 +15,32 @@ class DatasetsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
+    @title = "Public Datasets"
     @datasets = Dataset.github_public.order(created_at: :desc)
   end
 
   def dashboard
+    @title = "My Datasets"
     @dashboard = true
-    @datasets = current_user.all_datasets
+    @datasets = current_user.datasets
   end
 
-  def organisation_datasets
-    @datasets = current_user.all_datasets
+  def organisation_index
+    organisation_name = params[:organisation_name]
+    @title = "#{organisation_name.titleize}'s Datasets"
+    @datasets = Dataset.where(owner: organisation_name)
+    render :index
   end
 
   def user_datasets
-    redirect_to dashboard_path
+    @title = "My Datasets"
+    @dashboard = true
+    @datasets = current_user.datasets
+    render :dashboard
   end
 
   def refresh
     User.delay.refresh_datasets(current_user.id, params[:channel_id])
-
     head :accepted
   end
 
