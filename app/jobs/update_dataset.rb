@@ -15,7 +15,7 @@ class UpdateDataset
 
     handle_files(files)
 
-    @dataset.report_status(options["channel_id"])
+    @dataset.report_status(options["channel_id"], :update)
   end
 
   def get_dataset(id, user)

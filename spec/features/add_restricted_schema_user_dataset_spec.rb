@@ -26,6 +26,7 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
 
     expect(RepoService).to_not receive(:create_repo)
     expect(RepoService).to_not receive(:fetch_repo)
+    expect_any_instance_of(DatasetMailer).to receive(:success)
 
     data_file = get_fixture_file('valid-schema.csv')
     common_name = 'Fri1437'

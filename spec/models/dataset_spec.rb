@@ -188,16 +188,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(config["update_frequency"]).to eq("weekly")
   end
 
-  context 'creating certificates for public datasets' do
-
-    before(:each) do
-      @dataset = create(:dataset)
-      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
-      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
-      allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
-    end
-  end
-
   context "creating restricted datasets" do
     it "creates a valid dataset" do
       dataset = create(:dataset, name: "My Awesome Dataset",
@@ -252,6 +242,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect_any_instance_of(JekyllService).to_not receive(:add_files_to_repo_and_push_to_github)
       expect_any_instance_of(Dataset).to_not receive(:complete_publishing)
 
+      expect_any_instance_of(DatasetMailer).to receive(:success)
       dataset.report_status('beep-beep')
       dataset.reload
 
@@ -259,9 +250,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(dataset.url).to be_nil
     end
 
-    it "can make a private repo public" do  
+    it "can make a private repo public" do
       mock_client = mock_pusher('beep-beep')
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
+
 
       # Create dataset
 
@@ -290,14 +281,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       updated_dataset = Dataset.find(dataset.id)
       expect(updated_dataset.restricted).to be true
 
-      expect(updated_dataset).to receive(:update_dataset_in_github).once
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
       expect_any_instance_of(JekyllService).to receive(:create_public_views).once
       updated_dataset.publishing_method = :github_public#!# = false
 
       updated_dataset.save
       expect(updated_dataset.restricted).to be false
 
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
     end
   end
 end
