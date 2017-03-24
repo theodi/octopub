@@ -1,6 +1,7 @@
 require "rails_helper"
 
 feature "Logged in access to pages", type: :feature do
+  include_context 'user and organisations'
 
   before(:each) do
     @user = create(:user, name: "Frank O'Ryan")
@@ -17,7 +18,7 @@ feature "Logged in access to pages", type: :feature do
 
     scenario "logged in publishers can access the home page and datasets" do
       expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{@user.name}"
-      click_link "All datasets"
+      click_link "Public datasets"
       expect(page).to have_content "Woof"
     end
 
