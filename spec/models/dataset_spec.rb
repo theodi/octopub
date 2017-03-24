@@ -188,16 +188,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(config["update_frequency"]).to eq("weekly")
   end
 
-  context 'creating certificates for public datasets' do
-
-    before(:each) do
-      @dataset = create(:dataset)
-      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
-      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
-      allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
-    end
-  end
-
   context "creating restricted datasets" do
     it "creates a valid dataset" do
       dataset = create(:dataset, name: "My Awesome Dataset",
@@ -259,7 +249,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(dataset.url).to be_nil
     end
 
-    it "can make a private repo public" do  
+    it "can make a private repo public" do
       mock_client = mock_pusher('beep-beep')
       Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
 
