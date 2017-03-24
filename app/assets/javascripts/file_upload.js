@@ -58,7 +58,7 @@ function bgUpload(elem) {
 }
 
 function postForm(form) {
-  var formMethod = $('input:hidden[name=_method]').val();
+  var formMethod = $('input:hidden[name=_method]').val() || 'post'
   var channelID = formMethod + '-' +  uuid();
   console.log("Pusher channelID: " + channelID);
 
