@@ -13,6 +13,6 @@ describe RepoService do
 
   it 'returns nil if there is no repo' do
     expect(GitData).to receive(:find).with(user.github_username, dataset.name, client: a_kind_of(Octokit::Client)).and_raise(Octokit::NotFound)
-    expect(RepoService.fetch_repo(dataset)).to be_nil
+    expect{ RepoService.fetch_repo(dataset)}.to raise_exception(Octokit::NotFound)
   end
 end

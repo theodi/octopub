@@ -29,15 +29,9 @@ class RepoService
     @repo.make_public
   end
 
+  # throws Octokit::NotFound if not found
   def self.fetch_repo(dataset)
-    repo = nil
     client = dataset.user.octokit_client
-    begin
-      Rails.logger.info "Repo service: in fetch_repo, look it up"
-      repo = GitData.find(dataset.repo_owner, dataset.name, client: client)
-    rescue Octokit::NotFound
-      Rails.logger.info "in fetch_repo - not found"
-    end
-    repo
+    GitData.find(dataset.repo_owner, dataset.name, client: client)
   end
 end
