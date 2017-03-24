@@ -1,6 +1,6 @@
 class CheckRepositoryIsCreated
   include Sidekiq::Worker
-  sidekiq_options retry: true
+  sidekiq_options retry: 5
 
   def perform(dataset_id)
     Rails.logger.info "in CheckRepositoryIsCreated"
