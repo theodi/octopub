@@ -1,6 +1,7 @@
 require "rails_helper"
 
 feature "Logged in access to pages for restricted publishers", type: :feature do
+  include_context 'user and organisations'
 
   let(:admin) { create(:admin) }
   let(:dataset_file_schema) { create(:dataset_file_schema, user: admin) }
@@ -21,13 +22,13 @@ feature "Logged in access to pages for restricted publishers", type: :feature do
 
     scenario "can view it in public list" do
       expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{user.name}"
-      click_link "All datasets"
+      click_link "Public datasets"
       expect(page).to have_content "Woof"
     end
 
     scenario "can view it in my datasets" do
       expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{user.name}"
-      click_link "List my datasets"
+      click_link "My datasets"
       expect(page).to have_content "Woof"
     end
   end
