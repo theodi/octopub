@@ -39,16 +39,17 @@ class Dataset < ApplicationRecord
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def report_status(channel_id)
+  def report_status(channel_id, action = :create)
     Rails.logger.info "Dataset: in report_status #{channel_id}"
     Rails.logger.info "Dataset: file count: #{dataset_files.count}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
-
-      # You only want to do this if it's private or public github
-      CreateRepository.perform_async(id) unless publishing_method == 'local_private'
+      unless publishing_method == 'local_private' || action == :update
+        # You only want to do this if it's private or public github
+        CreateRepository.perform_async(id) unless publishing_method == 'local_private'
+      end
     else
       Rails.logger.info "Dataset: In valid, so push to pusher"
       messages = errors.full_messages
@@ -117,7 +118,7 @@ class Dataset < ApplicationRecord
     # This is a callback
     def update_dataset_in_github
       Rails.logger.info "in update_dataset_in_github"
-      jekyll_service.update_dataset_in_github
+      jekyll_service.update_dataset_in_github unless local_private?
     end
 
     # This is a callback

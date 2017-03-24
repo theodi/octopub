@@ -49,7 +49,7 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it 'sets a job id' do
-    expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
     expect_any_instance_of(JekyllService).to receive(:add_to_github)
     expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
 
@@ -59,7 +59,7 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it 'reports success' do
-    expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
     expect_any_instance_of(JekyllService).to receive(:add_to_github)
     expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
 
