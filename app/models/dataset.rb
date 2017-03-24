@@ -33,22 +33,27 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
+  after_update :update_dataset_in_github
   after_destroy :delete_dataset_in_github
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
-  def report_status(channel_id)
+  def report_status(channel_id, action = :create)
     Rails.logger.info "Dataset: in report_status #{channel_id}"
     Rails.logger.info "Dataset: file count: #{dataset_files.count}"
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
+      if publishing_method == 'local_private'
+        send_success_email
+      end
 
-      # You only want to do this if it's private or public github
-      CreateRepository.perform_async(id) unless publishing_method == 'local_private'
+      unless publishing_method == 'local_private' || action == :update
+        # You only want to do this if it's private or public github
+        CreateRepository.perform_async(id) unless publishing_method == 'local_private'
+      end
     else
       Rails.logger.info "Dataset: In valid, so push to pusher"
       messages = errors.full_messages
@@ -117,16 +122,29 @@ class Dataset < ApplicationRecord
     # This is a callback
     def update_dataset_in_github
       Rails.logger.info "in update_dataset_in_github"
+      return if local_private?
+
       jekyll_service.update_dataset_in_github
+      make_repo_public_if_appropriate
+      publish_public_views
     end
 
-    # This is a callback
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
       if publishing_method_changed? && github_public?
         RepoService.new(actual_repo).make_public
       end
+    end
+
+    def publish_public_views(new_record = false)
+      Rails.logger.info "in publish_public_views"
+      return if restricted
+      if new_record || publishing_method_changed?
+        # This is either a new record or has just been made public
+        jekyll_service.create_public_views(self)
+      end
+      # updates to existing public repos are handled in #update_in_github
     end
 
     # This is a callback
@@ -160,16 +178,4 @@ class Dataset < ApplicationRecord
       Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, actual_repo)
     end
-
-    # This is a callback
-    def publish_public_views(new_record = false)
-      Rails.logger.info "in publish_public_views"
-      return if restricted
-      if new_record || publishing_method_changed?
-        # This is either a new record or has just been made public
-        jekyll_service.create_public_views(self)
-      end
-      # updates to existing public repos are handled in #update_in_github
-    end
-
 end
