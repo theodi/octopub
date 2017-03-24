@@ -266,18 +266,19 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     before(:each) do
       sign_in @user
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      @dataset = create(:dataset,  name: "Dataset", publishing_method: :github_private, user: @user, dataset_files: [
+
+      @dataset = create(:dataset, :with_callback,  name: "Dataset", publishing_method: :github_private, user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
       @repo = double(GitData)
       expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
       expect_any_instance_of(JekyllService).to receive(:create_public_views)
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
     end
 
     after(:each) do
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
     end
 
     it 'can update private flag' do

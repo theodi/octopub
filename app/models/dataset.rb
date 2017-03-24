@@ -33,7 +33,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_update :update_dataset_in_github, :make_repo_public_if_appropriate, :publish_public_views
+  after_update :update_dataset_in_github
   after_destroy :delete_dataset_in_github
 
   validate :check_repo, on: :create
@@ -118,16 +118,29 @@ class Dataset < ApplicationRecord
     # This is a callback
     def update_dataset_in_github
       Rails.logger.info "in update_dataset_in_github"
-      jekyll_service.update_dataset_in_github unless local_private?
+      return if local_private?
+
+      jekyll_service.update_dataset_in_github
+      make_repo_public_if_appropriate
+      publish_public_views
     end
 
-    # This is a callback
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"
       # Should the repo be made public?
       if publishing_method_changed? && github_public?
         RepoService.new(actual_repo).make_public
       end
+    end
+
+    def publish_public_views(new_record = false)
+      Rails.logger.info "in publish_public_views"
+      return if restricted
+      if new_record || publishing_method_changed?
+        # This is either a new record or has just been made public
+        jekyll_service.create_public_views(self)
+      end
+      # updates to existing public repos are handled in #update_in_github
     end
 
     # This is a callback
@@ -161,16 +174,4 @@ class Dataset < ApplicationRecord
       Rails.logger.info "jekyll_service called, so set with #{repo}"
       @jekyll_service ||= JekyllService.new(self, actual_repo)
     end
-
-    # This is a callback
-    def publish_public_views(new_record = false)
-      Rails.logger.info "in publish_public_views"
-      return if restricted
-      if new_record || publishing_method_changed?
-        # This is either a new record or has just been made public
-        jekyll_service.create_public_views(self)
-      end
-      # updates to existing public repos are handled in #update_in_github
-    end
-
 end

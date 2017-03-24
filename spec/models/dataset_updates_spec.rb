@@ -15,16 +15,8 @@ describe Dataset do
 
   context "updating" do
 
-    before(:each) do
-      Dataset.set_callback(:update, :after, :update_dataset_in_github)
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      Dataset.set_callback(:update, :after, :publish_public_views)
-    end
-
     after(:each) do
       skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
-      skip_callback_if_exists(Dataset, :update, :after, :publish_public_views)
     end
 
     it "the public repo will be updated if the dataset is public" do
@@ -126,8 +118,8 @@ describe Dataset do
       updated_dataset = Dataset.find(dataset.id)
 
       expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
-      expect(updated_dataset).to receive(:make_repo_public_if_appropriate).once
-      expect(updated_dataset).to receive(:publish_public_views).once
+      expect(updated_dataset).to_not receive(:make_repo_public_if_appropriate)
+      expect(updated_dataset).to_not receive(:publish_public_views)
       expect_any_instance_of(RepoService).to_not receive(:make_public)
       expect_any_instance_of(JekyllService).to_not receive(:create_public_views)
 

@@ -251,7 +251,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     it "can make a private repo public" do
       mock_client = mock_pusher('beep-beep')
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
+
 
       # Create dataset
 
@@ -280,14 +280,14 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       updated_dataset = Dataset.find(dataset.id)
       expect(updated_dataset.restricted).to be true
 
-      expect(updated_dataset).to receive(:update_dataset_in_github).once
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
       expect_any_instance_of(JekyllService).to receive(:create_public_views).once
       updated_dataset.publishing_method = :github_public#!# = false
 
       updated_dataset.save
       expect(updated_dataset.restricted).to be false
 
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
     end
   end
 end
