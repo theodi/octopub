@@ -58,11 +58,12 @@ function bgUpload(elem) {
 }
 
 function postForm(form) {
-  var channelID = form.attr('method') + '-' +  uuid();
+  var formMethod = $('input:hidden[name=_method]').val();
+  var channelID = formMethod + '-' +  uuid();
   console.log("Pusher channelID: " + channelID);
 
   $.ajax({
-    type: form.attr('method'),
+    type: formMethod,
     url: form.attr('action'),
     data: form.serialize() + '&async=true&channel_id=' + channelID,
     success: bindToPusher(channelID)
