@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe RestrictedUsersController, type: :controller do
+  include_context 'user and organisations'
   render_views
 
   let(:admin) { create(:admin) }

@@ -20,8 +20,7 @@ describe DatasetsController, type: :controller do
       expect(assigns(:datasets).count).to eq(1)
     end
 
-    # TODO look at this a bit more
-    it 'gets all user and org repos', :vcr do
+    it 'gets all the users repos', :vcr do
       request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:github]
 
       @user = create(:user, token: ENV['GITHUB_TOKEN'])
@@ -35,7 +34,7 @@ describe DatasetsController, type: :controller do
       @user.send(:get_user_repos)
       get 'dashboard'
 
-      expect(assigns(:datasets).count).to eq(2)
+      expect(assigns(:datasets).count).to eq(1)
     end
 
     it 'redirects to the API' do

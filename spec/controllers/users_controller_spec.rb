@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe UsersController, type: :controller do
+  include_context 'user and organisations'
   render_views
 
   before(:each) do
@@ -8,6 +9,7 @@ describe UsersController, type: :controller do
   end
 
   it 'returns 403 if user is not logged in' do
+    sign_out
     get :edit
     expect(response.code).to eq("403")
   end
