@@ -46,6 +46,10 @@ class Dataset < ApplicationRecord
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
+      if publishing_method == 'local_private'
+        send_success_email
+      end
+
       unless publishing_method == 'local_private' || action == :update
         # You only want to do this if it's private or public github
         CreateRepository.perform_async(id) unless publishing_method == 'local_private'

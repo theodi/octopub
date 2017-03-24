@@ -109,6 +109,7 @@ describe Dataset do
 
       expect(GitData).to_not receive(:create)
       expect(GitData).to_not receive(:find)
+      expect(dataset).to receive(:send_success_email)
 
       expect_any_instance_of(Dataset).to_not receive(:complete_publishing)
 
@@ -120,8 +121,10 @@ describe Dataset do
       expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
       expect(updated_dataset).to_not receive(:make_repo_public_if_appropriate)
       expect(updated_dataset).to_not receive(:publish_public_views)
+
       expect_any_instance_of(RepoService).to_not receive(:make_public)
       expect_any_instance_of(JekyllService).to_not receive(:create_public_views)
+      expect(updated_dataset).to receive(:send_success_email)
 
       updated_dataset.description = 'Woof woof'
       updated_dataset.report_status('beep-beep-boop', :update)

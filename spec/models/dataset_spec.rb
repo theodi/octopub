@@ -242,6 +242,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect_any_instance_of(JekyllService).to_not receive(:add_files_to_repo_and_push_to_github)
       expect_any_instance_of(Dataset).to_not receive(:complete_publishing)
 
+      expect_any_instance_of(DatasetMailer).to receive(:success)
       dataset.report_status('beep-beep')
       dataset.reload
 
