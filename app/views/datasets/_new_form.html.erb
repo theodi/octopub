@@ -7,12 +7,11 @@
   <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, required: true, placeholder: t(:'dataset.publisher_name') %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
   <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-  <%= f.form_group :publishing_method, label: { text: "Publish publicly?" }, help: "Who will be able to see your data?" do %>
+  <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
     <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
-    <%= f.radio_button :publishing_method, :github_private, label: "No, only I should be able to see this data, in a private GitHub repository - only for Paid GitHub accounts", name: "dataset[publishing_method]" %>
+    <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
     <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
   <% end %>
-
 
   <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
   <div id="files">
@@ -30,7 +29,6 @@
   <p class="text-right">
     <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
-
 
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
