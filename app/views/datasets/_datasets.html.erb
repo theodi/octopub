@@ -12,7 +12,9 @@
       <% end %>
       <th data-sortable="true">Name</th>
       <th>Link</th>
-      <th data-sortable="true">Schemas?</th>
+      <% if Rails.env.development? %>
+        <th data-sortable="true">Schemas?</th>
+      <% end %>
       <% if @dashboard %>
         <th></th>
         <th></th>
