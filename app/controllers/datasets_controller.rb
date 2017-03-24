@@ -23,6 +23,14 @@ class DatasetsController < ApplicationController
     @datasets = current_user.all_datasets
   end
 
+  def organisation_datasets
+    @datasets = current_user.all_datasets
+  end
+
+  def user_datasets
+    redirect_to dashboard_path
+  end
+
   def refresh
     User.delay.refresh_datasets(current_user.id, params[:channel_id])
 
