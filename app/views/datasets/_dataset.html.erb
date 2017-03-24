@@ -14,8 +14,17 @@
   <% end %>
   <td><%= dataset.name %></td>
   <td>
-    <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
+    <% if dataset.github_public? %>
+      <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
+    <% elsif dataset.github_private? %>
+      <%= link_to dataset.github_url, dataset.github_url %>
+    <% elsif dataset.local_private? %>
+      Local Private
+    <% end %>
   </td>
+  <% if Rails.env.development? %>
+  <td><%= "with Schemas" if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
+  <% end %>
   <% if @dashboard %>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
     <td><%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %></td>

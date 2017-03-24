@@ -14,7 +14,7 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
     expect_any_instance_of(JekyllService).to_not receive(:create_data_files) { nil }
     expect_any_instance_of(JekyllService).to_not receive(:push_to_github) { nil }
     expect_any_instance_of(JekyllService).to_not receive(:create_public_views) { nil }
-    expect_any_instance_of(Dataset).to_not receive(:send_success_email) { nil }
+    expect_any_instance_of(DatasetMailer).to receive(:success)
 
     visit root_path
     click_link "Add dataset"
