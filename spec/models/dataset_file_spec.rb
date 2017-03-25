@@ -95,8 +95,31 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   context "update_file" do
+    it "updates a file when given a URL" do
+      file = create(:dataset_file, title: 'Test Data')
+      storage_key = 'spec/fixtures/test-data0.csv'
+      path = File.join(Rails.root, storage_key)
+     # tempfile = Rack::Test::UploadedFile.new(path, "text/csv")
 
-    it "updates a file" do
+      url = "https://cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
+
+       new_file = {
+          "id" => file.id,
+          "title" => 'Hot Drinks',
+          "file" => url,
+          "description" => 'WARNING: Contents may be hot',
+          "storage_key" => storage_key
+        }
+
+
+      file.update_file(new_file)
+
+      expect(file.filename).to eq('test-data.csv')
+      expect(file.storage_key).to eq(storage_key)
+      expect(file.description).to eq(new_file["description"])
+    end
+
+    it "updates a file when given a File" do
       file = create(:dataset_file, title: 'Test Data')
       storage_key = 'spec/fixtures/test-data0.csv'
       path = File.join(Rails.root, storage_key)
@@ -114,7 +137,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.filename).to eq('test-data.csv')
       expect(file.storage_key).to eq(storage_key)
       expect(file.description).to eq(new_file["description"])
-
     end
 
     it "only updates the referenced file if a file is present" do

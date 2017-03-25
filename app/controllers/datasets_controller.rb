@@ -92,7 +92,7 @@ class DatasetsController < ApplicationController
   end
 
   def destroy
-    RepoService.fetch_repo(@dataset)
+    RepoService.fetch_repo(@dataset) unless @dataset.local_private?
     @dataset.destroy
     redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
   end
