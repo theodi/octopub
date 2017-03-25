@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def selected_dataset_file_schema_id(dataset_file)
+    dataset_file.dataset_file_schema ? dataset_file.dataset_file_schema.id : 0
+  end
+
   def organization_options
     current_user.organizations.collect { |o|
       [

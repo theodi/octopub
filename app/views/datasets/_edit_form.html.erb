@@ -13,7 +13,7 @@
     <% if dataset.dataset_files.count == 0 %>
       <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
     <% else %>
-      <% dataset.dataset_files.each_with_index do |file, i| %>
+      <% dataset.dataset_files.order(created_at: :asc).each_with_index do |file, i| %>
         <div class="hidden">
           <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i, dataset_file_schemas: dataset_file_schemas } %>
         </div>
