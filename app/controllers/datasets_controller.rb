@@ -119,10 +119,6 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method)
-  end
-
   def dataset_update_params
     params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method])
   end
