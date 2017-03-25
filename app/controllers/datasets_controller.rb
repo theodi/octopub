@@ -47,7 +47,7 @@ class DatasetsController < ApplicationController
 
   def created
     @publishing_method = params[:publishing_method]
-    logger.info "DatasetsController: In created for publishing_method #{}"
+    logger.info "DatasetsController: In created for publishing_method #{@publishing_method}"
   end
 
   def edited

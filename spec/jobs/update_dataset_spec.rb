@@ -19,12 +19,8 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
                      frequency: "One-off",
                      user: @user)
 
-    expect(@worker).to receive(:get_dataset).with(@dataset.id, @user) {
-      @dataset
-    }
-    expect(@worker).to receive(:jid) {
-      "84855ffe6a7e1d6dacf6685e"
-    }
+    expect(@worker).to receive(:get_dataset).with(@dataset.id) { @dataset }
+    expect(@worker).to receive(:jid) { "84855ffe6a7e1d6dacf6685e" }
 
     @dataset_params = {
       description: "Another awesome dataset",

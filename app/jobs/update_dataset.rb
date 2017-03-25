@@ -10,7 +10,7 @@ class UpdateDataset
       dataset_params.merge(job_id: self.jid)
     )
 
-    @dataset = get_dataset(id, @user)
+    @dataset = get_dataset(id)
     @dataset.assign_attributes(dataset_params) if dataset_params
 
     handle_files(files)
@@ -18,8 +18,8 @@ class UpdateDataset
     @dataset.report_status(options["channel_id"], :update)
   end
 
-  def get_dataset(id, user)
-    dataset = Dataset.find(id)
+  def get_dataset(dataset_id)
+    dataset = Dataset.find(dataset_id)
     @repo = RepoService.fetch_repo(dataset) unless dataset.local_private?
     dataset
   end
