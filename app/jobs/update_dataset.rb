@@ -20,7 +20,7 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
-    @repo = RepoService.fetch_repo(dataset)
+    @repo = RepoService.fetch_repo(dataset) unless dataset.local_private?
     dataset
   end
 
@@ -31,7 +31,7 @@ class UpdateDataset
       if file["id"]
         update_file(file["id"], file)
       else
-        add_file(jekyll_service, file)
+        add_file(jekyll_service, file) unless @dataset.local_private?
       end
     end
   end
