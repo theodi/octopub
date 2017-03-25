@@ -36,14 +36,13 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     before(:each) do
       sign_in @user
+
       @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: filename, storage_key: storage_key)
       ])
 
-      schema = url_with_stubbed_get_for(good_schema_path)
 
       @dataset_file = @dataset.dataset_files.first
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
 
       @dataset_hash = {
         description: "New description",
@@ -60,22 +59,35 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         @dataset_filename = 'valid-schema.csv'
         @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
 
-        expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
+        allow(Dataset).to receive(:find).with(@dataset.id) { @dataset }
+        allow(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
         expect(RepoService).to receive(:fetch_repo).at_least(:once) { @repo }
 
         Dataset.set_callback(:update, :after, :update_dataset_in_github)
       end
 
       context('with schema', :schema) do
+
+        before(:each) do
+          schema = url_with_stubbed_get_for(good_schema_path)
+          @dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
+          @dataset_file = @dataset.dataset_files.first
+          @dataset_file.update(dataset_file_schema: @dataset_file_schema)
+        end
+
         context 'with schema-compliant csv' do
 
           it 'updates a file in Github' do
+            expect(@dataset_file.dataset_file_schema).to eq @dataset_file_schema
             expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
                 file: new_url_for_data_file
             }]}
+
+            @dataset.reload
+            expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
           end
 
           context 'adds a new file in Github' do

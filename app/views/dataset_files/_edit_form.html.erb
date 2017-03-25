@@ -3,6 +3,9 @@
     <div class="well bg-info">
       <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
       <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
+      <% if file.dataset_file_schema %>
+      <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %></div>
+      <% end %>
       <% if file.filename %>
         <div class="form-group filename-wrapper">
           <div class="current-file">
