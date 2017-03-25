@@ -94,11 +94,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
             before :each do
               @dataset_file.file = nil
-
               @new_file = url_with_stubbed_get_for(@path)
 
-              file = build(:dataset_file, dataset: @dataset, file: nil)
-              expect(DatasetFile).to receive(:new_file) { file }
               expect_any_instance_of(JekyllService).to receive(:add_to_github)
               expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
               expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
@@ -118,6 +115,64 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
                 }
               ]}
 
+              expect(@dataset.dataset_files.count).to eq(2)
+            end
+
+            it 'via a browser - original file has one schema, new file does not match it' do
+              @dataset_filename = 'invalid-schema.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
+              @new_file = url_with_stubbed_get_for(@path)
+
+              put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+                {
+                  id: @dataset_file.id,
+                  title: "New title",
+                  description: "New description"
+                 },
+                {
+                  title: "New file",
+                  description: "New file description",
+                  file: @new_file
+                }
+              ]}
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+              expect(@dataset.dataset_files.second.dataset_file_schema).to be_nil
+              expect(@dataset.dataset_files.count).to eq(2)
+            end
+
+            it 'via a browser - original file has one schema, new file has a different one' do
+              @dataset_filename = 'valid-file-for-good-schema-2.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
+              @new_file = url_with_stubbed_get_for(@path)
+              new_schema_path = get_fixture_schema_file('good-schema-2.json')
+              new_schema = url_with_stubbed_get_for(new_schema_path)
+              new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', new_schema, @user).create_dataset_file_schema
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+
+              file_1_hash = {
+                id: @dataset_file.id,
+                title: "Old file New title",
+                description: "Old file New description",
+                dataset_file_schema_id: @dataset_file_schema.id
+              }
+
+              file_2_hash = {
+                title: "New file",
+                description: "New file description",
+                file: @new_file,
+                dataset_file_schema_id: new_dataset_file_schema.id
+                }
+
+              put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+                file_1_hash, file_2_hash
+              ]}
+
+              @dataset.reload
+
+              expect(@dataset.dataset_files.first).to eq @dataset_file
+              expect(@dataset.dataset_files.second.title).to eq 'New file'
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+              expect(@dataset.dataset_files.second.dataset_file_schema).to eq new_dataset_file_schema
               expect(@dataset.dataset_files.count).to eq(2)
             end
           end
@@ -179,7 +234,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = url_with_stubbed_get_for(path)
 
-          new_file = build(:dataset_file, dataset: @dataset, file: nil)
+          new_file = build(:dataset_file, dataset: @dataset, file: nil, filename: filename)
 
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect_any_instance_of(JekyllService).to receive(:add_to_github)
@@ -211,6 +266,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         before(:each) do
           @repo = double(GitData)
           @url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
+          @new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', @url_for_schema, @user).create_dataset_file_schema
+
           expect(RepoService).to receive(:fetch_repo) { @repo }
         end
 
@@ -222,9 +279,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
               file: url_for_not_matching_data_file,
-              schema_name: 'schema name',
-              schema_description: 'schema description',
-              schema: @url_for_schema
+              dataset_file_schema_id: @new_dataset_file_schema.id
           }]}
 
           expect(Error.count).to eq(1)
