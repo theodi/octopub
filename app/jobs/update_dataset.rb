@@ -20,7 +20,7 @@ class UpdateDataset
 
   def get_dataset(id, user)
     dataset = Dataset.find(id)
-    @repo = RepoService.fetch_repo(dataset)
+    @repo = RepoService.fetch_repo(dataset) unless dataset.local_private?
     dataset
   end
 
@@ -60,8 +60,8 @@ class UpdateDataset
 
     @dataset.dataset_files << f
     if f.save
-      jekyll_service.add_to_github(f)
-      jekyll_service.add_jekyll_to_github(f.filename)
+      jekyll_service.add_to_github(f) unless @dataset.local_private?
+      jekyll_service.add_jekyll_to_github(f.filename) unless @dataset.local_private?
       f.file = nil
     end
   end
