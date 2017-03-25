@@ -92,9 +92,15 @@ class DatasetsController < ApplicationController
   end
 
   def destroy
-    RepoService.fetch_repo(@dataset) unless @dataset.local_private?
+    success_message = "Dataset '#{@dataset.name}' deleted sucessfully"
+    begin
+      RepoService.fetch_repo(@dataset) unless @dataset.local_private?
+    rescue Octokit::NotFound
+      Rails.logger.info "Cannot find repository, probably already deleted"
+      success_message = "#{success_message} - but we could not find the repository in GitHub to delete"
+    end
     @dataset.destroy
-    redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
+    redirect_to dashboard_path, notice: success_message
   end
 
   private
