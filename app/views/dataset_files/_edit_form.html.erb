@@ -4,8 +4,9 @@
       <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
       <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
       <% if file.dataset_file_schema %>
-      <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %></div>
+      <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %> and if you change the file, it will also be validated against that schema.</div>
       <% end %>
+      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Dataset file schemas', selected: file.dataset_file_schema } %>
       <% if file.filename %>
         <div class="form-group filename-wrapper">
           <div class="current-file">
