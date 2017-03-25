@@ -26,6 +26,7 @@
   <td><%= "with Schemas" if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
   <% end %>
   <% if @dashboard %>
+    <td><%= dataset.created_at.to_formatted_s(:short) %></td>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
     <td><%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %></td>
   <% end %>

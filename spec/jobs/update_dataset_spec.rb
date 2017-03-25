@@ -66,6 +66,15 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset = @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
   end
 
+  it "reports success and doesn't push to GitHub it private" do
+    @dataset.update_columns(publishing_method: :local_private)
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
+    expect_any_instance_of(JekyllService).to_not receive(:add_to_github)
+    expect_any_instance_of(JekyllService).to_not receive(:add_jekyll_to_github)
+
+    dataset = @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
+  end
+
   context 'reports errors' do
 
     let(:filename) { 'datapackage.json' }
