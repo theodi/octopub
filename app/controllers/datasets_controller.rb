@@ -47,7 +47,7 @@ class DatasetsController < ApplicationController
 
   def created
     @publishing_method = params[:publishing_method]
-    logger.info "DatasetsController: In created for publishing_method #{}"
+    logger.info "DatasetsController: In created for publishing_method #{@publishing_method}"
   end
 
   def edited
@@ -118,10 +118,6 @@ class DatasetsController < ApplicationController
     if params[:dataset][:publisher_name].blank?
       flash[:no_publisher] = "Please include the name of the publisher"
     end
-  end
-
-  def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method)
   end
 
   def dataset_update_params

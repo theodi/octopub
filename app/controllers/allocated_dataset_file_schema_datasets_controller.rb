@@ -37,10 +37,6 @@ class AllocatedDatasetFileSchemaDatasetsController < ApplicationController
 
   private
 
-  def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method)
-  end
-
   def check_mandatory_fields
     logger.info "DatasetsController: In check_mandatory_fields"
     check_files

@@ -63,7 +63,8 @@ class DatasetFile < ApplicationRecord
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
       file: dataset_file_creation_hash[:file],
-      storage_key: dataset_file_creation_hash[:storage_key]
+      storage_key: dataset_file_creation_hash[:storage_key],
+      dataset_file_schema_id: dataset_file_creation_hash[:dataset_file_schema_id]
     )
   end
 
@@ -146,7 +147,6 @@ class DatasetFile < ApplicationRecord
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
-
     end
 
     def get_file_for_validation_from_file

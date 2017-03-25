@@ -64,4 +64,8 @@ module FileHandlingForDatasets
   def clear_files
     @files.keep_if { |f| f["id"] || (f["file"] && f["title"]) }
   end
+
+  def dataset_params
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method)
+  end
 end
