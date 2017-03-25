@@ -33,8 +33,8 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_update :update_dataset_in_github
-  after_destroy :delete_dataset_in_github
+  after_update :update_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
+  after_destroy :delete_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
 
   validate :check_repo, on: :create
   validates_associated :dataset_files
@@ -149,7 +149,11 @@ class Dataset < ApplicationRecord
 
     # This is a callback
     def delete_dataset_in_github
-      jekyll_service.delete_dataset_in_github
+      begin
+        jekyll_service.delete_dataset_in_github
+      rescue Octokit::NotFound
+        Rails.logger.info "Repository does not exist"
+      end
     end
 
     def check_repo

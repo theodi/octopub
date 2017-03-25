@@ -137,13 +137,32 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset.complete_publishing
   end
 
-  it "deletes a repo in github" do
+  it "deletes a repo in github if it should have one" do
     dataset = create(:dataset, user: @user, owner: "foo-bar")
     repo = double(GitData)
     expect(RepoService).to receive(:fetch_repo) { repo }
     expect(repo).to receive(:delete)
 
     dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "deletes a repo in github if it should have one but cannot find it" do
+    dataset = create(:dataset, user: @user, owner: "foo-bar")
+    expect(dataset).to receive(:actual_repo).and_raise(Octokit::NotFound)
+    expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
+
+    dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "deletes dataset without a repository" do
+    dataset = create(:dataset, user: @user, owner: "foo-bar", publishing_method: :local_private)
+    repo = double(GitData)
+    expect(RepoService).to_not receive(:fetch_repo) { repo }
+    expect(repo).to_not receive(:delete)
+    dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "sets the user's avatar" do
