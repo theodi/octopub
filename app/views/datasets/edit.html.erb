@@ -1,3 +1,9 @@
 <h1 class="page-header">Edit Dataset</h1>
 
-<%= render 'edit_form', url: dataset_path(@dataset), dataset: @dataset, s3_direct_post: @s3_direct_post, licenses: @licenses, method: :put %>
+<%= render 'edit_form',
+  url: dataset_path(@dataset),
+  dataset: @dataset,
+  s3_direct_post: @s3_direct_post,
+  licenses: @licenses,
+  dataset_file_schemas: @dataset_file_schemas,
+  method: :put %>
