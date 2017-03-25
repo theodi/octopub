@@ -271,10 +271,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      @repo = double(GitData)
-      expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
-      expect_any_instance_of(JekyllService).to receive(:create_public_views)
-      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
     end
 
     after(:each) do
@@ -282,11 +278,48 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     end
 
     it 'can update private flag' do
+      @repo = double(GitData)
+      expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
+      expect_any_instance_of(JekyllService).to receive(:create_public_views)
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
       expect_any_instance_of(RepoService).to receive(:make_public)
       put :update, params: { id: @dataset.id, dataset: { publishing_method: :github_public }}
       @dataset.reload
 
       expect(@dataset.restricted).to be false
+    end
+
+    it 'can add a file' do
+      @dataset.update_columns(publishing_method: :local_private)
+      @dataset_file = @dataset.dataset_files.first
+      @dataset_file.file = nil
+
+      filename = 'test-data.csv'
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+      file = url_with_stubbed_get_for(path)
+
+      new_file = build(:dataset_file, dataset: @dataset, file: nil)
+
+      expect(DatasetFile).to receive(:new_file) { new_file }
+      expect_any_instance_of(JekyllService).to_not receive(:add_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:add_jekyll_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:push_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:update_datapackage)
+
+      put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+        {
+          id: @dataset_file.id,
+          title: "New title",
+          description: "New description"
+         },
+        {
+          title: "New file",
+          description: "New file description",
+          file: file
+        }
+      ]}
+
+      expect(@dataset.dataset_files.count).to eq(2)
     end
   end
 end
