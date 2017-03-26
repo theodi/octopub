@@ -1,7 +1,7 @@
 class CreateSchemaCategories < ActiveRecord::Migration[5.0]
   def change
     create_table :schema_categories do |t|
-      t.text        :name
+      t.text        :name, null: false
       t.text        :description
       t.timestamps
     end

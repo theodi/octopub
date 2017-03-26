@@ -23,13 +23,14 @@ RSpec.describe SchemaCategoriesController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # SchemaCategory. As you add validations to SchemaCategory, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:valid_attributes) {{
+    name: Faker::Name.unique.name,
+    description: Faker::Lorem.sentence
+  }}
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  let(:invalid_attributes) {{
+    name: nil
+  }}
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -41,14 +42,6 @@ RSpec.describe SchemaCategoriesController, type: :controller do
       schema_category = SchemaCategory.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(assigns(:schema_categories)).to eq([schema_category])
-    end
-  end
-
-  describe "GET #show" do
-    it "assigns the requested schema_category as @schema_category" do
-      schema_category = SchemaCategory.create! valid_attributes
-      get :show, params: {id: schema_category.to_param}, session: valid_session
-      expect(assigns(:schema_category)).to eq(schema_category)
     end
   end
 
@@ -83,7 +76,7 @@ RSpec.describe SchemaCategoriesController, type: :controller do
 
       it "redirects to the created schema_category" do
         post :create, params: {schema_category: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(SchemaCategory.last)
+        expect(response).to redirect_to schema_categories_path
       end
     end
 
@@ -102,15 +95,15 @@ RSpec.describe SchemaCategoriesController, type: :controller do
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+      let(:new_attributes) {{
+        name: 'woof',
+        description: 'meow'
+      }}
 
       it "updates the requested schema_category" do
         schema_category = SchemaCategory.create! valid_attributes
         put :update, params: {id: schema_category.to_param, schema_category: new_attributes}, session: valid_session
         schema_category.reload
-        skip("Add assertions for updated state")
       end
 
       it "assigns the requested schema_category as @schema_category" do
@@ -122,7 +115,7 @@ RSpec.describe SchemaCategoriesController, type: :controller do
       it "redirects to the schema_category" do
         schema_category = SchemaCategory.create! valid_attributes
         put :update, params: {id: schema_category.to_param, schema_category: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(schema_category)
+        expect(response).to redirect_to schema_categories_path
       end
     end
 

@@ -10,4 +10,5 @@
 #
 class SchemaCategory < ApplicationRecord
   has_and_belongs_to_many :dataset_file_schemas, join_table: :schema_categories_dataset_file_schemas
+  validates_presence_of :name
 end

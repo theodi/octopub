@@ -11,10 +11,6 @@ RSpec.describe SchemaCategoriesController, type: :routing do
       expect(:get => "/schema_categories/new").to route_to("schema_categories#new")
     end
 
-    it "routes to #show" do
-      expect(:get => "/schema_categories/1").to route_to("schema_categories#show", :id => "1")
-    end
-
     it "routes to #edit" do
       expect(:get => "/schema_categories/1/edit").to route_to("schema_categories#edit", :id => "1")
     end
@@ -34,6 +30,5 @@ RSpec.describe SchemaCategoriesController, type: :routing do
     it "routes to #destroy" do
       expect(:delete => "/schema_categories/1").to route_to("schema_categories#destroy", :id => "1")
     end
-
   end
 end
