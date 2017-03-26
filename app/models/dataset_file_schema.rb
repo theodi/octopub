@@ -19,7 +19,7 @@
 class DatasetFileSchema < ApplicationRecord
   belongs_to :user
   has_and_belongs_to_many :allocated_users, class_name: 'User', join_table: :allocated_dataset_file_schemas_users
-  has_and_belongs_to_many :schema_categories
+  has_and_belongs_to_many :schema_categories, join_table: :schema_categories_dataset_file_schemas
   has_many :dataset_files, dependent: :nullify
 
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'

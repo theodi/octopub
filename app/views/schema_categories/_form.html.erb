@@ -1,4 +1,4 @@
-<%= form_for(schema_category) do |f| %>
+<%= bootstrap_form_for(schema_category) do |f| %>
   <% if schema_category.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(schema_category.errors.count, "error") %> prohibited this schema_category from being saved:</h2>
@@ -10,8 +10,9 @@
       </ul>
     </div>
   <% end %>
-
+  <%= f.text_field :name %>
+  <%= f.text_field :description %>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.primary %>
   </div>
 <% end %>

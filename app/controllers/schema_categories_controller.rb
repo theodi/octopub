@@ -28,7 +28,7 @@ class SchemaCategoriesController < ApplicationController
 
     respond_to do |format|
       if @schema_category.save
-        format.html { redirect_to @schema_category, notice: 'Schema category was successfully created.' }
+        format.html { redirect_to schema_categories_path, notice: 'Schema category was successfully created.' }
         format.json { render :show, status: :created, location: @schema_category }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class SchemaCategoriesController < ApplicationController
   def update
     respond_to do |format|
       if @schema_category.update(schema_category_params)
-        format.html { redirect_to @schema_category, notice: 'Schema category was successfully updated.' }
+        format.html { redirect_to schema_categories_path, notice: 'Schema category was successfully updated.' }
         format.json { render :show, status: :ok, location: @schema_category }
       else
         format.html { render :edit }
@@ -69,6 +69,6 @@ class SchemaCategoriesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def schema_category_params
-      params.fetch(:schema_category, {})
+      params.fetch(:schema_category).permit(:name, :description)
     end
 end

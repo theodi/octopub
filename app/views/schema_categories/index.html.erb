@@ -1,25 +1,24 @@
-<p id="notice"><%= notice %></p>
-
 <h1>Schema Categories</h1>
 
-<table>
+<table class="table">
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th colspan="3"</th>
     </tr>
   </thead>
 
   <tbody>
     <% @schema_categories.each do |schema_category| %>
       <tr>
-        <td><%= link_to 'Show', schema_category %></td>
-        <td><%= link_to 'Edit', edit_schema_category_path(schema_category) %></td>
-        <td><%= link_to 'Destroy', schema_category, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= schema_category.name %></td>
+        <td><%= schema_category.description %></td>
+        <td><%= link_to 'Edit', edit_schema_category_path(schema_category), class: "btn btn-warning btn-sm" %></td>
+        <td><%= link_to 'Destroy', schema_category, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Schema Category', new_schema_category_path %>
+<%= bs_button_to 'Add a new Schema Category', new_schema_category_path, style: "success", id: "add_schema", class: "btn-default" %>

@@ -65,6 +65,7 @@
             <% end %>
             <li><%= link_to "API", '/api' %></li>
             <% if admin_user %>
+              <li><%= link_to "Schema Categories", main_app.schema_categories_path %></li>
               <li><%= link_to "Users", main_app.users_path %></li>
             <% end %>
           </ul>
