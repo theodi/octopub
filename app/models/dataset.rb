@@ -109,6 +109,11 @@ class Dataset < ApplicationRecord
     @actual_repo ||= RepoService.fetch_repo(self)
   end
 
+  def schema_names
+    names = dataset_files.map {|df| df.schema_name }.compact
+    names.join(', ') unless names.nil?
+  end
+
   def complete_publishing
     actual_repo
     set_owner_avatar

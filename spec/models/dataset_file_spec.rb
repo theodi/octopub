@@ -217,6 +217,12 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(@dataset.valid?).to eq(true)
     end
 
+    it 'returns the schema name' do
+      schema_name = Faker::Name.unique.name
+      dataset_file = build(:dataset_file,  dataset_file_schema: build(:dataset_file_schema, name: schema_name))
+      expect(dataset_file.schema_name).to eq schema_name
+    end
+
     it 'does not validate against a good schema with bad data' do
 
       storage_key = 'invalid-schema.csv'

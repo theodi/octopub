@@ -155,4 +155,56 @@ describe DatasetFileSchema do
     expect(dataset_file_1.dataset_file_schema).to be nil
     expect(dataset_file_2.dataset_file_schema).to be nil
   end
+
+  context 'counts the datasets using the schema' do
+    it 'including 0 when there are none' do
+      dataset_file_schema = create(:dataset_file_schema)
+      expect(dataset_file_schema.count_datasets_using_this_schema).to be 0
+    end
+
+    it 'and the correct number when there are some' do
+      storage_key = 'valid-schema.csv'
+
+      @dataset_file_schema_with_url_in_repo.save
+      dataset_file_schema_id = @dataset_file_schema_with_url_in_repo.id
+
+      file_path = get_fixture_file(storage_key)
+      dataset_file_1 = create(:dataset_file,
+        dataset: create(:dataset),
+        dataset_file_schema: @dataset_file_schema_with_url_in_repo,
+        storage_key: storage_key,
+        file: Rack::Test::UploadedFile.new(file_path, "text/csv")
+      )
+      expect(@dataset_file_schema_with_url_in_repo.count_datasets_using_this_schema).to be 1
+    end
+
+    it 'and the correct number when there are duplicate uses in a dataset' do
+      storage_key = 'valid-schema.csv'
+
+      @dataset_file_schema_with_url_in_repo.save
+      dataset_file_schema_id = @dataset_file_schema_with_url_in_repo.id
+
+      file_path = get_fixture_file(storage_key)
+      dataset = create(:dataset)
+      dataset_file_1 = create(:dataset_file,
+        dataset: dataset,
+        dataset_file_schema: @dataset_file_schema_with_url_in_repo,
+        storage_key: storage_key,
+        file: Rack::Test::UploadedFile.new(file_path, "text/csv")
+      )
+      dataset_file_2 = create(:dataset_file,
+        dataset: dataset,
+        dataset_file_schema: @dataset_file_schema_with_url_in_repo,
+        storage_key: storage_key,
+        file: Rack::Test::UploadedFile.new(file_path, "text/csv")
+      )
+
+      expect(@dataset_file_schema_with_url_in_repo.count_datasets_using_this_schema).to be 1
+    end
+
+  end
+  # def count_datasets_using_this_schema
+  #   dataset_files.pluck(:dataset_id).uniq.count
+  # end
+
 end
