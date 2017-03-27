@@ -61,7 +61,14 @@ class User < ApplicationRecord
   end
 
   def organizations
-    @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+    @organizations ||= get_organization_memberships
+  end
+
+  def get_organization_memberships
+    # Note cache key is based on model's id and updated at attributes
+    Rails.cache.fetch("#{cache_key}/organization_memberships", expires_in: 1.day) do
+      octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+    end
   end
 
   def org_datasets
@@ -75,10 +82,6 @@ class User < ApplicationRecord
   def all_dataset_ids
     org_dataset_ids.concat(dataset_ids).map { |id| id.to_i }
   end
-
-  # def allocated_dataset_file_schemas
-  #   Array.new
-  # end
 
   private
 
