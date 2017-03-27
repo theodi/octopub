@@ -22,12 +22,9 @@ class DatasetFileSchema < ApplicationRecord
   has_many :dataset_files, dependent: :nullify
 
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
- # validates_presence_of :storage_key
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
   validates_presence_of :user_id # Hidden field
   validates_presence_of :owner_username, message: 'Please select an owner for the schema'
-
- # before_validation :set_storage_key
 
   attr_accessor :parsed_schema
 
@@ -45,6 +42,10 @@ class DatasetFileSchema < ApplicationRecord
 
   def owner_name
     owner_username
+  end
+
+  def count_datasets_using_this_schema
+    dataset_files.pluck(:dataset_id).uniq.count
   end
 
   # TODO maybe persist this?
