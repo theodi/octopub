@@ -25,8 +25,9 @@ class RestrictedUsersController < ApplicationController
       dataset_file_schema_ids = schema_categories.map { |sc| sc.dataset_file_schemas.pluck(:id) }.flatten.uniq
 
       current_allocated_schemas = params[:user][:allocated_dataset_file_schema_ids] ||= []
-
-      params[:user][:allocated_dataset_file_schema_ids] = current_allocated_schemas + dataset_file_schema_ids
+      combined_schemas = current_allocated_schemas + dataset_file_schema_ids
+      combined_schemas =  combined_schemas.map(&:to_i).uniq
+      params[:user][:allocated_dataset_file_schema_ids] = combined_schemas
       params[:user].delete(:schema_category_ids)
     end
 

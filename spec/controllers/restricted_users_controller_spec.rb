@@ -96,6 +96,23 @@ describe RestrictedUsersController, type: :controller do
         expect(@publisher.allocated_dataset_file_schemas.count).to be 2
         expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
       end
+
+      it "by category and separately without duplicates" do
+        schema_category = SchemaCategory.create(name: 'cat1', dataset_file_schemas: [ dataset_file_schema_1])
+        expect(schema_category.dataset_file_schemas.count).to be 1
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 0
+
+        put :update, params: {
+          id: @publisher.id,
+          user: {
+            allocated_dataset_file_schema_ids: [ dataset_file_schema_1.id ],
+            schema_category_ids: [ schema_category.id ]
+          }
+        }
+
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 1
+        expect(@publisher.allocated_dataset_file_schemas).to eq [ dataset_file_schema_1 ]
+      end
     end
   end
 end
