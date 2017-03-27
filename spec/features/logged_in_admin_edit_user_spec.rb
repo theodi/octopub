@@ -46,23 +46,46 @@ feature "Logged in admin can edit user", type: :feature do
     expect(@publisher.restricted).to be true
   end
 
-  scenario "logged in admins can allocated schemas" do
-    dataset_file_schema_1 = create(:dataset_file_schema)
-    dataset_file_schema_2 = create(:dataset_file_schema)
-    @publisher.allocated_dataset_file_schemas << dataset_file_schema_1
-    @publisher.reload
-    expect(@publisher.allocated_dataset_file_schemas.count).to be 1
+   context "logged in admins can allocate schemas" do
 
-    visit edit_restricted_user_path(@publisher)
-    expect(page.has_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_1.id}"))
-    expect(page.has_no_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_2.id}"))
+    let(:dataset_file_schema_1) { create(:dataset_file_schema) }
+    let(:dataset_file_schema_2) { create(:dataset_file_schema) }
 
-    page.check("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_2.id}")
-    click_on 'Update'
-    @publisher.reload
+    it "individually" do
+      dataset_file_schema_1 = create(:dataset_file_schema, name: Faker::Name.unique.name)
+      dataset_file_schema_2 = create(:dataset_file_schema, name: Faker::Name.unique.name)
+      expect(DatasetFileSchema.count).to be 2
+      @publisher.allocated_dataset_file_schemas << dataset_file_schema_1
+      @publisher.reload
+      expect(@publisher.allocated_dataset_file_schemas.count).to be 1
 
-    expect(@publisher.allocated_dataset_file_schemas.count).to be 2
-    expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+      visit edit_restricted_user_path(@publisher)
+      expect(page.has_checked_field?(dataset_file_schema_1.name))
+      expect(page.has_no_checked_field?(dataset_file_schema_2.name))
+
+      page.check dataset_file_schema_2.name
+      click_on 'Update'
+      @publisher.reload
+
+      expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+      expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+    end
+
+    scenario "with a category" do
+      schemas = [ dataset_file_schema_1, dataset_file_schema_2]
+      schema_category = SchemaCategory.create(name: 'cat1', dataset_file_schemas: schemas)
+      visit edit_restricted_user_path(@publisher)
+
+      expect(page.has_no_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_1.id}"))
+      expect(page.has_no_checked_field?("user_allocated_dataset_file_schema_ids_#{dataset_file_schema_2.id}"))
+
+      page.check("cat1")
+      expect(page.has_checked_field?)
+      click_on 'Update'
+      @publisher.reload
+
+      expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+      expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+    end
   end
 end
-

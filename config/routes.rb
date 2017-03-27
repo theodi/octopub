@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   root 'application#index'
 
   get '/api-docs' => 'application#api'#, :as => :api
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
   resources :jobs, only: [:show]
   resources :users, only: [:index, :show, :edit ,:update]
   resources :restricted_users, only: [:edit, :update]
+  resources :schema_categories, except: :show
 
   get "/dashboard" => "datasets#dashboard", :as => :dashboard
   get "/organisation/:organisation_name/datasets" => "datasets#organisation_index", as: :organisation_datasets

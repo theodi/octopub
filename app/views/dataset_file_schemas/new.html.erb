@@ -4,6 +4,9 @@
   <%= f.hidden_field :user_id, value: @user_id %>
   <%= f.text_field :name, required: true %>
   <%= f.text_area :description %>
+  <% if SchemaCategory.any? %>
+    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
+  <% end %>
   <%= f.select :owner_username, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
   <div class="schema-panel">
     <fieldset class="file bg-upload">
