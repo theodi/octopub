@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(version: 20170326193342) do
   end
 
   create_table "schema_categories", force: :cascade do |t|
-    t.text     "name"
+    t.text     "name",        null: false
     t.text     "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
