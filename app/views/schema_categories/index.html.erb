@@ -1,11 +1,12 @@
 <h1>Schema Categories</h1>
 
-<table class="table">
+<table class="table table-bordered table-hover">
   <thead>
     <tr>
       <th>Name</th>
       <th>Description</th>
-      <th colspan="3"</th>
+      <th>Schemas</th>
+      <th colspan="3"></th>
     </tr>
   </thead>
 
@@ -14,6 +15,7 @@
       <tr>
         <td><%= schema_category.name %></td>
         <td><%= schema_category.description %></td>
+        <td><%= schema_category.dataset_file_schemas.count %></td>
         <td><%= link_to 'Edit', edit_schema_category_path(schema_category), class: "btn btn-warning btn-sm" %></td>
         <td><%= link_to 'Destroy', schema_category, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %></td>
       </tr>
