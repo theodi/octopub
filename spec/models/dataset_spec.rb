@@ -41,14 +41,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it "creates a valid public dataset" do
-    dataset = create(:dataset, name: "My Awesome Dataset",
-                     description: "An awesome dataset",
-                     publisher_name: "Awesome Inc",
-                     publisher_url: "http://awesome.com",
-                     license: "OGL-UK-3.0",
-                     frequency: "One-off",
-                     user: @user)
-
+    dataset = create(:dataset, user: @user)
     expect(dataset.publishing_method).to eq :github_public.to_s
     expect(dataset).to be_valid
     expect(dataset.restricted).to be false
@@ -56,15 +49,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
   it "returns an error if the repo already exists" do
     expect_any_instance_of(Octokit::Client).to receive(:repository?).with("#{@user.github_username}/my-awesome-dataset") { true }
-
-    dataset = build(:dataset, name: "My Awesome Dataset",
-                     description: "An awesome dataset",
-                     publisher_name: "Awesome Inc",
-                     publisher_url: "http://awesome.com",
-                     license: "OGL-UK-3.0",
-                     frequency: "One-off",
-                     user: @user)
-
+    dataset = build(:dataset, user: @user)
     expect(dataset).to_not be_valid
   end
 
@@ -99,9 +84,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
 
     expect(dataset.repo).to eq(name.parameterize)
     expect(dataset.url).to eq(html_url)
-
-
-
   end
 
   it "creates a repo with an organization" do
@@ -308,6 +290,34 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(updated_dataset.restricted).to be false
 
       skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
+    end
+  end
+
+  context "returns a list of schemas used" do
+    it "with an empty string when none" do 
+      dataset = build(:dataset, user: @user,
+          dataset_files: [ build(:dataset_file)])
+      expect(dataset.schema_names).to eq ""
+    end
+
+    it "with a name if one" do 
+      schema_name = Faker::Name.unique.name
+      dataset = build(:dataset, user: @user,
+          dataset_files: [ build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name))])
+      expect(dataset.schema_names).to eq schema_name
+    end
+
+    it "with a list if many" do 
+      schema_name = Faker::Name.unique.name
+      schema_name_2 = Faker::Name.unique.name
+      dataset = build(:dataset, user: @user,
+          dataset_files: [ 
+            build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name)),
+            build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name_2)),
+            build(:dataset_file),
+          ]
+      )
+      expect(dataset.schema_names).to eq "#{schema_name}, #{schema_name_2}"
     end
   end
 end
