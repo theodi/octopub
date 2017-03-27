@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DatasetsController, type: :controller do
+describe DatasetsIndexController, type: :controller do
 
   before(:each) do
     @user = create(:user)
