@@ -13,15 +13,17 @@
           <th data-sortable="true">Creator</th>
           <th data-sortable="true">Owner</th>
           <th data-sortable="true">Name</th>
+          <th data-sortable="true">Datasets using schema</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <% @dataset_file_schemas.each_with_index do |dataset_file_schema, index| %>
+        <% @dataset_file_schemas.each do |dataset_file_schema| %>
           <tr>
             <td><%= dataset_file_schema.user.name %></td>
             <td><%= dataset_file_schema.owner_name %></td>
             <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
+            <td><%= dataset_file_schema.dataset_files.pluck(:dataset_id).uniq.count %></td>
             <td><%= link_to("Delete", dataset_file_schema_path(dataset_file_schema), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "btn btn-danger btn-sm") %></td>
           </tr>
         <% end %>

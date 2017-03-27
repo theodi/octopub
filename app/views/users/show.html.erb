@@ -34,6 +34,7 @@
         <th data-sortable="true">Name</th>
         <th data-sortable="true">Restricted?</th>
         <th data-sortable="true">GitHub Pages</th>
+        <th data-sortable="true">Using Schemas</th>
         <th data-sortable="true">Created on</th>
       </tr>
     </thead>
@@ -49,6 +50,7 @@
           <% end %>
         </td>
         <td><%= link_to dataset.gh_pages_url, dataset.gh_pages_url %></td>
+        <td><%= dataset.schema_names %></td>
         <td><%= dataset.created_at.to_formatted_s(:long_ordinal) %></td>
       </tr>
     <% end %>

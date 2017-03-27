@@ -84,6 +84,10 @@ class DatasetFile < ApplicationRecord
     "#{dataset.gh_pages_url}/data/#{filename}"
   end
 
+  def schema_name
+    dataset_file_schema.name if dataset_file_schema
+  end
+
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     if file_update_hash["file"].class == String
