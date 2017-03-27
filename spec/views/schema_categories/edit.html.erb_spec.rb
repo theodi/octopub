@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "schema_categories/edit", type: :view do
   before(:each) do
-    @schema_category = assign(:schema_category, SchemaCategory.create!())
+    @schema_category = assign(:schema_category, SchemaCategory.create!(name: 'woof'))
   end
 
   it "renders the edit schema_category form" do
