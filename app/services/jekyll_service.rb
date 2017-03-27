@@ -165,7 +165,7 @@ class JekyllService
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => json_schema_for_datapackage(file.dataset_file_schema)
-      }.delete_if { |k_,v| v.nil? }
+      }.delete_if { |_k,v| v.nil? }
     end
 
     datapackage.to_json

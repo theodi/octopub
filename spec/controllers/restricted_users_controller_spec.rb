@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe RestrictedUsersController, type: :controller do
+  include_context 'user and organisations'
   render_views
 
   let(:admin) { create(:admin) }
@@ -47,19 +48,71 @@ describe RestrictedUsersController, type: :controller do
       expect(@publisher.restricted).to eq true
     end
 
-    it "updates a user's allocated schemas" do
+    context "updates a user's allocated schemas" do
 
-      dataset_file_schema_1 = create(:dataset_file_schema)
-      dataset_file_schema_2 = create(:dataset_file_schema)
+      let(:dataset_file_schema_1) { create(:dataset_file_schema) }
+      let(:dataset_file_schema_2) { create(:dataset_file_schema) }
 
-      @publisher.allocated_dataset_file_schemas << dataset_file_schema_1
-      @publisher.reload
-      expect(@publisher.allocated_dataset_file_schemas.count).to be 1
+      it "individually" do
+        @publisher.allocated_dataset_file_schemas << dataset_file_schema_1
+        @publisher.reload
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 1
 
-      put :update, params: { id: @publisher.id, user: { allocated_dataset_file_schema_ids: [ dataset_file_schema_1.id, dataset_file_schema_2.id ] }}
+        put :update, params: { id: @publisher.id, user: { allocated_dataset_file_schema_ids: [ dataset_file_schema_1.id, dataset_file_schema_2.id ] }}
 
-      expect(@publisher.allocated_dataset_file_schemas.count).to be 2
-      expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+        expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+      end
+
+      it "by category" do
+        schema_category = SchemaCategory.create(name: 'cat1', dataset_file_schemas: [ dataset_file_schema_1, dataset_file_schema_2])
+        expect(schema_category.dataset_file_schemas.count).to be 2
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 0
+
+        put :update, params: {
+          id: @publisher.id,
+          user: {
+            schema_category_ids: [ schema_category.id ]
+          }
+        }
+
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+        expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+      end
+
+      it "by category and separately" do
+        schema_category = SchemaCategory.create(name: 'cat1', dataset_file_schemas: [ dataset_file_schema_1])
+        expect(schema_category.dataset_file_schemas.count).to be 1
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 0
+
+        put :update, params: {
+          id: @publisher.id,
+          user: {
+            allocated_dataset_file_schema_ids: [ dataset_file_schema_2.id ],
+            schema_category_ids: [ schema_category.id ]
+          }
+        }
+
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 2
+        expect(@publisher.allocated_dataset_file_schemas).to include(dataset_file_schema_1, dataset_file_schema_2)
+      end
+
+      it "by category and separately without duplicates" do
+        schema_category = SchemaCategory.create(name: 'cat1', dataset_file_schemas: [ dataset_file_schema_1])
+        expect(schema_category.dataset_file_schemas.count).to be 1
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 0
+
+        put :update, params: {
+          id: @publisher.id,
+          user: {
+            allocated_dataset_file_schema_ids: [ dataset_file_schema_1.id ],
+            schema_category_ids: [ schema_category.id ]
+          }
+        }
+
+        expect(@publisher.allocated_dataset_file_schemas.count).to be 1
+        expect(@publisher.allocated_dataset_file_schemas).to eq [ dataset_file_schema_1 ]
+      end
     end
   end
 end

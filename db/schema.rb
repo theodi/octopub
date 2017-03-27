@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321132739) do
+ActiveRecord::Schema.define(version: 20170326193342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,20 @@ ActiveRecord::Schema.define(version: 20170321132739) do
   create_table "errors", force: :cascade do |t|
     t.string "job_id",   null: false
     t.json   "messages"
+  end
+
+  create_table "schema_categories", force: :cascade do |t|
+    t.text     "name"
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "schema_categories_dataset_file_schemas", id: false, force: :cascade do |t|
+    t.integer "dataset_file_schema_id"
+    t.integer "schema_category_id"
+    t.index ["dataset_file_schema_id"], name: "schema_category_index", using: :btree
+    t.index ["schema_category_id"], name: "dataset_file_schema_index", using: :btree
   end
 
   create_table "users", force: :cascade do |t|

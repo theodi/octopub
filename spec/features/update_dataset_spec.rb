@@ -29,7 +29,7 @@ feature "Update dataset page", type: :feature do
       expect(Dataset.count).to be 1
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
 
-      click_link "List my datasets"
+      click_link "My datasets"
       expect(page).to have_content "My Datasets"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
@@ -75,7 +75,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
       allow_any_instance_of(Dataset).to receive(:update_dataset_in_github)
 
-      click_link "List my datasets"
+      click_link "My datasets"
       expect(page).to have_content "My Datasets"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')

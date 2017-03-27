@@ -19,12 +19,8 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
                      frequency: "One-off",
                      user: @user)
 
-    expect(@worker).to receive(:get_dataset).with(@dataset.id, @user) {
-      @dataset
-    }
-    expect(@worker).to receive(:jid) {
-      "84855ffe6a7e1d6dacf6685e"
-    }
+    expect(@worker).to receive(:get_dataset).with(@dataset.id) { @dataset }
+    expect(@worker).to receive(:jid) { "84855ffe6a7e1d6dacf6685e" }
 
     @dataset_params = {
       description: "Another awesome dataset",
@@ -49,7 +45,7 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it 'sets a job id' do
-    expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
     expect_any_instance_of(JekyllService).to receive(:add_to_github)
     expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
 
@@ -59,9 +55,18 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   it 'reports success' do
-    expect(@dataset).to receive(:report_status).with('beep-beep')
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
     expect_any_instance_of(JekyllService).to receive(:add_to_github)
     expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
+
+    dataset = @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
+  end
+
+  it "reports success and doesn't push to GitHub it private" do
+    @dataset.update_columns(publishing_method: :local_private)
+    expect(@dataset).to receive(:report_status).with('beep-beep', :update)
+    expect_any_instance_of(JekyllService).to_not receive(:add_to_github)
+    expect_any_instance_of(JekyllService).to_not receive(:add_jekyll_to_github)
 
     dataset = @worker.perform(@dataset.id, @user.id, @dataset_params, @files, "channel_id" => "beep-beep")
   end

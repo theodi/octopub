@@ -1,6 +1,7 @@
 require "rails_helper"
 
 feature "As a logged in user, viewing dataset file schemas", type: :feature do
+  include_context 'user and organisations'
 
   let(:schema_name) { Faker::Lorem.word }
   let(:schema_description) { Faker::Lorem.sentence }

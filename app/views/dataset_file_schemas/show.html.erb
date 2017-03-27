@@ -1,5 +1,13 @@
-<h1 class="page-header">Dataset File Schema <small>for <%= current_user.name %></small></h1>
-<h2><%= @dataset_file_schema.name %></h2>
+<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
+
+<% if @dataset_file_schema.schema_categories %>
+<h2>Categories</h2>
+<ul>
+<% @dataset_file_schema.schema_categories.each do |category| %>
+  <li><%= category.name %></li>
+<% end %>
+</ul>
+<% end %>
 
 <div class="panel-body">
   <h3><%= @dataset_file_schema.description %></h3>

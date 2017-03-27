@@ -19,7 +19,7 @@ class GitData
     # Make the gh-pages branch the default
     client.edit_repository(full_name, default_branch: 'gh-pages')
     new(client, repo)
-  rescue Octokit::UnprocessableEntity => e # 422 error code
+  rescue Octokit::UnprocessableEntity # 422 error code
     # Here, means that private repositories aren't available
     # so return nil
     nil
@@ -106,7 +106,7 @@ class GitData
     end
 
     def update_tree(filename, blob_sha)
-      item = tree.find { |item| item["path"] == filename }
+      item = tree.find { |found_item| found_item["path"] == filename }
       item["sha"] = blob_sha
     end
 

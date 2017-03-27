@@ -36,14 +36,13 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     before(:each) do
       sign_in @user
+
       @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
         create(:dataset_file, filename: filename, storage_key: storage_key)
       ])
 
-      schema = url_with_stubbed_get_for(good_schema_path)
 
       @dataset_file = @dataset.dataset_files.first
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
 
       @dataset_hash = {
         description: "New description",
@@ -60,33 +59,43 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         @dataset_filename = 'valid-schema.csv'
         @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
 
-        expect(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
+        allow(Dataset).to receive(:find).with(@dataset.id) { @dataset }
+        allow(Dataset).to receive(:find).with(@dataset.id.to_s) { @dataset }
         expect(RepoService).to receive(:fetch_repo).at_least(:once) { @repo }
 
         Dataset.set_callback(:update, :after, :update_dataset_in_github)
       end
 
       context('with schema', :schema) do
+
+        before(:each) do
+          schema = url_with_stubbed_get_for(good_schema_path)
+          @dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
+          @dataset_file = @dataset.dataset_files.first
+          @dataset_file.update(dataset_file_schema: @dataset_file_schema)
+        end
+
         context 'with schema-compliant csv' do
 
           it 'updates a file in Github' do
+            expect(@dataset_file.dataset_file_schema).to eq @dataset_file_schema
             expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
 
             put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
                 id: @dataset_file.id,
                 file: new_url_for_data_file
             }]}
+
+            @dataset.reload
+            expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
           end
 
           context 'adds a new file in Github' do
 
             before :each do
               @dataset_file.file = nil
-
               @new_file = url_with_stubbed_get_for(@path)
 
-              file = build(:dataset_file, dataset: @dataset, file: nil)
-              expect(DatasetFile).to receive(:new_file) { file }
               expect_any_instance_of(JekyllService).to receive(:add_to_github)
               expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
               expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
@@ -106,6 +115,64 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
                 }
               ]}
 
+              expect(@dataset.dataset_files.count).to eq(2)
+            end
+
+            it 'via a browser - original file has one schema, new file does not match it' do
+              @dataset_filename = 'invalid-schema.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
+              @new_file = url_with_stubbed_get_for(@path)
+
+              put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+                {
+                  id: @dataset_file.id,
+                  title: "New title",
+                  description: "New description"
+                 },
+                {
+                  title: "New file",
+                  description: "New file description",
+                  file: @new_file
+                }
+              ]}
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+              expect(@dataset.dataset_files.second.dataset_file_schema).to be_nil
+              expect(@dataset.dataset_files.count).to eq(2)
+            end
+
+            it 'via a browser - original file has one schema, new file has a different one' do
+              @dataset_filename = 'valid-file-for-good-schema-2.csv'
+              @path = File.join(Rails.root, 'spec', 'fixtures', @dataset_filename)
+              @new_file = url_with_stubbed_get_for(@path)
+              new_schema_path = get_fixture_schema_file('good-schema-2.json')
+              new_schema = url_with_stubbed_get_for(new_schema_path)
+              new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', new_schema, @user).create_dataset_file_schema
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+
+              file_1_hash = {
+                id: @dataset_file.id,
+                title: "Old file New title",
+                description: "Old file New description",
+                dataset_file_schema_id: @dataset_file_schema.id
+              }
+
+              file_2_hash = {
+                title: "New file",
+                description: "New file description",
+                file: @new_file,
+                dataset_file_schema_id: new_dataset_file_schema.id
+                }
+
+              put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+                file_1_hash, file_2_hash
+              ]}
+
+              @dataset.reload
+
+              expect(@dataset.dataset_files.first).to eq @dataset_file
+              expect(@dataset.dataset_files.second.title).to eq 'New file'
+              expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
+              expect(@dataset.dataset_files.second.dataset_file_schema).to eq new_dataset_file_schema
               expect(@dataset.dataset_files.count).to eq(2)
             end
           end
@@ -167,7 +234,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           path = File.join(Rails.root, 'spec', 'fixtures', filename)
           file = url_with_stubbed_get_for(path)
 
-          new_file = build(:dataset_file, dataset: @dataset, file: nil)
+          new_file = build(:dataset_file, dataset: @dataset, file: nil, filename: filename)
 
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect_any_instance_of(JekyllService).to receive(:add_to_github)
@@ -199,6 +266,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         before(:each) do
           @repo = double(GitData)
           @url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
+          @new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', @url_for_schema, @user).create_dataset_file_schema
+
           expect(RepoService).to receive(:fetch_repo) { @repo }
         end
 
@@ -210,9 +279,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [{
               id: @dataset_file.id,
               file: url_for_not_matching_data_file,
-              schema_name: 'schema name',
-              schema_description: 'schema description',
-              schema: @url_for_schema
+              dataset_file_schema_id: @new_dataset_file_schema.id
           }]}
 
           expect(Error.count).to eq(1)
@@ -266,26 +333,60 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
     before(:each) do
       sign_in @user
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
-      @dataset = create(:dataset,  name: "Dataset", publishing_method: :github_private, user: @user, dataset_files: [
+
+      @dataset = create(:dataset, :with_callback,  name: "Dataset", publishing_method: :github_private, user: @user, dataset_files: [
         create(:dataset_file, filename: 'test-data.csv')
       ])
 
-      @repo = double(GitData)
-      expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
-      expect_any_instance_of(JekyllService).to receive(:create_public_views)
     end
 
     after(:each) do
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
     end
 
     it 'can update private flag' do
+      @repo = double(GitData)
+      expect(RepoService).to receive(:fetch_repo).with(@dataset).twice { @repo }
+      expect_any_instance_of(JekyllService).to receive(:create_public_views)
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github)
       expect_any_instance_of(RepoService).to receive(:make_public)
       put :update, params: { id: @dataset.id, dataset: { publishing_method: :github_public }}
       @dataset.reload
 
       expect(@dataset.restricted).to be false
+    end
+
+    it 'can add a file' do
+      @dataset.update_columns(publishing_method: :local_private)
+      @dataset_file = @dataset.dataset_files.first
+      @dataset_file.file = nil
+
+      filename = 'test-data.csv'
+      path = File.join(Rails.root, 'spec', 'fixtures', filename)
+      file = url_with_stubbed_get_for(path)
+
+      new_file = build(:dataset_file, dataset: @dataset, file: nil)
+
+      expect(DatasetFile).to receive(:new_file) { new_file }
+      expect_any_instance_of(JekyllService).to_not receive(:add_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:add_jekyll_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:push_to_github)
+      expect_any_instance_of(JekyllService).to_not receive(:update_datapackage)
+
+      put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
+        {
+          id: @dataset_file.id,
+          title: "New title",
+          description: "New description"
+         },
+        {
+          title: "New file",
+          description: "New file description",
+          file: file
+        }
+      ]}
+
+      expect(@dataset.dataset_files.count).to eq(2)
     end
   end
 end

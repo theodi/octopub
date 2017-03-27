@@ -56,24 +56,28 @@ class DatasetFile < ApplicationRecord
   def self.new_file(dataset_file_creation_hash)
     Rails.logger.info "DatasetFile: In new_file"
     # allow use of hashes or strings for keys
-    dataset_file_creation_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_creation_hash)
-    
-    if dataset_file_creation_hash[:file].class == String 
-      if dataset_file_creation_hash[:storage_key]
-        dataset_file_creation_hash[:file] = file_from_url_with_storage_key(dataset_file_creation_hash[:file], dataset_file_creation_hash[:storage_key]) 
-      else
-        dataset_file_creation_hash[:file] = file_from_url(dataset_file_creation_hash[:file]) 
-      end
-    end
-
+    dataset_file_creation_hash = get_file_from_the_right_place(dataset_file_creation_hash)
     Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
     create(
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
       file: dataset_file_creation_hash[:file],
-      storage_key: dataset_file_creation_hash[:storage_key]
+      storage_key: dataset_file_creation_hash[:storage_key],
+      dataset_file_schema_id: dataset_file_creation_hash[:dataset_file_schema_id]
     )
+  end
+
+  def self.get_file_from_the_right_place(dataset_file_hash)
+    dataset_file_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_hash)
+    if dataset_file_hash[:file].class == String
+      if dataset_file_hash[:storage_key]
+        dataset_file_hash[:file] = file_from_url_with_storage_key(dataset_file_hash[:file], dataset_file_hash[:storage_key])
+      else
+        dataset_file_hash[:file] = file_from_url(dataset_file_hash[:file])
+      end
+    end
+    dataset_file_hash
   end
 
   def github_url
@@ -90,14 +94,13 @@ class DatasetFile < ApplicationRecord
 
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
-    if file_update_hash["file"].class == String
-      file_update_hash['file'] = DatasetFile.file_from_url(file_update_hash['file'])
-    end 
+    file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)
+
     update_hash = {
-      description: file_update_hash["description"],
-      file: file_update_hash["file"],
-      dataset_file_schema_id: file_update_hash["dataset_file_schema_id"],
-      storage_key: file_update_hash["storage_key"]
+      description: file_update_hash[:description],
+      file: file_update_hash[:file],
+      dataset_file_schema_id: file_update_hash[:dataset_file_schema_id],
+      storage_key: file_update_hash[:storage_key]
     }.delete_if { |_k,v| v.nil? }
 
     self.update(update_hash)
@@ -148,7 +151,6 @@ class DatasetFile < ApplicationRecord
       errors.add(:file, 'does not match the schema you provided') unless validation.valid?
       Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
-
     end
 
     def get_file_for_validation_from_file

@@ -119,13 +119,32 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset.complete_publishing
   end
 
-  it "deletes a repo in github" do
+  it "deletes a repo in github if it should have one" do
     dataset = create(:dataset, user: @user, owner: "foo-bar")
     repo = double(GitData)
     expect(RepoService).to receive(:fetch_repo) { repo }
     expect(repo).to receive(:delete)
 
     dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "deletes a repo in github if it should have one but cannot find it" do
+    dataset = create(:dataset, user: @user, owner: "foo-bar")
+    expect(dataset).to receive(:actual_repo).and_raise(Octokit::NotFound)
+    expect_any_instance_of(JekyllService).to_not receive(:update_dataset_in_github)
+
+    dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "deletes dataset without a repository" do
+    dataset = create(:dataset, user: @user, owner: "foo-bar", publishing_method: :local_private)
+    repo = double(GitData)
+    expect(RepoService).to_not receive(:fetch_repo) { repo }
+    expect(repo).to_not receive(:delete)
+    dataset.destroy
+    expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "sets the user's avatar" do
@@ -170,16 +189,6 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(config["update_frequency"]).to eq("weekly")
   end
 
-  context 'creating certificates for public datasets' do
-
-    before(:each) do
-      @dataset = create(:dataset)
-      @certificate_url = 'http://staging.certificates.theodi.org/en/datasets/162441/certificate.json'
-      allow(@dataset).to receive(:full_name) { "theodi/blockchain-and-distributed-technology-landscape-research" }
-      allow(@dataset).to receive(:gh_pages_url) { "http://theodi.github.io/blockchain-and-distributed-technology-landscape-research" }
-    end
-  end
-
   context "creating restricted datasets" do
     it "creates a valid dataset" do
       dataset = create(:dataset, name: "My Awesome Dataset",
@@ -196,6 +205,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it "creates a private repo in Github" do
+      mock_client = mock_pusher('beep-beep')
       name = "My Awesome Dataset"
       html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
@@ -214,17 +224,36 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect_any_instance_of(JekyllService).to receive(:add_files_to_repo_and_push_to_github)
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
 
-      dataset.save
-      CreateRepository.new.perform(dataset.id)
+      dataset.report_status('beep-beep')
       dataset.reload
 
       expect(dataset.repo).to eq(name.parameterize)
       expect(dataset.url).to eq(html_url)
     end
 
+    it "creates a private local repo" do
+      mock_client = mock_pusher('beep-beep')
+      name = "My Awesome Dataset"
+      html_url = "http://github.com/#{@user.name}/#{name.parameterize}"
 
-    it "can make a private repo public" do  
-      Dataset.set_callback(:update, :after, :make_repo_public_if_appropriate)
+      dataset = build(:dataset, :with_callback, user: @user, name: name, publishing_method: :local_private)
+
+      expect(GitData).to_not receive(:create)
+      expect(GitData).to_not receive(:find)
+      expect_any_instance_of(JekyllService).to_not receive(:add_files_to_repo_and_push_to_github)
+      expect_any_instance_of(Dataset).to_not receive(:complete_publishing)
+
+      expect_any_instance_of(DatasetMailer).to receive(:success)
+      dataset.report_status('beep-beep')
+      dataset.reload
+
+      expect(dataset.repo).to be_nil
+      expect(dataset.url).to be_nil
+    end
+
+    it "can make a private repo public" do
+      mock_client = mock_pusher('beep-beep')
+
 
       # Create dataset
 
@@ -246,21 +275,21 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       }
 
       expect_any_instance_of(Dataset).to receive(:complete_publishing)
-      dataset.save
-      CreateRepository.new.perform(dataset.id)
+
+      dataset.report_status('beep-beep')
 
       # Update dataset and make public
       updated_dataset = Dataset.find(dataset.id)
       expect(updated_dataset.restricted).to be true
 
-      expect(updated_dataset).to receive(:update_dataset_in_github).once
+      expect_any_instance_of(JekyllService).to receive(:update_dataset_in_github).once
       expect_any_instance_of(JekyllService).to receive(:create_public_views).once
       updated_dataset.publishing_method = :github_public#!# = false
 
       updated_dataset.save
       expect(updated_dataset.restricted).to be false
 
-      skip_callback_if_exists(Dataset, :update, :after, :make_repo_public_if_appropriate)
+      skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
     end
   end
 
@@ -292,4 +321,3 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
   end
 end
-

@@ -17,6 +17,7 @@ class DatasetFileSchemasController < ApplicationController
 
   def create
     @dataset_file_schema = DatasetFileSchema.new(create_params)
+
     if @dataset_file_schema.save
 
       DatasetFileSchemaService.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
@@ -37,6 +38,6 @@ class DatasetFileSchemasController < ApplicationController
   private
 
   def create_params
-    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username)
+    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username, schema_category_ids: [])
   end
 end

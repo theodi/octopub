@@ -14,6 +14,7 @@
           <th data-sortable="true">Owner</th>
           <th data-sortable="true">Name</th>
           <th data-sortable="true">Datasets using schema</th>
+          <th data-sortable="true">Created At</th>
           <th></th>
         </tr>
       </thead>
@@ -24,6 +25,7 @@
             <td><%= dataset_file_schema.owner_name %></td>
             <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
             <td><%= dataset_file_schema.count_datasets_using_this_schema %></td>
+            <td><%= dataset_file_schema.created_at.to_formatted_s(:short) if dataset_file_schema.created_at %></td>
             <td><%= link_to("Delete", dataset_file_schema_path(dataset_file_schema), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "btn btn-danger btn-sm") %></td>
           </tr>
         <% end %>
@@ -33,4 +35,3 @@
     <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>
   <% end %>
 </div>
-

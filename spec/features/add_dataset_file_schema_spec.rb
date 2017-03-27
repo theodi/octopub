@@ -21,7 +21,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
       within 'form' do
         expect(page).to have_content @user.github_username
-        select @user.github_username, :from => "dataset_file_schema_owner_username"
+        select @user.github_username, from: "dataset_file_schema_owner_username"
         fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
         fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
         attach_file('dataset_file_schema_url_in_s3', data_file)
@@ -32,6 +32,33 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
       expect(DatasetFileSchema.count).to be before_datasets + 1
       expect(DatasetFileSchema.last.name).to eq "#{common_name}-schema-name"
+    end
+
+    scenario "and can add a dataset file schema with a category" do
+
+      category_1 = SchemaCategory.create(name: 'cat1')
+      category_2 = SchemaCategory.create(name: 'cat2')
+      schema_category_ids = [ category_1.id, category_2.id ]
+
+      click_link 'Add a new dataset file schema'
+
+      within 'form' do
+        expect(page).to have_content @user.github_username
+        expect(page).to have_content 'cat1'
+        select @user.github_username, from: "dataset_file_schema_owner_username"
+        fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
+        fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
+        attach_file('dataset_file_schema_url_in_s3', data_file)
+        check ('cat1')
+        check ('cat2')
+
+        click_on 'Submit'
+      end
+
+      expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
+      dataset_file_schema = DatasetFileSchema.first
+      expect(DatasetFileSchema.count).to be 1
+      expect(dataset_file_schema.schema_categories).to eq [ category_1, category_2 ]
     end
 
     context "and gets an error if they do not populate the correct fields" do

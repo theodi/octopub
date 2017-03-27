@@ -30,13 +30,17 @@ describe 'datasets/_dataset.html.erb' do
     expect(rendered).to_not match /Edit/
   end
 
+  def expect_columns(page)
+    expect(page.css('tr')[0].css('td').count).to eq(7)
+  end
+
   it 'displays the edit link when in the dashboard' do
     @dashboard = true
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td').count).to eq(6)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Delete/)
+    expect_columns(page)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Delete/)
   end
 
   it 'displays access icon in the dashboard' do
@@ -44,7 +48,7 @@ describe 'datasets/_dataset.html.erb' do
 
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td').count).to eq(6)
+    expect_columns(page)
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-globe');
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="public"]');
   end
@@ -54,7 +58,8 @@ describe 'datasets/_dataset.html.erb' do
 
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @restricted_dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td').count).to eq(6)
+    expect_columns(page)
+
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-lock');
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="private"]');
   end

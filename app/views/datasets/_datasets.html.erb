@@ -1,8 +1,8 @@
 <% if @datasets.count > 0 %>
-  <table class="table" 
-  data-toggle="table" 
-  data-pagination="true" 
-  data-search="true" 
+  <table class="table"
+  data-toggle="table"
+  data-pagination="true"
+  data-search="true"
   data-filter-control="true">
   <thead>
     <tr>
@@ -12,10 +12,15 @@
       <% end %>
       <th data-sortable="true">Name</th>
       <th>Link</th>
+      <% if Rails.env.development? %>
+        <th data-sortable="true">Schemas?</th>
+      <% end %>
       <% if @dashboard %>
+        <th data-sortable="true">Created At</th>
         <th></th>
         <th></th>
       <% end %>
+
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>

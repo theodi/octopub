@@ -152,7 +152,8 @@ def get_string_io_schema_from_fixture_file(storage_key)
 end
 
 def url_with_stubbed_get_for(path)
-  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  filename = path.split('/').last
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/#{filename}"
   stub_request(:get, url).to_return(body: File.read(path))
   url
 end
@@ -165,7 +166,7 @@ end
 
 def url_with_stubbed_get_for_fixture_file(file_name)
   path = File.join(Rails.root, 'spec', 'fixtures', file_name)
-  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/#{file_name}.csv"
   stub_request(:get, url).to_return(body: File.read(path))
   url
 end
@@ -179,6 +180,7 @@ end
 def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
+  allow(mock_client).to receive(:trigger)
   mock_client
 end
 

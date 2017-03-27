@@ -58,11 +58,12 @@ function bgUpload(elem) {
 }
 
 function postForm(form) {
-  var channelID = form.attr('method') + '-' +  uuid();
+  var formMethod = $('input:hidden[name=_method]').val() || 'post'
+  var channelID = formMethod + '-' +  uuid();
   console.log("Pusher channelID: " + channelID);
 
   $.ajax({
-    type: form.attr('method'),
+    type: formMethod,
     url: form.attr('action'),
     data: form.serialize() + '&async=true&channel_id=' + channelID,
     success: bindToPusher(channelID)
@@ -75,7 +76,7 @@ function bindToPusher(channelID) {
 
   channel.bind('dataset_created', function(data) {
     if (channelID.match(/post/)) {
-      window.location = '/datasets/created';
+      window.location = '/datasets/created?publishing_method=' + data.publishing_method;
     } else {
       window.location = '/datasets/edited';
     }
