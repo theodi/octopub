@@ -21,13 +21,36 @@ class DatasetFileSchema < ApplicationRecord
   has_and_belongs_to_many :allocated_users, class_name: 'User', join_table: :allocated_dataset_file_schemas_users
   has_and_belongs_to_many :schema_categories, join_table: :schema_categories_dataset_file_schemas
   has_many :dataset_files, dependent: :nullify
+  has_many :schema_fields
 
   validates_presence_of :url_in_s3, on: :create, message: 'You must have a schema file'
   validates_presence_of :name, message: 'Please give the schema a meaningful name'
   validates_presence_of :user_id # Hidden field
   validates_presence_of :owner_username, message: 'Please select an owner for the schema'
 
+  accepts_nested_attributes_for :schema_fields
+
   attr_accessor :parsed_schema
+
+  def json_table_schema
+    @json_table_schema ||= JsonTableSchema::Schema.new(JSON.parse(schema))
+  end
+
+  def create_associated_fields_from_schema
+    if schema_fields.empty? && schema.present?
+      json_table_schema['fields'].each do |field|
+        unless field['constraints'].nil?
+          field['schema_constraint_attributes'] = field['constraints']
+          field.delete('constraints')
+        end
+        schema_fields.create(field)
+      end
+    end
+  end
+
+  def foreign_keys
+    json_table_schema.foreign_keys
+  end
 
   def parsed_schema
     @parsed_schema ||= DatasetFileSchemaService.get_parsed_schema_from_csv_lint(url)

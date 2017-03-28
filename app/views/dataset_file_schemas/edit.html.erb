@@ -1,0 +1,43 @@
+<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
+<% if @dataset_file_schema.schema_categories %>
+  <h2>Categories</h2>
+  <ul>
+    <% @dataset_file_schema.schema_categories.each do |category| %>
+      <li><%= category.name %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= bootstrap_form_for @dataset_file_schema, method: :put do |f| %>
+  <h2>Schema</h2>
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Required?</th>
+          <th>Unique?</th>
+          <th>Minimum Length</th>
+          <th>Maximum Length</th>
+          <th>Maximum</th>
+          <th>Minimum</th>
+          <th>Pattern</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <%= f.fields_for :schema_fields do |schema_field_form| %>
+        <tbody>
+          <tr>
+            <td><%= schema_field_form.text_field :name %></td>
+            <%= schema_field_form.fields_for :schema_constraint do |schema_constraint_form| %>
+              <td><%= schema_constraint_form.text_field :required %></td>
+            <% end %>
+          </tr>
+        </tbody>
+      <% end %>
+    </table>
+  </div>
+  <%= f.submit %>
+<% end %>
+

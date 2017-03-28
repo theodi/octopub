@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170326193342) do
+ActiveRecord::Schema.define(version: 20170328141647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,29 @@ ActiveRecord::Schema.define(version: 20170326193342) do
     t.integer "schema_category_id"
     t.index ["dataset_file_schema_id"], name: "schema_category_index", using: :btree
     t.index ["schema_category_id"], name: "dataset_file_schema_index", using: :btree
+  end
+
+  create_table "schema_constraints", force: :cascade do |t|
+    t.integer "schema_field_id"
+    t.boolean "required",        default: false
+    t.boolean "unique",          default: false
+    t.integer "min_length"
+    t.integer "max_length"
+    t.integer "minimum"
+    t.integer "maximum"
+    t.text    "pattern"
+    t.text    "type"
+    t.index ["schema_field_id"], name: "index_schema_constraints_on_schema_field_id", using: :btree
+  end
+
+  create_table "schema_fields", force: :cascade do |t|
+    t.integer  "dataset_file_schema_id"
+    t.text     "name",                   null: false
+    t.text     "type"
+    t.text     "format"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.index ["dataset_file_schema_id"], name: "index_schema_fields_on_dataset_file_schema_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
