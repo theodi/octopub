@@ -9,67 +9,67 @@
 <% end %>
 
 <h2>Schema</h2>
-<div>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Required?</th>
-        <th>Unique?</th>
-        <th>Minimum Length</th>
-        <th>Maximum Length</th>
-        <th>Maximum</th>
-        <th>Minimum</th>
-        <th>Pattern</th>
-        <th>Type</th>
-      </tr>
-    </thead>
-    <% @dataset_file_schema.schema_fields.each do |field| %>
-      <tbody>
-        <tr>
-          <td><%= field.name %></td>
-          <td><%= field.type %></td>
-          <% if field.schema_constraint %>
-            <td><%= field.schema_constraint.required %></td>
-            <td><%= field.schema_constraint.unique %></td>
-            <td><%= field.schema_constraint.min_length %></td>
-            <td><%= field.schema_constraint.max_length %></td>
-            <td><%= field.schema_constraint.minimum %></td>
-            <td><%= field.schema_constraint.maximum %></td>
-            <td><%= field.schema_constraint.pattern %></td>
-            <td><%= field.schema_constraint.type %></td>
-          <% else %>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          <% end %>
-        </tr>
-      </tbody>
-    <% end %>
-  </table>
-</div>
-
-<% if @dataset_file_schema.foreign_keys.any? %>
-  <h2>Foreign Keys</h2>
+<% if @json_table_schema %>
   <div>
-    <table class="table">
+    <table class="table table-bordered">
       <thead>
         <tr>
-          <th>Fields</th>
-          <th>Reference</th>
-          <th>Datapackage</th>
-          <th>Resource</th>
-          <th>Fields</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Required?</th>
+          <th>Unique?</th>
+          <th>Minimum Length</th>
+          <th>Maximum Length</th>
+          <th>Maximum</th>
+          <th>Minimum</th>
+          <th>Pattern</th>
+          <th>Type</th>
         </tr>
       </thead>
-      <% @dataset_file_schema.foreign_keys.each do |fk| %>
+      <% @dataset_file_schema.schema_fields.each do |field| %>
         <tbody>
+          <tr>
+            <td><%= field.name %></td>
+            <td><%= field.type %></td>
+            <% if field.schema_constraint %>
+              <td><%= field.schema_constraint.required %></td>
+              <td><%= field.schema_constraint.unique %></td>
+              <td><%= field.schema_constraint.min_length %></td>
+              <td><%= field.schema_constraint.max_length %></td>
+              <td><%= field.schema_constraint.minimum %></td>
+              <td><%= field.schema_constraint.maximum %></td>
+              <td><%= field.schema_constraint.pattern %></td>
+              <td><%= field.schema_constraint.type %></td>
+            <% else %>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            <% end %>
+          </tr>
+        </tbody>
+      <% end %>
+    </table>
+  </div>
+
+  <% if @dataset_file_schema.foreign_keys.any? %>
+    <h2>Foreign Keys</h2>
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fields</th>
+            <th>Reference</th>
+            <th>Datapackage</th>
+            <th>Resource</th>
+            <th>Fields</th>
+          </tr>
+        </thead>
+        <% @json_table_schema.foreign_keys.each do |fk| %>
           <tr>
             <td><%= fk["fields"] %></td>
             <td><%= fk["reference"] %></td>
@@ -77,13 +77,17 @@
             <td><%= fk["resource"] %></td>
             <td><%= fk["fields"] %></td>
           </tr>
-        </tbody>
-      <% end %>
-    </table>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+
+  <div class="panel-body">
+    <h3>Raw file</h3>
+    <%= markdown_json(@dataset_file_schema.schema) %>
   </div>
+<% else %>
+  <p>This schema has not been parsed</p>
 <% end %>
 
-<div class="panel-body">
-  <h3>Raw file</h3>
-  <%= markdown_json(@dataset_file_schema.schema) %>
-</div>
+

@@ -7,6 +7,11 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def show
+    @dataset_file_schema = DatasetFileSchema.find(params[:id])
+    if @dataset_file_schema.schema
+      json = JSON.parse(@dataset_file_schema.schema)
+      @json_table_schema = JsonTableSchema::Schema.new(json)
+    end
   end
 
   def new
