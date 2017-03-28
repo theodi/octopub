@@ -34,6 +34,23 @@ body {
   margin-bottom: 160px;
 }
 
+.getting-started {
+  p, li {
+    font-size: 1.2em;
+    line-height: 1.5em;
+  }
+  img {
+    width: 450px;
+    border: 1px solid #eee;
+    padding: 5px;
+    margin: 0 0 5px 20px;
+
+    &.full-width {
+      width: 100%;
+    }
+  }
+}
+
 .navbar-text {
   margin: 7px 15px 5px 0 !important;
 

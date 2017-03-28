@@ -39,6 +39,7 @@ gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem "bootstrap-table-rails"
+gem 'emd'
 
 # Logging and debug
 gem 'awesome_print'
