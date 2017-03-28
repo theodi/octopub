@@ -1,4 +1,5 @@
 <% if @datasets.count > 0 %>
+<div>
   <table class="table"
   data-toggle="table"
   data-pagination="true"
@@ -8,23 +9,35 @@
     <tr>
       <th data-sortable="true">Owner</th>
       <% if @dashboard %>
-        <th></th>
+        <th>Type</th>
       <% end %>
       <th data-sortable="true">Name</th>
-      <th>Link</th>
-      <% if Rails.env.development? %>
-        <th data-sortable="true">Schemas?</th>
-      <% end %>
+      <th data-sortable="true">Schemas?</th>
       <% if @dashboard %>
-        <th data-sortable="true">Created At</th>
+        <th data-sortable="true">Created On</th>
         <th></th>
         <th></th>
       <% end %>
-
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>
   </table>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Icon Key</h3>
+  </div>
+  <div class="panel-body">
+    <ul class="list-group">
+      <li class="list-group-item"><i class='fa fa-lock fa-lg' title="private"></i> - Private repository - for you and Administrator's only.</li>
+      <li class="list-group-item"><i class='fa fa-globe fa-lg' title="public"></i> - Public repository - anybody can see this data.</li>
+      <li class="list-group-item"><i class='fa fa-github fa-lg' title="github"></i> - In GitHub - published on GitHub</li>
+    </ul>
+  </div>
+</div>
+
+
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>
