@@ -27,7 +27,7 @@ describe 'datasets/_dataset.html.erb' do
   it 'displays a single dataset with schemas' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset_with_schema}
     page = Nokogiri::HTML(rendered)
-    ap @user.name
+
     expect(page.css('tr')[0].css('td')[0].inner_text).to have_content(@dataset.repo_owner)
     expect(page.css('tr')[0].css('td')[1].inner_text).to match(/#{@dataset.name}/)
     expect(page.css('tr')[0].css('td')[2].inner_text).to match(/Yes/)
