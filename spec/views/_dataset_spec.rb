@@ -3,23 +3,34 @@ require 'rails_helper'
 describe 'datasets/_dataset.html.erb' do
 
   before(:each) do
-    @user = create(:user, name: "user")
+    @user = create(:user)
     @dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user)
-    allow(@dataset).to receive(:owner_avatar) {
+    allow_any_instance_of(DatasetFile).to receive(:check_schema)
+    @dataset_with_schema = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user,
+        dataset_files: [
+          create(:dataset_file, dataset_file_schema: create(:dataset_file_schema))
+        ])
+    allow_any_instance_of(Dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
     @restricted_dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user, publishing_method: :github_private)
-    allow(@restricted_dataset).to receive(:owner_avatar) {
-      "http://example.org/avatar.png"
-    }
   end
 
   it 'displays a single dataset' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@user.name}/)
+    expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.repo_owner}/)
     expect(page.css('tr')[0].css('td')[1].inner_text).to match(/My Dataset/)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/http:\/\/user.github.io\/my-repo/)
+    expect(page.css('tr')[0].css('td')[2].inner_text).to eq ""
+  end
+
+  it 'displays a single dataset with schemas' do
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset_with_schema}
+    page = Nokogiri::HTML(rendered)
+    ap @user.name
+    expect(page.css('tr')[0].css('td')[0].inner_text).to have_content(@dataset.repo_owner)
+    expect(page.css('tr')[0].css('td')[1].inner_text).to match(/#{@dataset.name}/)
+    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/Yes/)
   end
 
   it 'does not display the edit link when path is not the dashboard' do

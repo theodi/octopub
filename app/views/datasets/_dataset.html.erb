@@ -5,26 +5,25 @@
   </td>
   <% if @dashboard %>
     <td class="private">
-      <% if dataset.restricted %>
-        <i class='fa fa-lock fa-lg' title="private"></i>
+      <% if dataset.github_private? %>
+        <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
+      <% elsif dataset.github_public? %>
+        <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
       <% else %>
-        <i class='fa fa-globe fa-lg' title="public"></i>
+        <i class='fa fa-lock fa-lg' title="private"></i>
       <% end %>
     </td>
   <% end %>
-  <td><%= dataset.name %></td>
   <td>
     <% if dataset.github_public? %>
-      <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
+      <%= link_to dataset.name, dataset.gh_pages_url %>
     <% elsif dataset.github_private? %>
-      <%= link_to dataset.github_url, dataset.github_url %>
+      <%= link_to dataset.name, dataset.github_url %>
     <% elsif dataset.local_private? %>
       Local Private
     <% end %>
   </td>
-  <% if Rails.env.development? %>
-  <td><%= "with Schemas" if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
-  <% end %>
+  <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
   <% if @dashboard %>
     <td><%= dataset.created_at.to_formatted_s(:short) %></td>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
