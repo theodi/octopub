@@ -57,7 +57,9 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def update_params
-    params.require(:dataset_file_schema).permit( schema_fields_attributes: [:id, :name, schema_constraint_attributes: [ :id, :required]])
+    params.require(:dataset_file_schema).permit(
+      schema_fields_attributes: [ :id, :name, schema_constraint_attributes:
+        [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
   end
 
   def set_dataset_file_schema
