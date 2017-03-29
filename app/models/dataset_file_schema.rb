@@ -36,18 +36,6 @@ class DatasetFileSchema < ApplicationRecord
     @json_table_schema ||= JsonTableSchema::Schema.new(JSON.parse(schema))
   end
 
-  def create_associated_fields_from_schema
-    if schema_fields.empty? && schema.present?
-      json_table_schema['fields'].each do |field|
-        unless field['constraints'].nil?
-          field['schema_constraint_attributes'] = field['constraints']
-          field.delete('constraints')
-        end
-        schema_fields.create(field)
-      end
-    end
-  end
-
   def foreign_keys
     json_table_schema.foreign_keys
   end

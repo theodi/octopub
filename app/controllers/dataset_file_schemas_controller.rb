@@ -34,11 +34,13 @@ class DatasetFileSchemasController < ApplicationController
 
   def edit
     json = JSON.parse(@dataset_file_schema.schema)
+    @dataset_file_schema = create_empty_constraints_for_edit(@dataset_file_schema)
     @json_table_schema = JsonTableSchema::Schema.new(json)
   end
 
   def update
     if @dataset_file_schema.update(update_params)
+      @dataset_file_schema.update(schema: render_to_string( template: 'dataset_file_schemas/show.json.jbuilder', locals: { users: @dataset_file_schema}))
       redirect_to dataset_file_schema_path(@dataset_file_schema)
     else
       render :edit
@@ -60,6 +62,13 @@ class DatasetFileSchemasController < ApplicationController
     params.require(:dataset_file_schema).permit(
       schema_fields_attributes: [ :id, :name, schema_constraint_attributes:
         [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
+  end
+
+  def create_empty_constraints_for_edit(dataset_file_schema)
+    dataset_file_schema.schema_fields.each do |schema_field|
+      schema_field.schema_constraint = SchemaConstraint.new({}) unless schema_field.schema_constraint
+    end
+    dataset_file_schema
   end
 
   def set_dataset_file_schema
