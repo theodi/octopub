@@ -46,13 +46,7 @@ class InferredDatasetFileSchemaCreationService
     end
   end
 
-  def upload_inferred_schema_to_s3(inferred_schema, filename)
-    obj = FileStorageService.create_and_upload_public_object(filename, inferred_schema)
-    obj
-  end
-
   def inferred_schema_filename(schema_name)
     "#{schema_name.parameterize}.json"
   end
-
 end
