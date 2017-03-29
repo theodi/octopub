@@ -36,4 +36,16 @@ class DatasetFileSchemaService
   def self.get_parsed_schema_from_csv_lint(url)
     Csvlint::Schema.load_from_json(url)
   end
+
+  def self.populate_schema_fields_and_constraints(dataset_file_schema)
+    if dataset_file_schema.schema_fields.empty? && dataset_file_schema.schema.present?
+      dataset_file_schema.json_table_schema['fields'].each do |field|
+        unless field['constraints'].nil?
+          field['schema_constraint_attributes'] = field['constraints']
+          field.delete('constraints')
+        end
+        dataset_file_schema.schema_fields.create(field)
+      end
+    end
+  end
 end
