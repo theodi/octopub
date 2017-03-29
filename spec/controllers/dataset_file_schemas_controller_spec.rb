@@ -70,6 +70,38 @@ describe DatasetFileSchemasController, type: :controller do
     end
   end
 
+  describe 'edit' do
+    it "returns http success" do
+
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+      url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+
+      get :edit, params: { id: dataset_file_schema.id }
+      expect(response).to be_success
+    end
+  end
+
+  describe 'update' do
+    it "returns http success" do
+
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+      url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      expect(dataset_file_schema.schema_fields).to_not be_empty
+      first_field = dataset_file_schema.schema_fields.first
+      old_name = first_field.name
+      post :update, params: { id: dataset_file_schema.id, dataset_file_schema: {  schema_fields_attributes: [ id: first_field.id, name: 'NewName'] }}
+      dataset_file_schema.reload
+      expect(dataset_file_schema.schema_fields.first.name).to eq 'NewName'
+      expect(response).to redirect_to(dataset_file_schema_path(dataset_file_schema))
+    end
+  end
+
   describe 'create' do
     it "returns http success" do
       schema_name = 'schema-name'
