@@ -1,4 +1,4 @@
-<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
+<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small><span class="pull-right"><%= link_to 'Edit', edit_dataset_file_schema_path(@dataset_file_schema), class: 'btn btn-primary' %></span></h1>
 <% if @dataset_file_schema.schema_categories %>
   <h2>Categories</h2>
   <ul>
