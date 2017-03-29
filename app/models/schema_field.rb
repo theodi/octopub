@@ -5,6 +5,8 @@
 #  id                     :integer          not null, primary key
 #  dataset_file_schema_id :integer
 #  name                   :text             not null
+#  description            :text
+#  title                  :text
 #  type                   :text
 #  format                 :text
 #  created_at             :datetime         not null

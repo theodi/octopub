@@ -111,6 +111,8 @@ ActiveRecord::Schema.define(version: 20170328141647) do
   create_table "schema_fields", force: :cascade do |t|
     t.integer  "dataset_file_schema_id"
     t.text     "name",                   null: false
+    t.text     "description"
+    t.text     "title"
     t.text     "type"
     t.text     "format"
     t.datetime "created_at",             null: false

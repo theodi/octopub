@@ -2,16 +2,16 @@
 #
 # Table name: schema_constraints
 #
-#  id               :integer          not null, primary key
-#  schema_fields_id :integer
-#  required         :boolean          default(FALSE)
-#  unique           :boolean          default(FALSE)
-#  min_length       :integer
-#  max_length       :integer
-#  minimum          :integer
-#  maximum          :integer
-#  pattern          :text
-#  type             :text
+#  id              :integer          not null, primary key
+#  schema_field_id :integer
+#  required        :boolean          default(FALSE)
+#  unique          :boolean          default(FALSE)
+#  min_length      :integer
+#  max_length      :integer
+#  minimum         :integer
+#  maximum         :integer
+#  pattern         :text
+#  type            :text
 #
 
 class SchemaConstraint < ApplicationRecord
