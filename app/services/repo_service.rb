@@ -13,6 +13,10 @@ class RepoService
     GitData.create(repo_owner, name, restricted: restricted, client: user.octokit_client)
   end
 
+  def self.prepare_repo(dataset)
+    GitData.prepare_repository(dataset.repo_owner, dataset.name, dataset.user.octokit_client)
+  end
+
   def add_file(filename, file)
     @repo.add_file(filename, file) if @repo
   end

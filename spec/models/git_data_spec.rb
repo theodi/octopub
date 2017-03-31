@@ -120,9 +120,9 @@ describe GitData, :vcr do
   context "#prepare_repository" do
     it 'creates a gh-pages branch' do
       @repo = GitData.create(@username, @name, client: @client)
-      expect_any_instance_of(Octokit::Client).to receive(:create_ref).and_call_original
-      expect_any_instance_of(Octokit::Client).to receive(:edit_repository).and_call_original
-      GitData.prepare_repository(@username, @name, client: @client)
+      expect(@client).to receive(:create_ref).and_call_original
+      expect(@client).to receive(:edit_repository).and_call_original
+      GitData.prepare_repository(@username, @name, @client)
     end
   end
 

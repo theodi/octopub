@@ -15,6 +15,7 @@ feature "Add private github dataset page", type: :feature do
     expect(repo).to receive(:full_name) { 'examplename' }
 
     expect(RepoService).to receive(:create_repo) { repo }
+    expect(RepoService).to receive(:prepare_repo)
     expect(RepoService).to receive(:fetch_repo).at_least(:once) { repo }
     Sidekiq::Testing.inline!
     visit root_path

@@ -18,8 +18,7 @@ class GitData
     nil
   end
 
-  def self.prepare_repository(owner, repo_name, options = {})
-    client = options[:client]
+  def self.prepare_repository(owner, repo_name, client)
     # Get the current branch info
     branch_data = client.branch(full_name(owner, repo_name), 'master')
     # Create a gh-pages branch
