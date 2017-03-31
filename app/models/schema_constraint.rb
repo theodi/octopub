@@ -4,12 +4,12 @@
 #
 #  id              :integer          not null, primary key
 #  schema_field_id :integer
-#  required        :boolean          default(FALSE)
-#  unique          :boolean          default(FALSE)
+#  required        :boolean
+#  unique          :boolean
 #  min_length      :integer
 #  max_length      :integer
-#  minimum         :integer
-#  maximum         :integer
+#  minimum         :text
+#  maximum         :text
 #  pattern         :text
 #  type            :text
 #

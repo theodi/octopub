@@ -101,8 +101,8 @@ ActiveRecord::Schema.define(version: 20170329180519) do
     t.boolean "unique"
     t.integer "min_length"
     t.integer "max_length"
-    t.integer "minimum"
-    t.integer "maximum"
+    t.text    "minimum"
+    t.text    "maximum"
     t.text    "pattern"
     t.text    "type"
     t.index ["schema_field_id"], name: "index_schema_constraints_on_schema_field_id", using: :btree

@@ -6,8 +6,8 @@ class CreateSchemaConstraint < ActiveRecord::Migration[5.0]
       t.boolean     :unique
       t.integer     :min_length
       t.integer     :max_length
-      t.integer     :minimum
-      t.integer     :maximum
+      t.text        :minimum # Could be a date string for example
+      t.text        :maximum # Could be a date string for example
       t.text        :pattern
       t.text        :type
     end
