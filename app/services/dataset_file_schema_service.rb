@@ -14,8 +14,11 @@ class DatasetFileSchemaService
     FileStorageService.make_object_public_from_url(@url_in_s3)
 
     @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username)
+
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
     self.class.populate_schema_fields_and_constraints(@dataset_file_schema)
+
+    @dataset_file_schema.update(schema: @dataset_file_schema.to_builder.target!)
     @dataset_file_schema
   end
 
@@ -27,6 +30,10 @@ class DatasetFileSchemaService
   def self.load_json_from_s3(url_in_s3)
     Rails.logger.info "URL #{url_in_s3}"
     JSON.generate(JSON.load(read_file_with_utf_8(url_in_s3)))
+  end
+
+  def self.parse_schema(schema_string)
+    JsonTableSchema::Schema.new(JSON.parse(schema_string))
   end
 
   def self.read_file_with_utf_8(url)

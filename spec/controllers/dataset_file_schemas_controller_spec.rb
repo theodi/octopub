@@ -100,6 +100,43 @@ describe DatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.schema_fields.first.name).to eq 'NewName'
       expect(response).to redirect_to(dataset_file_schema_path(dataset_file_schema))
     end
+
+    it "sorts out the schema as json for persistence" do
+
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+      url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      expect(dataset_file_schema.schema_fields).to_not be_empty
+      original_hash = JSON.parse(dataset_file_schema.schema)
+      ap original_hash
+      first_field = dataset_file_schema.schema_fields.first
+      expect(SchemaField.find(first_field.id).format).to eq 'default'
+      expect(SchemaField.find(first_field.id).type).to eq 'string'
+
+      first_field_name = first_field.name
+      first_field_type = first_field.type
+      original_first_field_json = original_hash['fields'].first
+
+      post :update, params: { id: dataset_file_schema.id, dataset_file_schema: {  schema_fields_attributes: [ id: first_field.id, type: 'Woof'] }}
+
+      dataset_file_schema.reload
+      expect(SchemaField.find(first_field.id).type).to eq 'Woof'
+      expect(SchemaField.find(first_field.id).format).to eq 'default'
+      expect(dataset_file_schema.schema).to include('fields')
+
+      # Difference is type is now set, so once we know it is there, delete and hashes should be the same
+      new_hash = JSON.parse(dataset_file_schema.schema)
+
+      original_fields = original_hash['fields']
+      new_field = new_hash['fields'].find {|field| field['name'] == 'Username' }
+      expect(new_field['type']).to eq 'Woof'
+      new_field['type'] = 'string'
+
+      expect(new_hash).to eq original_hash
+      expect(response).to redirect_to(dataset_file_schema_path(dataset_file_schema))
+    end
   end
 
   describe 'create' do

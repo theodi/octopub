@@ -40,7 +40,8 @@ class DatasetFileSchemasController < ApplicationController
 
   def update
     if @dataset_file_schema.update(update_params)
-      @dataset_file_schema.update(schema: render_to_string( template: 'dataset_file_schemas/show.json.jbuilder', locals: { users: @dataset_file_schema}))
+      @schema_fields = @dataset_file_schema.schema_fields
+      @dataset_file_schema.update(schema: @dataset_file_schema.to_builder.target!)
       redirect_to dataset_file_schema_path(@dataset_file_schema)
     else
       render :edit
@@ -60,7 +61,7 @@ class DatasetFileSchemasController < ApplicationController
 
   def update_params
     params.require(:dataset_file_schema).permit(
-      schema_fields_attributes: [ :id, :name, schema_constraint_attributes:
+      schema_fields_attributes: [ :id, :name, :type, :format, schema_constraint_attributes:
         [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
   end
 

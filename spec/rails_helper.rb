@@ -104,6 +104,37 @@ RSpec.configure do |config|
   end
 end
 
+def compare_schemas_after_processing(original, compare_to)
+  if original.instance_of?(Hash) && original.key?("fields")
+    original_array_of_fields = original['fields']
+  elsif original.instance_of?(JsonTableSchema::Schema)
+    original_array_of_fields = original.fields
+  else
+    original_array_of_fields = original
+  end
+
+  if compare_to.instance_of?(Hash) && compare_to.key?("fields")
+    new_array_of_fields = compare_to['fields']
+  elsif compare_to.instance_of?(JsonTableSchema::Schema)
+    new_array_of_fields = compare_to.fields
+  else
+    new_array_of_fields = compare_to
+  end
+
+  sorted_fields  = original_array_of_fields.sort_by { |k| k["name"] }
+  sorted_example_output = new_array_of_fields.sort_by { |k| k["name"] }
+
+  sorted_fields.each_with_index do |field, index|
+
+    if field['constraints']
+      field['constraints'] = field['constraints'].sort.to_h
+      sorted_example_output[index]['constraints'] = sorted_example_output[index]['constraints'].sort.to_h
+      expect(field['constraints']).to eq (sorted_example_output[index]['constraints'])
+    end
+  end
+  expect(sorted_fields).to eq sorted_example_output
+end
+
 def sign_in(user)
   allow_any_instance_of(ApplicationController).to receive(:session) { {user_id: user.id} }
 end
