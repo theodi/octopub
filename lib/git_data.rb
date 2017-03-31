@@ -10,19 +10,22 @@ class GitData
     else
       repo = client.create_repository(repo_name.parameterize, private: restricted, auto_init: true, organization: owner)
     end
-    # Create repo that auto initializes
-    full_name = full_name(owner, repo_name)
-    # Get the current branch info
-    branch_data = client.branch full_name, 'master'
-    # Create a gh-pages branch
-    client.create_ref(full_name, 'heads/gh-pages', branch_data.commit.sha)
-    # Make the gh-pages branch the default
-    client.edit_repository(full_name, default_branch: 'gh-pages')
+   # prepare_repository(owner, repo_name, options)
     new(client, repo)
   rescue Octokit::UnprocessableEntity # 422 error code
     # Here, means that private repositories aren't available
     # so return nil
     nil
+  end
+
+  def self.prepare_repository(owner, repo_name, options = {})
+    client = options[:client]
+    # Get the current branch info
+    branch_data = client.branch(full_name(owner, repo_name), 'master')
+    # Create a gh-pages branch
+    client.create_ref(full_name(owner, repo_name), 'heads/gh-pages', branch_data.commit.sha)
+    # Make the gh-pages branch the default
+    client.edit_repository(full_name(owner, repo_name), default_branch: 'gh-pages')
   end
 
   def self.find(owner, repo_name, options = {})
