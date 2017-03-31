@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170328141647) do
+ActiveRecord::Schema.define(version: 20170329180519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 20170328141647) do
 
   create_table "schema_constraints", force: :cascade do |t|
     t.integer "schema_field_id"
-    t.boolean "required",        default: false
-    t.boolean "unique",          default: false
+    t.boolean "required"
+    t.boolean "unique"
     t.integer "min_length"
     t.integer "max_length"
     t.integer "minimum"
