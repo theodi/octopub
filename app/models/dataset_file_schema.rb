@@ -36,6 +36,34 @@ class DatasetFileSchema < ApplicationRecord
     @json_table_schema ||= JsonTableSchema::Schema.new(JSON.parse(schema))
   end
 
+  def to_builder
+    Jbuilder.new do |json|
+      json.ignore_nil!
+      json.set! :fields do
+        json.array! schema_fields do |schema_field|
+          json.name         schema_field.name
+          json.description  schema_field.description
+          json.title        schema_field.title
+          json.type         schema_field.type
+          json.format       schema_field.format
+          if schema_field.schema_constraint
+            json.constraints do
+              json.type schema_field.schema_constraint.type
+              json.required schema_field.schema_constraint.required
+              json.unique schema_field.schema_constraint.unique
+              json.minLength schema_field.schema_constraint.min_length
+              json.maxLength schema_field.schema_constraint.max_length
+              json.maximum schema_field.schema_constraint.maximum
+              json.minimum schema_field.schema_constraint.minimum
+              json.pattern schema_field.schema_constraint.pattern
+
+            end
+          end
+        end
+      end
+    end
+  end
+
   def foreign_keys
     json_table_schema.foreign_keys
   end
