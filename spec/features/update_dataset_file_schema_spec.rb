@@ -21,7 +21,7 @@ feature "Publisher can update a Dataset File Schema", type: :feature do
     ).create_dataset_file_schema
 
     visit edit_dataset_file_schema_path(dataset_file_schema_1)
-    
+    Sidekiq::Testing.fake! 
   end
 
   it "but not if it has datasets" do
@@ -47,5 +47,6 @@ feature "Publisher can update a Dataset File Schema", type: :feature do
 
     visit dataset_file_schema_path(dataset_file_schema)
     expect(page.has_no_button?('Edit')).to be true
+    Sidekiq::Testing.fake! 
   end
 end
