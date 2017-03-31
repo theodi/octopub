@@ -1,5 +1,5 @@
-<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
-<% if @dataset_file_schema.schema_categories %>
+<h1 class="page-header">Edit Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
+<% if @dataset_file_schema.schema_categories.exists? %>
   <h2>Categories</h2>
   <ul>
     <% @dataset_file_schema.schema_categories.each do |category| %>

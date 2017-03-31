@@ -16,6 +16,7 @@ class DatasetFileSchemaService
     @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username)
 
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
+    @dataset_file_schema.reload
     self.class.populate_schema_fields_and_constraints(@dataset_file_schema)
 
     @dataset_file_schema.update(schema: @dataset_file_schema.to_builder.target!)
@@ -45,8 +46,11 @@ class DatasetFileSchemaService
   end
 
   def self.populate_schema_fields_and_constraints(dataset_file_schema)
+    Rails.logger.info "in populate_schema_fields_and_constraints"
     if dataset_file_schema.schema_fields.empty? && dataset_file_schema.schema.present?
+      Rails.logger.info "in populate_schema_fields_and_constraints - we have no fields and schema, so crack on"
       dataset_file_schema.json_table_schema['fields'].each do |field|
+        Rails.logger.info "in populate_schema_fields_and_constraints #{field}"
         unless field['constraints'].nil?
           field['schema_constraint_attributes'] = field['constraints']
           field.delete('constraints')

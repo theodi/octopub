@@ -26,6 +26,8 @@ describe DatasetFileSchemaService do
       schema_fields_from_file = DatasetFileSchemaService.parse_schema(get_json_from_url(good_schema_url))
       schema_fields_from_model = JSON.parse(@thing.schema)
 
+      expect(@thing.schema_fields.count).to be 5
+
       compare_schemas_after_processing(schema_fields_from_model, schema_fields_from_file)
     end
 
