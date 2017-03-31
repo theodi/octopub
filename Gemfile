@@ -112,8 +112,7 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
-  # Awaiting Ruby 2.4 official release
-  gem 'coveralls', git: 'https://github.com/jamesjefferies/coveralls-ruby.git', branch: 'update-simplecov-dependency', require: false
+  gem 'coveralls', '~> 0.8.20'
   gem 'vcr'
   gem 'webmock'
   gem 'foreman'
