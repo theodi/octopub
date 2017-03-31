@@ -76,7 +76,7 @@ describe GitData, :vcr do
         expect(@client.repository(@repo_name).private).to eq(false)
       end
     end
-    
+
     context 'case insensitive' do
       it 'creates a repo with the user' do
         GitData.create(@username.upcase, @name, client: @client)
@@ -114,6 +114,15 @@ describe GitData, :vcr do
         expect(@repo.full_name).to eq('octopub-data/my-awesome-repo')
         expect(@repo.html_url).to eq('https://github.com/octopub-data/my-awesome-repo')
       end
+    end
+  end
+
+  context "#prepare_repository" do
+    it 'creates a gh-pages branch' do
+      @repo = GitData.create(@username, @name, client: @client)
+      expect(@client).to receive(:create_ref).and_call_original
+      expect(@client).to receive(:edit_repository).and_call_original
+      GitData.prepare_repository(@username, @name, @client)
     end
   end
 

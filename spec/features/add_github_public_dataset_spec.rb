@@ -53,7 +53,7 @@ feature "Add dataset page", type: :feature do
       expect(repo).to receive(:full_name) { 'examplename' }
       expect(RepoService).to receive(:create_repo) { repo }
       expect(RepoService).to receive(:fetch_repo).at_least(:once) { repo }
-
+      expect(RepoService).to receive(:prepare_repo).at_least(:once)
       click_link "Add dataset"
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(data_file))

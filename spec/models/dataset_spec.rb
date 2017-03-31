@@ -33,6 +33,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   before(:each) do
     @user = create(:user)
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false }
+    allow(RepoService).to receive(:prepare_repo)
     Sidekiq::Testing.inline!
   end
 
@@ -294,24 +295,24 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   context "returns a list of schemas used" do
-    it "with an empty string when none" do 
+    it "with an empty string when none" do
       dataset = build(:dataset, user: @user,
           dataset_files: [ build(:dataset_file)])
       expect(dataset.schema_names).to eq ""
     end
 
-    it "with a name if one" do 
+    it "with a name if one" do
       schema_name = Faker::Name.unique.name
       dataset = build(:dataset, user: @user,
           dataset_files: [ build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name))])
       expect(dataset.schema_names).to eq schema_name
     end
 
-    it "with a list if many" do 
+    it "with a list if many" do
       schema_name = Faker::Name.unique.name
       schema_name_2 = Faker::Name.unique.name
       dataset = build(:dataset, user: @user,
-          dataset_files: [ 
+          dataset_files: [
             build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name)),
             build(:dataset_file, dataset_file_schema: build(:dataset_file_schema, name: schema_name_2)),
             build(:dataset_file),
