@@ -7,6 +7,7 @@ describe Dataset do
   before(:each) do
     @user = create(:user)
     Sidekiq::Testing.inline!
+    allow(RepoService).to receive(:prepare_repo)
   end
 
   after(:each) do
@@ -39,7 +40,7 @@ describe Dataset do
       allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
         obj
       }
-      #expect(dataset).to receive(:complete_publishing)
+      expect(RepoService).to receive(:prepare_repo)
       allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
       dataset.report_status('beep-beep')
@@ -51,6 +52,7 @@ describe Dataset do
       expect(updated_dataset).to receive(:make_repo_public_if_appropriate).once
       expect(updated_dataset).to receive(:publish_public_views).once
       expect_any_instance_of(RepoService).to_not receive(:make_public)
+
       expect_any_instance_of(JekyllService).to_not receive(:create_public_views)
 
       updated_dataset.description = 'Woof woof'
@@ -79,7 +81,7 @@ describe Dataset do
       allow(GitData).to receive(:find).with(@user.github_username, name, client: a_kind_of(Octokit::Client)) {
         obj
       }
-      #expect(dataset).to receive(:complete_publishing)
+
       allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
       dataset.report_status('beep-beep')

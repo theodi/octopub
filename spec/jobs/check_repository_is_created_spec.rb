@@ -18,6 +18,7 @@ describe CheckRepositoryIsCreated do
       expect(@obj).to receive(:full_name) { full_name }
       @obj
     }
+    expect(RepoService).to receive(:prepare_repo)
   end
 
   it 'and updates columns' do
