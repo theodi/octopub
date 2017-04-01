@@ -1,0 +1,27 @@
+<h1>Dataset Files for <small><%= @dataset.name %></h1>
+<% if @dataset_files.exists? %>
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Dataset Name</th>
+        <th>Owner</th>
+        <th>File Name</th>
+        <th>File Description</th>
+        <th>File Media Type</th>
+        <th>Schema Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @dataset_files.each do |file| %>
+        <tr>
+          <td><%= @dataset.name %></td>
+          <td><%= @dataset.owner %></td>
+          <td><%= file.filename %></td>
+          <td><%= file.description %></td>
+          <td><%= file.mediatype %></td>
+          <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
