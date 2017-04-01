@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20170329180519) do
     t.string   "storage_key"
     t.text     "owner_username"
     t.text     "owner_avatar_url"
+    t.boolean  "csv_on_the_web_schema", default: false
     t.index ["user_id"], name: "index_dataset_file_schemas_on_user_id", using: :btree
   end
 

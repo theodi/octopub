@@ -29,6 +29,7 @@ describe DatasetFileSchemaService do
       expect(@thing.schema_fields.count).to be 5
 
       compare_schemas_after_processing(schema_fields_from_model, schema_fields_from_file)
+      expect(@thing.csv_on_the_web_schema).to be false
     end
 
     it 'allows retrieval of schemas from user' do
@@ -51,6 +52,21 @@ describe DatasetFileSchemaService do
       expect(@thing.schema_fields.first.schema_constraint.required).to be true
       expect(@thing.schema_fields.first.schema_constraint.unique).to be true
       expect(@thing.schema_fields.last.schema_constraint).to be nil
+    end
+  end
+  context 'with a csv on the web schema' do
+    let(:csv_schema_file) { get_fixture_schema_file('csv-on-the-web-schema.json') }
+    let(:csv_schema_file_as_json) { File.read(csv_schema_file).strip }
+    let(:csv_schema_file_url) { url_with_stubbed_get_for(csv_schema_file) }
+
+    before(:each) do
+      @csv_schema_service = DatasetFileSchemaService.new(schema_name, description, csv_schema_file_url, user, user.name)
+      @csv_thing = @csv_schema_service.create_dataset_file_schema
+    end
+
+    it 'creates a new dataset and updates as csv on the web if appropriate' do
+      expect(JSON.parse @csv_thing.schema).to eq JSON.parse csv_schema_file_as_json
+      expect(@csv_thing.csv_on_the_web_schema).to be true
     end
   end
 end

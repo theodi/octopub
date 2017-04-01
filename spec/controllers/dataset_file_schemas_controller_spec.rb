@@ -143,20 +143,40 @@ describe DatasetFileSchemasController, type: :controller do
   end
 
   describe 'create' do
-    it "returns http success" do
-      schema_name = 'schema-name'
-      description = 'schema-description'
+    context "returns http success" do
+      let(:schema_name) { 'schema-name' }
+      let(:description) { 'schema-description' }
 
-      post :create, params: {
-        dataset_file_schema: {
-          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url, owner_username: @user.name
+      it "for normal schema" do
+        post :create, params: {
+          dataset_file_schema: {
+            name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url, owner_username: @user.name
+          }
         }
-      }
 
-      dataset_file_schema = DatasetFileSchema.last
-      expect(dataset_file_schema.name).to eq schema_name
-      expect(dataset_file_schema.description).to eq description
-      expect(dataset_file_schema.user).to eq @user
+        dataset_file_schema = DatasetFileSchema.last
+        expect(dataset_file_schema.name).to eq schema_name
+        expect(dataset_file_schema.description).to eq description
+        expect(dataset_file_schema.user).to eq @user
+        expect(dataset_file_schema.csv_on_the_web_schema).to be false
+      end
+
+      it "for csv on the web schema" do
+        csv_schema_file = get_fixture_schema_file('csv-on-the-web-schema.json')
+        csv_schema_file_url = url_with_stubbed_get_for(csv_schema_file)
+
+        post :create, params: {
+          dataset_file_schema: {
+            name: schema_name, description: description, user_id: @user.id, url_in_s3: csv_schema_file_url, owner_username: @user.name
+          }
+        }
+        
+        dataset_file_schema = DatasetFileSchema.last
+        expect(dataset_file_schema.name).to eq schema_name
+        expect(dataset_file_schema.description).to eq description
+        expect(dataset_file_schema.user).to eq @user
+        expect(dataset_file_schema.csv_on_the_web_schema).to be true
+      end
     end
 
     context "creates a dataset file schema and redirects back to index" do

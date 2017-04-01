@@ -9,6 +9,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
   before(:each) do
     allow(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(read_fixture_schema_file('good-schema.json'))
+    allow_any_instance_of(DatasetFileSchema).to receive(:is_schema_otw?).and_return(false)
     visit root_path
     click_link 'List my dataset file schemas'
     expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
