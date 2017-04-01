@@ -20,7 +20,7 @@
     <% elsif dataset.github_private? %>
       <%= link_to dataset.name, dataset.github_url %>
     <% elsif dataset.local_private? %>
-      Local Private
+      <%= link_to dataset.name, files_path(dataset) %>
     <% end %>
   </td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
