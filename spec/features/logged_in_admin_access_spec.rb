@@ -48,17 +48,38 @@ feature "Logged in admin access to pages", type: :feature do
       @publisher = create(:user)
     end
 
-    scenario "logged in admins can view" do
-      dataset = create(:dataset, user: @publisher)
-      expect(page).to have_content "Users"
-      visit users_path
-      within 'table' do
-        click_on(@publisher.name)
+    context "logged in admins can view" do
+      it "public dataset" do
+        dataset = create(:dataset, user: @publisher)
+        expect(page).to have_content "Users"
+        visit users_path
+        within 'table' do
+          click_on(@publisher.name)
+        end
+        expect(page).to have_content "User Details"
+        expect(page).to have_content @publisher.name
+        expect(page).to have_content "User's Datasets"
+        expect(page).to have_content dataset.name
       end
-      expect(page).to have_content "User Details"
-      expect(page).to have_content @publisher.name
-      expect(page).to have_content "User's Datasets"
-      expect(page).to have_content dataset.name
+
+      it "private dataset files" do
+        dataset_file = create(:dataset_file)
+        dataset = create(:dataset, user: @publisher, dataset_files: [ dataset_file ], publishing_method: :local_private)
+
+        expect(page).to have_content "Users"
+        visit users_path
+        within 'table' do
+          click_on(@publisher.name)
+        end
+        expect(page).to have_content "User Details"
+        expect(page).to have_content @publisher.name
+        expect(page).to have_content "User's Datasets"
+        expect(page).to have_content dataset.name
+        within 'table' do
+          click_on(dataset.name)
+        end
+        expect(page).to have_content "Dataset Files for #{dataset.name}"
+      end
     end
 
     scenario "logged in admins can view in user list" do
