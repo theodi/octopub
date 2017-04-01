@@ -15,10 +15,10 @@ Rails.application.routes.draw do
       get "/created", action: 'created'
       get "/edited", action: 'edited'
     end
-    member do
-      get "/files", action: :files
-    end
   end
+
+  get "/datasets/:dataset_id/dataset_files" => "dataset_files#index", as: :files
+  get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
 
   resources :dataset_file_schemas, only: [:index, :new, :create, :show, :destroy]
 
