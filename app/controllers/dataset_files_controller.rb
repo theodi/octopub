@@ -12,6 +12,7 @@ class DatasetFilesController < ApplicationController
     @dataset_file = DatasetFile.find(dataset_file_id)
     user = @dataset_file.dataset.user
     render_403_permissions unless current_user == user || admin_user
+
     redirect_to FileStorageService.get_temporary_download_url(@dataset_file.storage_key)
   end
 end
