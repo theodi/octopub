@@ -5,6 +5,7 @@
       <tr>
         <th>Dataset Name</th>
         <th>Owner</th>
+        <th>Title</th>
         <th>File Name</th>
         <th>File Description</th>
         <th>File Media Type</th>
@@ -16,7 +17,8 @@
         <tr>
           <td><%= @dataset.name %></td>
           <td><%= @dataset.owner %></td>
-          <td><%= file.filename %></td>
+          <td><%= file.title %></td>
+          <td><%= link_to file.filename, dataset_file_download_path(file) %></td>
           <td><%= file.description %></td>
           <td><%= file.mediatype %></td>
           <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>

@@ -4,6 +4,10 @@ class FileStorageService
     get_bucket.object(storage_key)
   end
 
+  def self.get_temporary_download_url(storage_key)
+    get_object(storage_key).presigned_url(:get, expires_in: 1.minutes)
+  end
+
   def self.make_object_public(storage_key)
     get_object(storage_key).acl.put({ acl: "public-read" })
   end
