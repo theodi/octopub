@@ -122,10 +122,10 @@ describe DatasetFileSchemasController, type: :controller do
       first_field_type = first_field.type
       original_first_field_json = original_hash['fields'].first
 
-      post :update, params: { id: dataset_file_schema.id, dataset_file_schema: {  schema_fields_attributes: [ id: first_field.id, type: 'Woof'] }}
+      post :update, params: { id: dataset_file_schema.id, dataset_file_schema: {  schema_fields_attributes: [ id: first_field.id, type: 'integer'] }}
 
       dataset_file_schema.reload
-      expect(SchemaField.find(first_field.id).type).to eq 'Woof'
+      expect(SchemaField.find(first_field.id).type).to eq 'integer'
       expect(SchemaField.find(first_field.id).format).to eq 'default'
       expect(dataset_file_schema.schema).to include('fields')
 
@@ -134,7 +134,7 @@ describe DatasetFileSchemasController, type: :controller do
 
       original_fields = original_hash['fields']
       new_field = new_hash['fields'].find {|field| field['name'] == 'Username' }
-      expect(new_field['type']).to eq 'Woof'
+      expect(new_field['type']).to eq 'integer'
       new_field['type'] = 'string'
 
       expect(new_hash).to eq original_hash
