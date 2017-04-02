@@ -7,7 +7,7 @@
 #  name                   :text             not null
 #  description            :text
 #  title                  :text
-#  type                   :text
+#  type                   :integer          default(0), not null
 #  format                 :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -19,6 +19,8 @@ class SchemaField  < ApplicationRecord
 
   # As we have a column called type
   self.inheritance_column = nil
+
+  enum type: [:any, :integer, :string, :array, :time, :date, :datetime, :boolean, :null, :number, :geojson, :geopoint]
 
   accepts_nested_attributes_for :schema_constraint
 end

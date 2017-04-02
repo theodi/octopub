@@ -5,7 +5,7 @@ class CreateSchemaField < ActiveRecord::Migration[5.0]
       t.text        :name, null: false
       t.text        :description
       t.text        :title
-      t.text        :type
+      t.integer     :type, default: 0, null: false
       t.text        :format
       t.timestamps
     end

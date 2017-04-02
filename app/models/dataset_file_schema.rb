@@ -2,18 +2,19 @@
 #
 # Table name: dataset_file_schemas
 #
-#  id               :integer          not null, primary key
-#  name             :text
-#  description      :text
-#  url_in_s3        :text
-#  url_in_repo      :text
-#  schema           :json
-#  user_id          :integer
-#  created_at       :datetime
-#  updated_at       :datetime
-#  storage_key      :string
-#  owner_username   :text
-#  owner_avatar_url :text
+#  id                    :integer          not null, primary key
+#  name                  :text
+#  description           :text
+#  url_in_s3             :text
+#  url_in_repo           :text
+#  schema                :json
+#  user_id               :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  storage_key           :string
+#  owner_username        :text
+#  owner_avatar_url      :text
+#  csv_on_the_web_schema :boolean          default(FALSE)
 #
 
 class DatasetFileSchema < ApplicationRecord

@@ -11,11 +11,11 @@
 <%= bootstrap_form_for @dataset_file_schema, method: :put do |f| %>
   <h2>Schema</h2>
   <div>
-    <table class="table table-bordered">
+    <table class="table table-bordered table-condensed" >
       <thead>
         <tr>
           <th class="col-xs-2">Name</th>
-          <th>Type</th>
+          <th class="col-xs-2">Type</th>
           <th>Required?</th>
           <th>Unique?</th>
           <th>Min Length</th>
@@ -23,25 +23,25 @@
           <th>Max</th>
           <th>Min</th>
           <th class="col-xs-2">Pattern</th>
-          <th>Type</th>
+          <th>Constraint Type</th>
         </tr>
       </thead>
       <%= f.fields_for :schema_fields do |schema_field_form| %>
         <tbody>
           <tr>
             <td><%= schema_field_form.text_field :name,  hide_label: true %></td>
-            <td><%= schema_field_form.text_field :type,  hide_label: true %></td>
+            <td><%= schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}, schema_field_form.object.type), { hide_label: true }, { class: 'form-control' } ) %></td>
             <% if schema_field_form.object.schema_constraint %>
-            <%= schema_field_form.fields_for :schema_constraint do |schema_constraint_form| %>
-              <td><%= schema_constraint_form.check_box :required, hide_label: true %></td>
-              <td><%= schema_constraint_form.check_box :unique, hide_label: true %></td>
-              <td><%= schema_constraint_form.text_field :min_length, hide_label: true %></td>
-              <td><%= schema_constraint_form.text_field :max_length, hide_label: true %></td>
-              <td><%= schema_constraint_form.text_field :minimum, hide_label: true %></td>
-              <td><%= schema_constraint_form.text_field :maximum, hide_label: true %></td>
-              <td><%= schema_constraint_form.text_field :pattern, hide_label: true, class: 'input-medium' %></td>
-              <td><%= schema_constraint_form.text_field :type, hide_label: true %></td>
-            <% end %>
+              <%= schema_field_form.fields_for :schema_constraint do |schema_constraint_form| %>
+                <td><%= schema_constraint_form.check_box :required, hide_label: true %></td>
+                <td><%= schema_constraint_form.check_box :unique, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :min_length, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :max_length, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :minimum, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :maximum, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :pattern, hide_label: true, class: 'input-medium' %></td>
+                <td><%= schema_constraint_form.text_field :type, hide_label: true %></td>
+              <% end %>
             <% else %>
               <td></td>
               <td></td>
@@ -57,6 +57,6 @@
       <% end %>
     </table>
   </div>
-  <%= f.submit %>
+  <%= f.primary %>
 <% end %>
 

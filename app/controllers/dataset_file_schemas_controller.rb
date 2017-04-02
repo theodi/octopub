@@ -41,7 +41,9 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def update
-    if @dataset_file_schema.update(update_params)
+    clean_update_params = param_clean(update_params)
+
+    if @dataset_file_schema.update(clean_update_params)
       @schema_fields = @dataset_file_schema.schema_fields
       schema = @dataset_file_schema.to_builder.target!
       @dataset_file_schema.update(schema: schema)
@@ -58,6 +60,15 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   private
+
+  def param_clean(dirty_params)
+    dirty_params.delete_if do |k, v|
+      if v.instance_of?(ActionController::Parameters)
+        param_clean(v)
+      end
+      v == ""
+    end
+  end
 
   def process_file
     return if params["dataset_file_schema"]["url_in_s3"].nil?

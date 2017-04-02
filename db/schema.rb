@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329180519) do
+ActiveRecord::Schema.define(version: 20170402191408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,13 +111,13 @@ ActiveRecord::Schema.define(version: 20170329180519) do
 
   create_table "schema_fields", force: :cascade do |t|
     t.integer  "dataset_file_schema_id"
-    t.text     "name",                   null: false
+    t.text     "name",                               null: false
     t.text     "description"
     t.text     "title"
-    t.text     "type"
+    t.integer  "type",                   default: 0, null: false
     t.text     "format"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.index ["dataset_file_schema_id"], name: "index_schema_fields_on_dataset_file_schema_id", using: :btree
   end
 
