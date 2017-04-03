@@ -332,7 +332,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
           "constraints" => {
             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
             "minimum"=>"13",
-            "maximum"=>"99",
+            "maximum"=>"99"
           }
         },
         {
@@ -341,7 +341,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
            "format"=>"default",
            "constraints" => {
              "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-             "minimum"=>"20",
+             "minimum"=>"20"
            }
         },
         {
@@ -350,7 +350,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
           "format"=>"default",
           "constraints" => {
             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-            "maximum"=>"500",
+            "maximum"=>"500"
           }
         },
         {

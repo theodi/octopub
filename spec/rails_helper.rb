@@ -105,27 +105,9 @@ RSpec.configure do |config|
 end
 
 def compare_schemas_after_processing(original, compare_to)
-  if original.instance_of?(Hash) && original.key?("fields")
-    original_array_of_fields = original['fields']
-  elsif original.instance_of?(JsonTableSchema::Schema)
-    original_array_of_fields = original.fields
-  else
-    original_array_of_fields = original
-  end
-
-  if compare_to.instance_of?(Hash) && compare_to.key?("fields")
-    new_array_of_fields = compare_to['fields']
-  elsif compare_to.instance_of?(JsonTableSchema::Schema)
-    new_array_of_fields = compare_to.fields
-  else
-    new_array_of_fields = compare_to
-  end
-
-  sorted_fields  = original_array_of_fields.sort_by { |k| k["name"] }
-  sorted_example_output = new_array_of_fields.sort_by { |k| k["name"] }
-
+  sorted_fields = normalise_schema(original)
+  sorted_example_output = normalise_schema(compare_to)
   sorted_fields.each_with_index do |field, index|
-
     if field['constraints']
       field['constraints'] = field['constraints'].sort.to_h
       sorted_example_output[index]['constraints'] = sorted_example_output[index]['constraints'].sort.to_h
@@ -133,6 +115,16 @@ def compare_schemas_after_processing(original, compare_to)
     end
   end
   expect(sorted_fields).to eq sorted_example_output
+end
+
+def normalise_schema(schema)
+  normalised = schema
+  if schema.instance_of?(Hash) && schema.key?("fields")
+    normalised = schema['fields']
+  elsif schema.instance_of?(JsonTableSchema::Schema)
+    normalised = schema.fields
+  end
+  normalised.sort_by { |k| k["name"] }
 end
 
 def sign_in(user)
