@@ -1,4 +1,24 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_output_schema_path(@output_schema) %> |
-<%= link_to 'Back', output_schemas_path %>
+<h1>Output Schema for input schema: <small><%= link_to @output_schema.dataset_file_schema.name, @output_schema.dataset_file_schema %></small></h1>
+
+  <table class="table table-bordered" >
+    <thead>
+      <tr>
+        <th class="col-xs-2">Schema field name</th>
+        <th class="col-xs-2">Aggregation Type</th>
+      </tr>
+    </thead>
+    <% @output_schema.output_schema_fields.each do |output_schema| %>
+      <tbody>
+        <tr>
+          <td><%= output_schema.schema_field.title %></td>
+          <td><%= output_schema.aggregation_type %></td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+
+  <div class="actions">
+
+  </div>

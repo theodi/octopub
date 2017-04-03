@@ -20,8 +20,9 @@ Rails.application.routes.draw do
   get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
 
   resources :dataset_file_schemas do
-    resources :output_schemas
+    resources :output_schemas, except: [:index, :show, :destroy, :edit, :update]
   end
+  resources :output_schemas, only: [:index, :show, :destroy, :edit, :update]
 
   get "/dataset_file_schemas/:dataset_file_schema_id/datasets/new" => "allocated_dataset_file_schema_datasets#new", as: :new_dataset_file_schema_dataset
   post "/dataset_file_schemas/:dataset_file_schema_id/datasets" => "allocated_dataset_file_schema_datasets#create", as: :dataset_file_schema_datasets

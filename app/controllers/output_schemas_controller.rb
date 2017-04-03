@@ -31,7 +31,7 @@ class OutputSchemasController < ApplicationController
 
     respond_to do |format|
       if @output_schema.save
-        format.html { redirect_to dataset_file_schema_output_schema_path(@output_schema.dataset_file_schema, @output_schema), notice: 'Output schema was successfully created.' }
+        format.html { redirect_to output_schema_path(@output_schema), notice: 'Output schema was successfully created.' }
         format.json { render :show, status: :created, location: @output_schema }
       else
         format.html { render :new }
@@ -45,7 +45,7 @@ class OutputSchemasController < ApplicationController
   def update
     respond_to do |format|
       if @output_schema.update(output_schema_params)
-        format.html { redirect_to dataset_file_schema_output_schema_path(@output_schema.dataset_file_schema, @output_schema), notice: 'Output schema was successfully updated.' }
+        format.html { redirect_to output_schema_path(@output_schema), notice: 'Output schema was successfully updated.' }
         format.json { render :show, status: :ok, location: @output_schema }
       else
         format.html { render :edit }

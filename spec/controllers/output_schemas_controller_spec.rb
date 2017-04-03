@@ -43,7 +43,7 @@ RSpec.describe OutputSchemasController, type: :controller do
   describe "GET #index" do
     it "assigns all output_schemas as @output_schemas" do
       output_schema = OutputSchema.create! valid_attributes
-      get :index, params: { dataset_file_schema_id: 1 }, session: valid_session
+      get :index, params: {}, session: valid_session
       expect(assigns(:output_schemas)).to eq([output_schema])
     end
   end
@@ -51,7 +51,7 @@ RSpec.describe OutputSchemasController, type: :controller do
   describe "GET #show" do
     it "assigns the requested output_schema as @output_schema" do
       output_schema = OutputSchema.create! valid_attributes
-      get :show, params: {dataset_file_schema_id: 1, id: output_schema.to_param}, session: valid_session
+      get :show, params: {id: output_schema.to_param}, session: valid_session
       expect(assigns(:output_schema)).to eq(output_schema)
     end
   end
@@ -83,7 +83,7 @@ RSpec.describe OutputSchemasController, type: :controller do
       it "redirects to the created output_schema" do
         dataset_file_schema = create(:dataset_file_schema)
         post :create, params: {dataset_file_schema_id: dataset_file_schema.id, output_schema: valid_attributes.merge(dataset_file_schema_id: dataset_file_schema.id)}, session: valid_session
-        expect(response).to redirect_to dataset_file_schema_output_schema_path(dataset_file_schema, OutputSchema.first)
+        expect(response).to redirect_to output_schema_path(OutputSchema.first)
       end
     end
 

@@ -1,9 +1,8 @@
 <h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small></h1>
+
 <div>
-
-<%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
-<%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
-
+  <%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
+  <%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
 </div>
 <div>
   <% if @dataset_file_schemas.any? %>
@@ -17,6 +16,7 @@
           <th data-sortable="true">Datasets using schema</th>
           <th data-sortable="true">Created At</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +28,7 @@
             <td><%= dataset_file_schema.csv_on_the_web_schema ? 'CSV on the Web' : 'JSON schema' %></td>
             <td><%= dataset_file_schema.count_datasets_using_this_schema %></td>
             <td><%= dataset_file_schema.created_at.to_formatted_s(:short) if dataset_file_schema.created_at %></td>
+            <td><%= link_to "Create output Schema", new_dataset_file_schema_output_schema_path(dataset_file_schema), class: 'btn btn-warning btn-sm' unless dataset_file_schema.csv_on_the_web_schema %></td>
             <td><%= link_to("Delete", dataset_file_schema_path(dataset_file_schema), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "btn btn-danger btn-sm") %></td>
           </tr>
         <% end %>
