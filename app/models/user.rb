@@ -67,7 +67,12 @@ class User < ApplicationRecord
   def get_organization_memberships
     # Note cache key is based on model's id and updated at attributes
     Rails.cache.fetch("#{cache_key}/organization_memberships", expires_in: 1.day) do
-      octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+      begin
+        octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+      rescue Octokit::Unauthorized
+        Rails.logger.warn "User is currently unauthorised, they should log out and log back in."
+        []
+      end
     end
   end
 
