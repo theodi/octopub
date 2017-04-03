@@ -63,7 +63,7 @@ class DatasetFileSchemasController < ApplicationController
   def strip_empty_parameters(dirty_params)
     dirty_params.delete_if do |_key, value|
       if value.instance_of?(ActionController::Parameters)
-        param_clean(value)
+        strip_empty_parameters(value)
       end
       value == ""
     end
