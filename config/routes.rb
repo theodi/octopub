@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :output_schemas
   root 'application#index'
 
   get '/api-docs' => 'application#api'#, :as => :api

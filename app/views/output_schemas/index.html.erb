@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Output Schemas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @output_schemas.each do |output_schema| %>
+      <tr>
+        <td><%= link_to 'Show', output_schema %></td>
+        <td><%= link_to 'Edit', edit_output_schema_path(output_schema) %></td>
+        <td><%= link_to 'Destroy', output_schema, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Output Schema', new_output_schema_path %>

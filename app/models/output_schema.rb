@@ -1,0 +1,2 @@
+class OutputSchema < ApplicationRecord
+end
