@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :output_schema_fields
   resources :output_schemas
   root 'application#index'
 
