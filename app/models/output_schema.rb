@@ -3,6 +3,8 @@ class OutputSchema < ApplicationRecord
   has_many :output_schema_fields
   has_many :schema_fields, through: :output_schema_fields
 
+  validates_presence_of :title
+
   accepts_nested_attributes_for :output_schema_fields
 
   def grouping_schema_fields
