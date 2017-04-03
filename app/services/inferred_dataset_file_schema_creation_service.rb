@@ -39,6 +39,7 @@ class InferredDatasetFileSchemaCreationService
         owner_username: @inferred_dataset_file_schema.owner_username,
         schema_category_ids: @inferred_dataset_file_schema.schema_category_ids
       )
+      DatasetFileSchemaService.update_dataset_file_schema(dataset_file_schema)
     rescue => exception
       OpenStruct.new(success?: false, dataset_file_schema: dataset_file_schema, error: exception)
     else

@@ -176,8 +176,4 @@ describe DatasetFileSchema do
     end
 
   end
-  # def count_datasets_using_this_schema
-  #   dataset_files.pluck(:dataset_id).uniq.count
-  # end
-
 end
