@@ -14,7 +14,10 @@ class OutputSchemasController < ApplicationController
 
   # GET /output_schemas/new
   def new
-    @output_schema = OutputSchema.new
+    @dataset_file_schema = DatasetFileSchema.find(params[:dataset_file_schema_id])
+    output_schema_fields = @dataset_file_schema.schema_fields.map { |schema_field| OutputSchemaField.new(schema_field: schema_field) }
+
+    @output_schema = OutputSchema.new(dataset_file_schema: @dataset_file_schema,  output_schema_fields: output_schema_fields)
   end
 
   # GET /output_schemas/1/edit
@@ -69,6 +72,6 @@ class OutputSchemasController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def output_schema_params
-      params.fetch(:output_schema, {})
+      params.require(:output_schema).permit(:user_id, :title, :description, :owner_username, :dataset_file_schema_id, output_schema_fields_attributes: [ :aggregation_type] )
     end
 end

@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20170403143913) do
   create_table "output_schemas", force: :cascade do |t|
     t.integer  "dataset_file_schema_id"
     t.integer  "user_id"
-    t.text     "owner"
+    t.text     "owner_username"
     t.text     "title"
     t.text     "description"
     t.datetime "created_at",             null: false

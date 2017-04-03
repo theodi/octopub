@@ -1,5 +1,33 @@
 <h1>New Output Schema</h1>
 
-<%= render 'form', output_schema: @output_schema %>
+<%= bootstrap_form_for [@dataset_file_schema, @output_schema], method: :post do |f| %>
 
-<%= link_to 'Back', output_schemas_path %>
+  <%= f.hidden_field :user_id, value: current_user.id %>
+  <%= f.hidden_field :dataset_file_schema_id, value: @dataset_file_schema.id %>
+  <%= f.text_field :title, required: true %>
+  <%= f.text_area :description %>
+  <%= f.select :owner_username, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+
+  <h2>Output Schema Fields</h2>
+  <table class="table table-bordered" >
+    <thead>
+      <tr>
+        <th class="col-xs-2">Schema field name</th>
+        <th class="col-xs-2">Aggregation Type</th>
+      </tr>
+    </thead>
+    <%= f.fields_for :output_schema_fields do |schema_field_form| %>
+      <tbody>
+        <tr>
+          <td><%= schema_field_form.object.schema_field.name %></td>
+          <td><%= schema_field_form.select(:aggregation_type, options_for_select(OutputSchemaField.friendly_aggregation_types, schema_field_form.object.aggregation_type), { hide_label: true }, { class: 'form-control' } ) %></td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+
+  <div class="actions">
+    <%= f.primary %>
+  </div>
+<% end %>
+

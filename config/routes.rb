@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
 
-
-  resources :output_schema_fields
-  resources :output_schemas
   root 'application#index'
 
   get '/api-docs' => 'application#api'#, :as => :api
@@ -22,7 +19,9 @@ Rails.application.routes.draw do
   get "/datasets/:dataset_id/dataset_files" => "dataset_files#index", as: :files
   get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
 
-  resources :dataset_file_schemas
+  resources :dataset_file_schemas do
+    resources :output_schemas
+  end
 
   get "/dataset_file_schemas/:dataset_file_schema_id/datasets/new" => "allocated_dataset_file_schema_datasets#new", as: :new_dataset_file_schema_dataset
   post "/dataset_file_schemas/:dataset_file_schema_id/datasets" => "allocated_dataset_file_schema_datasets#create", as: :dataset_file_schema_datasets

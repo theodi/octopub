@@ -3,7 +3,7 @@ class CreateOutputSchemas < ActiveRecord::Migration[5.0]
     create_table :output_schemas do |t|
       t.references  :dataset_file_schema, index: true
       t.references  :user, index: true
-      t.text        :owner
+      t.text        :owner_username
       t.text        :title
       t.text        :description
       t.timestamps
