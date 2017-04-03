@@ -103,6 +103,24 @@ describe DatasetFileSchemasController, type: :controller do
       expect(response).to redirect_to(dataset_file_schema_path(dataset_file_schema))
     end
 
+    it "clears out empty params" do
+      expect(FileStorageService).to receive(:push_public_object)
+
+      schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
+      data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
+      url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      expect(dataset_file_schema.schema_fields).to_not be_empty
+      second_field = dataset_file_schema.schema_fields.second
+      expect(second_field.schema_constraint.min_length).to be_nil
+      post :update, params: { id: dataset_file_schema.id, dataset_file_schema: {  schema_fields_attributes: [ id: second_field.id, name: 'NewName', schema_constraint_attributes: { min_length: "" } ] }}
+      dataset_file_schema.reload
+      expect(dataset_file_schema.schema_fields.second.schema_constraint.min_length).to be_nil
+      expect(dataset_file_schema.schema_fields.second.name).to eq 'NewName'
+      expect(response).to redirect_to(dataset_file_schema_path(dataset_file_schema))
+    end
+
     it "sorts out the schema as json for persistence" do
 
       expect(FileStorageService).to receive(:push_public_object)
@@ -170,7 +188,7 @@ describe DatasetFileSchemasController, type: :controller do
             name: schema_name, description: description, user_id: @user.id, url_in_s3: csv_schema_file_url, owner_username: @user.name
           }
         }
-        
+
         dataset_file_schema = DatasetFileSchema.last
         expect(dataset_file_schema.name).to eq schema_name
         expect(dataset_file_schema.description).to eq description
