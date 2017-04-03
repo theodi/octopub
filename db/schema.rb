@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402191408) do
+ActiveRecord::Schema.define(version: 20170403143913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,29 @@ ActiveRecord::Schema.define(version: 20170402191408) do
   create_table "errors", force: :cascade do |t|
     t.string "job_id",   null: false
     t.json   "messages"
+  end
+
+  create_table "output_schema_fields", force: :cascade do |t|
+    t.integer  "output_schema_id"
+    t.integer  "schema_field_id"
+    t.integer  "aggregation_type", default: 0, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["aggregation_type"], name: "index_output_schema_fields_on_aggregation_type", using: :btree
+    t.index ["output_schema_id"], name: "index_output_schema_fields_on_output_schema_id", using: :btree
+    t.index ["schema_field_id"], name: "index_output_schema_fields_on_schema_field_id", using: :btree
+  end
+
+  create_table "output_schemas", force: :cascade do |t|
+    t.integer  "dataset_file_schema_id"
+    t.integer  "user_id"
+    t.text     "owner_username"
+    t.text     "title"
+    t.text     "description"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.index ["dataset_file_schema_id"], name: "index_output_schemas_on_dataset_file_schema_id", using: :btree
+    t.index ["user_id"], name: "index_output_schemas_on_user_id", using: :btree
   end
 
   create_table "schema_categories", force: :cascade do |t|

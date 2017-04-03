@@ -37,6 +37,10 @@
           <li><%= link_to "Add dataset file schema", main_app.new_dataset_file_schema_path %></li>
           <li><%= link_to "Infer dataset file schema", main_app.new_inferred_dataset_file_schema_path %></li>
           <li role="separator" class="divider"></li>
+          <% if admin_user %>
+            <li><%= link_to "Schema Categories", main_app.schema_categories_path %></li>
+          <% end %>
+          <li role="separator" class="divider"></li>
           <li><%= link_to "List my dataset file schemas", main_app.dataset_file_schemas_path %></li>
         </ul>
       </li>
@@ -45,7 +49,7 @@
     <% end %>
     <li><%= link_to "API", '/api' %></li>
     <% if admin_user %>
-      <li><%= link_to "Schema Categories", main_app.schema_categories_path %></li>
+      <li><%= link_to "Output Schemas", main_app.output_schemas_path %></li>
       <li><%= link_to "Users", main_app.users_path %></li>
     <% end %>
   </ul>

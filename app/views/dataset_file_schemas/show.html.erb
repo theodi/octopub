@@ -4,6 +4,9 @@
     <% unless @dataset_file_schema.dataset_files.exists? || @dataset_file_schema.csv_on_the_web_schema %>
       <%= link_to 'Edit', edit_dataset_file_schema_path(@dataset_file_schema), class: 'btn btn-primary' %>
     <% end %>
+    <% if admin_user %>
+      <%= link_to 'Create Output Schema from this schema', new_dataset_file_schema_output_schema_path(@dataset_file_schema), class: 'btn btn-success' %>
+    <% end %>
   </span>
 </h1>
 <% if @dataset_file_schema.schema_categories.exists? %>
