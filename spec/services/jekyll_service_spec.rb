@@ -307,9 +307,16 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
       expect(first_resource['schema']['name']).to eq('schema-name')
       expect(first_resource['schema']['description']).to eq('schema-name-description')
 
-      expect(first_resource['schema']['fields']).to eq([
+      compare_schemas_after_processing(first_resource['schema']['fields'], example_hash)
+    end
+  end
+
+  def example_hash
+    Array.new([
         {
           "name" => "Username",
+          "type"=>"string",
+          "format"=>"default",
           "constraints" => {
             "required"=>true,
             "unique"=>true,
@@ -320,6 +327,8 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
         },
         {
           "name" => "Age",
+          "type"=>"string",
+           "format"=>"default",
           "constraints" => {
             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
             "minimum"=>"13",
@@ -328,6 +337,8 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
         },
         {
            "name"=>"Height",
+           "type"=>"string",
+           "format"=>"default",
            "constraints" => {
              "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
              "minimum"=>"20"
@@ -335,16 +346,19 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
         },
         {
           "name"=>"Weight",
+          "type"=>"string",
+          "format"=>"default",
           "constraints" => {
             "type"=>"http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-           "maximum"=>"500"
+            "maximum"=>"500"
           }
         },
         {
-           "name"=>"Password"
+          "name"=>"Password",
+          "type"=>"string",
+          "format"=>"default",
         }
       ])
-    end
   end
 
   context 'csv-on-the-web schema' do

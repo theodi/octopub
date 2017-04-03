@@ -269,7 +269,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       stubbed_schema_url = url_with_stubbed_get_for(schema_path)
       @dataset = build(:dataset)
-      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url, csv_on_the_web_schema: true)
     end
 
     it 'validates with good data' do
@@ -314,7 +314,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       # The hats.csv fixture file IS DUFF and therefore should fail validation
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
       stubbed_schema_url = url_with_stubbed_get_for(schema_path)
-      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url, csv_on_the_web_schema: true)
       @dataset = build(:dataset)
     end
 

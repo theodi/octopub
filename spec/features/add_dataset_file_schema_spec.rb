@@ -30,9 +30,12 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         click_on 'Submit'
       end
 
+      dataset_file_schema = DatasetFileSchema.first
+
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
       expect(DatasetFileSchema.count).to be before_datasets + 1
-      expect(DatasetFileSchema.last.name).to eq "#{common_name}-schema-name"
+      expect(dataset_file_schema.name).to eq "#{common_name}-schema-name"
+      expect(dataset_file_schema.schema_fields).to_not be_empty
     end
 
     scenario "and can add a dataset file schema with a category" do

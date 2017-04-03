@@ -112,7 +112,7 @@ class DatasetFile < ApplicationRecord
       Rails.logger.info "DatasetFile: In check schema"
       if dataset_file_schema
         if dataset_file_schema.is_schema_valid?
-          if dataset_file_schema.is_schema_otw?
+          if dataset_file_schema.csv_on_the_web_schema
             validate_schema_cotw
           else
             validate_schema_non_cotw

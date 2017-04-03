@@ -104,6 +104,29 @@ RSpec.configure do |config|
   end
 end
 
+def compare_schemas_after_processing(original, compare_to)
+  sorted_fields = normalise_schema(original)
+  sorted_example_output = normalise_schema(compare_to)
+  sorted_fields.each_with_index do |field, index|
+    if field['constraints']
+      field['constraints'] = field['constraints'].sort.to_h
+      sorted_example_output[index]['constraints'] = sorted_example_output[index]['constraints'].sort.to_h
+      expect(field['constraints']).to eq (sorted_example_output[index]['constraints'])
+    end
+  end
+  expect(sorted_fields).to eq sorted_example_output
+end
+
+def normalise_schema(schema)
+  normalised = schema
+  if schema.instance_of?(Hash) && schema.key?("fields")
+    normalised = schema['fields']
+  elsif schema.instance_of?(JsonTableSchema::Schema)
+    normalised = schema.fields
+  end
+  normalised.sort_by { |k| k["name"] }
+end
+
 def sign_in(user)
   allow_any_instance_of(ApplicationController).to receive(:session) { {user_id: user.id} }
 end

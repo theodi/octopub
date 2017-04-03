@@ -1,5 +1,12 @@
-<h1 class="page-header">Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
-<% if @dataset_file_schema.schema_categories %>
+<h1 class="page-header">Dataset File Schema
+  <small><%= @dataset_file_schema.name %></small>
+  <span class="pull-right">
+    <% unless @dataset_file_schema.dataset_files.exists? || @dataset_file_schema.csv_on_the_web_schema %>
+      <%= link_to 'Edit', edit_dataset_file_schema_path(@dataset_file_schema), class: 'btn btn-primary' %>
+    <% end %>
+  </span>
+</h1>
+<% if @dataset_file_schema.schema_categories.exists? %>
   <h2>Categories</h2>
   <ul>
     <% @dataset_file_schema.schema_categories.each do |category| %>
@@ -8,67 +15,83 @@
   </ul>
 <% end %>
 
-<h2>Schema</h2>
 <% if @json_table_schema %>
-  <div>
-    <table class="table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Required?</th>
-        <th>Unique?</th>
-        <th>Minimum Length</th>
-        <th>Maximum Length</th>
-        <th>Maximum</th>
-        <th>Minimum</th>
-        <th>Pattern</th>
-        <th>Type</th>
-      </tr>
-      </thead>
-      <% @json_table_schema.fields.each do |field| %>
-      <tr>
-        <td><%= field.name %></td>
-        <td><%= field.type %></td>
-        <td><%= field.constraints["required"] %></td>
-        <td><%= field.constraints["unique"] %></td>
-        <td><%= field.constraints["minLength"] %></td>
-        <td><%= field.constraints["maxLength"] %></td>
-        <td><%= field.constraints["minimum"] %></td>
-        <td><%= field.constraints["maximum"] %></td>
-        <td><%= field.constraints["pattern"] %></td>
-        <td><%= field.constraints["type"] %></td>
-      </tr>
-      <% end %>
-    </table>
-  </div>
-
-  <% if @json_table_schema.foreign_keys.any? %>
-    <h2>Foreign Keys</h2>
+  <% if @dataset_file_schema.csv_on_the_web_schema %>
+    <h2>Schema on the Web</h2>
+  <% else %>
+    <h2>Schema</h2>
     <div>
-      <table class="table">
-      <thead>
-        <tr>
-          <th>Fields</th>
-          <th>Reference</th>
-          <th>Datapackage</th>
-          <th>Resource</th>
-          <th>Fields</th>
-        </tr>
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Required?</th>
+            <th>Unique?</th>
+            <th>Minimum Length</th>
+            <th>Maximum Length</th>
+            <th>Maximum</th>
+            <th>Minimum</th>
+            <th>Pattern</th>
+            <th>Type</th>
+          </tr>
         </thead>
-        <% @json_table_schema.foreign_keys.each do |fk| %>
-        <tr>
-          <td><%= fk["fields"] %></td>
-          <td><%= fk["reference"] %></td>
-          <td><%= fk["reference"]["datapackage"] %></td>
-          <td><%= fk["resource"] %></td>
-          <td><%= fk["fields"] %></td>
-        </tr>
+        <% @dataset_file_schema.schema_fields.each do |field| %>
+          <tbody>
+            <tr>
+              <td><%= field.name %></td>
+              <td><%= field.type %></td>
+              <% if field.schema_constraint %>
+                <td><%= field.schema_constraint.required %></td>
+                <td><%= field.schema_constraint.unique %></td>
+                <td><%= field.schema_constraint.min_length %></td>
+                <td><%= field.schema_constraint.max_length %></td>
+                <td><%= field.schema_constraint.minimum %></td>
+                <td><%= field.schema_constraint.maximum %></td>
+                <td><%= field.schema_constraint.pattern %></td>
+                <td><%= field.schema_constraint.type %></td>
+              <% else %>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              <% end %>
+            </tr>
+          </tbody>
         <% end %>
       </table>
     </div>
-  <% end %>
 
+    <% if @dataset_file_schema.foreign_keys.any? %>
+      <h2>Foreign Keys</h2>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fields</th>
+              <th>Reference</th>
+              <th>Datapackage</th>
+              <th>Resource</th>
+              <th>Fields</th>
+            </tr>
+          </thead>
+          <% @json_table_schema.foreign_keys.each do |fk| %>
+            <tr>
+              <td><%= fk["fields"] %></td>
+              <td><%= fk["reference"] %></td>
+              <td><%= fk["reference"]["datapackage"] %></td>
+              <td><%= fk["resource"] %></td>
+              <td><%= fk["fields"] %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    <% end %>
+  <% end %>
   <div class="panel-body">
     <h3>Raw file</h3>
     <%= markdown_json(@dataset_file_schema.schema) %>
