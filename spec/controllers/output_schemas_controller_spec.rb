@@ -143,19 +143,19 @@ RSpec.describe OutputSchemasController, type: :controller do
   #   end
   # end
 
-  # describe "DELETE #destroy" do
-  #   it "destroys the requested output_schema" do
-  #     output_schema = OutputSchema.create! valid_attributes
-  #     expect {
-  #       delete :destroy, params: {id: output_schema.to_param}, session: valid_session
-  #     }.to change(OutputSchema, :count).by(-1)
-  #   end
+  describe "DELETE #destroy" do
+    it "destroys the requested output_schema" do
+      output_schema = OutputSchema.create! valid_attributes
+      expect {
+        delete :destroy, params: {id: output_schema.to_param}, session: valid_session
+      }.to change(OutputSchema, :count).by(-1)
+    end
 
-  #   it "redirects to the output_schemas list" do
-  #     output_schema = OutputSchema.create! valid_attributes
-  #     delete :destroy, params: {id: output_schema.to_param}, session: valid_session
-  #     expect(response).to redirect_to(output_schemas_url)
-  #   end
-  # end
+    it "redirects to the output_schemas list" do
+      output_schema = OutputSchema.create! valid_attributes
+      delete :destroy, params: {id: output_schema.to_param}, session: valid_session
+      expect(response).to redirect_to(output_schemas_url)
+    end
+  end
 
 end
