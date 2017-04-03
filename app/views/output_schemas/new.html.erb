@@ -8,7 +8,7 @@
   <%= f.text_area :description %>
   <%= f.select :owner_username, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
 
-  <h2>Output Schema Fields</h2>
+  <h2>Output Schema Fields <small>from <%= link_to @dataset_file_schema.name, dataset_file_schema_path(@dataset_file_schema) %></h2>
   <table class="table table-bordered" >
     <thead>
       <tr>
