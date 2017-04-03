@@ -10,4 +10,8 @@ class OutputSchemaField < ApplicationRecord
   def self.friendly_aggregation_types
     aggregation_types.map {|type_name, _type_integer| [FRIENDLY_HASH[type_name.to_sym], type_name]}
   end
+
+  def friendly_aggregation_type
+    FRIENDLY_HASH[aggregation_type.to_sym]
+  end
 end

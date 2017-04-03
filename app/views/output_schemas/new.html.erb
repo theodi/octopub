@@ -16,14 +16,15 @@
         <th class="col-xs-2">Aggregation Type</th>
       </tr>
     </thead>
-    <%= f.fields_for :output_schema_fields do |schema_field_form| %>
-      <tbody>
+    <tbody>
+      <%= f.fields_for :output_schema_fields do |schema_field_form| %>
+        <%= schema_field_form.hidden_field :schema_field_id, value: schema_field_form.object.schema_field.id %>    
         <tr>
           <td><%= schema_field_form.object.schema_field.name %></td>
           <td><%= schema_field_form.select(:aggregation_type, options_for_select(OutputSchemaField.friendly_aggregation_types, schema_field_form.object.aggregation_type), { hide_label: true }, { class: 'form-control' } ) %></td>
         </tr>
-      </tbody>
-    <% end %>
+      <% end %>
+    </tbody>
   </table>
 
   <div class="actions">

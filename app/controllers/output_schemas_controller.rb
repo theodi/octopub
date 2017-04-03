@@ -28,7 +28,6 @@ class OutputSchemasController < ApplicationController
   # POST /output_schemas.json
   def create
     @output_schema = OutputSchema.new(output_schema_params)
-
     respond_to do |format|
       if @output_schema.save
         format.html { redirect_to output_schema_path(@output_schema), notice: 'Output schema was successfully created.' }
@@ -72,6 +71,6 @@ class OutputSchemasController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def output_schema_params
-    params.require(:output_schema).permit(:user_id, :title, :description, :owner_username, :dataset_file_schema_id, output_schema_fields_attributes: [ :aggregation_type] )
+    params.require(:output_schema).permit(:user_id, :title, :description, :owner_username, :dataset_file_schema_id, output_schema_fields_attributes: [ :aggregation_type, :schema_field_id] )
   end
 end

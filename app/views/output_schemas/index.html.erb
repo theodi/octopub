@@ -1,29 +1,34 @@
 <p id="notice"><%= notice %></p>
 <h1>Output Schemas</h1>
 <% if @output_schemas.exists? %>
-  <table>
+
+<div class="row">
+  <table class="table table-bordered">
     <thead>
       <tr>
         <th>Name</th>
         <th>Description</th>
         <th>Input Schema</th>
-        <th colspan="3"></th>
+        <th colspan="2"></th>
       </tr>
     </thead>
 
     <tbody>
       <% @output_schemas.each do |output_schema| %>
         <tr>
-          <td><%= output_schema.title %></td>
-          <td><%= output_schema.Description %></td>
+          <td><%= link_to output_schema.title, output_schema %></td>
+          <td><%= output_schema.description %></td>
           <td><%= link_to output_schema.dataset_file_schema.name, output_schema.dataset_file_schema %></td>
-          <td><%= link_to 'Show', output_schema %></td>
-          <td><%= link_to 'Edit', edit_output_schema_path(output_schema) %></td>
-          <td><%= link_to 'Destroy', output_schema, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td><%= link_to 'Show', output_schema, class: "btn btn-success btn-sm"  %></td>
+          <td><%= link_to 'Destroy', output_schema, method: :delete, data: { confirm: "Are you sure you want to delete this Output Schema?" }, class: "btn btn-danger btn-sm" %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
+</div>
 <% else %>
   <p>There are no output schemas, create one from the <%= link_to 'Dataset File Schemas', dataset_file_schemas_path %> page.</p>
 <% end %>
+<div class="actions">
+  <%= link_to 'New Output Schema - via dataset file schema page', dataset_file_schemas_path, class: "btn btn-primary" %>
+</div>
