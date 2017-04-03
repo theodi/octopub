@@ -68,5 +68,17 @@ describe InferredDatasetFileSchemaCreationService do
       expect(schema['fields'].count).to eq 3
       expect(schema['fields'][0]['name']).to eq 'id'
     end
+
+    it 'from a valid csv file and creates the schema field and constraints' do
+      @schema_service.perform
+
+      dataset_file_schema = DatasetFileSchema.first
+      schema = JSON.parse(dataset_file_schema.schema)
+      expect(schema['fields'].count).to eq 3
+      expect(schema['fields'][0]['name']).to eq 'id'
+
+      expect(dataset_file_schema.schema_fields.count).to eq 3
+      expect(dataset_file_schema.schema_fields.first.name).to eq 'id'
+    end
   end
 end
