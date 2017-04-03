@@ -18,7 +18,7 @@ class DatasetFileSchemaService
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
     @dataset_file_schema.reload
     unless @dataset_file_schema.csv_on_the_web_schema
-      self.class.populate_schema_fields_and_constraints(@dataset_file_schema) 
+      self.class.populate_schema_fields_and_constraints(@dataset_file_schema)
       @dataset_file_schema.update(schema: @dataset_file_schema.to_builder.target!)
     end
     @dataset_file_schema
@@ -28,6 +28,13 @@ class DatasetFileSchemaService
     Rails.logger.info "URL #{dataset_file_schema.url_in_s3}"
     dataset_file_schema.update(schema: load_json_from_s3(dataset_file_schema.url_in_s3))
     dataset_file_schema.update(csv_on_the_web_schema: dataset_file_schema.is_schema_otw?)
+  end
+
+  def self.update_dataset_file_schema(dataset_file_schema)
+    storage_key = FileStorageService.get_storage_key_from_public_url(dataset_file_schema.url_in_s3)
+    dataset_file_schema.update(storage_key: storage_key)
+    update_dataset_file_schema_with_json_schema(dataset_file_schema)
+    populate_schema_fields_and_constraints(dataset_file_schema)
   end
 
   def self.load_json_from_s3(url_in_s3)

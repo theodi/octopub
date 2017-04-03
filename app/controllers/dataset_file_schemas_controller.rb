@@ -24,8 +24,7 @@ class DatasetFileSchemasController < ApplicationController
     process_file
     @dataset_file_schema = DatasetFileSchema.new(create_params)
     if @dataset_file_schema.save
-      Rails.logger.ap create_params
-      update_dataset_file_schema(@dataset_file_schema)
+      DatasetFileSchemaService.update_dataset_file_schema(@dataset_file_schema)
       redirect_to dataset_file_schemas_path
     else
       @s3_direct_post = FileStorageService.presigned_post
@@ -41,10 +40,10 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def update
-    clean_update_params = param_clean(update_params)
+    clean_update_params = strip_empty_parameters(update_params)
 
     if @dataset_file_schema.update(clean_update_params)
-      @schema_fields = @dataset_file_schema.schema_fields
+
       schema = @dataset_file_schema.to_builder.target!
       @dataset_file_schema.update(schema: schema)
       FileStorageService.push_public_object(@dataset_file_schema.storage_key, schema)
@@ -61,29 +60,30 @@ class DatasetFileSchemasController < ApplicationController
 
   private
 
-  def param_clean(dirty_params)
-    dirty_params.delete_if do |k, v|
-      if v.instance_of?(ActionController::Parameters)
-        param_clean(v)
+  def strip_empty_parameters(dirty_params)
+    dirty_params.delete_if do |_key, value|
+      if value.instance_of?(ActionController::Parameters)
+        param_clean(value)
       end
-      v == ""
+      value == ""
     end
   end
 
   def process_file
-    return if params["dataset_file_schema"]["url_in_s3"].nil?
-    if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(params["dataset_file_schema"]["url_in_s3"].class)
-      #TODO could be a file not a URL!
-      uploaded_file = params["dataset_file_schema"]["url_in_s3"]
-      Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
+    file_reference = params["dataset_file_schema"]["url_in_s3"]
+    return if file_reference.nil?
 
-      storage_object = FileStorageService.create_and_upload_public_object(uploaded_file.original_filename, uploaded_file.read)
+    # Check to see whether it's a file rather than a URL
+    if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(file_reference.class)
+
+      Rails.logger.info "file is an Http::UploadedFile"
+      storage_object = FileStorageService.create_and_upload_public_object(file_reference.original_filename, file_reference.read)
 
       params["dataset_file_schema"]["storage_key"] = storage_object.key
       params["dataset_file_schema"]["url_in_s3"] = storage_object.public_url
     else
       Rails.logger.info "file is not an http uploaded file, it's a URL"
-      params["dataset_file_schema"]["storage_key"] = URI(params["dataset_file_schema"]["url_in_s3"]).path.gsub(/^\//, '')
+      params["dataset_file_schema"]["storage_key"] = FileStorageService.get_storage_key_from_public_url(file_reference)
     end
   end
 
