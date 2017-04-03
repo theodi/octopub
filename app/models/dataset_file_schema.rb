@@ -77,10 +77,6 @@ class DatasetFileSchema < ApplicationRecord
     url_in_repo.nil? ? url_in_s3 : url_in_repo
   end
 
-  def creator_name
-    user.name
-  end
-
   def owner_name
     owner_username
   end
@@ -89,7 +85,6 @@ class DatasetFileSchema < ApplicationRecord
     dataset_files.pluck(:dataset_id).uniq.count
   end
 
-  # TODO maybe persist this?
   def is_schema_otw?
     parsed_schema.class == Csvlint::Csvw::TableGroup
   end
@@ -105,13 +100,5 @@ class DatasetFileSchema < ApplicationRecord
 
   def is_valid?
     errors.add :schema, 'is invalid' unless is_schema_valid?
-  end
-
-  def new_is_schema_valid?
-    new_parsed_schema.valid?
-  end
-
-  def new_parsed_schema
-    @new_parsed_schema ||= JsonTableSchema::Schema.new(url)
   end
 end

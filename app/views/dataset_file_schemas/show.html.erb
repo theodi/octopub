@@ -1,8 +1,8 @@
-<h1 class="page-header">Dataset File Schema 
+<h1 class="page-header">Dataset File Schema
   <small><%= @dataset_file_schema.name %></small>
   <span class="pull-right">
-    <% unless @dataset_file_schema.dataset_files.exists? || @dataset_file_schema.is_schema_otw? %>
-      <%= link_to 'Edit', edit_dataset_file_schema_path(@dataset_file_schema), class: 'btn btn-primary' %> 
+    <% unless @dataset_file_schema.dataset_files.exists? || @dataset_file_schema.csv_on_the_web_schema %>
+      <%= link_to 'Edit', edit_dataset_file_schema_path(@dataset_file_schema), class: 'btn btn-primary' %>
     <% end %>
   </span>
 </h1>
@@ -16,7 +16,7 @@
 <% end %>
 
 <% if @json_table_schema %>
-  <% if @dataset_file_schema.is_schema_otw? %>
+  <% if @dataset_file_schema.csv_on_the_web_schema %>
     <h2>Schema on the Web</h2>
   <% else %>
     <h2>Schema</h2>

@@ -52,14 +52,9 @@ describe DatasetFileSchema do
     expect(@dataset_file_schema_with_url_in_repo.user).to eq @user
   end
 
-  it "returns creator's name" do
-    expect(@dataset_file_schema_with_url_in_repo.creator_name).to eq @user.name
-  end
-
   it "returns owner's name if it is not the creator" do
     organisation_name = Faker::Internet.user_name
     dataset_file_schema = build(:dataset_file_schema, user: @user, owner_username: organisation_name)
-    expect(dataset_file_schema.creator_name).to eq @user.name
     expect(dataset_file_schema.owner_username).to eq organisation_name
   end
 
@@ -103,29 +98,6 @@ describe DatasetFileSchema do
 
     it "returns array of errors if invalid" do
       expect(@dataset_file_schema_with_bad_schema_url_in_repo.is_valid?).to eq ['is invalid']
-    end
-
-    it "returns thing if valid" do
-      expect(@dataset_file_schema_with_url_in_repo.is_valid?).to be_nil
-    end
-  end
-
-  context "returns new style validity " do
-    it "as invalid for a bad schema" do
-      expect(@dataset_file_schema_with_bad_schema_url_in_repo.new_is_schema_valid?).to be false
-    end
-
-    it "as invalid for an empty schema" do
-      expect(@dataset_file_schema_with_empty_schema_url_in_repo.new_is_schema_valid?).to be false
-    end
-
-    it "as valid for a good schema" do
-      expect(@dataset_file_schema_with_url_in_repo.new_is_schema_valid?).to be true
-    end
-
-    it "returns array of errors if invalid" do
-      expect(@dataset_file_schema_with_pk_no_fields.new_is_schema_valid?).to be false
-      expect(@dataset_file_schema_with_pk_no_fields.new_parsed_schema.messages.count).to eq 3
     end
 
     it "returns thing if valid" do
