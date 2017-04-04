@@ -84,7 +84,7 @@
     <% @user.dataset_file_schemas.each do |dataset_file_schema| %>
       <tr>
         <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
-        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) %></td>
+        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) if dataset_file_schema.created_at %></td>
       </tr>
     <% end %>
     </tbody>
