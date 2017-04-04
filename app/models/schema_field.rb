@@ -7,7 +7,7 @@
 #  name                   :text             not null
 #  description            :text
 #  title                  :text
-#  type                   :integer          default(0), not null
+#  type                   :integer          default("any"), not null
 #  format                 :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
