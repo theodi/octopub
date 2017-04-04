@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: output_schema_fields
+#
+#  id               :integer          not null, primary key
+#  output_schema_id :integer
+#  schema_field_id  :integer
+#  aggregation_type :integer          default("ignoring"), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 class OutputSchemaField < ApplicationRecord
   belongs_to :output_schema
   belongs_to :schema_field
