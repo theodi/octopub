@@ -1,4 +1,3 @@
-<p id="notice"><%= notice %></p>
 <h1>Output Schemas</h1>
 <% if @output_schemas.exists? %>
 
@@ -9,6 +8,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Input Schema</th>
+        <th>Created At</th>
         <th colspan="2"></th>
       </tr>
     </thead>
@@ -19,6 +19,7 @@
           <td><%= link_to output_schema.title, output_schema %></td>
           <td><%= output_schema.description %></td>
           <td><%= link_to output_schema.dataset_file_schema.name, output_schema.dataset_file_schema %></td>
+          <td><%= output_schema.created_at.to_formatted_s(:short) if output_schema.created_at %></td>
           <td><%= link_to 'Show', output_schema, class: "btn btn-success btn-sm"  %></td>
           <td><%= link_to 'Destroy', output_schema, method: :delete, data: { confirm: "Are you sure you want to delete this Output Schema?" }, class: "btn btn-danger btn-sm" %></td>
         </tr>
