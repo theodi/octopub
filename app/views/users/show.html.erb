@@ -43,10 +43,12 @@
       <tr>
         <td><%= dataset.name %></td>
         <td>
-          <% if dataset.restricted %>
-            <i class='fa fa-lock fa-lg' title="private"></i>
+          <% if dataset.github_private? %>
+            <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
+          <% elsif dataset.github_public? %>
+            <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
           <% else %>
-            <i class='fa fa-globe fa-lg' title="public"></i>
+            <i class='fa fa-lock fa-lg' title="private"></i>
           <% end %>
         </td>
         <td>
