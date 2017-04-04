@@ -1,8 +1,7 @@
-<p id="notice"><%= notice %></p>
-
 <h1>Output Schema: <small><%= @output_schema.title %></small></h1>
 <div>
-<p>For input schema: <%= link_to @output_schema.dataset_file_schema.name, @output_schema.dataset_file_schema %></p>
+  <p>For input schema: <%= link_to @output_schema.dataset_file_schema.name, @output_schema.dataset_file_schema %></p>
+  <p><%= @output_schema.description %></p>
 </div>
 <div>
   <table class="table table-bordered" >
@@ -23,5 +22,4 @@
   </table>
 </div>
 <div class="actions">
-
 </div>

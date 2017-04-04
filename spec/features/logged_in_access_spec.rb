@@ -23,7 +23,7 @@ feature "Logged in access to pages", type: :feature do
     end
 
     scenario "logged in publishers can view their dataset file schemas (or see there are none)" do
-      click_link "List my dataset file schemas"
+      click_link 'Dataset file schemas'
       expect(page).to have_content "You currently have no dataset file schemas"
     end
 

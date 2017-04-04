@@ -15,26 +15,35 @@ More information is in the [announcement blog post](http://theodi.org/blog/remov
 
 Live instance is running at [http://octopub.io/](http://octopub.io/)
 
-## Development
+## Required environment variables
 
-Checkout the repository and run ```bundle``` in the checked out directory.
-The application uses sidekiq for managing the background proccessing of data uploads. To use this functionality, install ```redis``` either by following the [instructions](https://redis.io/topics/quickstart) or if on macOS and using homebrew, run ```brew install redis``` and start a redis instance running with ```redis-server```.
-
-
-## Tests
-
-Octopub uses the ```rspec``` test framework and the test suite can be run with the usual ```bundle exec rspec```.
-It requires the presence of a ```.env``` with at least the following in it:
+Octopub interfaces with a number of other services, including GitHub, AWS, Pusher etc so your .env file will require the following for dev, test and production. Further details on setting this up are below.
 
 ```
-GITHUB_USER=bert
+# Github Client ID
+GITHUB_KEY=
+# Github Client Secret
+GITHUB_SECRET=
+GITHUB_USER=
+
+S3_BUCKET=
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+
+PUSHER_APP_ID=
+PUSHER_KEY=
+PUSHER_SECRET=
+PUSHER_CLUSTER=
+
+BASE_URI=
+ODC_API_KEY=
+ODC_USERNAME=
 ```
 
-## Running the full application locally
+## Setting up the required environment variables
 
-Pre-requisites, GitHub account, AWS account, Pusher Account, Open Data Certificate account - these instructions assume you have these in place already.
-
-#### Github setup
+### Github setup
 
 Create a github application
 
@@ -51,7 +60,7 @@ GITHUB_SECRET=<whatever your client secret is>
 GITHUB_TOKEN=???
 ```
 
-#### AWS setup
+### AWS setup
 
 Create an AWS S3 bucket and grant it's permissions accordingly
 
@@ -89,8 +98,7 @@ AWS_SECRET_ACCESS_KEY=<YOURNEWUSERSECRET>
 S3_BUCKET=<YOURNEWS3BUCKETNAME>
 ```
 
-#### Pusher setup
-
+### Pusher setup
 
 1. Log in to https://pusher.com
 2. Create a new application and call it something sensible
@@ -115,7 +123,25 @@ ODC_API_KEY=<API Key>
 ODC_USERNAME=<your username which is your email address you used when signing up>
 ```
 
-### Now to test
+## Development
+
+Ensure you have ruby & bundler set up (currently using Ruby 2.4)
+
+Checkout the repository and run ```bundle``` in the checked out directory.
+
+The application uses sidekiq for managing the background proccessing of data uploads. To use this functionality, install ```redis``` either by following the [instructions](https://redis.io/topics/quickstart) or if on macOS and using homebrew, run ```brew install redis``` and start a redis instance running with ```redis-server```.
+
+## Tests
+
+Octopub uses the ```rspec``` test framework and the test suite can be run with the usual ```bundle exec rspec```.
+It requires the presence of a ```.env``` - see earlier section for details - you can use your development variables, the tests use VCR or mocking to allow the tests to be run offline without interfacing with the services.
+
+
+## Running the full application locally
+
+Pre-requisites, GitHub account, AWS account, Pusher Account, Open Data Certificate account - these instructions assume you have these in place already.
+
+## Now to test the application
 
 * Make sure redis is running ```redis-server```
 * Make sure Sidekiq is running ```bundle exec sidekiq``` in the application directory
@@ -135,7 +161,14 @@ Sidekiq::Queue.new.size
 Sidekiq::Queue.new.first
 ```
 
-
 ## Deployment
 
 A commit to master will trigger a TravisCI run, which, if successful, will automatically deploy to Heroku.
+
+# Gotchas
+
+## Caching
+
+The GitHub organisations are cached for the logged in user, they can be cleared from a console with ```Rails.cache.clear```
+
+

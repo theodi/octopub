@@ -43,10 +43,12 @@
       <tr>
         <td><%= dataset.name %></td>
         <td>
-          <% if dataset.restricted %>
-            <i class='fa fa-lock fa-lg' title="private"></i>
+          <% if dataset.github_private? %>
+            <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
+          <% elsif dataset.github_public? %>
+            <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
           <% else %>
-            <i class='fa fa-globe fa-lg' title="public"></i>
+            <i class='fa fa-lock fa-lg' title="private"></i>
           <% end %>
         </td>
         <td>
@@ -84,7 +86,7 @@
     <% @user.dataset_file_schemas.each do |dataset_file_schema| %>
       <tr>
         <td><%= link_to dataset_file_schema.name, dataset_file_schema_path(dataset_file_schema) %></td>
-        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) %></td>
+        <td><%= dataset_file_schema.created_at.to_formatted_s(:long_ordinal) if dataset_file_schema.created_at %></td>
       </tr>
     <% end %>
     </tbody>
