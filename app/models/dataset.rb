@@ -40,26 +40,24 @@ class Dataset < ApplicationRecord
   validates_associated :dataset_files
 
   def report_status(channel_id, action = :create)
-    Rails.logger.info "Dataset: in report_status #{channel_id}"
-    Rails.logger.info "Dataset: file count: #{dataset_files.count}"
+    Rails.logger.info "Dataset: in report_status #{channel_id} with #{dataset_files.count} files"
+
     if valid?
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
-      if publishing_method == 'local_private'
-        send_success_email
-      end
 
-      unless publishing_method == 'local_private' || action == :update
+      if local_private?
+        send_success_email
+      elsif action == :create
         # You only want to do this if it's private or public github
-        CreateRepository.perform_async(id) unless publishing_method == 'local_private'
+        CreateRepository.perform_async(id)
       end
     else
-      Rails.logger.info "Dataset: In valid, so push to pusher"
+      Rails.logger.info "Dataset: Invalid, so push to pusher"
       messages = errors.full_messages
       dataset_files.each do |file|
         unless file.valid?
-          Rails.logger.info "Dataset: Check file is valid"
           (file.errors.messages[:file] || []).each do |message|
             messages << "Your file '#{file.title}' #{message}"
           end
@@ -129,9 +127,13 @@ class Dataset < ApplicationRecord
       Rails.logger.info "in update_dataset_in_github"
       return if local_private?
 
-      jekyll_service.update_dataset_in_github
-      make_repo_public_if_appropriate
-      publish_public_views
+      if publishing_method_was == 'local_private' && github_public?
+        CreateRepository.perform_async(id)
+      else
+        jekyll_service.update_dataset_in_github
+        make_repo_public_if_appropriate
+        publish_public_views
+      end
     end
 
     def make_repo_public_if_appropriate
