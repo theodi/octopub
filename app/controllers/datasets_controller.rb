@@ -76,6 +76,7 @@ class DatasetsController < ApplicationController
   def edit
     render_404 and return if @dataset.nil?
     @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
+    @default_schema = @dataset.dataset_files.first.dataset_file_schema_id
   end
 
   def show
