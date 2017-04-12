@@ -4,7 +4,7 @@ module ApplicationHelper
     if dataset_file.new_record?
       default
     else
-      dataset_file.dataset_file_schema ? dataset_file.dataset_file_schema.id : 0
+      dataset_file.dataset_file_schema ? dataset_file.dataset_file_schema.id : default
     end
   end
 
