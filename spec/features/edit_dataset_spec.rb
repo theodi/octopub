@@ -18,14 +18,15 @@ feature "Edit dataset page", type: :feature do
       UpdateDataset.new.perform(a,b,c,d,e)
     end
     good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
-    create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
+    @dataset_file_schema = create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
     @dataset = create(:dataset, name: dataset_name, user: @user, license: "CC-BY-4.0", description: dataset_description)
     file = create(:dataset_file, dataset_file_schema: @dataset_file_schema,
                                   filename: "example.csv",
                                   title: dataset_file_name,
                                   description: dataset_file_description,
                                   file: Rack::Test::UploadedFile.new(data_file, "text/csv"),
-                                  dataset: @dataset)
+                                  dataset: @dataset,
+                                  storage_key: "valid-schema.csv")
     allow_any_instance_of(Dataset).to receive(:owner_avatar) {
       "http://example.org/avatar.png"
     }
