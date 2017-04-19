@@ -85,6 +85,10 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
+  def deprecated_resource
+    url_deprecated_at.present?
+  end
+
   def github_url
     "http://github.com/#{full_name}"
   end

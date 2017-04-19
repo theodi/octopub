@@ -20,14 +20,16 @@ namespace :links do
       if eval_response_code?(dataset.url)
         puts "#{dataset.name} has URL live at #{dataset.url}"
         Rails.logger.info "#{dataset.name} live at #{dataset.url}"
-        dataset.update_column(:url_found, true)
-        puts dataset.url_found
+        # dataset.update_column(:url_found, true)
+        # puts dataset.url_found
         # dataset.url_found = true
       else
         puts "#{dataset.name} lacks URL : #{dataset.url}"
         Rails.logger.warn "#{dataset.name} no longer has a live URL : #{dataset.url}"
-        dataset.update_column(:url_found, false)
-        puts dataset.url_found
+        dataset.update_column(:url_deprecated_at, DateTime.now())
+        # binding.pry
+        # dataset.deprecated_resource
+        # puts dataset.url_found
         # dataset.url_found = false
       end
     end

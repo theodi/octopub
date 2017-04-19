@@ -24,7 +24,7 @@
     <% end %>
   </td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
-  <td> <%= 'absent' if dataset.url_found === false %> </td> <!--for use with URL visible-->
+  <td> <%= "dataset dead since #{dataset.url_deprecated_at}" if dataset.deprecated_resource === true %> </td> <!--for use with URL visible-->
   <% if @dashboard %>
     <td><%= dataset.created_at.to_formatted_s(:short) %></td>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
