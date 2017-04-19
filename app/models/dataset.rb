@@ -22,6 +22,7 @@
 #  certificate_url   :string
 #  job_id            :string
 #  publishing_method :integer          default("github_public"), not null
+##TODO does above have to be updated to reflect changes made by migrations?
 #
 
 class Dataset < ApplicationRecord

@@ -15,7 +15,7 @@
     </td>
   <% end %>
   <td>
-    <% if dataset.github_public? %>
+    <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
       <%= link_to dataset.name, dataset.gh_pages_url %>
     <% elsif dataset.github_private? %>
       <%= link_to dataset.name, dataset.github_url %>
