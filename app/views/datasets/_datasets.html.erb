@@ -18,9 +18,11 @@
         <th></th>
         <th></th>
       <% end %>
+      <th data-sortable="true">Resource Status</th>
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>
+    <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
   </table>
 </div>
 
