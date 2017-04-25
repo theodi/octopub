@@ -1,6 +1,6 @@
 namespace :links do
 
-  def eval_response_code?(url_string)
+  def eval_response_code?(url_string) #TODO private method
     url = URI.parse(url_string)
     req = Net::HTTP.new(url.host, url.port)
     req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
@@ -9,8 +9,8 @@ namespace :links do
   end
 
   desc "flag datasets that have broken links"
-  task broken: :environment do
-    Dataset.all.each do |dataset|
+  task broken: :environment do # TODO logic into dataset model as new method
+    Dataset.all.each do |dataset| # TODO new method call here
       # check if dataset is live
       if dataset.url.nil?
         puts "#{dataset.name} lacks URL: #{dataset.url}"
