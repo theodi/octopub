@@ -15,16 +15,22 @@
     </td>
   <% end %>
   <td>
-    <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
-      <%= link_to dataset.name, dataset.gh_pages_url %>
-    <% elsif dataset.github_private? %>
-      <%= link_to dataset.name, dataset.github_url %>
-    <% elsif dataset.local_private? %>
-      <%= link_to dataset.name, files_path(dataset) %>
+    <% if dataset.deprecated_resource === true %>
+
+        <%= image_tag("warning_favicon.ico", data: { title: 'dead resource', alt: 'dead data' })%>
+        <%= link_to dataset.name, dataset.gh_pages_url %>
+    <% else %>
+      <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
+        <%= link_to dataset.name, dataset.gh_pages_url %>
+      <% elsif dataset.github_private? %>
+        <%= link_to dataset.name, dataset.github_url %>
+      <% elsif dataset.local_private? %>
+        <%= link_to dataset.name, files_path(dataset) %>
+      <% end %>
     <% end %>
   </td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
-  <td> <%= "dataset dead since #{dataset.url_deprecated_at}" if dataset.deprecated_resource === true %> </td> <!--for use with URL visible-->
+  <td> <%= "dataset dead since #{dataset.url_deprecated_at}" if dataset.deprecated_resource === true %></td> <!--for use with URL visible-->
   <% if @dashboard %>
     <td><%= dataset.created_at.to_formatted_s(:short) %></td>
     <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
