@@ -3,6 +3,5 @@
  */
 "use strict";
 $(document).ready(function(){
-    console.log("LOADED FILE!!!")
     $('[data-toggle="tooltip"]').tooltip();
 });
