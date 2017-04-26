@@ -5,19 +5,20 @@
   </td>
   <% if @dashboard %>
     <td class="private">
-      <% if dataset.github_private? %>
+      <% if (dataset.github_private? && dataset.deprecated_resource === false) %>
         <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
-      <% elsif dataset.github_public? %>
+      <% elsif (dataset.github_public? && dataset.deprecated_resource === false) %>
         <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
-      <% else %>
+      <% elsif dataset.deprecated_resource === false %>
         <i class='fa fa-lock fa-lg' title="private"></i>
+      <% elsif dataset.deprecated_resource === true %>
+
       <% end %>
     </td>
   <% end %>
   <td>
     <% if dataset.deprecated_resource === true %>
-        <%= dataset.name %>
-        <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="resource inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
+        <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="<%= dataset.name %> inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
     <% else %>
       <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
         <%= link_to dataset.name, dataset.gh_pages_url %>
