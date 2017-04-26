@@ -5,11 +5,11 @@
   </td>
   <% if @dashboard %>
     <td class="private">
-      <% if (dataset.github_private? && dataset.deprecated_resource === false) %>
+      <% if (dataset.github_private? && dataset.deprecated_resource.eql?(false)) %>
         <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
-      <% elsif (dataset.github_public? && dataset.deprecated_resource === false) %>
+      <% elsif (dataset.github_public? && dataset.deprecated_resource.eql?(false)) %>
         <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
-      <% elsif dataset.deprecated_resource === false %>
+      <% elsif dataset.deprecated_resource.eql?(false) %>
         <i class='fa fa-lock fa-lg' title="private"></i>
       <% elsif dataset.deprecated_resource === true %>
 
@@ -17,10 +17,10 @@
     </td>
   <% end %>
   <td>
-    <% if dataset.deprecated_resource === true %>
+    <% if dataset.deprecated_resource.eql?(true) %>
         <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="<%= dataset.name %> inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
     <% else %>
-      <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
+      <% if dataset.github_public? %>
         <%= link_to dataset.name, dataset.gh_pages_url %>
       <% elsif dataset.github_private? %>
         <%= link_to dataset.name, dataset.github_url %>
@@ -31,7 +31,7 @@
   </td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
   <% if @dashboard %>
-    <td><%= if dataset.deprecated_resource === true
+    <td><%= if dataset.deprecated_resource.eql?(true)
               dataset.url_deprecated_at.to_formatted_s(:short)
             end%></td>
     <td><%= dataset.created_at.to_formatted_s(:short) %></td>
