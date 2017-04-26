@@ -16,8 +16,7 @@
   <% end %>
   <td>
     <% if dataset.deprecated_resource === true %>
-
-        <%= image_tag("warning_favicon.ico", data: { title: 'dead resource', alt: 'dead data' })%>
+        <i class="tooltips fa fa-exclamation-triangle" aria-hidden="true"><span class="tooltiptexts"><%= "dataset dead since #{dataset.url_deprecated_at}"%></span></i>
         <%= link_to dataset.name, dataset.gh_pages_url %>
     <% else %>
       <% if dataset.github_public? #TODO does it make sense to include live_url evaluation here rather than as additional column%>
