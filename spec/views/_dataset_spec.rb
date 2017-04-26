@@ -33,6 +33,18 @@ describe 'datasets/_dataset.html.erb' do
     expect(page.css('tr')[0].css('td')[2].inner_text).to match(/Yes/)
   end
 
+  def expect_columns(page)
+    expect(page.css('tr')[0].css('td').count).to eq(8)
+  end
+
+  it 'displays deprecation date when in the dashboard' do
+    @dashboard = true
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+    page = Nokogiri::HTML(rendered)
+    expect_columns(page)
+    expect(DateTime.parse(page.css('tr')[0].css('td')[5].inner_text).instance_of?(DateTime))
+  end
+
   it 'does not display the edit link when path is not the dashboard' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
@@ -41,17 +53,13 @@ describe 'datasets/_dataset.html.erb' do
     expect(rendered).to_not match /Edit/
   end
 
-  def expect_columns(page)
-    expect(page.css('tr')[0].css('td').count).to eq(7)
-  end
-
   it 'displays the edit link when in the dashboard' do
     @dashboard = true
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
-    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Delete/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[7].inner_text).to match(/Delete/)
   end
 
   it 'displays access icon in the dashboard' do
