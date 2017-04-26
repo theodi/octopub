@@ -127,6 +127,33 @@ class Dataset < ApplicationRecord
     SendTweetService.new(self).perform
   end
 
+  def self.check_urls
+    Dataset.all.each do |dataset| # TODO new method call here
+      # check if dataset is live
+      if dataset.url.nil?
+        puts "#{dataset.name} lacks URL: #{dataset.url}"
+        Rails.logger.warn "#{dataset.name} lacks URL"
+      end
+
+      if eval_response_code?(dataset.url)
+        puts "#{dataset.name} has URL live at #{dataset.url}"
+        Rails.logger.info "#{dataset.name} live at #{dataset.url}"
+      else
+        puts "#{dataset.name} lacks URL : #{dataset.url}"
+        Rails.logger.warn "#{dataset.name} no longer has a live URL : #{dataset.url}"
+        dataset.update_column(:url_deprecated_at, DateTime.now())
+      end
+    end
+  end
+
+  def self.eval_response_code?(url_string) #TODO private method
+    url = URI.parse(url_string)
+    req = Net::HTTP.new(url.host, url.port)
+    req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
+    res = req.request_head(url.path)
+    res.code.to_i == 200
+  end
+
   private
 
     # This is a callback
