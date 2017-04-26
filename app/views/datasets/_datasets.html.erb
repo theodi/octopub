@@ -14,11 +14,13 @@
       <th data-sortable="true">Name</th>
       <th data-sortable="true">Schemas?</th>
       <% if @dashboard %>
+          <th data-sortable="true">Deprecated On</th>
+      <% end %>
+      <% if @dashboard %>
         <th data-sortable="true">Created On</th>
         <th></th>
         <th></th>
       <% end %>
-      <th data-sortable="true">Resource Status</th>
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>
