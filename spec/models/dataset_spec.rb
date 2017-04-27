@@ -148,6 +148,39 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  context "tests the robustness of the url evaluate response code method" do
+    {
+      'www.deadurl.com' => false,
+      'http://www.deadurl.com' => false,
+      'www.deadurl.com/example.csv' => false,
+      'http://www.deadurl.com/example.csv' => true
+    }.each_pair do |url, result|
+
+      it "should parse #{url} correctly in eval_response_code" do
+        stub_request(:any, url)
+        expect(Dataset.eval_response_code?(url)).to eq result
+      end
+    end
+  end
+
+  it "adds a deprecated date value to datasets when URL does not return 200" do
+    stub_request(:any, "www.deadurl.com/example.csv").
+        to_return(status: [404, "Resource Unavailable"])
+    deprecated_dataset = create(:dataset, user: @user)
+    deprecated_dataset.update_column(:url, "http://www.deadurl.com/example.csv")
+    Dataset.check_urls
+    expect(Dataset.find(deprecated_dataset.id).deprecated_resource).to be true
+  end
+
+  it "leaves deprecated date field nil when URL returns 200" do
+    stub_request(:any, "www.liveurl.com/example.csv").
+        to_return(status: [200, "Resource Available"])
+    dataset = create(:dataset, user: @user)
+    dataset.update_column(:url, "http://www.liveurl.com/example.csv")
+    Dataset.check_urls
+    expect(Dataset.find(dataset.id).deprecated_resource).to be false
+  end
+
   it "sets the user's avatar" do
     dataset = create(:dataset, user: @user)
     expect(@user).to receive(:avatar) { 'http://example.com/avatar.png' }
