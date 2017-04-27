@@ -163,18 +163,22 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     end
   end
 
-  it "only adds a deprecated date value to datasets without an accessible URL" do
-    stub_request(:any, "www.liveurl.com/example.csv").
-        to_return(status: [200, "Resource Available"])
+  it "adds a deprecated date value to datasets when URL does not return 200" do
     stub_request(:any, "www.deadurl.com/example.csv").
         to_return(status: [404, "Resource Unavailable"])
-    dataset = create(:dataset, user: @user)
-    dataset.update_column(:url, "http://www.liveurl.com/example.csv")
     deprecated_dataset = create(:dataset, user: @user)
     deprecated_dataset.update_column(:url, "http://www.deadurl.com/example.csv")
     Dataset.check_urls
-    expect(Dataset.find(dataset.id).deprecated_resource).to be false
     expect(Dataset.find(deprecated_dataset.id).deprecated_resource).to be true
+  end
+
+  it "leaves deprecated date field nil when URL returns 200" do
+    stub_request(:any, "www.liveurl.com/example.csv").
+        to_return(status: [200, "Resource Available"])
+    dataset = create(:dataset, user: @user)
+    dataset.update_column(:url, "http://www.liveurl.com/example.csv")
+    Dataset.check_urls
+    expect(Dataset.find(dataset.id).deprecated_resource).to be false
   end
 
   it "sets the user's avatar" do
