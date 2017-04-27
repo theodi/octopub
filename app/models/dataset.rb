@@ -129,12 +129,12 @@ class Dataset < ApplicationRecord
   end
 
   def self.check_urls
-    Dataset.all.each do |dataset| # TODO new method call here
-      # check if dataset is live
-      if dataset.url.nil?
+    # check if dataset URL is live
+    Dataset.all.each do |dataset|
+      if dataset.url.nil? #dataset URLs can be nil without indicating dead resource,
         puts "#{dataset.name} lacks URL: #{dataset.url}"
         Rails.logger.warn "#{dataset.name} lacks URL"
-      end
+      end # TODO should this be in eval_response_code?
 
       if eval_response_code?(dataset.url)
         puts "#{dataset.name} has URL live at #{dataset.url}"
@@ -147,13 +147,21 @@ class Dataset < ApplicationRecord
     end
   end
 
-  def self.eval_response_code?(url_string) #TODO private method
-    url = URI.parse(url_string)
-    req = Net::HTTP.new(url.host, url.port)
-    req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
-    res = req.request_head(url.path)
-    res.code.to_i == 200
-
+  def self.eval_response_code?(url_string)
+    begin
+      url = URI.parse(url_string)
+      req = Net::HTTP.new(url.host, url.port)
+      req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
+      res = req.request_head(url.path)
+      res.code.to_i == 200
+    rescue URI::InvalidURIError, Addressable::URI::InvalidURIError => e
+      puts "cannot parse via Addressable #{e.message}"
+      false
+    rescue ArgumentError => e
+      puts "Argument Error for that address #{e.message}"
+      false
+    end
+    # is this the better way to do this method? https://github.com/bblimke/webmock#response-with-custom-status-message
   end
 
   private
