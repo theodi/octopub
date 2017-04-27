@@ -148,6 +148,22 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect{ Dataset.find(dataset.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  context "tests the robustness of the url evaluate response code method" do
+    {
+      'www.deadurl.com': false,
+      'http://www.deadurl.com': false,
+      'www.deadurl.com/example.csv': false,
+      'http://www.deadurl.com/example.csv': true
+    }.each_pair do |url, result|
+
+      it "should parse #{url} correctly in eval_response_code" do
+        url = url.to_s # because hash registers as symbols
+        stub_request(:any, url)
+        expect(Dataset.eval_response_code?(url)).to eq result
+      end
+    end
+  end
+
   it "only adds a deprecated date value to datasets without an accessible URL" do
     stub_request(:any, "www.liveurl.com/example.csv").
         to_return(status: [200, "Resource Available"])
