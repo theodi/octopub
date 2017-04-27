@@ -115,6 +115,7 @@ group :test do
   gem 'coveralls', '~> 0.8.20'
   gem 'vcr'
   gem 'webmock'
+  gem 'timecop'
   gem 'foreman'
   # Rails 5 has pulled out 'assigns' - this puts it back
   gem 'rails-controller-testing'

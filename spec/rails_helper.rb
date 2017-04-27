@@ -14,6 +14,7 @@ require 'omniauth'
 
 require 'webmock/rspec'
 require 'sidekiq/testing'
+require 'timecop'
 
 require 'features/user_and_organisations'
 

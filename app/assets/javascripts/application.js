@@ -22,3 +22,4 @@
 //= require pusher_setup
 //= require file_upload
 //= require dashboard
+//= require tooltips
