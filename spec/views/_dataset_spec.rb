@@ -37,6 +37,15 @@ describe 'datasets/_dataset.html.erb' do
     expect(page.css('tr')[0].css('td').count).to eq(8)
   end
 
+  it 'displays warning icon for URL inaccessible dataset' do
+    deprecated_date = DateTime.now
+    @dataset.update_column(:url, "http://www.deadurl.com/example.csv")
+    @dataset.update_column(:url_deprecated_at, deprecated_date)
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+    page = Nokogiri::HTML(rendered)
+    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-exclamation-triangle');
+  end
+
   it 'displays deprecation date when in the dashboard' do
     @dashboard = true
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
