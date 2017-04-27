@@ -37,23 +37,6 @@ describe 'datasets/_dataset.html.erb' do
     expect(page.css('tr')[0].css('td').count).to eq(8)
   end
 
-  it 'displays warning icon for URL inaccessible dataset' do
-    deprecated_date = DateTime.now
-    @dataset.update_column(:url, "http://www.deadurl.com/example.csv")
-    @dataset.update_column(:url_deprecated_at, deprecated_date)
-    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
-    page = Nokogiri::HTML(rendered)
-    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-exclamation-triangle');
-  end
-
-  it 'displays deprecation date when in the dashboard' do
-    @dashboard = true
-    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
-    page = Nokogiri::HTML(rendered)
-    expect_columns(page)
-    expect(DateTime.parse(page.css('tr')[0].css('td')[5].inner_text).instance_of?(DateTime))
-  end
-
   it 'does not display the edit link when path is not the dashboard' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
@@ -91,4 +74,26 @@ describe 'datasets/_dataset.html.erb' do
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-lock');
     expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="private"]');
   end
+
+  context 'deprecated dataset URLs' do
+
+    it 'displays warning icon for URL inaccessible dataset' do
+      deprecated_date = DateTime.now
+      @dataset.update_column(:url, "http://www.deadurl.com/example.csv")
+      @dataset.update_column(:url_deprecated_at, deprecated_date)
+      render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+      page = Nokogiri::HTML(rendered)
+      expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-exclamation-triangle');
+    end
+
+    it 'displays deprecation date when in the dashboard' do
+      @dashboard = true
+      render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+      page = Nokogiri::HTML(rendered)
+      expect_columns(page)
+      expect(DateTime.parse(page.css('tr')[0].css('td')[5].inner_text).instance_of?(DateTime))
+    end
+
+  end
+
 end
