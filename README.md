@@ -17,6 +17,8 @@ More information is in the [announcement blog post](http://theodi.org/blog/remov
 
 The live instance of Octopub is running at [http://octopub.io/](http://octopub.io/)
 
+Follow the [public feature roadmap for Octopub](https://trello.com/b/2xc7Q0kd/labs-public-toolbox-roadmap?menu=filter&filter=label:Octopub)
+
 ## Development
 
 ### Requirements
