@@ -86,9 +86,6 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
-  def deprecated_resource
-    url_deprecated_at.present?
-  end
 
   def github_url
     "http://github.com/#{full_name}"
@@ -127,6 +124,10 @@ class Dataset < ApplicationRecord
     SendTweetService.new(self).perform
   end
 
+  def deprecated_resource
+    url_deprecated_at.present?
+  end
+
   def self.check_urls
     Dataset.all.each do |dataset| # TODO new method call here
       # check if dataset is live
@@ -152,6 +153,7 @@ class Dataset < ApplicationRecord
     req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
     res = req.request_head(url.path)
     res.code.to_i == 200
+
   end
 
   private
