@@ -61,7 +61,7 @@ Create a github application
 1. Log in to github and go to ```settings```
 2. Click on ```OAuth applications``` in the ```Developer settings``` section
 3. Create a new OAuth application with a unique name, you can use http://octopub.io for the homepage.
-For the callback URL use your local dev machine's address, i.e. http://octopub.dev
+For the callback URL use your local dev machine's address, i.e. http://localhost:3000
 
 Once created, you can use the client ID and client secret in your ```.env``` file as follows:
 
@@ -163,7 +163,7 @@ Sidekiq::Queue.new.first
 
 Octopub uses the ```rspec``` test framework and requires the presence of a ```.env```. See earlier section for details as you can (re)use your development variables*  
 The test suite can be run with the usual ```bundle exec rspec```.  
-*Note - the tests use VCR or mocking to allow the tests to be run offline without interfacing with the services.
+* Note - the tests use VCR or mocking to allow the tests to be run offline without interfacing with the services.
 
 ## Deployment
 
@@ -174,5 +174,3 @@ A commit to master will trigger a TravisCI run, which, if successful, will autom
 ## Caching
 
 The GitHub organisations are cached for the logged in user, they can be cleared from a console with ```Rails.cache.clear```
-
-
