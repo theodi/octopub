@@ -1,7 +1,11 @@
 module ApplicationHelper
 
-  def selected_dataset_file_schema_id(dataset_file)
-    dataset_file.dataset_file_schema ? dataset_file.dataset_file_schema.id : 0
+  def selected_dataset_file_schema_id(dataset_file, default = 0)
+    if dataset_file.new_record?
+      default
+    else
+      dataset_file.dataset_file_schema ? dataset_file.dataset_file_schema.id : default
+    end
   end
 
   def organization_options

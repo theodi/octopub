@@ -22,6 +22,7 @@
 #  certificate_url   :string
 #  job_id            :string
 #  publishing_method :integer          default("github_public"), not null
+##TODO does above have to be updated to reflect changes made by migrations?
 #
 
 class Dataset < ApplicationRecord
@@ -83,6 +84,7 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
+
   def github_url
     "http://github.com/#{full_name}"
   end
@@ -118,6 +120,46 @@ class Dataset < ApplicationRecord
     publish_public_views(true)
     send_success_email
     SendTweetService.new(self).perform
+  end
+
+  def deprecated_resource
+    url_deprecated_at.present?
+  end
+
+  def self.check_urls
+    # check if dataset URL is live
+    Dataset.all.each do |dataset|
+      if dataset.url.nil? #dataset URLs can be nil without indicating dead resource,
+        puts "#{dataset.name} lacks URL: #{dataset.url}"
+        Rails.logger.warn "#{dataset.name} lacks URL"
+      end # TODO should this be in eval_response_code?
+
+      if eval_response_code?(dataset.url)
+        puts "#{dataset.name} has URL live at #{dataset.url}"
+        Rails.logger.info "#{dataset.name} live at #{dataset.url}"
+      else
+        puts "#{dataset.name} lacks URL : #{dataset.url}"
+        Rails.logger.warn "#{dataset.name} no longer has a live URL : #{dataset.url}"
+        dataset.update_column(:url_deprecated_at, DateTime.now())
+      end
+    end
+  end
+
+  def self.eval_response_code?(url_string)
+    begin
+      url = URI.parse(url_string)
+      req = Net::HTTP.new(url.host, url.port)
+      req.use_ssl = true if url.scheme == 'https' # TY gentle knight https://gist.github.com/murdoch/1168520#gistcomment-1238015
+      res = req.request_head(url.path)
+      res.code.to_i == 200
+    rescue URI::InvalidURIError, Addressable::URI::InvalidURIError => e
+      puts "cannot parse via Addressable #{e.message}"
+      false
+    rescue ArgumentError => e
+      puts "Argument Error for that address #{e.message}"
+      false
+    end
+    # is this the better way to do this method? https://github.com/bblimke/webmock#response-with-custom-status-message
   end
 
   private
