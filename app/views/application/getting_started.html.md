@@ -1,5 +1,7 @@
 # Getting started with Octopub
 
+<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://player.vimeo.com/video/215665401' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+
 Creating a dataset using Octopub couldn't be easier. Before getting started,
 make sure you've got a Github account. If you haven't got one, you can sign up
 at [https://github.com/join](https://github.com/join). Once you've got an account,
