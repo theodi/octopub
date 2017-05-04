@@ -15,6 +15,10 @@ class ApplicationController < ActionController::Base
   def api
   end
 
+  def getting_started
+    @extra_class = 'getting-started'
+  end
+
   def licenses
     set_licenses
 
