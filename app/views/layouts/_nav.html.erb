@@ -47,6 +47,7 @@
     <% else %>
       <li><%= link_to "All datasets", main_app.datasets_path %></li>
     <% end %>
+    <li><%= link_to "Getting started", '/getting-started' %></li>
     <li><%= link_to "API", '/api' %></li>
     <% if admin_user %>
       <li><%= link_to "Output Schemas", main_app.output_schemas_path %></li>
