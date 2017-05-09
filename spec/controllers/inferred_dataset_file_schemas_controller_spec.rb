@@ -3,7 +3,7 @@ require 'rails_helper'
 describe InferredDatasetFileSchemasController, type: :controller do
 
   let(:user) { create(:user) }
-  let(:infer_schema_filename) { 'schemas/infer-from/data_infer.csv' }
+  let(:infer_schema_filename) { 'data_infer.csv' }
   let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
   let(:csv_storage_key) { "uploads/#{uuid}/data_infer.csv" }
   let(:infer_schema_csv_url) { url_with_stubbed_get_for_storage_key(csv_storage_key, infer_schema_filename) }
