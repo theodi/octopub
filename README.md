@@ -146,8 +146,8 @@ Checkout the repository and run ```bundle``` in the checked out directory.
 
 * Make sure redis is running ```redis-server```
 * Make sure Sidekiq is running ```bundle exec sidekiq``` in the application directory
-* Start the application
-* Go to index page
+* Start the application with ```rails s```
+* Navigate to index page
 * Sign in with github (your acocunt)
 * Authorise in github
 * Congratulations, you should be signed in, now try adding some data.
