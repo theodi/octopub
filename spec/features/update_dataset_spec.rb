@@ -13,12 +13,6 @@ feature "Update dataset page", type: :feature do
 
   before(:each) do
     visit root_path
-    allow_any_instance_of(JekyllService).to receive(:license_details) {
-      object = double(Object)
-      allow(object).to receive(:url) { 'https://example.org'}
-      allow(object).to receive(:title) { 'licence' }
-      object
-    }
   end
 
   context "logged in visitor has a dataset and" do
@@ -101,6 +95,67 @@ feature "Update dataset page", type: :feature do
       expect(page).to have_content ('Your edits have been queued for creation, and your edits should appear on Github shortly.')
       expect(Dataset.count).to be 1
       expect(@dataset.description).to eq new_description
+    end
+  end
+
+  context "logged in visitor has a private dataset and" do
+
+    before(:each) do
+      Sidekiq::Testing.inline!
+
+      expect(Dataset.count).to be 0
+      @dataset = create(:dataset_with_files, :with_callback, user: @user, publishing_method: :local_private)
+      expect(Dataset.count).to be 1
+      allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
+
+      click_link "My datasets"
+      expect(page).to have_content "My Datasets"
+      expect(page.all('table.table tr').count).to be Dataset.count + 1
+      page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
+      allow(RepoService).to receive(:fetch_repo)
+    end
+
+    after(:each) do
+      Sidekiq::Testing.fake!
+    end
+    
+    scenario "can access edit dataset page and change description" do
+
+      expect(page).to have_content "Edit Dataset"
+      new_description = Faker::Lorem.sentence
+      fill_in 'dataset[description]', with: new_description
+      choose('_publishing_method_local_private')
+      click_on 'Submit'
+
+      @dataset.reload
+      expect(page).to have_content ('Your edits have been queued for creation, and your edits should appear on Github shortly.')
+      expect(Dataset.count).to be 1
+      expect(@dataset.description).to eq new_description
+      expect(@dataset.local_private?).to be true
+    end
+
+    scenario "can change a private repo to a public one" do
+      repo = double(GitData)
+      expect(repo).to receive(:html_url) { 'https://example.org' }
+      expect(repo).to receive(:name) { 'examplename'}
+      expect(repo).to receive(:full_name) { 'examplename' }
+      expect(RepoService).to receive(:create_repo) { repo }
+      expect(RepoService).to receive(:fetch_repo).at_least(:once) { repo }
+      expect(RepoService).to receive(:prepare_repo).at_least(:once)
+      expect_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
+      expect_any_instance_of(JekyllService).to receive(:push_to_github) { nil }
+      expect_any_instance_of(Dataset).to receive(:publish_public_views) { nil }
+      expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
+
+      expect(page).to have_content "Edit Dataset"
+      choose('_publishing_method_github_public')
+      click_on 'Submit'
+
+      @dataset.reload
+      expect(page).to have_content ('Your edits have been queued for creation, and your edits should appear on Github shortly.')
+      expect(Dataset.count).to be 1
+
+      expect(@dataset.github_public?).to be true
     end
   end
 end
