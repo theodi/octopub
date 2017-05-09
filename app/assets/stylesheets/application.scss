@@ -30,24 +30,30 @@ html {
 }
 
 body {
-  padding: 20px 0 0 0;
+  padding: 20px 20px 0 0;
   margin-bottom: 160px;
 }
 
 .getting-started {
-  p, li {
+
+  p {
     font-size: 1.2em;
     line-height: 1.5em;
+    margin: 5px 0px 5px 5px;
   }
+
+  //ul, li {
+  //  font-size: 1.2em;
+  //  line-height: 1.5em;
+  //  margin: 5px 0px 5px 5px;
+  //}
+
   img {
-    width: 450px;
+
     border: 1px solid #eee;
     padding: 5px;
-    margin: 0 0 5px 20px;
+    margin: 5px 5px 0px 0px;
 
-    &.full-width {
-      width: 100%;
-    }
   }
 }
 
