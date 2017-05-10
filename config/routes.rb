@@ -40,7 +40,7 @@ Rails.application.routes.draw do
   get "/me" => "users#edit", as: :me
   put "/me" => "users#update"
   get "/licenses" => "application#licenses"
-  get "/getting-started" => "application#getting_started"
+  get "/getting-started" => "application#getting-started"
 
   mount API => '/'
   mount GrapeSwaggerRails::Engine => '/api'
