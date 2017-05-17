@@ -41,6 +41,8 @@ class DatasetFile < ApplicationRecord
   end
 
   def self.file_from_url_with_storage_key(file, storage_key)
+    # TODO - this is where whitespace files break when parametrized
+    # binding.pry
     Rails.logger.info "DatasetFile: In file_from_url_with_storage_key"
 
     fs_file = FileStorageService.get_string_io(storage_key)
