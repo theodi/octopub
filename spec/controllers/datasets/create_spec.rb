@@ -57,6 +57,7 @@ describe DatasetsController, type: :controller do
         name = 'Test Data'
         description = Faker::Company.bs
         filename = 'test-data.csv'
+        # filename = 'white space.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
 
         @files << {
@@ -118,7 +119,8 @@ describe DatasetsController, type: :controller do
       before(:each) do
         name = 'Test Data'
         description = Faker::Company.bs
-        filename = 'test-data.csv'
+        # filename = 'test-data.csv'
+        filename = 'white space.csv'
         path = File.join(Rails.root, 'spec', 'fixtures', filename)
         @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
 
