@@ -52,6 +52,11 @@ PUSHER_CLUSTER=
 BASE_URI=
 ODC_API_KEY=
 ODC_USERNAME=
+
+# production only
+SMTP_USERNAME=
+SMTP_PASSWORD=
+SMTP_SERVER=
 ```
 
 ### Setting up the required environment variables
