@@ -25,7 +25,7 @@ gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails
 gem 'csvlint', git: 'https://github.com/jamesjefferies/csvlint.rb.git', branch: 'ruby-2.4-rails-5.0-compatibility'
 
 # New way of validating schemas
-gem 'jsontableschema', github: 'Floppy/jsontableschema-rb', branch: 'infer-with-empty-cells'
+gem 'jsontableschema', git: 'https://github.com/Floppy/jsontableschema-rb', branch: 'infer-with-empty-cells'
 
 # User related
 gem 'omniauth-github'

@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/Floppy/jsontableschema-rb.git
+  remote: https://github.com/Floppy/jsontableschema-rb
   revision: e69aedf40308ce892c87100c58db198e8b76a484
   branch: infer-with-empty-cells
   specs:
