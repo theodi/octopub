@@ -1,4 +1,15 @@
 GIT
+  remote: https://github.com/Floppy/jsontableschema-rb
+  revision: e69aedf40308ce892c87100c58db198e8b76a484
+  branch: infer-with-empty-cells
+  specs:
+    jsontableschema (0.2.0)
+      currencies (~> 0.4.2)
+      json-schema (~> 2.6.0)
+      tod (~> 2.1.0)
+      uuid (~> 2.3.8)
+
+GIT
   remote: https://github.com/jamesjefferies/csvlint.rb.git
   revision: 117c0eab2d86f3124e51827ed6a769d13e5fa1a5
   branch: ruby-2.4-rails-5.0-compatibility
@@ -257,11 +268,6 @@ GEM
     json (1.8.6)
     json-schema (2.6.2)
       addressable (~> 2.3.8)
-    jsontableschema (0.2.0)
-      currencies (~> 0.4.2)
-      json-schema (~> 2.6.0)
-      tod (~> 2.1.0)
-      uuid (~> 2.3.8)
     jwt (1.5.6)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -546,7 +552,7 @@ DEPENDENCIES
   guard-rspec
   jbuilder (~> 2.0)
   jquery-rails
-  jsontableschema
+  jsontableschema!
   letter_opener
   lograge
   lol_dba
