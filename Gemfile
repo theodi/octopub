@@ -13,7 +13,7 @@ gem 'pg'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder', '~> 2.6'
 
 # Git hosted gems
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
