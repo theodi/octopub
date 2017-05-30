@@ -32,7 +32,7 @@ gem 'omniauth-github'
 
 
 # Bootstrap and view stuff
-gem 'bootstrap-sass', '~> 3.2.0'
+gem 'bootstrap-sass', '~> 3.3.7'
 gem 'font-awesome-sass'
 gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
