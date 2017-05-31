@@ -221,8 +221,8 @@ GEM
       rake
     grape-swagger (0.26.0)
       grape (>= 0.16.2)
-    grape-swagger-entity (0.1.6)
-      grape-entity
+    grape-swagger-entity (0.2.0)
+      grape-entity (>= 0.5.0)
       grape-swagger (>= 0.20.4)
     guard (2.14.1)
       formatador (>= 0.2.4)
@@ -255,7 +255,7 @@ GEM
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (0.8.1)
+    i18n (0.8.4)
     ice_nine (0.11.2)
     jbuilder (2.6.3)
       activesupport (>= 3.0.0, < 5.2)
@@ -545,7 +545,7 @@ DEPENDENCIES
   grape
   grape-route-helpers
   grape-swagger (= 0.26.0)
-  grape-swagger-entity (~> 0.1.5)
+  grape-swagger-entity (~> 0.2.0)
   grape-swagger-rails!
   guard
   guard-rails
