@@ -103,7 +103,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'guard-rails', require: false
-  gem 'terminal-notifier-guard', '~> 1.6.1'
+  gem 'terminal-notifier-guard', '~> 1.7.0'
 end
 
 group :test do
