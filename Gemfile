@@ -113,7 +113,7 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
-  gem 'coveralls', '~> 0.8.20'
+  gem 'coveralls', '~> 0.8.21'
   gem 'vcr'
   gem 'webmock'
   gem 'timecop'
