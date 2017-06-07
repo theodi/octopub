@@ -106,7 +106,7 @@ GEM
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 12.0)
     arel (7.1.4)
-    autoprefixer-rails (6.7.7.2)
+    autoprefixer-rails (7.1.1)
       execjs
     awesome_print (1.7.0)
     aws-sdk (2.9.32)
