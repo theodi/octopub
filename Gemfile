@@ -13,7 +13,7 @@ gem 'pg'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.6'
+gem 'jbuilder', '~> 2.7'
 
 # Git hosted gems
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
@@ -103,7 +103,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'guard-rails', require: false
-  gem 'terminal-notifier-guard', '~> 1.6.1'
+  gem 'terminal-notifier-guard', '~> 1.7.0'
 end
 
 group :test do
@@ -113,7 +113,7 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
-  gem 'coveralls', '~> 0.8.20'
+  gem 'coveralls', '~> 0.8.21'
   gem 'vcr'
   gem 'webmock'
   gem 'timecop'
