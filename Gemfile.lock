@@ -401,7 +401,7 @@ GEM
     rdoc (4.3.0)
     redcarpet (3.4.0)
     redis (3.3.3)
-    rouge (2.1.0)
+    rouge (2.1.1)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
