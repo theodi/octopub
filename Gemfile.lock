@@ -469,7 +469,7 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
-    timecop (0.9.0)
+    timecop (0.9.1)
     tins (1.14.0)
     tod (2.1.1)
     twitter (5.17.0)
