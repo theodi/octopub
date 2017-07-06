@@ -221,7 +221,7 @@ GEM
       rake
     grape-swagger (0.26.0)
       grape (>= 0.16.2)
-    grape-swagger-entity (0.2.0)
+    grape-swagger-entity (0.2.1)
       grape-entity (>= 0.5.0)
       grape-swagger (>= 0.20.4)
     guard (2.14.1)
@@ -545,7 +545,7 @@ DEPENDENCIES
   grape
   grape-route-helpers
   grape-swagger (= 0.26.0)
-  grape-swagger-entity (~> 0.2.0)
+  grape-swagger-entity (~> 0.2.1)
   grape-swagger-rails!
   guard
   guard-rails
