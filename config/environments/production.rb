@@ -63,12 +63,13 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "octopub.io" }
 
   config.action_mailer.smtp_settings = {
-    address: "smtp.mandrillapp.com",
-    port: 587,
+    address: ENV["SMTP_SERVER"],
+    port: ENV["SMTP_PORT"] || 587,
     enable_starttls_auto: true,
-    user_name: ENV["MANDRILL_USERNAME"],
-    password: ENV["MANDRILL_PASSWORD"],
-    authentication: 'login'
+    user_name: ENV["SMTP_USERNAME"],
+    password: ENV["SMTP_PASSWORD"],
+    authentication: ENV["SMTP_AUTH_METHOD"] || 'login',
+    domain: ENV["SMTP_DOMAIN"] || 'octopub.io'
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.

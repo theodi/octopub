@@ -3,7 +3,7 @@ ruby '2.4.0'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.2'
+gem 'rails', '~> 5.0.3'
 # Use SCSS for stylesheets
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -13,7 +13,7 @@ gem 'pg'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder', '~> 2.7'
 
 # Git hosted gems
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
@@ -25,7 +25,7 @@ gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails
 gem 'csvlint', git: 'https://github.com/jamesjefferies/csvlint.rb.git', branch: 'ruby-2.4-rails-5.0-compatibility'
 
 # New way of validating schemas
-gem 'jsontableschema'
+gem 'jsontableschema', git: 'https://github.com/Floppy/jsontableschema-rb', branch: 'infer-with-empty-cells'
 
 # User related
 gem 'omniauth-github'
@@ -49,7 +49,7 @@ gem 'grape'
 gem 'grape-route-helpers'
 # There are breaking changes in 0.26.1 so freeze here for now
 gem 'grape-swagger', '0.26.0'
-gem 'grape-swagger-entity', '~> 0.1.5'
+gem 'grape-swagger-entity', '~> 0.2.1'
 
 # Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'
@@ -103,7 +103,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'guard-rails', require: false
-  gem 'terminal-notifier-guard', '~> 1.6.1'
+  gem 'terminal-notifier-guard', '~> 1.7.0'
 end
 
 group :test do
@@ -113,7 +113,7 @@ group :test do
   gem 'poltergeist'
   gem 'faker'
   gem 'factory_girl_rails'
-  gem 'coveralls', '~> 0.8.20'
+  gem 'coveralls', '~> 0.8.21'
   gem 'vcr'
   gem 'webmock'
   gem 'timecop'
