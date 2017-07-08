@@ -4,7 +4,7 @@
 # changes. Airbrake enables for easy categorization, searching, and prioritization
 # of exceptions so that when errors occur, your team can quickly determine the
 # root cause.
-require 'airbrake/sidekiq/error_handler'
+require 'airbrake/sidekiq'
 
 # Configuration details:
 # https://github.com/airbrake/airbrake-ruby#configuration
