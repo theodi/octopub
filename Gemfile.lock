@@ -219,7 +219,7 @@ GEM
       activesupport
       grape (~> 0.16, >= 0.16.0)
       rake
-    grape-swagger (0.26.0)
+    grape-swagger (0.27.3)
       grape (>= 0.16.2)
     grape-swagger-entity (0.2.1)
       grape-entity (>= 0.5.0)
@@ -242,7 +242,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hashdiff (0.3.2)
-    hashie (3.5.5)
+    hashie (3.5.6)
     http (1.0.4)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -544,7 +544,7 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger (= 0.26.0)
+  grape-swagger (= 0.27.3)
   grape-swagger-entity (~> 0.2.1)
   grape-swagger-rails!
   guard
@@ -587,7 +587,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.4.0p0
+   ruby 2.4.1p111
 
 BUNDLED WITH
    1.14.6
