@@ -3,7 +3,7 @@ cache: bundler
 dist: trusty
 sudo: false
 rvm:
-- 2.4.0
+- 2.4.1
 bundler_args: "--without development --path=~/.bundle"
 before_script:
 - bundle exec rake db:create db:migrate
