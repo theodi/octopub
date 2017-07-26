@@ -19,7 +19,7 @@
   <% end %>
   <td>
     <% if dataset.deprecated_resource.eql?(true) %>
-        <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="<%= dataset.name %> inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
+        <%= dataset.name %> <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="dataset inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
     <% else %>
       <% if dataset.github_public? %>
         <%= link_to dataset.name, dataset.gh_pages_url %>
