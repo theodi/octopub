@@ -9,7 +9,7 @@
   width: 100%;
   overflow: scroll;
   height: 400px;
-  margin: 20px 5px;
+  margin: 20px 0;
 }
 
 .dataTables_info {
@@ -30,6 +30,12 @@ dt, dd {
 .table.api-item {
   width: 90%;
   margin: 30px auto;
+}
+
+.table.floatThead-table {
+  border-top: none;
+  border-bottom: none;
+  background-color: #FFF;
 }
 
 #download {
