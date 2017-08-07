@@ -1,5 +1,5 @@
 <div class="table-container">
-  <table class='table table-striped table-bordered' id='data-table'>
+  <table class="table table-striped table-bordered" id="data-table">
     <thead>
       <tr>
         {% for item in data_table.first %}
@@ -7,18 +7,18 @@
         {% endfor %}
       </tr>
     </thead>
-    <tbody id='data-table-body'>
+    <tbody id="data-table-body">
 
     </tbody>
   </table>
 </div>
 
-<div id='loading'>
+<div id="loading">
   <h1>Loading...</h1>
   <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
 </div>
 
-<script type='text/javascript' src='{{ site.github.url }}/js/papaparse.min.js'></script>
+<script type="text/javascript" src="{{ site.github.url }}/js/papaparse.min.js"></script>
 <script>
 $(function() {
   Papa.SCRIPT_PATH = '{{ site.github.url }}/js/papaparse.min.js'
