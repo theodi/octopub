@@ -99,7 +99,7 @@ layout: default
 
     <ul>
       {% for item in site.data.index %}
-        <li><a href="{{ item['url'] | | remove: '.json'}}">{{ item['url'] | | remove: '.json' | capitalize}}</a></li>
+        <li><a href="{{ item['url'] | remove: '.json'}}">{{ item['url'] | remove: '.json' | capitalize}}</a></li>
       {% endfor %}
     </ul>
   {% endif %}
