@@ -217,7 +217,7 @@ GEM
       activesupport
       grape (>= 0.16.0)
       rake
-    grape-swagger (0.26.0)
+    grape-swagger (0.27.3)
       grape (>= 0.16.2)
     grape-swagger-entity (0.2.1)
       grape-entity (>= 0.5.0)
@@ -545,7 +545,7 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger (= 0.26.0)
+  grape-swagger (= 0.27.3)
   grape-swagger-entity (~> 0.2.1)
   grape-swagger-rails!
   guard

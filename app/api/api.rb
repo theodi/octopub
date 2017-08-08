@@ -76,7 +76,6 @@ Octopub has a fully-featured API that allows you to view, create and update data
 Most endpoints require authentication. Logged in users can get their API key from their [account page](https://octopub.io/me).
 
 Once you have your API key, you can authenticate with the API by adding an `Authorization` header to your API call.
-    """,
-    markdown: GrapeSwagger::Markdown::RedcarpetAdapter.new(render_options: { highlighter: :rouge })
+    """
   }
 end
