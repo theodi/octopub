@@ -5,11 +5,11 @@ describe GitData, :vcr do
   before(:all) do
     @client = Octokit::Client.new :access_token => ENV['GITHUB_TOKEN']
     @name = 'My Awesome Repo'
-    @username = ENV['GITHUB_USER']
+    @username = "test-user"
   end
 
   before(:each) do
-    @repo_name = "#{ENV['GITHUB_USER']}/my-awesome-repo"
+    @repo_name = "test-user/my-awesome-repo"
   end
 
   after(:each) do
