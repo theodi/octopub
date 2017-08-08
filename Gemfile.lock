@@ -127,8 +127,9 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (3.2.0.2)
-      sass (~> 3.2)
+    bootstrap-sass (3.3.7)
+      autoprefixer-rails (>= 5.2.1)
+      sass (>= 3.3.4)
     bootstrap-select-rails (1.12.1)
     bootstrap-table-rails (1.11.1.1)
     bootstrap_form (2.7.0)
@@ -429,7 +430,7 @@ GEM
     rspec-support (3.5.0)
     ruby_dep (1.5.0)
     safe_yaml (1.0.4)
-    sass (3.4.23)
+    sass (3.4.24)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
       sass (~> 3.1)
@@ -527,7 +528,7 @@ DEPENDENCIES
   aws-sdk (~> 2)
   better_errors
   binding_of_caller
-  bootstrap-sass (~> 3.2.0)
+  bootstrap-sass (~> 3.3.7)
   bootstrap-select-rails
   bootstrap-table-rails
   bootstrap_form
