@@ -293,7 +293,7 @@ describe DatasetFileSchemasController, type: :controller do
         name: "date-pattern-test", description: "test", user_id: user.id, url_in_s3: url, owner_username: user.name
       }
     }
-    expect(response).to render_template("new")
+    expect(response).to redirect_to("http://test.host/dataset_file_schemas")
   end
   
 
