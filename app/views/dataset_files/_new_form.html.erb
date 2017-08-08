@@ -35,7 +35,7 @@
           <h4>Upload a schema for this Data File</h4>
         <% end %>
 
-        <p>Provide an optional <a href='http://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
+        <p>Provide an optional <a href='https://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
 
         <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
         <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
