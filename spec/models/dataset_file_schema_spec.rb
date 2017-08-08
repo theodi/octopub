@@ -176,4 +176,19 @@ describe DatasetFileSchema do
     end
 
   end
+  
+  context "schema visibility" do
+  
+    it "should create restricted schemas by default" do
+      public_schema = create(:dataset_file_schema, url_in_repo: @good_schema_url, user: @user)
+      expect(public_schema.restricted).to be true
+    end
+  
+    it "can create public schemas" do
+      public_schema = create(:dataset_file_schema, url_in_repo: @good_schema_url, user: @user, restricted: false)      
+      expect(public_schema.restricted).to be false
+    end
+    
+  end
+  
 end
