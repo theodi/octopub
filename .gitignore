@@ -102,3 +102,4 @@ config/gemnasium.yml
 # Ignore html report
 /html-report/
 
+/.byebug_history
