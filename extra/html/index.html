@@ -52,9 +52,9 @@ layout: default
 	      <td><a href="{{ resource.path | split:"." | first }}"><i class="fa fa-search"></i> View</a></td>
         <td><a href="{{ resource.path }}" property='dcat:accessURL'><i class="fa fa-cloud-download"></i> Download</a></td>
         {% unless resource.path contains 'http' %}
-          <td><a href="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}"><img src="http://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
+          <td><a href="https://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}"><img src="https://csvlint.io/?uri={{ site.github.url }}/{{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
         {% else %}
-          <td><a href="http://csvlint.io/?uri={{ resource.path }}"><img src="http://csvlint.io/?uri={{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
+          <td><a href="https://csvlint.io/?uri={{ resource.path }}"><img src="https://csvlint.io/?uri={{ resource.path }}&format=svg" alt="CSVlint validation result" /></a></td>
         {% endunless %}
       </tr>
       {% endfor %}
