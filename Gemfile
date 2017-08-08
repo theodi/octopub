@@ -107,6 +107,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'byebug'
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'pry'

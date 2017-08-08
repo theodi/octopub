@@ -284,4 +284,19 @@ describe DatasetFileSchemasController, type: :controller do
       expect(response).to render_template("new")
     end
   end
+  
+  it "handles date patterns" do
+    user = create(:user)
+    url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/date-pattern.json'))
+    post :create, params: {
+      dataset_file_schema: {
+        name: "date-pattern-test", description: "test", user_id: user.id, url_in_s3: url, owner_username: user.name
+      }
+    }
+    expect(response).to redirect_to("http://test.host/dataset_file_schemas")
+  end
+  
+
+
+  
 end

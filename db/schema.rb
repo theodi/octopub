@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419153047) do
+ActiveRecord::Schema.define(version: 20170808112728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(version: 20170419153047) do
     t.text    "maximum"
     t.text    "pattern"
     t.text    "type"
+    t.string  "date_pattern"
     t.index ["schema_field_id"], name: "index_schema_constraints_on_schema_field_id", using: :btree
   end
 
