@@ -33,11 +33,12 @@ Octopub interfaces with a number of other services, including GitHub, AWS, Pushe
 Further details on setting your .env file up with the required values are below.
 
 ```
-# Github Client ID
+# GitHub App Client ID & secret
 GITHUB_KEY=
-# Github Client Secret
 GITHUB_SECRET=
-GITHUB_USER=
+
+# OAuth access token for GitHub API access
+GITHUB_TOKEN=
 
 S3_BUCKET=
 
