@@ -7,7 +7,7 @@
         <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %> and if you change the file, it will also be validated against that schema.</div>
       <% end %>
 
-      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name,  selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Dataset file schemas'} %>
+      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name,  selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Dataset file schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
 
       <% if file.filename %>
         <div class="form-group filename-wrapper">
