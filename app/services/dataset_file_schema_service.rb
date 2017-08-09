@@ -1,11 +1,12 @@
 class DatasetFileSchemaService
 
-  def initialize(schema_name, description, url_in_s3, user, owner_username = user.name)
+  def initialize(schema_name, description, url_in_s3, user, owner_username = user.name, restricted = true)
     @schema_name = schema_name
     @description = description
     @url_in_s3 = url_in_s3
     @user = user
     @owner_username = owner_username
+    @restricted = restricted
   end
 
   def create_dataset_file_schema
@@ -13,7 +14,7 @@ class DatasetFileSchemaService
 
     FileStorageService.make_object_public_from_url(@url_in_s3)
 
-    @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username)
+    @dataset_file_schema = @user.dataset_file_schemas.create(url_in_s3: @url_in_s3, name: @schema_name, description: @description, owner_username: @owner_username, restricted: @restricted)
 
     self.class.update_dataset_file_schema_with_json_schema(@dataset_file_schema)
     @dataset_file_schema.reload
