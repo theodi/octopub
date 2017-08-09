@@ -91,6 +91,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         storage_key: storage_key,
         schema_name: 'schem nme',
         schema_description: 'schema description',
+        schema_restricted: false,
         schema: @url_for_schema
       }
 
@@ -107,6 +108,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       expect(Dataset.count).to eq(1)
       expect(DatasetFileSchema.count).to eq(1)
 
+      expect(DatasetFileSchema.first.restricted).to eq false
+      
       expect(@user.dataset_file_schemas.count).to eq(1)
       expect(@user.datasets.count).to eq(1)
       expect(@user.datasets.first.dataset_files.count).to eq(1)
