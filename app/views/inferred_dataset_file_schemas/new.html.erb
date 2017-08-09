@@ -11,6 +11,7 @@
     <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
   <% end %>
   <%= f.select :owner_username, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
   <div class="schema-panel">
     <div class="panel panel-default">
       <div class="panel-body">
