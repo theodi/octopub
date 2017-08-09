@@ -4,6 +4,7 @@ describe DatasetFileSchemasController, type: :controller do
 
   before(:each) do
     @user = create(:user)
+    @other_user = create(:user, name: "User McUser 2", email: "user2@user.com")
     @good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
     allow(controller).to receive(:current_user) { @user }
   end
@@ -44,9 +45,18 @@ describe DatasetFileSchemasController, type: :controller do
       expect(assigns(:dataset_file_schemas).count).to eq(2)
     end
 
+    it "includes public schemas from other users" do
+      sign_in @user
+      create(:dataset_file_schema, name: "Dataset File Schema", user: @user)
+      create(:dataset_file_schema, name: "Private File Schema", user: @other_user)
+      create(:dataset_file_schema, name: "Public File Schema", user: @other_user, restricted: false)
+      get 'index'
+      expect(assigns(:dataset_file_schemas).count).to eq(1)
+      expect(assigns(:public_schemas).count).to eq(1)
+    end
+
     it "gets the right number of dataset file schemas and not someone elses" do
-      other_user = create(:user, name: "User McUser 2", email: "user2@user.com")
-      create(:dataset_file_schema, name: "Dataset File Schema other", user: other_user)
+      create(:dataset_file_schema, name: "Dataset File Schema other", user: @other_user)
 
       sign_in @user
       2.times { |i| create(:dataset_file_schema, name: "Dataset File Schema #{i}", user: @user) }
