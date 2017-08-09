@@ -2,24 +2,32 @@ module FileHandlingForDatasets
   extend ActiveSupport::Concern
 
   def check_files
+
     if @files.blank?
       flash[:no_files] = "You must specify at least one dataset"
     end
   end
 
   def process_files
+    # binding.pry
     logger.info "DatasetsController: In process_files"
     @files.each do |f|
 
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
+        # binding.pry
+        # this is triggered in spec/feature/add_github_public
         Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
         storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
 
         f["storage_key"] = storage_object.key(f["file"].original_filename)
         f["file"] = storage_object.public_url
       else
+        # binding.pry
+        # this is triggered for JS attach flow - damage is done by this point
+        # this is triggered by before of create_spec, 'with one file'; 'creates a restricted dataset'; 'creates a dataset in an organization'; 'returns 202'
         Rails.logger.info "file is not an http uploaded file, it's a URL"
         f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
+        # TODO - rescue the URI error
       end
     end
   end

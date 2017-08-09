@@ -1,5 +1,9 @@
 "use strict";
 
+function string_parameterize(str) {
+    return str.trim().toLowerCase().replace(/\s/g, "-");
+}
+
 function bgUpload(elem) {
   var container    = $(elem);
   var fileInput    = $(elem).find('input[type="file"]');
@@ -24,6 +28,7 @@ function bgUpload(elem) {
       progressBar.text(progress + '%');
     },
     start: function (e) {
+
       submitButton.prop('disabled', true);
 
       barContainer.removeClass('hidden');
@@ -39,10 +44,15 @@ function bgUpload(elem) {
       progressBar.removeClass('active');
       // extract key and generate URL from response
       var key   = $(data.jqXHR.responseXML).find("Key").text();
+      key = string_parameterize(key);
       var url   = 'https://' + form.data('host') + '/' + key;
 
       // create hidden field
       var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, class: 's3-file' });
+      console.log("HELP ME FIX THIS -w/in BgUpload()");
+      console.log("the trimmed key= "+key);
+      console.log("the url= "+url);
+
       container.append(input);
     },
     fail: function(e, data) {

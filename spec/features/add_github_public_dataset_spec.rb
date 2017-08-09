@@ -6,7 +6,7 @@ feature "Add dataset page", type: :feature do
   include_context 'user and organisations'
   include_context 'odlifier licence mock'
 
-  let(:data_file) { get_fixture_file('valid-schema.csv') }
+  let(:data_file) { get_fixture_file('white space.csv') }
 
   before(:each) do
     allow_any_instance_of(DatasetsController).to receive(:current_user) { @user }
