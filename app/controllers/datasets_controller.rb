@@ -57,7 +57,7 @@ class DatasetsController < ApplicationController
   def new
     logger.info "DatasetsController: In new"
     @dataset = Dataset.new
-    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
+    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end
 
   def create
