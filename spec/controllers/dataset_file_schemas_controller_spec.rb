@@ -27,6 +27,7 @@ describe DatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.name).to eq schema_name
       expect(dataset_file_schema.description).to eq description
       expect(dataset_file_schema.user).to eq @user
+      expect(dataset_file_schema.restricted).to eq true
     end
   end
 
@@ -296,7 +297,31 @@ describe DatasetFileSchemasController, type: :controller do
     expect(response).to redirect_to("http://test.host/dataset_file_schemas")
   end
   
+  context 'public schemas' do
+  
+    it 'can be created' do
 
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, 
+          user_id: @user.id, url_in_s3: @good_schema_url, 
+          owner_username: @user.name,
+          restricted: false
+        }
+      }
+
+      dataset_file_schema = DatasetFileSchema.last
+      expect(DatasetFileSchema.count).to be 1
+      expect(dataset_file_schema.name).to eq schema_name
+      expect(dataset_file_schema.description).to eq description
+      expect(dataset_file_schema.user).to eq @user
+      expect(dataset_file_schema.restricted).to eq false
+    end
+  
+  end
 
   
 end

@@ -94,7 +94,7 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def create_params
-    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username, :storage_key, schema_category_ids: [])
+    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username, :storage_key, :restricted, schema_category_ids: [])
   end
 
   def update_params
