@@ -35,6 +35,7 @@ class UpdateDataset
         add_file(jekyll_service, file)
       end
     end
+    jekyll_service.push_to_github unless @dataset.local_private?
   end
 
   def update_file(id, update_file_hash)
