@@ -26,16 +26,17 @@ class UpdateDataset
 
   def handle_files(files)
     jekyll_service = JekyllService.new(@dataset, @repo)
-
+    added = false
     files.each do |file|
 
       if file["id"]
         update_file(file["id"], file)
       else
         add_file(jekyll_service, file)
+        added = true
       end
     end
-    jekyll_service.push_to_github unless @dataset.local_private?
+    jekyll_service.push_to_github if added && !@dataset.local_private?
   end
 
   def update_file(id, update_file_hash)
