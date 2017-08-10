@@ -4,6 +4,7 @@ class DatasetFileSchemasController < ApplicationController
 
   def index
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
+    @public_schemas = DatasetFileSchema.where(restricted: false).order(created_at: :desc)
   end
 
   def show
@@ -94,11 +95,12 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def create_params
-    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username, :storage_key, schema_category_ids: [])
+    params.require(:dataset_file_schema).permit(:name, :description, :user_id, :url_in_s3, :owner_username, :storage_key, :restricted, schema_category_ids: [])
   end
 
   def update_params
     params.require(:dataset_file_schema).permit(
+      :restricted, 
       schema_fields_attributes: [ :id, :name, :type, :format, schema_constraint_attributes:
         [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
   end

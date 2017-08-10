@@ -6,6 +6,9 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
   before(:each) do
     @user = create(:user)
+    @other_user = create(:user, name: "User McUser 2", email: "user2@user.com")
+    @my_schema = create(:dataset_file_schema, name: "My Schema", user: @user)
+    @private_schema = create(:dataset_file_schema, name: "Private Schema", user: @other_user)
   end
 
   describe 'edit' do
@@ -13,11 +16,26 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     it 'gets a file with a particular id' do
       sign_in @user
       dataset = create(:dataset, name: "Dataset", user: @user)
-
       get :edit, params: { id: dataset.id }
 
       expect(assigns(:dataset)).to eq(dataset)
     end
+
+    it "lists the user's schemas" do
+      sign_in @user
+      dataset = create(:dataset, name: "Dataset", user: @user)
+      get :edit, params: { id: dataset.id }
+      expect(assigns(:dataset_file_schemas).count).to eq(1)
+    end
+
+    it "lists public schemas as well" do
+      create(:dataset_file_schema, name: "Public Schema", user: @other_user, restricted: false)
+      sign_in @user
+      dataset = create(:dataset, name: "Dataset", user: @user)
+      get :edit, params: { id: dataset.id }
+      expect(assigns(:dataset_file_schemas).count).to eq(2)
+    end
+
 
     # TODO can't see how this ever works without organizations!
 

@@ -40,6 +40,7 @@
         <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
         <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
         <div><%= f.file_field "files[][schema]", label: "File", accept: ".json" %></div>
+        <%= f.select "files[][schema_restricted]", dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
       </fieldset>
     </div>
   </div>
