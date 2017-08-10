@@ -58,6 +58,23 @@ describe InferredDatasetFileSchemasController, type: :controller do
         expect(dataset_file_schema.schema_categories).to eq [ category_1, category_2 ]
       end
 
+      it "for a public schema" do
+
+        post :create, params: {
+          inferred_dataset_file_schema: {
+            name: schema_name,
+            description: description,
+            user_id: user.id,
+            csv_url: infer_schema_csv_url,
+            owner_username: user.name,
+            restricted: false
+          }
+        }
+
+        dataset_file_schema = DatasetFileSchema.last
+        expect(dataset_file_schema.restricted).to eq false
+      end
+      
       it "for an organisation owned schema" do
 
         organisation = Faker::Internet.user_name

@@ -36,6 +36,6 @@ class InferredDatasetFileSchemasController < ApplicationController
   end
 
   def create_params
-    params.require(:inferred_dataset_file_schema).permit(:name, :description, :user_id, :csv_url, :owner_username, schema_category_ids: [])
+    params.require(:inferred_dataset_file_schema).permit(:name, :description, :user_id, :csv_url, :owner_username, :restricted, schema_category_ids: [])
   end
 end

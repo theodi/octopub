@@ -4,10 +4,12 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
   include_context 'user and organisations'
 
   let(:schema_name) { Faker::Lorem.word }
+  let(:public_schema_name) { Faker::Lorem.word }
   let(:schema_description) { Faker::Lorem.sentence }
   let(:good_schema_url) { url_with_stubbed_get_for_fixture_file('schemas/good-schema.json') }
 
   before(:each) do
+    @other_user = create(:user)
     @user = create(:user, name: "Frank O'Ryan")
     OmniAuth.config.mock_auth[:github]
     visit root_path
@@ -17,6 +19,7 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
   context "with an existing schema" do
     before(:each) do
       DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user, @user.name).create_dataset_file_schema
+      DatasetFileSchemaService.new(public_schema_name, schema_description, good_schema_url, @other_user, @other_user.name, false).create_dataset_file_schema
       visit root_path
     end
 
@@ -25,12 +28,25 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
       expect(page).to have_content schema_name
     end
 
+    scenario "list of public schemas" do
+      click_link 'Dataset file schemas'
+      expect(page).to have_content public_schema_name
+    end
+
     scenario "view a single schema" do
       click_link 'Dataset file schemas'
       expect(page).to have_content schema_name
       click_link schema_name
       expect(page).to have_content schema_name
     end
+
+    scenario "view a public schema" do
+      click_link 'Dataset file schemas'
+      expect(page).to have_content public_schema_name
+      click_link public_schema_name
+      expect(page).to have_content public_schema_name
+    end
+
   end
 
   scenario "cannot view other user's schemas" do

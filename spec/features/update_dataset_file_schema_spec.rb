@@ -49,4 +49,32 @@ feature "Publisher can update a Dataset File Schema", type: :feature do
     expect(page.has_no_button?('Edit')).to be true
     Sidekiq::Testing.fake! 
   end
+  
+  it "and change access level" do
+    Sidekiq::Testing.inline! 
+    expect(FileStorageService).to receive(:push_public_object)
+
+    dataset_file_schema_name = 'this-is-your-schema'
+    schema_path = get_fixture_schema_file('good-schema.json')
+    @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
+
+    dataset_file_schema_1 = DatasetFileSchemaService.new(
+      dataset_file_schema_name,
+      'existing schema description',
+      @url_for_schema,
+      @user,
+      @user.name
+    ).create_dataset_file_schema
+    expect(dataset_file_schema_1.restricted).to eq true
+    
+    visit edit_dataset_file_schema_path(dataset_file_schema_1)
+    select "Public - any user may access this schema", from: :dataset_file_schema_restricted
+    click_on 'Update Dataset file schema'
+    
+    dataset_file_schema_1.reload
+    expect(dataset_file_schema_1.restricted).to eq false
+    
+    Sidekiq::Testing.fake! 
+  end
+  
 end

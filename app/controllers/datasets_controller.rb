@@ -57,7 +57,7 @@ class DatasetsController < ApplicationController
   def new
     logger.info "DatasetsController: In new"
     @dataset = Dataset.new
-    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
+    @dataset_file_schemas = available_schemas
   end
 
   def create
@@ -75,7 +75,7 @@ class DatasetsController < ApplicationController
 
   def edit
     render_404 and return if @dataset.nil?
-    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
+    @dataset_file_schemas = available_schemas
     @default_schema = @dataset.dataset_files.first.try(:dataset_file_schema_id)
   end
 
@@ -135,5 +135,9 @@ class DatasetsController < ApplicationController
 
   def check_permissions
     render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
+  end
+  
+  def available_schemas
+    DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end
 end

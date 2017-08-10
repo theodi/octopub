@@ -4,6 +4,7 @@ describe DatasetFileSchemasController, type: :controller do
 
   before(:each) do
     @user = create(:user)
+    @other_user = create(:user, name: "User McUser 2", email: "user2@user.com")
     @good_schema_url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json'))
     allow(controller).to receive(:current_user) { @user }
   end
@@ -27,6 +28,7 @@ describe DatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.name).to eq schema_name
       expect(dataset_file_schema.description).to eq description
       expect(dataset_file_schema.user).to eq @user
+      expect(dataset_file_schema.restricted).to eq true
     end
   end
 
@@ -43,9 +45,18 @@ describe DatasetFileSchemasController, type: :controller do
       expect(assigns(:dataset_file_schemas).count).to eq(2)
     end
 
+    it "includes public schemas from other users" do
+      sign_in @user
+      create(:dataset_file_schema, name: "Dataset File Schema", user: @user)
+      create(:dataset_file_schema, name: "Private File Schema", user: @other_user)
+      create(:dataset_file_schema, name: "Public File Schema", user: @other_user, restricted: false)
+      get 'index'
+      expect(assigns(:dataset_file_schemas).count).to eq(1)
+      expect(assigns(:public_schemas).count).to eq(1)
+    end
+
     it "gets the right number of dataset file schemas and not someone elses" do
-      other_user = create(:user, name: "User McUser 2", email: "user2@user.com")
-      create(:dataset_file_schema, name: "Dataset File Schema other", user: other_user)
+      create(:dataset_file_schema, name: "Dataset File Schema other", user: @other_user)
 
       sign_in @user
       2.times { |i| create(:dataset_file_schema, name: "Dataset File Schema #{i}", user: @user) }
@@ -284,4 +295,55 @@ describe DatasetFileSchemasController, type: :controller do
       expect(response).to render_template("new")
     end
   end
+  
+  it "handles date patterns" do
+    user = create(:user)
+    url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/date-pattern.json'))
+    post :create, params: {
+      dataset_file_schema: {
+        name: "date-pattern-test", description: "test", user_id: user.id, url_in_s3: url, owner_username: user.name
+      }
+    }
+    expect(response).to redirect_to("http://test.host/dataset_file_schemas")
+  end
+  
+  context 'public schemas' do
+  
+    it 'can be created' do
+
+      schema_name = 'schema-name'
+      description = 'schema-description'
+
+      post :create, params: {
+        dataset_file_schema: {
+          name: schema_name, description: description, 
+          user_id: @user.id, url_in_s3: @good_schema_url, 
+          owner_username: @user.name,
+          restricted: false
+        }
+      }
+
+      dataset_file_schema = DatasetFileSchema.last
+      expect(DatasetFileSchema.count).to be 1
+      expect(dataset_file_schema.name).to eq schema_name
+      expect(dataset_file_schema.description).to eq description
+      expect(dataset_file_schema.user).to eq @user
+      expect(dataset_file_schema.restricted).to eq false
+    end
+  
+    it "can be switch from public to private and vice versa" do      
+      expect(FileStorageService).to receive(:push_public_object).twice
+      schema = create :dataset_file_schema
+      expect(schema.restricted).to eq true      
+      post :update, params: { id: schema.id, dataset_file_schema: {  restricted: false }}
+      schema.reload
+      expect(schema.reload.restricted).to eq false   
+      post :update, params: { id: schema.id, dataset_file_schema: {  restricted: true }}
+      schema.reload
+      expect(schema.restricted).to eq true   
+    end
+  
+  end
+
+  
 end
