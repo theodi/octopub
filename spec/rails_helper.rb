@@ -163,7 +163,7 @@ end
 
 def get_string_io_from_fixture_file(storage_key)
   unless storage_key.nil?
-    filename = storage_key.split('/').last
+    filename = URI.decode(storage_key).split('/').last
     StringIO.new(read_fixture_file(filename))
   end
 end

@@ -13,13 +13,17 @@ module FileHandlingForDatasets
 
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
         Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
-        storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
+        key = URI.encode(f["file"].original_filename)
+        storage_object = FileStorageService.create_and_upload_public_object(key, f["file"].read)
 
-        f["storage_key"] = storage_object.key(f["file"].original_filename)
+        f["storage_key"] = storage_object.key(key)
         f["file"] = storage_object.public_url
       else
         Rails.logger.info "file is not an http uploaded file, it's a URL"
-        f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
+        if f["file"]
+          key = URI.encode(f["file"])
+          f["storage_key"] = URI(key).path.gsub(/^\//, '') 
+        end
       end
     end
   end
