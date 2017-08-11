@@ -1,4 +1,4 @@
-class AddFiles < ActiveRecord::Migration
+class AddFiles < ActiveRecord::Migration[4.2]
   def change
     create_table :dataset_files do |t|
       t.string :title
