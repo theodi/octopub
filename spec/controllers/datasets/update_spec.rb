@@ -218,7 +218,8 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
           expect_any_instance_of(JekyllService).to receive(:update_in_github)
           expect_any_instance_of(JekyllService).to receive(:update_jekyll_in_github)
-          expect_any_instance_of(JekyllService).to receive(:update_file_in_repo)
+          expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with("datapackage.json", instance_of(String))
+          expect_any_instance_of(JekyllService).to receive(:update_file_in_repo).with("_config.yml", instance_of(String))
           expect_any_instance_of(JekyllService).to receive(:push_to_github)
 
           put :update,  params: { id: @dataset.id, dataset: @dataset_hash, files: [{
@@ -239,8 +240,9 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           expect(DatasetFile).to receive(:new_file) { new_file }
           expect_any_instance_of(JekyllService).to receive(:add_to_github)
           expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
-          expect_any_instance_of(JekyllService).to receive(:push_to_github)
+          expect_any_instance_of(JekyllService).to receive(:update_config_yml)
           expect_any_instance_of(JekyllService).to receive(:update_datapackage)
+          expect_any_instance_of(JekyllService).to receive(:push_to_github)
 
           put :update, params: { id: @dataset.id, dataset: @dataset_hash, files: [
             {
