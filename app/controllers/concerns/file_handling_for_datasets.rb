@@ -19,11 +19,8 @@ module FileHandlingForDatasets
         f["storage_key"] = storage_object.key(key)
         f["file"] = storage_object.public_url
       else
-        Rails.logger.info "file is not an http uploaded file, it's a URL"
-        if f["file"]
-          key = URI.encode(f["file"])
-          f["storage_key"] = URI(key).path.gsub(/^\//, '') 
-        end
+        Rails.logger.info "file is not an http uploaded file, it's an s3 storage key"
+        f["storage_key"] = f["file"] unless f["file"].nil?
       end
     end
   end
