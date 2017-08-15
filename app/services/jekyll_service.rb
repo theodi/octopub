@@ -133,6 +133,7 @@ class JekyllService
       end
     end
     update_datapackage
+    update_config_yml(@dataset)
     push_to_github
   end
 
@@ -245,17 +246,20 @@ class JekyllService
 
   def add_certificate_url(url, dataset)
     return if url.nil?
-
     url = url.gsub('.json', '')
     dataset.update_column(:certificate_url, url)
+    update_config_yml(dataset)
+    push_to_github
+  end
+
+  def update_config_yml(dataset)
 
     config = {
       "data_source" => ".",
-      "update_frequency" => dataset.frequency,
-      "certificate_url" => "#{dataset.certificate_url}/badge.js"
-    }.to_yaml
+      "update_frequency" => dataset.frequency
+    }
+    config["certificate_url"] = "#{dataset.certificate_url}/badge.js" if dataset.certificate_url
 
-    update_file_in_repo('_config.yml', config)
-    push_to_github
+    update_file_in_repo('_config.yml', config.to_yaml)
   end
 end
