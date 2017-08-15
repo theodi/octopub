@@ -104,10 +104,10 @@ group :development, :test do
   gem 'guard-rspec', require: false
   gem 'guard-rails', require: false
   gem 'terminal-notifier-guard', '~> 1.7.0'
+  gem 'byebug'
 end
 
 group :test do
-  gem 'byebug'
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'pry'
