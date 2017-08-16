@@ -20,8 +20,8 @@ describe 'datasets/_dataset.html.erb' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.repo_owner}/)
-    expect(page.css('tr')[0].css('td')[1].inner_text).to match(/My Dataset/)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to eq ""
+    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/My Dataset/)
+    expect(page.css('tr')[0].css('td')[3].inner_text).to eq ""
   end
 
   it 'displays a single dataset with schemas' do
@@ -29,8 +29,8 @@ describe 'datasets/_dataset.html.erb' do
     page = Nokogiri::HTML(rendered)
 
     expect(page.css('tr')[0].css('td')[0].inner_text).to have_content(@dataset.repo_owner)
-    expect(page.css('tr')[0].css('td')[1].inner_text).to match(/#{@dataset.name}/)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/Yes/)
+    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/#{@dataset.name}/)
+    expect(page.css('tr')[0].css('td')[3].inner_text).to match(/Yes/)
   end
 
   def expect_columns(page)
@@ -77,7 +77,7 @@ describe 'datasets/_dataset.html.erb' do
     it 'displays warning icon for URL inaccessible dataset' do
       render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
       page = Nokogiri::HTML(rendered)
-      expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-exclamation-triangle');
+      expect(page.css('tr:first-child > td:nth-child(3)')).to have_css('i.fa.fa-exclamation-triangle');
     end
 
     it 'displays deprecation date when in the dashboard' do
