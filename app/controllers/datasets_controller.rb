@@ -22,7 +22,6 @@ class DatasetsController < ApplicationController
 
   def dashboard
     @title = "My Datasets"
-    @dashboard = true
     @datasets = current_user.datasets
   end
 
@@ -35,7 +34,6 @@ class DatasetsController < ApplicationController
 
   def user_datasets
     @title = "My Datasets"
-    @dashboard = true
     @datasets = current_user.datasets
     render :dashboard
   end

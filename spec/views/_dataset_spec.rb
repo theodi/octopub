@@ -46,7 +46,6 @@ describe 'datasets/_dataset.html.erb' do
   end
 
   it 'displays the edit link when in the dashboard' do
-    @dashboard = true
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
@@ -55,8 +54,6 @@ describe 'datasets/_dataset.html.erb' do
   end
 
   it 'displays access icon in the dashboard' do
-    @dashboard = true
-
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
@@ -65,8 +62,6 @@ describe 'datasets/_dataset.html.erb' do
   end
 
   it 'displays private icon in the dashboard' do
-    @dashboard = true
-
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @restricted_dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
@@ -94,7 +89,6 @@ describe 'datasets/_dataset.html.erb' do
     end
 
     it 'displays deprecation date when in the dashboard' do
-      @dashboard = true
       render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
       page = Nokogiri::HTML(rendered)
       expect_columns(page)
