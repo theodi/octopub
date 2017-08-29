@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     render_403 if current_user.nil?
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    render_403
+  end
+
   private
 
   def current_user
