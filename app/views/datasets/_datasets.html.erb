@@ -8,19 +8,12 @@
   <thead>
     <tr>
       <th data-sortable="true">Owner</th>
-      <% if @dashboard %>
-        <th>Type</th>
-      <% end %>
+      <th>Type</th>
       <th data-sortable="true">Name</th>
       <th data-sortable="true">Schemas?</th>
-      <% if @dashboard %>
-          <th data-sortable="true">Deprecated On</th>
-      <% end %>
-      <% if @dashboard %>
-        <th data-sortable="true">Created On</th>
-        <th></th>
-        <th></th>
-      <% end %>
+      <th data-sortable="true">Deprecated On</th>
+      <th data-sortable="true">Created On</th>
+      <th>Actions</th>
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>

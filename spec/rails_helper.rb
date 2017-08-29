@@ -105,6 +105,10 @@ RSpec.configure do |config|
   end
 end
 
+def current_user
+  @user
+end
+
 def compare_schemas_after_processing(original, compare_to)
   sorted_fields = normalise_schema(original)
   sorted_example_output = normalise_schema(compare_to)
