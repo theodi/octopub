@@ -2,8 +2,6 @@ class DatasetsController < ApplicationController
   include FileHandlingForDatasets
 
   before_action :redirect_to_api, only: [:index, :show, :files, :dashboard]
-  before_action :check_signed_in?, only: [:show, :files, :edit, :dashboard, :update, :create, :new]
-  before_action :check_permissions, only: [:show, :files, :edit, :update, :delete]
   before_action :get_dataset, only: [:show, :files, :edit, :destroy]
   before_action :get_multipart, only: [:create, :update]
   before_action :clear_files, only: [:create, :update]
@@ -12,6 +10,8 @@ class DatasetsController < ApplicationController
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
+  
+  authorize_resource
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
@@ -123,16 +123,8 @@ class DatasetsController < ApplicationController
     params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method])
   end
 
-  def check_signed_in?
-    render_403 if current_user.nil?
-  end
-
   def set_direct_post
     @s3_direct_post = FileStorageService.private_presigned_post
-  end
-
-  def check_permissions
-    render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
   end
   
   def available_schemas

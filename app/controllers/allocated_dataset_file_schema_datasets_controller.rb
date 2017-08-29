@@ -43,10 +43,6 @@ class AllocatedDatasetFileSchemaDatasetsController < ApplicationController
     render 'new' unless flash.empty?
   end
 
-  def check_signed_in?
-    render_403 if current_user.nil?
-  end
-
   def set_direct_post
     @s3_direct_post = FileStorageService.private_presigned_post
   end

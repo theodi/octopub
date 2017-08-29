@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-describe 'datasets/_dataset.html.erb' do
+describe 'datasets/_dataset.html.erb', :view do
 
   before(:each) do
     @user = create(:user)
+    allow_any_instance_of(ActionView::TestCase::TestController).to receive(:current_user).and_return(@user)
     @dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user)
     allow_any_instance_of(DatasetFile).to receive(:check_schema)
     @dataset_with_schema = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user,

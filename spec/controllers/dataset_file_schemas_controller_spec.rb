@@ -333,7 +333,7 @@ describe DatasetFileSchemasController, type: :controller do
   
     it "can be switch from public to private and vice versa" do      
       expect(FileStorageService).to receive(:push_public_object).twice
-      schema = create :dataset_file_schema
+      schema = create :dataset_file_schema, user_id: @user.id, owner_username: @user.name
       expect(schema.restricted).to eq true      
       post :update, params: { id: schema.id, dataset_file_schema: {  restricted: false }}
       schema.reload
