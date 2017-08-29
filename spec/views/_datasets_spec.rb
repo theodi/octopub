@@ -4,6 +4,7 @@ describe 'datasets/_datasets.html.erb' do
 
   before(:each) do
     @user = create(:user, name: "user")
+    allow_any_instance_of(ActionView::TestCase::TestController).to receive(:current_user).and_return(@user)
   end
 
   it "should display a number of datasets" do

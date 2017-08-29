@@ -103,10 +103,18 @@ RSpec.configure do |config|
       mocks.verify_partial_doubles = true
     end
   end
-end
 
-def current_user
-  @user
+  # This overrides always true in the spec_helper file
+  # Added to allow stubbing of current_user in view specs:
+  # https://github.com/rspec/rspec-rails/issues/1076
+  config.around(:each, type: :view) do |ex|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      ex.run
+      mocks.verify_partial_doubles = true
+    end
+  end
+
 end
 
 def compare_schemas_after_processing(original, compare_to)
