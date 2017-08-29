@@ -1,6 +1,7 @@
 class DatasetFileSchemasController < ApplicationController
   before_action :check_signed_in?
   before_action :set_dataset_file_schema, only: [:show, :edit, :update, :destroy]
+  authorize_resource
 
   def index
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
