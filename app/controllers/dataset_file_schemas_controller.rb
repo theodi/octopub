@@ -1,5 +1,4 @@
 class DatasetFileSchemasController < ApplicationController
-  before_action :check_signed_in?
   before_action :set_dataset_file_schema, only: [:show, :edit, :update, :destroy]
   authorize_resource
 
