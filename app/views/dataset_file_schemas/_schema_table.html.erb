@@ -28,7 +28,7 @@
           </td>
         <% end %>
         <td>
-          <% if dataset_file_schema.user == current_user || admin_user %>
+          <% if can? :delete, dataset_file_schema %>
             <%= link_to("Delete", dataset_file_schema_path(dataset_file_schema), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "btn btn-danger btn-sm") %>
           <% end %>
         </td>
