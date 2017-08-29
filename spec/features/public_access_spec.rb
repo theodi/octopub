@@ -42,7 +42,8 @@ feature "A visiting, non-logged in user", type: :feature do
       visit new_dataset_path 
     end
     it "edit dataset path" do 
-      visit edit_dataset_path(1)
+      @dataset = FactoryGirl.create(:dataset)
+      visit edit_dataset_path(@dataset.id)
     end
     it "new dashboard path" do 
       visit dashboard_path 
