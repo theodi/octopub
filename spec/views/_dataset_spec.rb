@@ -91,3 +91,40 @@ describe 'datasets/_dataset.html.erb', :view do
   end
 
 end
+
+
+describe 'datasets/_dataset.html.erb for other users', :view do
+
+  before(:each) do
+    @user = create(:user)
+    @other = create(:user)
+    allow_any_instance_of(ActionView::TestCase::TestController).to receive(:current_user).and_return(@other)
+    @dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user)
+  end
+
+  it "doesn't display the edit link" do
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+    page = Nokogiri::HTML(rendered)
+    expect(page.css('tr')[0].css('td')[6].inner_text).not_to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).not_to match(/Delete/)
+  end
+
+end
+
+describe 'datasets/_dataset.html.erb for admin users', :view do
+
+  before(:each) do
+    @user = create(:user)
+    @admin = create(:admin)
+    allow_any_instance_of(ActionView::TestCase::TestController).to receive(:current_user).and_return(@admin)
+    @dataset = create(:dataset, name: "My Dataset", repo: "my-repo", user: @user)
+  end
+
+  it 'displays the edit link' do
+    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
+    page = Nokogiri::HTML(rendered)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Delete/)
+  end
+
+end
