@@ -64,7 +64,7 @@ gem 'twitter'
 gem 'octokit'
 gem 'git'
 gem 'odlifier'
-gem 'aws-sdk', '~> 2'
+gem 'aws-sdk', '~> 3'
 gem 'pusher'
 gem 'certificate-factory'
 
