@@ -104,11 +104,10 @@ RSpec.configure do |config|
     end
   end
 
-<<<<<<< HEAD
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include WardenSpecHelper, type: :feature
-=======
+
   # This overrides always true in the spec_helper file
   # Added to allow stubbing of current_user in view specs:
   # https://github.com/rspec/rspec-rails/issues/1076
@@ -143,7 +142,6 @@ def normalise_schema(schema)
     normalised = schema.fields
   end
   normalised.sort_by { |k| k["name"] }
->>>>>>> master
 end
 
 def sign_in(user)

@@ -47,6 +47,3 @@ feature "GitHub Logged in access to pages", type: :feature do
     end
   end
 end
-
-  end
-end
