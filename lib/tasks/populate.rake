@@ -15,7 +15,7 @@ namespace :populate do
       dataset_file_schema = DatasetFileSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
       dataset_file_schema.update(url_in_repo: schema_url)
       dataset.dataset_files.each do |dataset_file|
-        dataset_file.update_columns(dataset_file_schema: dataset_file_schema) if dataset_file.dataset_file_schema.nil?
+        dataset_file.update_columns(dataset_file_schema_id: dataset_file_schema.id) if dataset_file.dataset_file_schema_id.nil?
       end
     end
     
