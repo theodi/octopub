@@ -31,8 +31,30 @@ html {
 }
 
 body {
-  padding: 20px 0 0 0;
+  padding: 20px 20px 0 0;
   margin-bottom: 160px;
+}
+
+.getting-started {
+
+  p {
+    font-size: 1.2em;
+    line-height: 1.5em;
+    margin: 5px 0px 5px 5px;
+  }
+
+  img {
+
+    border: 1px solid #eee;
+    padding: 5px;
+    margin: 5px 5px 0px 0px;
+
+  }
+}
+
+.license-list {
+  margin-left: 15px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .navbar-text {
@@ -41,6 +63,16 @@ body {
   .btn {
     margin-left: 7px;
   }
+}
+
+/* Non javascript dropdown menu */
+.navbar-nav > li > a:hover {
+  background-color: #90d2ec;
+  color: #666;
+  text-decoration: none;
+}
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 footer {
@@ -79,4 +111,31 @@ footer {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 140px;
+}
+
+/* Tooltip container */
+.tooltips {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltips .tooltiptexts {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptexts {
+  visibility: visible;
 }

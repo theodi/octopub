@@ -1,0 +1,81 @@
+{
+  "fields": [
+    {
+      "name": "Abbatoir",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "string",
+      "format": "default"
+    },
+    {
+      "name": "Address",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "string",
+      "format": "default"
+    },
+    {
+      "name": "Country",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "string",
+      "format": "default"
+    },
+    {
+      "name": "Date",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "string",
+      "format": "default"
+    },
+    {
+      "name": "Cows",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "integer",
+      "format": "default"
+    },
+    {
+      "name": "Chickens",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "integer",
+      "format": "default"
+    },
+    {
+      "name": "Pigs",
+      "title": "",
+      "description": "",
+      "constraints": {
+        "required": true,
+        "unique": false
+      },
+      "type": "integer",
+      "format": "default"
+    }
+  ]
+}

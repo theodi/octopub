@@ -4,7 +4,7 @@ describe 'POST /datasets/:id/files' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    allow_any_instance_of(CreateRepository).to receive(:perform)
 
     @filename = 'test-data.csv'
     @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
@@ -16,12 +16,10 @@ describe 'POST /datasets/:id/files' do
 
     @repo = double(GitData)
     expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
-
   end
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
   end
 
   it 'creates a new file' do
@@ -30,6 +28,7 @@ describe 'POST /datasets/:id/files' do
 
     expect(@repo).to receive(:add_file).with("data/my-single-file.csv", File.read(path))
     expect(@repo).to receive(:add_file).with("data/my-single-file.md", instance_of(String))
+    expect(@repo).to receive(:save)
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
     post "/api/datasets/#{@dataset.id}/files", params: {
@@ -54,6 +53,7 @@ describe 'POST /datasets/:id/files' do
     expect(@dataset.dataset_files.last.description).to eq('My super descriptive description')
   end
 
+  # TODO fix this
   # it 'errors if the csv does not match the schema' do
 
   #   schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas', 'good-schema.json')

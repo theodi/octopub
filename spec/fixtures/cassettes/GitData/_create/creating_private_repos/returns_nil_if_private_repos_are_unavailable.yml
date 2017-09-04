@@ -74,9 +74,9 @@ http_interactions:
       - EAE8:24521:133FEEB:18C2D46:5880D717
     body:
       encoding: ASCII-8BIT
-      string: '{"login":"<GITHUB_USER>","id":3565,"avatar_url":"https://avatars.githubusercontent.com/u/3565?v=3","gravatar_id":"","url":"https://api.github.com/users/<GITHUB_USER>","html_url":"https://github.com/<GITHUB_USER>","followers_url":"https://api.github.com/users/<GITHUB_USER>/followers","following_url":"https://api.github.com/users/<GITHUB_USER>/following{/other_user}","gists_url":"https://api.github.com/users/<GITHUB_USER>/gists{/gist_id}","starred_url":"https://api.github.com/users/<GITHUB_USER>/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/<GITHUB_USER>/subscriptions","organizations_url":"https://api.github.com/users/<GITHUB_USER>/orgs","repos_url":"https://api.github.com/users/<GITHUB_USER>/repos","events_url":"https://api.github.com/users/<GITHUB_USER>/events{/privacy}","received_events_url":"https://api.github.com/users/<GITHUB_USER>/received_events","type":"User","site_admin":false,"name":"James
-        Smith","company":"The Open Data Institute","blog":"http://www.<GITHUB_USER>.org.uk","location":"Horsham,
-        UK","email":"james@<GITHUB_USER>.org.uk","hireable":null,"bio":"Building a
+      string: '{"login":"test-user","id":3565,"avatar_url":"https://avatars.githubusercontent.com/u/3565?v=3","gravatar_id":"","url":"https://api.github.com/users/test-user","html_url":"https://github.com/test-user","followers_url":"https://api.github.com/users/test-user/followers","following_url":"https://api.github.com/users/test-user/following{/other_user}","gists_url":"https://api.github.com/users/test-user/gists{/gist_id}","starred_url":"https://api.github.com/users/test-user/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/test-user/subscriptions","organizations_url":"https://api.github.com/users/test-user/orgs","repos_url":"https://api.github.com/users/test-user/repos","events_url":"https://api.github.com/users/test-user/events{/privacy}","received_events_url":"https://api.github.com/users/test-user/received_events","type":"User","site_admin":false,"name":"James
+        Smith","company":"The Open Data Institute","blog":"http://www.test-user.org.uk","location":"Horsham,
+        UK","email":"james@test-user.org.uk","hireable":null,"bio":"Building a
         better future out of code. Head of Labs at @theodi, party leader of @SomethingNewUK,
         founder of @cleanweb-uk, and chair of @cdcssg. Neutral Good.","public_repos":83,"public_gists":9,"followers":82,"following":24,"created_at":"2008-03-21T17:05:23Z","updated_at":"2017-01-19T14:56:03Z"}'
     http_version: 
@@ -150,7 +150,7 @@ http_interactions:
   recorded_at: Thu, 19 Jan 2017 15:11:20 GMT
 - request:
     method: delete
-    uri: https://api.github.com/repos/<GITHUB_USER>/my-awesome-repo
+    uri: https://api.github.com/repos/test-user/my-awesome-repo
     body:
       encoding: UTF-8
       string: "{}"

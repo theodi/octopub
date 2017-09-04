@@ -1,0 +1,36 @@
+<h1 class="page-header">Edit user and allocate schemas <small><%= @user.name %></small></h1>
+
+<%= bootstrap_form_tag url: restricted_user_path(@user), method: :put do |f| %>
+  <%= f.text_field "user[name]", label: "Username", value: @user.name, required: true, disabled: true %>
+  <%= f.email_field "user[email]", label: "Email", value: @user.email, required: true %>
+  <%= f.text_field "user[api_key]", label: "API Key", value: @user.api_key, required: true, disabled: true %>
+  <%= f.text_field "user[twitter_handle]", label: "Twitter handle", value: @user.twitter_handle, required: false, prepend: '@' %>
+
+  <div class="form-group">
+      <label class="control-label" for="user[role]">Role</label>
+      <%= select(:user, :role, options_for_select(User.roles.map {|role_name, _role_integer| [role_name.titleize, role_name]}, @user.role), {}, { class: 'form-control' }) %>
+  </div>
+<div class="panel panel-default panel-warning">
+  <div class="panel-heading"><b>Restricted User and Schemas</b></div>
+    <div class="panel-body">
+      <%= f.check_box "user[restricted]", label: "Restrict this user to allocated dataset file schemas", value: @user.restricted %>
+      <% if @dataset_file_schemas.any? %>
+        <% if SchemaCategory.any? %>
+          <div class="form-group">
+            <%= f.collection_check_boxes 'user[schema_category_ids][]', SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <label class="control-label" for="allocated_dataset_file_schema_ids">Allocated dataset file schemas</label>
+          <%= collection_check_boxes(:user, :allocated_dataset_file_schema_ids, @dataset_file_schemas, :id, :name, include_hidden: false) do |b| %>
+            <div class="checkbox">
+              <%=  b.label { b.check_box + b.text } %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Update</button>
+<% end %>

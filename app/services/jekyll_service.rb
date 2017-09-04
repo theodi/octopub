@@ -6,21 +6,8 @@ class JekyllService
   end
 
   def repo_service
-    fetch_repo if @repo.nil?
+    @repo = RepoService.fetch_repo(@dataset) if @repo.nil?
     @repo_service ||= RepoService.new(@repo)
-  end
-
-  def fetch_repo(client = @dataset.user.octokit_client)
-
-    @repo ||= begin
-      Rails.logger.info "JekyllService: in fetch_repo, look it up"
-      @repo = GitData.find(repo_owner, @dataset.name, client: client)
-      # This is in for backwards compatibility at the moment required for API
-
-    rescue Octokit::NotFound
-      Rails.logger.info "in fetch_repo - not found"
-      @repo = nil
-    end
   end
 
   def repo_owner
@@ -33,6 +20,7 @@ class JekyllService
     create_jekyll_files
     push_to_github
     wait_for_gh_pages_build(5, @dataset)
+    create_certificate(dataset)
   end
 
   def wait_for_gh_pages_build(delay = 5, dataset)
@@ -141,10 +129,11 @@ class JekyllService
     @dataset.dataset_files.each do |d|
       if d.file
         update_in_github(d.filename, d.file)
-        update_jekyll_in_github(d.filename) unless @dataset.restricted?
+        update_jekyll_in_github(d.filename) unless @dataset.restricted
       end
     end
     update_datapackage
+    update_config_yml(@dataset)
     push_to_github
   end
 
@@ -177,7 +166,7 @@ class JekyllService
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => json_schema_for_datapackage(file.dataset_file_schema)
-      }.delete_if { |k,v| v.nil? }
+      }.delete_if { |_k,v| v.nil? }
     end
 
     datapackage.to_json
@@ -231,7 +220,7 @@ class JekyllService
 
   def create_json_jekyll_files(file, schema)
     Rails.logger.info "In create_jekyll_files"
-    for_each_file_in_schema(file, schema) do |filename, content|
+    for_each_file_in_schema(file, schema) do |filename, _content|
       # Add human readable template
       unless filename == "index.json"
         if filename.scan('/').count > 0
@@ -241,5 +230,36 @@ class JekyllService
         end
       end
     end
+  end
+
+  def create_certificate(dataset)
+    Rails.logger.info "in create_certificate"
+    cert = CertificateFactory::Certificate.new(dataset.gh_pages_url)
+
+    gen = cert.generate
+
+    if gen[:success] == 'pending'
+      result = cert.result
+      add_certificate_url(result[:certificate_url], dataset)
+    end
+  end
+
+  def add_certificate_url(url, dataset)
+    return if url.nil?
+    url = url.gsub('.json', '')
+    dataset.update_column(:certificate_url, url)
+    update_config_yml(dataset)
+    push_to_github
+  end
+
+  def update_config_yml(dataset)
+
+    config = {
+      "data_source" => ".",
+      "update_frequency" => dataset.frequency
+    }
+    config["certificate_url"] = "#{dataset.certificate_url}/badge.js" if dataset.certificate_url
+
+    update_file_in_repo('_config.yml', config.to_yaml)
   end
 end

@@ -1,10 +1,11 @@
 class InferredDatasetFileSchemasController < ApplicationController
-
+  before_action :check_signed_in?
   # TODO needs to handle files and URLs like Dataset controller
 
   def new
     @inferred_dataset_file_schema = InferredDatasetFileSchema.new
     @s3_direct_post = FileStorageService.presigned_post
+    @user_id = current_user.id
   end
 
   def create
@@ -30,10 +31,11 @@ class InferredDatasetFileSchemasController < ApplicationController
 
   def failed_create
     @s3_direct_post = FileStorageService.presigned_post
+    @user_id = current_user.id
     render :new
   end
 
   def create_params
-    params.require(:inferred_dataset_file_schema).permit(:name, :description, :user_id, :csv_url)
+    params.require(:inferred_dataset_file_schema).permit(:name, :description, :user_id, :csv_url, :owner_username, :restricted, schema_category_ids: [])
   end
 end

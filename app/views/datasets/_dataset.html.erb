@@ -1,23 +1,44 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <td class="owner">
-    <%= image_tag dataset.owner_avatar, height: 20, width: 20 %>
+    <%= image_tag dataset.owner_avatar, height: 20, width: 20 if dataset.owner_avatar %>
     <%= dataset.repo_owner %>
   </td>
-  <% if @dashboard %>
-    <td class="private">
-      <% if dataset.restricted %>
-        <i class='fa fa-lock fa-lg' title="private"></i>
+  <td class="private">
+    <% if (dataset.deprecated_resource.eql?(true)) %>
+    <% else %>
+      <% if (dataset.github_private?) %>
+        <i class='fa fa-lock fa-lg' title="private"></i> <i class='fa fa-lg fa-github' title="github"></i>
+      <% elsif (dataset.github_public?) %>
+        <i class='fa fa-globe fa-lg' title="public"></i> <i class='fa fa-lg fa-github' title="github"></i>
       <% else %>
-        <i class='fa fa-globe fa-lg' title="public"></i>
+        <i class='fa fa-lock fa-lg' title="private"></i>
       <% end %>
-    </td>
-  <% end %>
-  <td><%= dataset.name %></td>
-  <td>
-    <%= link_to dataset.gh_pages_url, dataset.gh_pages_url %>
+    <% end %>
   </td>
-  <% if @dashboard %>
-    <td><%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %></td>
-    <td><%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %></td>
-  <% end %>
+  <td>
+    <% if dataset.deprecated_resource.eql?(true) %>
+        <%= dataset.name %> <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="dataset inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
+    <% else %>
+      <% if dataset.github_public? %>
+        <%= link_to dataset.name, dataset.gh_pages_url %>
+      <% elsif dataset.github_private? %>
+        <%= link_to dataset.name, dataset.github_url %>
+      <% elsif dataset.local_private? %>
+        <%= link_to dataset.name, files_path(dataset) %>
+      <% end %>
+    <% end %>
+  </td>
+  <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
+  <td><%= if dataset.deprecated_resource.eql?(true)
+            dataset.url_deprecated_at.to_formatted_s(:short)
+          end%></td>
+  <td><%= dataset.created_at.to_formatted_s(:short) %></td>
+  <td>
+    <% if can? :edit, dataset %>
+      <%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %>
+    <% end %>
+    <% if can? :delete, dataset %>
+      <%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %>
+    <% end %>
+  </td>
 </tr>

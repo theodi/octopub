@@ -1,34 +1,60 @@
 require 'rails_helper'
 
 describe UsersController, type: :controller do
+  include_context 'user and organisations'
   render_views
 
   before(:each) do
-    @user = create(:user, name: "Molly O'Woof woof")
+    @user = create(:user)
   end
 
   it 'returns 403 if user is not logged in' do
+    sign_out
     get :edit
-
     expect(response.code).to eq("403")
   end
 
-  it "shows a user's details" do
-    sign_in @user
+  describe "when logged in" do
 
-    get :edit
-    expect(CGI.unescapeHTML(response.body)).to match(/#{@user.name}/)
-    expect(response.body).to match(/#{@user.email}/)
-    expect(response.body).to match(/#{@user.api_key}/)
+    before(:each) do
+      sign_in @user
+    end
+
+    it "shows a user's details" do
+      get :edit
+      expect(CGI.unescapeHTML(response.body)).to match(/#{@user.name}/)
+      expect(response.body).to match(/#{@user.email}/)
+      expect(response.body).to match(/#{@user.api_key}/)
+    end
+
+    it "updates a user's email" do
+      put :update, params: { user: { email: 'newemail@example.com' }}
+      @user.reload
+      expect(@user.email).to eq('newemail@example.com')
+    end
   end
 
-  it "updates a user's email" do
-    sign_in @user
+  describe "handles permissions" do
+    it "an admin can view list of users" do
+      @admin = create(:admin, :with_twitter_name)
+      sign_in @admin
+      expect(@admin.admin?).to be true
+      get :index
+      expect(response.body).to match(/#{@admin.email}/)
+    end
 
-    put :update, params: { user: { email: 'newemail@example.com' }}
+    it "a publisher cannot view list of users" do
+      @user = create(:user)
+      sign_in @user
+      get :index
+      expect(response.body).to have_content "You do not have permission to view that page or resource"
+    end
 
-    @user.reload
-    expect(@user.email).to eq('newemail@example.com')
+    it "a superuser cannot view list of users" do
+      @user = create(:superuser)
+      sign_in @user
+      get :index
+      expect(response.body).to have_content "You do not have permission to view that page or resource"
+    end
   end
-
 end

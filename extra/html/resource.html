@@ -18,7 +18,7 @@ layout: default
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="{{ site.github.url }}/">
         {{ site.data.datapackage.title }}
       </a>
     </div>
@@ -27,10 +27,8 @@ layout: default
 
 <h1>{{ resource.name }}</h1>
 
-<div class="table-container">
-  {% include data_table.html source = resource.path %}
-</div>
+{% include data_table.html source = resource.path %}
 
 {% assign csvlint = resource.links | where:"name","CSV Validation" | first %}
 
-<a class='btn btn-primary hidden' id='download-csv' href='{{ site.github.url }}/{{ resource.path }}'><i class='fa fa-cloud-download'></i> Download CSV</a>
+<a class="btn btn-primary hidden" id="download-csv" href="{{ site.github.url }}/{{ resource.path }}"><i class="fa fa-cloud-download"></i> Download CSV</a>

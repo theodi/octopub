@@ -4,18 +4,17 @@ require 'webmock/rspec'
 describe InferredDatasetFileSchemaCreationService do
 
   let(:user) { create(:user) }
-  let(:infer_schema_filename) { 'schemas/infer-from/data_infer.csv' }
 
-  let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
+  let(:uuid) { SecureRandom.uuid }
 
   let(:csv_storage_key) { "uploads/#{uuid}/data_infer.csv" }
-  let(:infer_schema_csv_url) { url_with_stubbed_get_for_storage_key(csv_storage_key, infer_schema_filename) }
+  let(:infer_schema_csv_url) { url_with_stubbed_get_for_storage_key(csv_storage_key, 'data_infer.csv') }
 
   let(:schema_name) { Faker::Cat.name }
   let(:description) { Faker::Cat.breed }
   let(:schema_filename) { "#{schema_name.parameterize}.json" }
   let(:s3_object_key) { "uploads/#{uuid}/#{schema_filename}" }
-  let(:inferred_dataset_file_schema) { InferredDatasetFileSchema.new(name: schema_name, description: description, csv_url: infer_schema_csv_url, user_id: user.id)}
+  let(:inferred_dataset_file_schema) { InferredDatasetFileSchema.new(name: schema_name, description: description, csv_url: infer_schema_csv_url, user_id: user.id, owner_username: user.name)}
 
   before(:each) do
     @schema_service = InferredDatasetFileSchemaCreationService.new(inferred_dataset_file_schema)
@@ -28,9 +27,19 @@ describe InferredDatasetFileSchemaCreationService do
       expect(schema.get_field('id')['constraints']).to_not be_nil
     end
 
+    it "if given a valid CSV file with empty fields" do
+      @filename = 'data_infer_empty_cells.csv'
+      csv_storage_key = "uploads/#{uuid}/#{@filename}"
+      url = url_with_stubbed_get_for_storage_key(csv_storage_key, @filename)
+      schema = InferredDatasetFileSchemaCreationService.infer_dataset_file_schema_from_csv(url)
+      expect(schema.get_field('height')['constraints']).to_not be_nil
+    end
+
     it 'with international characters' do
-      @filename = 'schemas/infer-from/data_infer_utf8.csv'
-      schema = InferredDatasetFileSchemaCreationService.infer_dataset_file_schema_from_csv(infer_schema_csv_url)
+      @filename = 'data_infer_utf8.csv'
+      csv_storage_key = "uploads/#{uuid}/#{@filename}"
+      url = url_with_stubbed_get_for_storage_key(csv_storage_key, @filename)
+      schema = InferredDatasetFileSchemaCreationService.infer_dataset_file_schema_from_csv(url)
 
       expect(schema.get_field('id')['type']).to eq('integer')
       expect(schema.get_field('id')['format']).to eq('default')
@@ -67,6 +76,18 @@ describe InferredDatasetFileSchemaCreationService do
       schema = JSON.parse(dataset_file_schema.schema)
       expect(schema['fields'].count).to eq 3
       expect(schema['fields'][0]['name']).to eq 'id'
+    end
+
+    it 'from a valid csv file and creates the schema field and constraints' do
+      @schema_service.perform
+
+      dataset_file_schema = DatasetFileSchema.first
+      schema = JSON.parse(dataset_file_schema.schema)
+      expect(schema['fields'].count).to eq 3
+      expect(schema['fields'][0]['name']).to eq 'id'
+
+      expect(dataset_file_schema.schema_fields.count).to eq 3
+      expect(dataset_file_schema.schema_fields.first.name).to eq 'id'
     end
   end
 end

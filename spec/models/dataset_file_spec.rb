@@ -73,19 +73,15 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     context "with file at the end of a URL" do
-
       before(:each) do
-        @storage_key = 'theodi/hot-drinks/gh-pages/hot-drinks.csv'
         @url = "https://cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
 
         @file = {
           "title" => 'Hot Drinks',
           "file" => @url,
-          "description" => 'WARNING: Contents may be hot',
-          "storage_key" => @storage_key
+          "description" => 'WARNING: Contents may be hot'
         }
       end
-
       it "creates a file" do
         file = DatasetFile.new_file(@file)
 
@@ -93,14 +89,69 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
         expect(file.filename).to eq("hot-drinks.csv")
         expect(file.description).to eq(@file["description"])
       end
-
     end
 
+    context "with file and a storage key" do
+      it "creates a file" do
+        filename = 'test-data.csv'
+        storage_key = filename
+        url_for_data_file = url_with_stubbed_get_for_storage_key(storage_key, filename)
+
+        @file = {
+          "title" => 'Hot Drinks',
+          "file" => url_for_data_file,
+          "description" => 'WARNING: Contents may be hot',
+          "storage_key" => storage_key
+        }
+
+        file = DatasetFile.new_file(@file)
+
+        expect(file.title).to eq(@file["title"])
+        expect(file.filename).to eq("hot-drinks.csv")
+        expect(file.description).to eq(@file["description"])
+      end
+    end
   end
 
   context "update_file" do
+    it "updates a file when given a URL" do
+      file = create(:dataset_file, title: 'Test Data')
+      path = File.join(Rails.root, storage_key)
+      url = "https://cdn.rawgit.com/theodi/hot-drinks/gh-pages/hot-drinks.csv"
 
-    it "updates a file" do
+       new_file = {
+          "id" => file.id,
+          "title" => 'Hot Drinks',
+          "file" => url,
+          "description" => 'WARNING: Contents may be hot',
+        }
+
+      file.update_file(new_file)
+      expect(file.filename).to eq('test-data.csv')
+      expect(file.description).to eq(new_file["description"])
+    end
+
+    it "updates a file when given a storage key" do
+      file = create(:dataset_file, title: 'Test Data')
+
+      filename = 'test-data.csv'
+      storage_key = filename
+      url_for_data_file = url_with_stubbed_get_for_storage_key(storage_key, filename)
+      new_file = {
+        "id" => file.id,
+        "title" => 'Hot Drinks',
+        "file" => url_for_data_file,
+        "description" => 'WARNING: Contents may be hot',
+        "storage_key" => storage_key
+      }
+      file.update_file(new_file)
+
+      expect(file.filename).to eq('test-data.csv')
+      expect(file.storage_key).to eq(storage_key)
+      expect(file.description).to eq(new_file["description"])
+    end
+
+    it "updates a file when given a File" do
       file = create(:dataset_file, title: 'Test Data')
       storage_key = 'spec/fixtures/test-data0.csv'
       path = File.join(Rails.root, storage_key)
@@ -118,7 +169,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.filename).to eq('test-data.csv')
       expect(file.storage_key).to eq(storage_key)
       expect(file.description).to eq(new_file["description"])
-
     end
 
     it "only updates the referenced file if a file is present" do
@@ -167,6 +217,12 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(@dataset.valid?).to eq(true)
     end
 
+    it 'returns the schema name' do
+      schema_name = Faker::Name.unique.name
+      dataset_file = build(:dataset_file,  dataset_file_schema: build(:dataset_file_schema, name: schema_name))
+      expect(dataset_file.schema_name).to eq schema_name
+    end
+
     it 'does not validate against a good schema with bad data' do
 
       storage_key = 'invalid-schema.csv'
@@ -213,7 +269,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
       stubbed_schema_url = url_with_stubbed_get_for(schema_path)
       @dataset = build(:dataset)
-      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url, csv_on_the_web_schema: true)
     end
 
     it 'validates with good data' do
@@ -258,7 +314,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       # The hats.csv fixture file IS DUFF and therefore should fail validation
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/multiple-csvs-on-the-web-schema.json')
       stubbed_schema_url = url_with_stubbed_get_for(schema_path)
-      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url)
+      @dataset_file_schema = build(:dataset_file_schema, url_in_repo: stubbed_schema_url, csv_on_the_web_schema: true)
       @dataset = build(:dataset)
     end
 

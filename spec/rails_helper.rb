@@ -4,8 +4,6 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
-
-
 require 'spec_helper'
 require 'rspec/rails'
 
@@ -13,12 +11,16 @@ require 'git_data'
 require 'database_cleaner'
 require 'factory_girl'
 require 'omniauth'
-require 'support/vcr_helper'
-require 'support/fake_data'
 require 'support/warden_spec_helper'
 require 'webmock/rspec'
 require 'sidekiq/testing'
+require 'timecop'
 
+require 'features/user_and_organisations'
+
+require 'support/odlifier_licence_mock'
+require 'support/vcr_helper'
+require 'support/fake_data'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -44,6 +46,9 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  config.include_context 'user and organisations', :include_shared => true
+  config.include_context 'odlifier licence mock', :include_shared => true
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -74,6 +79,7 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     # Stub out repository checking for all tests apart from GitData
     allow_any_instance_of(Octokit::Client).to receive(:repository?) { false } unless example.metadata[:described_class] == GitData
+
     unless example.example_group.description == 'FileStorageService'
       allow(FileStorageService).to receive(:get_string_io) do |storage_key|
         get_string_io_from_fixture_file(storage_key)
@@ -98,9 +104,46 @@ RSpec.configure do |config|
     end
   end
 
+<<<<<<< HEAD
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include WardenSpecHelper, type: :feature
+=======
+  # This overrides always true in the spec_helper file
+  # Added to allow stubbing of current_user in view specs:
+  # https://github.com/rspec/rspec-rails/issues/1076
+  config.around(:each, type: :view) do |ex|
+    config.mock_with :rspec do |mocks|
+      mocks.verify_partial_doubles = false
+      ex.run
+      mocks.verify_partial_doubles = true
+    end
+  end
+
+end
+
+def compare_schemas_after_processing(original, compare_to)
+  sorted_fields = normalise_schema(original)
+  sorted_example_output = normalise_schema(compare_to)
+  sorted_fields.each_with_index do |field, index|
+    if field['constraints']
+      field['constraints'] = field['constraints'].sort.to_h
+      sorted_example_output[index]['constraints'] = sorted_example_output[index]['constraints'].sort.to_h
+      expect(field['constraints']).to eq (sorted_example_output[index]['constraints'])
+    end
+  end
+  expect(sorted_fields).to eq sorted_example_output
+end
+
+def normalise_schema(schema)
+  normalised = schema
+  if schema.instance_of?(Hash) && schema.key?("fields")
+    normalised = schema['fields']
+  elsif schema.instance_of?(JsonTableSchema::Schema)
+    normalised = schema.fields
+  end
+  normalised.sort_by { |k| k["name"] }
+>>>>>>> master
 end
 
 def sign_in(user)
@@ -138,7 +181,7 @@ end
 
 def get_string_io_from_fixture_file(storage_key)
   unless storage_key.nil?
-    filename = storage_key.split('/').last
+    filename = URI.decode(storage_key).split('/').last
     StringIO.new(read_fixture_file(filename))
   end
 end
@@ -151,7 +194,8 @@ def get_string_io_schema_from_fixture_file(storage_key)
 end
 
 def url_with_stubbed_get_for(path)
-  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  filename = path.split('/').last
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/#{filename}"
   stub_request(:get, url).to_return(body: File.read(path))
   url
 end
@@ -164,7 +208,7 @@ end
 
 def url_with_stubbed_get_for_fixture_file(file_name)
   path = File.join(Rails.root, 'spec', 'fixtures', file_name)
-  url = "https://example.org/uploads/#{SecureRandom.uuid}/somefile.csv"
+  url = "https://example.org/uploads/#{SecureRandom.uuid}/#{file_name}.csv"
   stub_request(:get, url).to_return(body: File.read(path))
   url
 end
@@ -178,15 +222,8 @@ end
 def mock_pusher(channel_id)
   mock_client = double(Pusher::Channel)
   expect(Pusher).to receive(:[]).with(channel_id) { mock_client }
+  allow(mock_client).to receive(:trigger)
   mock_client
-end
-
-def skip_dataset_callbacks!
-  skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
-end
-
-def set_dataset_callbacks!
-  Dataset.set_callback(:create, :after, :create_repo_and_populate)
 end
 
 def skip_callback_if_exists(thing, name, kind, filter)

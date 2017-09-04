@@ -1,11 +1,12 @@
 require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
 describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   before(:each) do
     Sidekiq::Testing.inline!
-
-    skip_callback_if_exists(Dataset, :create, :after, :create_repo_and_populate)
+    allow_any_instance_of(CreateRepository).to receive(:perform)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
 
     @user = create(:user)
@@ -17,13 +18,11 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     args = {}
     @repo = double(GitData)
 
-    allow(@dataset).to receive(:fetch_repo)
-    expect(GitData).to receive(:find).once.with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+    allow(RepoService).to receive(:fetch_repo) { @repo }
   end
 
   after(:each) do
     Sidekiq::Testing.fake!
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
     Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
@@ -48,6 +47,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     expect(@repo).to receive(:update_file).with("data/test-data.csv", File.read(path))
     expect(@repo).to receive(:update_file).with("data/test-data.md", instance_of(String))
     expect(@repo).to receive(:update_file).with("datapackage.json", instance_of(String))
+    expect(@repo).to receive(:update_file).with("_config.yml", instance_of(String))
     expect(@repo).to receive(:save)
 
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))

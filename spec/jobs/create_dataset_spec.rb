@@ -1,12 +1,9 @@
 require 'rails_helper'
 
 describe CreateDataset do
-
   before(:each) do
-    skip_dataset_callbacks!
 
     @worker = CreateDataset.new
-
     @dataset_params = {
       name: "My Awesome Dataset",
       description: "An awesome dataset",
@@ -15,15 +12,10 @@ describe CreateDataset do
       license: "OGL-UK-3.0",
       frequency: "One-off",
     }
-
     @user = create(:user)
   end
 
-  after(:each) do
-    set_dataset_callbacks!
-  end
-
-  context 'without a schema' do 
+  context 'without a schema' do
 
     let(:filename) { 'test-data.csv' }
     let(:storage_key) { filename }
@@ -96,7 +88,11 @@ describe CreateDataset do
       expect(Dataset.count).to eq(1)
       expect(DatasetFileSchema.count).to eq(1)
       expect(DatasetFileSchema.first.url_in_s3).to eq url_for_schema
-      expect(DatasetFileSchema.first.schema).to eq get_json_from_url(schema_path)
+
+      schema_fields_from_file = DatasetFileSchemaService.parse_schema(get_json_from_url(schema_path))
+      schema_fields_from_model = JSON.parse(DatasetFileSchema.first.schema)
+
+      compare_schemas_after_processing(schema_fields_from_model, schema_fields_from_file)
     end
 
     it 'creates a dataset with an existing schema' do
@@ -122,10 +118,14 @@ describe CreateDataset do
       expect(Dataset.count).to eq(1)
       expect(DatasetFileSchema.count).to eq(1)
       expect(DatasetFileSchema.first.url).to eq url_for_schema
-      expect(DatasetFileSchema.first.schema).to eq get_json_from_url(schema_path)
+
+      schema_fields_from_file = DatasetFileSchemaService.parse_schema(get_json_from_url(schema_path))
+      schema_fields_from_model = JSON.parse(DatasetFileSchema.first.schema)
+
+      compare_schemas_after_processing(schema_fields_from_model, schema_fields_from_file)
+
       expect(Dataset.first.dataset_files.first.dataset_file_schema.id).to eq dataset_file_schema.id
     end
-
   end
 
   context 'with a bad schema' do

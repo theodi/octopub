@@ -4,8 +4,6 @@ describe 'POST /datasets' do
 
   before(:each) do
     Sidekiq::Testing.inline!
-    skip_dataset_callbacks!
-
     @user = create(:user)
 
     @name = "My cool dataset"
@@ -15,6 +13,7 @@ describe 'POST /datasets' do
     @license = "OGL-UK-3.0"
     @frequency = "Monthly"
 
+    allow(RepoService).to receive(:prepare_repo)
     allow_any_instance_of(JekyllService).to receive(:add_to_github) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
@@ -26,7 +25,6 @@ describe 'POST /datasets' do
 
     @storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
 
-    Dataset.set_callback(:create, :after, :create_repo_and_populate)
     allow_any_instance_of(Dataset).to receive(:complete_publishing)
 
     @repo = double(GitData)

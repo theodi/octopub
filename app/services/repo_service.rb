@@ -1,3 +1,5 @@
+require 'git_data'
+
 class RepoService
 
   attr_accessor :repo
@@ -9,6 +11,10 @@ class RepoService
 
   def self.create_repo(repo_owner, name, restricted, user)
     GitData.create(repo_owner, name, restricted: restricted, client: user.octokit_client)
+  end
+
+  def self.prepare_repo(dataset)
+    GitData.prepare_repository(dataset.repo_owner, dataset.name, dataset.user.octokit_client)
   end
 
   def add_file(filename, file)
@@ -23,4 +29,13 @@ class RepoService
     @repo.save
   end
 
+  def make_public
+    @repo.make_public
+  end
+
+  # throws Octokit::NotFound if not found
+  def self.fetch_repo(dataset)
+    client = dataset.user.octokit_client
+    GitData.find(dataset.repo_owner, dataset.name, client: client)
+  end
 end

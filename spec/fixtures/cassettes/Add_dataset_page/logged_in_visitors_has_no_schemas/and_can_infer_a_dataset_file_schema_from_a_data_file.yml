@@ -1,14 +1,12 @@
 ---
 http_interactions:
 - request:
-    method: put
-    uri: http://test-bucket.s3-eu-west-1.amazonaws.com/uploads/e11cae77-d496-4fa7-8b9f-3c5ab3d80fe0/vero-schema-name.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=1234/20170307/eu-west-1/s3/aws4_request&X-Amz-Date=20170307T152053Z&X-Amz-Expires=900&X-Amz-Signature=8b0bd9c37abee0ca1392392cbdeec44c3cf424e996c377c8712fd164dd2a6d93&X-Amz-SignedHeaders=host&x-amz-acl=public-read
+    method: get
+    uri: https://example.org/uploads/1234/nam-schema-name.json
     body:
-      encoding: UTF-8
-      string: '{"fields":[{"name":"Username","title":"","description":"","constraints":{"required":true,"unique":false},"type":"string","format":"default"},{"name":"Age","title":"","description":"","constraints":{"required":true,"unique":false},"type":"integer","format":"default"},{"name":"Height","title":"","description":"","constraints":{"required":true,"unique":false},"type":"integer","format":"default"},{"name":"Weight","title":"","description":"","constraints":{"required":true,"unique":false},"type":"integer","format":"default"},{"name":"Secret","title":"","description":"","constraints":{"required":true,"unique":false},"type":"string","format":"default"}]}'
+      encoding: US-ASCII
+      string: ''
     headers:
-      Content-Type:
-      - ''
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -17,30 +15,26 @@ http_interactions:
       - Ruby
   response:
     status:
-      code: 301
-      message: Moved Permanently
+      code: 404
+      message: Not Found
     headers:
-      X-Amz-Bucket-Region:
-      - us-east-1
-      X-Amz-Request-Id:
-      - 726A26AD5EA37CB4
-      X-Amz-Id-2:
-      - j4x8tXaalvt/A2T7Ujp3EgEnStVgLmvK3bIcUGm1G2ArpgNwvnTFVuB8RNy6VQmHAgbJmd3BI68=
+      Cache-Control:
+      - max-age=604800
       Content-Type:
-      - application/xml
-      Transfer-Encoding:
-      - chunked
+      - text/html
       Date:
-      - Tue, 07 Mar 2017 15:20:53 GMT
-      Connection:
-      - close
+      - Mon, 03 Apr 2017 16:33:13 GMT
+      Expires:
+      - Mon, 10 Apr 2017 16:33:13 GMT
       Server:
-      - AmazonS3
+      - EOS (lax004/2816)
+      Vary:
+      - Accept-Encoding
+      Content-Length:
+      - '606'
     body:
-      encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <Error><Code>PermanentRedirect</Code><Message>The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.</Message><Bucket>test-bucket</Bucket><Endpoint>s3.amazonaws.com</Endpoint><RequestId>726A26AD5EA37CB4</RequestId><HostId>j4x8tXaalvt/A2T7Ujp3EgEnStVgLmvK3bIcUGm1G2ArpgNwvnTFVuB8RNy6VQmHAgbJmd3BI68=</HostId></Error>
-    http_version: 
-  recorded_at: Tue, 07 Mar 2017 15:20:54 GMT
+      encoding: ASCII-8BIT
+      string: '{"fields":[{"name":"Username","constraints":{"required":true,"unique":true,"minLength":5,"maxLength":10,"pattern":"^[A-Za-z0-9_]*$"}},{"name":"Age","constraints":{"type":"http://www.w3.org/2001/XMLSchema#nonNegativeInteger","minimum":"13","maximum":"99"}},{"name":"Height","constraints":{"type":"http://www.w3.org/2001/XMLSchema#nonNegativeInteger","minimum":"20"}},{"name":"Weight","constraints":{"type":"http://www.w3.org/2001/XMLSchema#nonNegativeInteger","maximum":"500"}},{"name":"Password"}]}'
+    http_version:
+  recorded_at: Mon, 03 Apr 2017 16:33:13 GMT
 recorded_with: VCR 3.0.3

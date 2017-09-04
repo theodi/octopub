@@ -13,6 +13,8 @@
 #  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
+#  role            :integer          default("publisher"), not null
+#  restricted      :boolean          default(FALSE)
 #
 
 class User < ApplicationRecord
@@ -21,8 +23,13 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  enum role: [:publisher, :superuser, :admin]
+
   has_many :datasets
   has_many :dataset_file_schemas
+  has_many :output_schemas
+
+  has_and_belongs_to_many :allocated_dataset_file_schemas, class_name: 'DatasetFileSchema', join_table: :allocated_dataset_file_schemas_users
 
   before_validation :generate_api_key, on: :create
 
@@ -64,7 +71,19 @@ class User < ApplicationRecord
   end
 
   def organizations
-    @organizations ||= octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+    @organizations ||= get_organization_memberships
+  end
+
+  def get_organization_memberships
+    # Note cache key is based on model's id and updated at attributes
+    Rails.cache.fetch("#{cache_key}/organization_memberships", expires_in: 1.day) do
+      begin
+        octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
+      rescue Octokit::Unauthorized
+        Rails.logger.warn "User is currently unauthorised, they should log out and log back in."
+        []
+      end
+    end
   end
 
   def org_datasets
