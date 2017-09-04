@@ -151,7 +151,7 @@ GEM
       httparty
       rake
     cliver (0.3.2)
-    coderay (1.1.1)
+    coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
