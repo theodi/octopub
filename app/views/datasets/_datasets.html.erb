@@ -8,19 +8,12 @@
   <thead>
     <tr>
       <th data-sortable="true">Owner</th>
-      <% if @dashboard %>
-        <th>Type</th>
-      <% end %>
+      <th>Type</th>
       <th data-sortable="true">Name</th>
       <th data-sortable="true">Schemas?</th>
-      <% if @dashboard %>
-          <th data-sortable="true">Deprecated On</th>
-      <% end %>
-      <% if @dashboard %>
-        <th data-sortable="true">Created On</th>
-        <th></th>
-        <th></th>
-      <% end %>
+      <th data-sortable="true">Deprecated On</th>
+      <th data-sortable="true">Created On</th>
+      <th>Actions</th>
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>
@@ -34,7 +27,7 @@
   </div>
   <div class="panel-body">
     <ul class="list-group">
-      <li class="list-group-item"><i class='fa fa-lock fa-lg' title="private"></i> - Private repository - for you and Administrator's only.</li>
+      <li class="list-group-item"><i class='fa fa-lock fa-lg' title="private"></i> - Private repository - for you and Administrators only.</li>
       <li class="list-group-item"><i class='fa fa-globe fa-lg' title="public"></i> - Public repository - anybody can see this data.</li>
       <li class="list-group-item"><i class='fa fa-github fa-lg' title="github"></i> - In GitHub - published on GitHub</li>
       <li class="list-group-item"><i class='fa fa-exclamation-triangle' title="warning"></i> - Inaccessible Resource - mouseover for deprecation date</li>

@@ -9,6 +9,10 @@
 <% end %>
 
 <%= bootstrap_form_for @dataset_file_schema, method: :put do |f| %>
+
+  <h2>Metadata</h2>
+  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
+
   <h2>Schema</h2>
   <div>
     <table class="table table-bordered table-condensed" >

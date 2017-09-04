@@ -25,7 +25,4 @@ class UsersController < ApplicationController
       params.require(:user).permit(:email, :twitter_handle)
     end
 
-    def check_signed_in?
-      render_403 if current_user.nil?
-    end
 end

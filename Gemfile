@@ -29,7 +29,7 @@ gem 'jsontableschema', git: 'https://github.com/Floppy/jsontableschema-rb', bran
 
 # User related
 gem 'omniauth-github'
-
+gem 'cancancan', '~> 2.0'
 
 # Bootstrap and view stuff
 gem 'bootstrap-sass', '~> 3.2.0'
@@ -64,7 +64,7 @@ gem 'twitter'
 gem 'octokit'
 gem 'git'
 gem 'odlifier'
-gem 'aws-sdk', '~> 2'
+gem 'aws-sdk-s3', '~> 1'
 gem 'pusher'
 gem 'certificate-factory'
 
@@ -104,6 +104,7 @@ group :development, :test do
   gem 'guard-rspec', require: false
   gem 'guard-rails', require: false
   gem 'terminal-notifier-guard', '~> 1.7.0'
+  gem 'byebug'
 end
 
 group :test do

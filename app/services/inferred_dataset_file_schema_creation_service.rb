@@ -37,6 +37,7 @@ class InferredDatasetFileSchemaCreationService
         description: @inferred_dataset_file_schema.description,
         schema: inferred_schema.to_json,
         owner_username: @inferred_dataset_file_schema.owner_username,
+        restricted: @inferred_dataset_file_schema.restricted,
         schema_category_ids: @inferred_dataset_file_schema.schema_category_ids
       )
       DatasetFileSchemaService.update_dataset_file_schema(dataset_file_schema)

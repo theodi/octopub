@@ -36,6 +36,11 @@ class ApplicationController < ActionController::Base
     render_403 if current_user.nil?
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
+    render_403
+  end
+
   private
 
   def current_user

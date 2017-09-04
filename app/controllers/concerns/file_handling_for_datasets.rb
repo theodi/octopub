@@ -13,13 +13,14 @@ module FileHandlingForDatasets
 
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
         Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
-        storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
+        key = URI.encode(f["file"].original_filename)
+        storage_object = FileStorageService.create_and_upload_public_object(key, f["file"].read)
 
-        f["storage_key"] = storage_object.key(f["file"].original_filename)
+        f["storage_key"] = storage_object.key(key)
         f["file"] = storage_object.public_url
       else
-        Rails.logger.info "file is not an http uploaded file, it's a URL"
-        f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
+        Rails.logger.info "file is not an http uploaded file, it's an s3 storage key"
+        f["storage_key"] = f["file"] unless f["file"].nil?
       end
     end
   end
@@ -66,6 +67,6 @@ module FileHandlingForDatasets
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method)
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :schema_restricted, :dataset_file_schema_id, :publishing_method)
   end
 end

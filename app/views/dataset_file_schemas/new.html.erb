@@ -13,6 +13,7 @@
       <%= f.file_field :url_in_s3, label: "File", accept: ".json" %>
     </fieldset>
   </div>
+  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>

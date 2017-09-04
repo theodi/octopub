@@ -35,6 +35,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
       expect(DatasetFileSchema.count).to be before_datasets + 1
       expect(dataset_file_schema.name).to eq "#{common_name}-schema-name"
+      expect(dataset_file_schema.restricted).to eq true
       expect(dataset_file_schema.schema_fields).to_not be_empty
     end
 
@@ -64,7 +65,30 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(DatasetFileSchema.count).to be 1
       expect(dataset_file_schema.schema_categories).to eq [ category_1, category_2 ]
     end
+  
+    scenario "and can add a public dataset file schema" do
+      click_link 'Add a new dataset file schema'
+      before_datasets = DatasetFileSchema.count
 
+      within 'form' do
+        expect(page).to have_content @user.github_username
+        select @user.github_username, from: "dataset_file_schema_owner_username"
+        fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
+        fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
+        select "Public - any user may access this schema", from: 'dataset_file_schema_restricted'
+        attach_file('dataset_file_schema_url_in_s3', data_file)
+
+        click_on 'Submit'
+      end
+
+      dataset_file_schema = DatasetFileSchema.first
+
+      expect(DatasetFileSchema.count).to be before_datasets + 1
+      expect(dataset_file_schema.name).to eq "#{common_name}-schema-name"
+      expect(dataset_file_schema.restricted).to eq false
+      expect(dataset_file_schema.schema_fields).to_not be_empty
+    end
+        
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do

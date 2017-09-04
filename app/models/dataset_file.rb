@@ -41,7 +41,7 @@ class DatasetFile < ApplicationRecord
   end
 
   def self.file_from_url_with_storage_key(file, storage_key)
-    Rails.logger.info "DatasetFile: In file_from_url_with_storage_key"
+    Rails.logger.info "DatasetFile: In file_from_url_with_storage_key - '#{storage_key}'"
 
     fs_file = FileStorageService.get_string_io(storage_key)
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),

@@ -29,7 +29,7 @@
 
         <% if dataset_file_schemas.any? %>
           <h4>Choose an existing schema</h4>
-          <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Existing dataset schemas' } %>
+          <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Existing dataset schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
           <h4>Or upload a new one</h4>
         <% else %>
           <h4>Upload a schema for this Data File</h4>
@@ -39,7 +39,8 @@
 
         <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
         <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
-        <div><%= f.file_field "files[][schema]", label: "File" %></div>
+        <div><%= f.file_field "files[][schema]", label: "File", accept: ".json" %></div>
+        <%= f.select "files[][schema_restricted]", dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
       </fieldset>
     </div>
   </div>

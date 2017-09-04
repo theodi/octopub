@@ -28,6 +28,7 @@ describe 'POST /datasets/:id/files' do
 
     expect(@repo).to receive(:add_file).with("data/my-single-file.csv", File.read(path))
     expect(@repo).to receive(:add_file).with("data/my-single-file.md", instance_of(String))
+    expect(@repo).to receive(:save)
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
 
     post "/api/datasets/#{@dataset.id}/files", params: {
