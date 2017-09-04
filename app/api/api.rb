@@ -14,6 +14,8 @@ class API < Grape::API
 
   format :json
 
+  include Grape::Extensions::Hashie::Mash::ParamBuilder
+
   helpers do
     include ActionController::HttpAuthentication::Token
 
