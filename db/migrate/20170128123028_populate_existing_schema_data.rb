@@ -41,7 +41,8 @@ class PopulateExistingSchemaData < ActiveRecord::Migration[5.0]
   end
 
   def gh_pages_url(dataset)
-    "http://#{dataset.user.name}.github.io/#{dataset.repo}"
+    name = dataset.owner || dataset.user.github_username
+    "http://#{name}.github.io/#{dataset.repo}"
   end
 
   def get_schema_url(dataset)
