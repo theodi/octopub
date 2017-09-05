@@ -1,0 +1,13 @@
+{
+	"fields": [
+		{
+			"name": "Date",
+			"title": "Date",
+			"constraints": {
+				"required": false,
+				"type": "http://www.w3.org/2001/XMLSchema#date",
+				"datePattern": "%Y-%m-%d"
+			}
+		}
+	]
+}

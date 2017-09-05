@@ -1,8 +1,7 @@
 class DatasetsController < ApplicationController
+  include FileHandlingForDatasets
 
   before_action :redirect_to_api, only: [:index, :show, :files, :dashboard]
-  before_action :check_signed_in?, only: [:show, :files, :edit, :dashboard, :update, :create, :new]
-  before_action :check_permissions, only: [:show, :files, :edit, :update, :delete]
   before_action :get_dataset, only: [:show, :files, :edit, :destroy]
   before_action :get_multipart, only: [:create, :update]
   before_action :clear_files, only: [:create, :update]
@@ -11,56 +10,80 @@ class DatasetsController < ApplicationController
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
+  
+  authorize_resource
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
   def index
-    @datasets = Dataset.where(restricted: false).paginate(page: params[:page], per_page: 7).order(created_at: :desc)
+    @title = "Public Datasets"
+    @datasets = Dataset.github_public.order(created_at: :desc)
   end
 
   def dashboard
-    @dashboard = true
-    @datasets = current_user.all_datasets.paginate(page: params[:page])
+    @title = "My Datasets"
+    @datasets = current_user.datasets
+  end
+
+  def organisation_index
+    organisation_name = params[:organisation_name]
+    @title = "#{organisation_name.titleize}'s Datasets"
+    @datasets = Dataset.where(owner: organisation_name)
+    render :index
+  end
+
+  def user_datasets
+    @title = "My Datasets"
+    @datasets = current_user.datasets
+    render :dashboard
   end
 
   def refresh
     User.delay.refresh_datasets(current_user.id, params[:channel_id])
-
     head :accepted
   end
 
   def created
+    @publishing_method = params[:publishing_method]
+    logger.info "DatasetsController: In created for publishing_method #{@publishing_method}"
   end
 
   def edited
+    logger.info "DatasetsController: In edited"
   end
 
   def new
+    logger.info "DatasetsController: In new"
     @dataset = Dataset.new
-    @dataset_file_schemas = DatasetFileSchema.where(user_id: current_user.id)
+    @dataset_file_schemas = available_schemas
   end
 
   def create
+    logger.info "DatasetsController: In create"
     files_array = get_files_as_array_for_serialisation
-    job = CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
+    CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     if params[:async]
+      logger.info "DatasetsController: In create with params aysnc"
       head :accepted
     else
-      redirect_to created_datasets_path
+      redirect_to created_datasets_path(publishing_method: dataset_params[:publishing_method])
     end
   end
 
   def edit
     render_404 and return if @dataset.nil?
+    @dataset_file_schemas = available_schemas
+    @default_schema = @dataset.dataset_files.first.try(:dataset_file_schema_id)
   end
 
   def show
   end
 
   def update
+    logger.info "DatasetsController: In update"
     files_array = get_files_as_array_for_serialisation
-    job = UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
+    UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
@@ -70,27 +93,22 @@ class DatasetsController < ApplicationController
   end
 
   def destroy
-    @dataset.fetch_repo
+    success_message = "Dataset '#{@dataset.name}' deleted sucessfully"
+    begin
+      RepoService.fetch_repo(@dataset) unless @dataset.local_private?
+    rescue Octokit::NotFound
+      Rails.logger.info "Cannot find repository, probably already deleted"
+      success_message = "#{success_message} - but we could not find the repository in GitHub to delete"
+    end
     @dataset.destroy
-    redirect_to dashboard_path, :notice => "Dataset '#{@dataset.name}' deleted sucessfully"
+    redirect_to dashboard_path, notice: success_message
   end
 
   private
 
-  def get_files_as_array_for_serialisation
-    @files.map { |file_param_object| file_param_object.to_unsafe_hash }
-  end
-
-  def get_dataset
-    @dataset = Dataset.find(params["id"])
-  end
-
-  def clear_files
-    @files.keep_if { |f| f["id"] || (f["file"] && f["title"]) }
-  end
-
   def check_mandatory_fields
-    check_files 
+    logger.info "DatasetsController: In check_mandatory_fields"
+    check_files
     check_publisher
     render 'new' unless flash.empty?
   end
@@ -101,70 +119,15 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def check_files
-    if @files.blank?
-      flash[:no_files] = "You must specify at least one dataset"
-    end
-  end
-
-  def process_files
-    @files.each do |f|
-      if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
-        key ="uploads/#{SecureRandom.uuid}/#{f["file"].original_filename}"
-        obj = S3_BUCKET.object(key)
-        obj.put(body: f["file"].read, acl: 'public-read')
-        f["file"] = obj.public_url
-      end
-    end
-  end
-
-  def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :restricted)
-  end
-
   def dataset_update_params
-    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id])
-  end
-
-  def check_signed_in?
-    render_403 if current_user.nil?
+    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method])
   end
 
   def set_direct_post
-    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+    @s3_direct_post = FileStorageService.private_presigned_post
   end
-
-  def check_permissions
-    render_403 unless current_user.all_dataset_ids.include?(params[:id].to_i)
+  
+  def available_schemas
+    DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end
-
-  def get_multipart
-
-    @files = params["files"] || Array.new
-
-    if params["data"]
-      data = ActiveSupport::HashWithIndifferentAccess.new JSON.parse(params.delete("data"))
-      params["dataset"] = data["dataset"]
-
-      data["files"].each_with_index do |f, i|
-        @files[i]["title"] = f["title"]
-        @files[i]["description"] = f["description"]
-      end
-    end
-  end
-
-  def redirect_to_api
-    if params[:format] == 'json'
-      api_routes = {
-        "index" => "/api/datasets",
-        "dashboard" => "/api/user/datasets",
-        "show" => "/api/datasets/#{params[:id]}",
-        "files" => "/api/datasets/#{params[:id]}/files"
-      }
-
-      route = api_routes[params[:action]]
-      redirect_to(route) if route.present?
-    end
-  end
-
 end

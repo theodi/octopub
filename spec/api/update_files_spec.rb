@@ -1,22 +1,29 @@
-require 'spec_helper'
+require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
-describe 'PUT /datasets/:id/files/:file_id' do
+describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   before(:each) do
     Sidekiq::Testing.inline!
+    allow_any_instance_of(CreateRepository).to receive(:perform)
+    skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
 
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
       create(:dataset_file, title: "Test Data")
     ])
-    @file = @dataset.dataset_files.last
 
+    @file = @dataset.dataset_files.last
+    args = {}
     @repo = double(GitData)
-    expect(GitData).to receive(:find).with(@user.github_username, @dataset.name, client: a_kind_of(Octokit::Client)) { @repo }
+
+    allow(RepoService).to receive(:fetch_repo) { @repo }
   end
 
   after(:each) do
     Sidekiq::Testing.fake!
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
   it 'updates the description of a file' do
@@ -32,7 +39,7 @@ describe 'PUT /datasets/:id/files/:file_id' do
   end
 
   it 'updates a file' do
-    Dataset.set_callback(:update, :after, :update_in_github)
+    Dataset.set_callback(:update, :after, :update_dataset_in_github)
 
     filename = 'shoes-cotw.csv'
     path = File.join(Rails.root, 'spec', 'fixtures', filename)
@@ -40,6 +47,7 @@ describe 'PUT /datasets/:id/files/:file_id' do
     expect(@repo).to receive(:update_file).with("data/test-data.csv", File.read(path))
     expect(@repo).to receive(:update_file).with("data/test-data.md", instance_of(String))
     expect(@repo).to receive(:update_file).with("datapackage.json", instance_of(String))
+    expect(@repo).to receive(:update_file).with("_config.yml", instance_of(String))
     expect(@repo).to receive(:save)
 
     allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
@@ -50,5 +58,4 @@ describe 'PUT /datasets/:id/files/:file_id' do
       }
     }, headers: {'Authorization' => "Token token=#{@user.api_key}"}
   end
-
 end

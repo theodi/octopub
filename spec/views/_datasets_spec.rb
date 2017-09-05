@@ -1,9 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'datasets/_datasets.html.erb' do
 
   before(:each) do
     @user = create(:user, name: "user")
+    allow_any_instance_of(ActionView::TestCase::TestController).to receive(:current_user).and_return(@user)
   end
 
   it "should display a number of datasets" do
@@ -15,7 +16,7 @@ describe 'datasets/_datasets.html.erb' do
         owner_avatar: "http://example.org/avatar.png"
       )
     end
-    @datasets = Dataset.paginate(page: 1, per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.order(created_at: :desc)
     render :partial => 'datasets/datasets.html.erb'
 
     page = Nokogiri::HTML(rendered)
@@ -23,7 +24,7 @@ describe 'datasets/_datasets.html.erb' do
   end
 
   it "should display a message if there are no datasets" do
-    @datasets = Dataset.paginate(page: 1, per_page: 7).order(created_at: :desc)
+    @datasets = Dataset.order(created_at: :desc)
     render :partial => 'datasets/datasets.html.erb'
 
     expect(rendered).to match /You currently have no datasets/

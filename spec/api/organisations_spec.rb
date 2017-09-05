@@ -1,9 +1,9 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'GET /user/organisations' do
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   it 'lists all datasets' do

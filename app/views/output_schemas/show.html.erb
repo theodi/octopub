@@ -1,0 +1,25 @@
+<h1>Output Schema: <small><%= @output_schema.title %></small></h1>
+<div>
+  <p>For input schema: <%= link_to @output_schema.dataset_file_schema.name, @output_schema.dataset_file_schema %></p>
+  <p><%= @output_schema.description %></p>
+</div>
+<div>
+  <table class="table table-bordered" >
+    <thead>
+      <tr>
+        <th class="col-xs-2">Schema field name</th>
+        <th class="col-xs-2">Aggregation Type</th>
+      </tr>
+    </thead>
+    <% @output_schema.output_schema_fields.each do |output_schema| %>
+      <tbody>
+        <tr>
+          <td><%= output_schema.schema_field.name %></td>
+          <td><%= output_schema.friendly_aggregation_type %></td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+</div>
+<div class="actions">
+</div>

@@ -1,0 +1,35 @@
+<h1 class="page-header">Users</h1>
+<% if @users.count > 0 %>
+  <div>
+    <table class="table"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true"
+    data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Provider</th>
+        <th data-sortable="true">Email</th>
+        <th data-sortable="true">Restricted?</th>
+        <th data-sortable="true">Role</th>
+        <th>Datasets</th>
+        <th data-sortable="true">Created on</th>
+      </tr>
+      </thead>
+      <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.name, user_path(user) %></td>
+        <td><%= user.provider %></td>
+        <td><%= user.email %></td>
+        <td><%= 'Yes' if user.restricted %></td>
+        <td><%= user.role %></td>
+        <td><%= user.datasets.count %></td>
+        <td><%= user.created_at.to_formatted_s(:short) if user.created_at %></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+<% else %>
+  <p class='text-center lead'>There are no users</p>
+<% end %>

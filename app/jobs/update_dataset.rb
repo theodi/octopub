@@ -10,59 +10,48 @@ class UpdateDataset
       dataset_params.merge(job_id: self.jid)
     )
 
-    @dataset = get_dataset(id, @user)
+    @dataset = get_dataset(id)
     @dataset.assign_attributes(dataset_params) if dataset_params
 
     handle_files(files)
 
-    @dataset.report_status(options["channel_id"])
+    @dataset.report_status(options["channel_id"], :update)
   end
 
-  def get_dataset(id, user)
-    dataset = Dataset.find(id)
-    dataset.fetch_repo(user.octokit_client)
+  def get_dataset(dataset_id)
+    dataset = Dataset.find(dataset_id)
+    @repo = RepoService.fetch_repo(dataset) unless dataset.local_private?
     dataset
   end
 
   def handle_files(files)
+    jekyll_service = JekyllService.new(@dataset, @repo)
+    added = false
     files.each do |file|
+
       if file["id"]
         update_file(file["id"], file)
       else
-        add_file(file)
+        add_file(jekyll_service, file)
+        added = true
       end
     end
+    jekyll_service.push_to_github if added && !@dataset.local_private?
   end
 
-  def update_file(id, file)
-    f = @dataset.dataset_files.find { |f| f.id == id.to_i }
-
-    if file["schema"]
-      # Create schema
-      # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
-      file["dataset_file_schema_id"] = schema.id
-    end
-
-    f.update_file(file)
+  def update_file(id, update_file_hash)
+    f = @dataset.dataset_files.find { |this_file| this_file.id == id.to_i }
+    f.update_file(update_file_hash)
   end
 
-  def add_file(file)
-
-    f = DatasetFile.new_file(file)
-    if file["schema"]
-      # Create schema
-      # TODO if schema is existing, use it rather than create a new one
-      schema = DatasetFileSchemaService.new.create_dataset_file_schema(file["schema_name"], file["schema_description"], file["schema"], @user)
-      f.dataset_file_schema_id = schema.id
-    end
+  def add_file(jekyll_service, new_file_hash)
+    f = DatasetFile.new_file(new_file_hash)
 
     @dataset.dataset_files << f
     if f.save
-      f.add_to_github
-      f.add_jekyll_to_github
+      jekyll_service.add_to_github(f) unless @dataset.local_private?
+      jekyll_service.add_jekyll_to_github(f.filename) unless @dataset.local_private?
       f.file = nil
     end
   end
-
 end

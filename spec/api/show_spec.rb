@@ -1,9 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
+require 'support/odlifier_licence_mock'
 
-describe 'GET /datasets/:id' do
+describe 'GET /datasets/:id', vcr: { :match_requests_on => [:host, :method] } do
+  include_context 'odlifier licence mock'
 
   before(:each) do
-    @user = create(:user, name: "User McUser", email: "user@user.com")
+    @user = create(:user)
   end
 
   it 'gets a file with a particular id' do

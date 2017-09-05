@@ -35,4 +35,7 @@ en:
     description: >
       A detailed description of this particular file. Perhaps explain why someone would
       want this file instead of any other, what any unusual fields mean, and so on.
-
+  allocated_schema_dataset_file:
+    name: A descriptive name for this particular file
+    description: >
+      A detailed description of this particular file.
