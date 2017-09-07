@@ -234,13 +234,15 @@ class JekyllService
 
   def create_certificate(dataset)
     Rails.logger.info "in create_certificate"
-    cert = CertificateFactory::Certificate.new(dataset.gh_pages_url)
+    if ENV['ODC_USERNAME'] && ENV['ODC_API_KEY']
+      cert = CertificateFactory::Certificate.new(dataset.gh_pages_url)
 
-    gen = cert.generate
+      gen = cert.generate
 
-    if gen[:success] == 'pending'
-      result = cert.result
-      add_certificate_url(result[:certificate_url], dataset)
+      if gen[:success] == 'pending'
+        result = cert.result
+        add_certificate_url(result[:certificate_url], dataset)
+      end
     end
   end
 
