@@ -18,10 +18,15 @@ class CreateDataset
       dataset_file = DatasetFile.new_file(dataset_file_creation_hash)
       if dataset_file_creation_hash["schema"]
         # Create schema
+        if dataset_file_creation_hash["schema_s3_host"]
+          uploaded_schema = "https://#{dataset_file_creation_hash["schema_s3_host"]}/#{dataset_file_creation_hash["schema"]}" # Turn the storage key into a URL
+        else
+          uploaded_schema = dataset_file_creation_hash["schema"]
+        end
         schema = DatasetFileSchemaService.new(
           dataset_file_creation_hash["schema_name"],
           dataset_file_creation_hash["schema_description"],
-          "https://#{dataset_file_creation_hash["schema_s3_host"]}/#{dataset_file_creation_hash["schema"]}", # Turn the storage key into a URL
+          uploaded_schema,          
           user,
           user.name,
           dataset_file_creation_hash["schema_restricted"]
