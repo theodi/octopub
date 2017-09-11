@@ -38,10 +38,13 @@ function bgUpload(elem) {
       progressBar.text("Done");
       progressBar.removeClass('active');
       // extract key and generate URL from response
-      var key   = $(data.jqXHR.responseXML).find("Key").text();
+      var key    = $(data.jqXHR.responseXML).find("Key").text();
+      var s3Host = form.data('host'); 
 
       // create hidden field
       var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: key, class: 's3-file' });
+      container.append(input);
+      input = $("<input />", { type:'hidden', name: '[files[][schema_s3_host]]', value: s3Host, class: 's3-host' });
       container.append(input);
     },
     fail: function(e, data) {
