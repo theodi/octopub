@@ -67,6 +67,6 @@ module FileHandlingForDatasets
   end
 
   def dataset_params
-    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :schema_restricted, :dataset_file_schema_id, :publishing_method)
+    params.require(:dataset).permit(:name, :owner, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_s3_host, :schema_name, :schema_description, :schema_restricted, :dataset_file_schema_id, :publishing_method)
   end
 end

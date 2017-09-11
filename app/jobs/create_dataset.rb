@@ -21,7 +21,7 @@ class CreateDataset
         schema = DatasetFileSchemaService.new(
           dataset_file_creation_hash["schema_name"],
           dataset_file_creation_hash["schema_description"],
-          dataset_file_creation_hash["schema"],
+          "https://#{dataset_file_creation_hash["schema_s3_host"]}/#{dataset_file_creation_hash["schema"]}", # Turn the storage key into a URL
           user,
           user.name,
           dataset_file_creation_hash["schema_restricted"]
