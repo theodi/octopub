@@ -37,6 +37,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       expect(assigns(:dataset_file_schemas).count).to eq(2)
     end
 
+    it "lists available users" do
+      sign_in @user
+      dataset = create(:dataset, name: "Dataset", user: @user)
+      get :edit, params: { id: dataset.id }
+      expect(assigns(:users).count).to eq(User.count)
+    end
 
     # TODO can't see how this ever works without organizations!
 

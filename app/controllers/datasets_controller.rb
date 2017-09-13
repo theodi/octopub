@@ -74,6 +74,7 @@ class DatasetsController < ApplicationController
   def edit
     render_404 and return if @dataset.nil?
     @dataset_file_schemas = available_schemas
+    @users = User.all
     @default_schema = @dataset.dataset_files.first.try(:dataset_file_schema_id)
   end
 
