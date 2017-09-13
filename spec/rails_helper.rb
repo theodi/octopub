@@ -173,18 +173,21 @@ def get_json_from_url(url)
   JSON.generate(JSON.load(open(url).read.force_encoding("UTF-8")))
 end
 
-def get_string_io_from_fixture_file(storage_key)
-  unless storage_key.nil?
-    filename = URI.decode(storage_key).split('/').last
-    StringIO.new(read_fixture_file(filename))
-  end
+def get_string_io_from_fixture_file(filename)
+  StringIO.new(read_fixture_file(filename))
 end
 
-def get_string_io_schema_from_fixture_file(storage_key)
-  unless storage_key.nil?
-    filename = storage_key.split('/').last
-    StringIO.new(read_fixture_file("schemas/#{filename}"))
-  end
+def s3_storage_key_for(path)
+  storage_key = "/uploads/#{SecureRandom.uuid}/#{path}"
+  allow(FileStorageService).to receive(:get_string_io).and_return(get_string_io_from_fixture_file(path))
+  storage_key
+end
+
+def public_s3_url_for(path)
+  storage_key = s3_storage_key_for(path)
+  public_url = "https://example.org#{storage_key}"
+  stub_request(:get, public_url).to_return(body: get_string_io_from_fixture_file(path).read)
+  public_url
 end
 
 def url_with_stubbed_get_for(path)
