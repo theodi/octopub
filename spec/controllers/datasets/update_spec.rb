@@ -305,7 +305,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         {
           title: "New file",
           description: "New file description",
-          file: "new-file.csv",
+          file: "http://example.com/new-file.csv",
           storage_key: 'new-file.csv'
         },
         {
@@ -322,7 +322,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
           {
             "title" => "New file",
             "description" => "New file description",
-            "file" => "new-file.csv",
+            "file" => "http://example.com/new-file.csv",
             "storage_key" => "new-file.csv"
           }
         ], channel_id: nil

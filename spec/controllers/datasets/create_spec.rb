@@ -166,35 +166,6 @@ describe DatasetsController, type: :controller do
         expect(@user.datasets.first.owner).to eq @user.github_username
       end
 
-      it 'handles whitespace in filenames' do
-        expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
-          @repo
-        }
-
-        filename = "file with whitespace.csv"
-        storage_key = "uploads/#{SecureRandom.uuid}/#{filename}"
-        files = [{
-          :title => "file with whitespace",
-          :description => "description",
-          :file => url_with_stubbed_get_for_storage_key(storage_key, filename),
-          :storage_key => storage_key
-        }]
-
-        request = post :create, params: { dataset: {
-          name: dataset_name,
-          description: description,
-          publisher_name: publisher_name,
-          publisher_url: publisher_url,
-          license: license,
-          frequency: frequency,
-          publishing_method: :github_public,
-          owner: controller.send(:current_user).github_username
-        }, files: files }
-
-        creation_assertions
-        expect(@user.datasets.first.owner).to eq @user.github_username
-      end
-      
       it 'creates a restricted dataset' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: true, client: a_kind_of(Octokit::Client)) {
           @repo
