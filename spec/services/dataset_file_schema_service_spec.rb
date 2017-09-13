@@ -9,12 +9,13 @@ describe DatasetFileSchemaService do
   context 'with a JSON table schema' do
 
     let(:good_schema_url) { public_s3_url_for('schemas/good-schema.json') }
+    let(:good_schema_file_contents) { File.read(get_fixture_file('schemas/good-schema.json')).strip }
 
     before(:each) do
       @thing = DatasetFileSchemaService.create(
         name: schema_name, 
         description: description, 
-        url_in_s3: good_schema_url, 
+        url_in_s3: good_schema_url,
         user: user
       )
     end
@@ -27,7 +28,7 @@ describe DatasetFileSchemaService do
       end
 
       it 'creates a new dataset and updates schema as json' do
-        schema_fields_from_file = DatasetFileSchemaService.parse_schema(get_json_from_url(good_schema_url))
+        schema_fields_from_file = DatasetFileSchemaService.parse_schema(good_schema_file_contents)
         schema_fields_from_model = JSON.parse(@thing.schema)
 
         expect(@thing.schema_fields.count).to be 5
@@ -61,19 +62,20 @@ describe DatasetFileSchemaService do
   end
   
   context 'with a csv on the web schema' do
-    let(:csv_schema_file_url) { public_s3_url_for('schemas/csv-on-the-web-schema.json') }
+    let(:csv_schema_url) { public_s3_url_for('schemas/csv-on-the-web-schema.json') }
     let(:csv_schema_file_contents) { File.read(get_fixture_file('schemas/csv-on-the-web-schema.json')).strip }
     
     before(:each) do
       @csv_thing = DatasetFileSchemaService.create(
         name: schema_name, 
         description: description, 
-        url_in_s3: csv_schema_file_url, 
+        url_in_s3: csv_schema_url, 
         user: user
       )
     end
 
     it 'creates a new dataset and updates as csv on the web if appropriate' do
+      expect(@csv_thing.schema).to be_present
       expect(JSON.parse @csv_thing.schema).to eq JSON.parse csv_schema_file_contents
       expect(@csv_thing.csv_on_the_web_schema).to be true
     end

@@ -16,6 +16,8 @@ class DatasetFileSchemaService
     return nil unless user
     
     create_options[:owner_username] ||= user.name
+    create_options[:storage_key] ||= FileStorageService.get_storage_key_from_public_url(create_options[:url_in_s3])
+
     dataset_file_schema = user.dataset_file_schemas.create(create_options)
 
     if dataset_file_schema.valid?
@@ -31,9 +33,9 @@ class DatasetFileSchemaService
   end
 
   def self.update_dataset_file_schema_with_json_schema(dataset_file_schema)
-    Rails.logger.info "URL #{dataset_file_schema.url_in_s3}"
+    Rails.logger.info "Key #{dataset_file_schema.storage_key}"
     if dataset_file_schema.schema.nil?
-      dataset_file_schema.update(schema: load_json_from_s3(dataset_file_schema.url_in_s3))
+      dataset_file_schema.update(schema: load_json_from_s3(dataset_file_schema.storage_key))
     end
     dataset_file_schema.update(csv_on_the_web_schema: dataset_file_schema.is_schema_otw?)
   end
@@ -45,17 +47,18 @@ class DatasetFileSchemaService
     populate_schema_fields_and_constraints(dataset_file_schema)
   end
 
-  def self.load_json_from_s3(url_in_s3)
-    Rails.logger.info "URL #{url_in_s3}"
-    JSON.generate(JSON.load(read_file_with_utf_8(url_in_s3)))
+  def self.load_json_from_s3(storage_key)
+    Rails.logger.info "DatasetFileSchemaService#load_json_from_s3 #{storage_key}"
+    JSON.generate(JSON.load(read_file_with_utf_8(storage_key)))
   end
 
   def self.parse_schema(schema_string)
     JsonTableSchema::Schema.new(JSON.parse(schema_string))
   end
 
-  def self.read_file_with_utf_8(url)
-    open(url).read.force_encoding("UTF-8")
+  def self.read_file_with_utf_8(storage_key)
+    Rails.logger.info "DatasetFileSchemaService#read_file_with_utf_8 #{storage_key}"
+    FileStorageService.get_string_io(storage_key).read.force_encoding("UTF-8")
   end
 
   def self.get_parsed_schema_from_csv_lint(url)
