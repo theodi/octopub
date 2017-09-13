@@ -36,7 +36,12 @@ describe DatasetFilesController, type: :controller do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, publisher).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: publisher
+      )
       @dataset_file.update(dataset_file_schema: dataset_file_schema)
 
       get :index, params: { dataset_id: @dataset.id }

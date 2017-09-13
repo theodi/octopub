@@ -23,14 +23,13 @@ class CreateDataset
         else
           uploaded_schema = dataset_file_creation_hash["schema"]
         end
-        schema = DatasetFileSchemaService.new(
-          dataset_file_creation_hash["schema_name"],
-          dataset_file_creation_hash["schema_description"],
-          uploaded_schema,          
-          user,
-          user.name,
-          dataset_file_creation_hash["schema_restricted"]
-        ).create_dataset_file_schema
+        schema = DatasetFileSchemaService.create(
+          name: dataset_file_creation_hash["schema_name"],
+          description: dataset_file_creation_hash["schema_description"],
+          url_in_s3: uploaded_schema,          
+          user: user,
+          restricted: dataset_file_creation_hash["schema_restricted"]
+        )
 
         dataset_file.dataset_file_schema = schema
       elsif dataset_file_creation_hash["dataset_file_schema_id"]

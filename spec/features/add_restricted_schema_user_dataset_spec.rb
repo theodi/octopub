@@ -14,13 +14,12 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
     schema_path = get_fixture_schema_file('good-schema.json')
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-    dataset_file_schema_1 = DatasetFileSchemaService.new(
-      dataset_file_schema_name,
-      'existing schema description',
-      @url_for_schema,
-      @user,
-      @user.name
-    ).create_dataset_file_schema
+    dataset_file_schema_1 = DatasetFileSchemaService.create(
+      name: dataset_file_schema_name,
+      description: 'existing schema description',
+      url_in_s3: @url_for_schema,
+      user: @user
+    )
 
     @user.allocated_dataset_file_schemas << dataset_file_schema_1
 

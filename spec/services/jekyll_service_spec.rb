@@ -185,7 +185,12 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: user
+      )
 
       dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
 
@@ -274,7 +279,12 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
     it 'is unhappy with a duff schema' do
       bad_schema = url_for_schema_with_stubbed_get_for(bad_schema_path)
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', bad_schema, user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: bad_schema, 
+        user: user
+      )
       expect { create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv') }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Schema is not valid')
     end
 
@@ -286,7 +296,12 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
       expect(dataset.valid?).to be true
 
       good_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', good_schema, user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: good_schema, 
+        user: user
+      )
       create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
 
       expect(DatasetFile.count).to be 1
@@ -294,8 +309,13 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
     it 'adds the schema to the datapackage' do
       url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
-      @dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, user).create_dataset_file_schema
-      @dataset_file = create(:dataset_file, dataset_file_schema: @dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: user
+      )
+      @dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv"), storage_key: 'valid-schema.csv')
       @dataset = build(:dataset, user: user, dataset_files: [@dataset_file])
 
       jekyll_service = JekyllService.new(@dataset, nil)
@@ -371,15 +391,24 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
       bad_schema = url_with_stubbed_get_for(bad_schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', bad_schema, user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: bad_schema, 
+        user: user
+      )
       expect { create(:dataset_file, dataset_file_schema: dataset_file_schema, file: Rack::Test::UploadedFile.new(data_file, "text/csv")) }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Schema is not valid')
     end
 
     it 'does not add the schema to the datapackage' do
 
       schema = url_with_stubbed_get_for(good_schema_path)
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, user).create_dataset_file_schema
-
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: schema, 
+        user: user
+      )
       file = create(:dataset_file, dataset_file_schema: dataset_file_schema,
                                    file: Rack::Test::UploadedFile.new(data_file, "text/csv"),
                                    filename: "example.csv",
@@ -416,7 +445,12 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
 
         good_schema_cotw_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/csv-on-the-web-schema.json')
         url_for_schema = url_with_stubbed_get_for(good_schema_cotw_path)
-        dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+        dataset_file_schema = DatasetFileSchemaService.create(
+          name: 'schema-name', 
+          description: 'schema-name-description', 
+          url_in_s3: url_for_schema, 
+          user: user
+        )
         dataset = build(:dataset, user: @user)
 
         dataset_file = create(:dataset_file, dataset_file_schema: dataset_file_schema,

@@ -18,8 +18,19 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
 
   context "with an existing schema" do
     before(:each) do
-      DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user, @user.name).create_dataset_file_schema
-      DatasetFileSchemaService.new(public_schema_name, schema_description, good_schema_url, @other_user, @other_user.name, false).create_dataset_file_schema
+      DatasetFileSchemaService.create(
+        name: schema_name, 
+        description: schema_description, 
+        url_in_s3: good_schema_url, 
+        user: @user
+      )
+      DatasetFileSchemaService.create(
+        name: schema_name, 
+        description: schema_description, 
+        url_in_s3: good_schema_url, 
+        user: @other_user,
+        restricted: false
+      )
       visit root_path
     end
 

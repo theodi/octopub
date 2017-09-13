@@ -55,10 +55,13 @@ feature "Update dataset page", type: :feature do
 
     before(:each) do
       expect(Dataset.count).to be 0
-      @dataset_file_schema = DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user).create_dataset_file_schema
+      @dataset_file_schema = DatasetFileSchemaService.create(
+        name: schema_name, 
+        description: schema_description, 
+        url_in_s3: good_schema_url, 
+        user: @user
+      )
       good_file = url_with_stubbed_get_for_fixture_file('valid-schema.csv')
-
-      @dataset_file_schema = DatasetFileSchemaService.new(schema_name, schema_description, good_schema_url, @user).create_dataset_file_schema
 
       @dataset = Dataset.create(name: Faker::Lorem.word, description: Faker::Lorem.sentence, user: @user)
       @dataset_file = DatasetFile.new(title: Faker::Lorem.word, description: Faker::Lorem.sentence, file: good_file, dataset_file_schema: @dataset_file_schema, dataset: @dataset, storage_key: 'valid-schema.csv' )

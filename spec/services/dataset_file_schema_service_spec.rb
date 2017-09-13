@@ -11,8 +11,12 @@ describe DatasetFileSchemaService do
   let(:description) { Faker::Cat.name }
 
   before(:each) do
-    @schema_service = DatasetFileSchemaService.new(schema_name, description, good_schema_url, user, user.name)
-    @thing = @schema_service.create_dataset_file_schema
+    @thing = DatasetFileSchemaService.create(
+      name: schema_name, 
+      description: description, 
+      url_in_s3: good_schema_url, 
+      user: user
+    )
   end
 
   context "when a user is set" do
@@ -60,8 +64,12 @@ describe DatasetFileSchemaService do
     let(:csv_schema_file_url) { url_with_stubbed_get_for(csv_schema_file) }
 
     before(:each) do
-      @csv_schema_service = DatasetFileSchemaService.new(schema_name, description, csv_schema_file_url, user, user.name)
-      @csv_thing = @csv_schema_service.create_dataset_file_schema
+      @csv_thing = DatasetFileSchemaService.create(
+        name: schema_name, 
+        description: description, 
+        url_in_s3: csv_schema_file_url, 
+        user: user
+      )
     end
 
     it 'creates a new dataset and updates as csv on the web if appropriate' do

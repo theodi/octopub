@@ -97,12 +97,12 @@ describe CreateDataset do
 
     it 'creates a dataset with an existing schema' do
 
-      dataset_file_schema = DatasetFileSchemaService.new(
-        'existing schema',
-        'existing schema description',
-        url_for_schema,
-        @user
-          ).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'existing schema',
+        description: 'existing schema description',
+        url_in_s3: url_for_schema,
+        user: @user
+      )
 
       @files = [
         ActiveSupport::HashWithIndifferentAccess.new(

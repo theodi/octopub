@@ -29,13 +29,12 @@ describe AllocatedDatasetFileSchemaDatasetsController, type: :controller do
 
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-    @dataset_file_schema = DatasetFileSchemaService.new(
-      'existing schema',
-      'existing schema description',
-      @url_for_schema,
-      @user,
-      @user.name
-    ).create_dataset_file_schema
+    @dataset_file_schema = DatasetFileSchemaService.create(
+      name: 'existing schema',
+      description: 'existing schema description',
+      url_in_s3: @url_for_schema,
+      user: @user
+    )
 
     @files ||= []
   end

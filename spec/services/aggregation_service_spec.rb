@@ -15,7 +15,12 @@ describe AggregationService do
   let(:dataset_file_2) { create(:dataset_file, title: 'DataFile2') }
 
   let(:schema_name) { Faker::Cat.name }
-  let(:input_schema) { DatasetFileSchemaService.new("#{schema_name}-input", Faker::Cat.name, input_schema_file, user, user.name).create_dataset_file_schema }
+  let(:input_schema) { DatasetFileSchemaService.create(
+    name: "#{schema_name}-input", 
+    description: Faker::Cat.name, 
+    url_in_s3: input_schema_file, 
+    user: user
+  ) }
 
   let(:dataset_file_attributes_1) { {"id" => dataset_file_1.id, "title" => 'DataFile1', "file" => data_file_1, "storage_key" => data_file_storage_key_1 , "dataset_file_schema_id" => input_schema.id} }
   let(:dataset_file_attributes_2) { {"id" => dataset_file_2.id, "title" => 'DataFile2', "file" => data_file_2, "storage_key" => data_file_storage_key_2 , "dataset_file_schema_id" => input_schema.id} }

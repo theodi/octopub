@@ -88,8 +88,12 @@ describe DatasetFileSchemasController, type: :controller do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
-
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: @user
+      )
       get :edit, params: { id: dataset_file_schema.id }
       expect(response).to be_success
     end
@@ -104,7 +108,12 @@ describe DatasetFileSchemasController, type: :controller do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: @user
+      )
       expect(dataset_file_schema.schema_fields).to_not be_empty
       first_field = dataset_file_schema.schema_fields.first
       old_name = first_field.name
@@ -121,7 +130,12 @@ describe DatasetFileSchemasController, type: :controller do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: @user
+      )
       expect(dataset_file_schema.schema_fields).to_not be_empty
       second_field = dataset_file_schema.schema_fields.second
       expect(second_field.schema_constraint.min_length).to be_nil
@@ -139,7 +153,12 @@ describe DatasetFileSchemasController, type: :controller do
       data_file = File.join(Rails.root, 'spec', 'fixtures', 'valid-schema.csv')
       url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
 
-      dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', url_for_schema, @user).create_dataset_file_schema
+      dataset_file_schema = DatasetFileSchemaService.create(
+        name: 'schema-name', 
+        description: 'schema-name-description', 
+        url_in_s3: url_for_schema, 
+        user: @user
+      )
       expect(dataset_file_schema.schema_fields).to_not be_empty
       original_hash = JSON.parse(dataset_file_schema.schema)
 
@@ -264,19 +283,6 @@ describe DatasetFileSchemasController, type: :controller do
       post :create, params: {
         dataset_file_schema: {
           name: schema_name, description: description, user_id: @user.id
-        }
-      }
-      expect(response).to render_template("new")
-    end
-
-    it "returns to new page if no owner set" do
-
-      schema_name = 'schema-name'
-      description = 'schema-description'
-
-      post :create, params: {
-        dataset_file_schema: {
-          name: schema_name, description: description, user_id: @user.id, url_in_s3: @good_schema_url
         }
       }
       expect(response).to render_template("new")

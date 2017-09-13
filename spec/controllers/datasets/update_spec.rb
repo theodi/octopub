@@ -70,7 +70,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
         before(:each) do
           schema = url_with_stubbed_get_for(good_schema_path)
-          @dataset_file_schema = DatasetFileSchemaService.new('schema-name', 'schema-name-description', schema, @user).create_dataset_file_schema
+          @dataset_file_schema = DatasetFileSchemaService.create(
+            name: 'schema-name', 
+            description: 'schema-name-description', 
+            url_in_s3: schema, 
+            user: @user
+          )
           @dataset_file = @dataset.dataset_files.first
           @dataset_file.update(dataset_file_schema: @dataset_file_schema)
         end
@@ -147,7 +152,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
               @new_file = url_with_stubbed_get_for(@path)
               new_schema_path = get_fixture_schema_file('good-schema-2.json')
               new_schema = url_with_stubbed_get_for(new_schema_path)
-              new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', new_schema, @user).create_dataset_file_schema
+              new_dataset_file_schema = DatasetFileSchemaService.create(
+                name: 'new-schema-name', 
+                description: 'new-schema-name-description', 
+                url_in_s3: new_schema,
+                user: @user
+              )
               expect(@dataset.dataset_files.first.dataset_file_schema).to eq @dataset_file_schema
 
               file_1_hash = {
@@ -269,7 +279,12 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         before(:each) do
           @repo = double(GitData)
           @url_for_schema = url_for_schema_with_stubbed_get_for(good_schema_path)
-          @new_dataset_file_schema = DatasetFileSchemaService.new('new-schema-name', 'new-schema-name-description', @url_for_schema, @user).create_dataset_file_schema
+          @new_dataset_file_schema = DatasetFileSchemaService.create(
+            name: 'new-schema-name', 
+            description: 'new-schema-name-description', 
+            url_in_s3: @url_for_schema, 
+            user: @user
+          )
 
           expect(RepoService).to receive(:fetch_repo) { @repo }
         end
