@@ -73,5 +73,15 @@ class FileStorageService
   def self.private_bucket_attributes(uuid)
     { key: "uploads/#{uuid}/${filename}", success_action_status: '201' }
   end
-
+  
+  class << self
+    extend Gem::Deprecate
+    deprecate :presigned_post, :none, 2017, 10
+    deprecate :push_public_object, :none, 2017, 10
+    deprecate :create_and_upload_public_object, :none, 2017, 10
+    deprecate :get_storage_key_from_public_url, :none, 2017, 10
+    deprecate :make_object_public, :none, 2017, 10
+    deprecate :make_object_public_from_url, :none, 2017, 10
+  end
+  
 end

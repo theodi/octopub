@@ -47,15 +47,6 @@ describe FileStorageService do
     expect(FileStorageService.object_key(filename, uuid)).to match "uploads/#{uuid}/#{filename}"
   end
 
-  it "uploads a public file" do
-    expect_any_instance_of(Net::HTTP).to receive(:send_request).with(
-      "PUT",
-      "/uploads/1234/this-is-the-filename",
-      @body,
-      { "content-type" => "" })
-    FileStorageService.create_and_upload_public_object(filename, @body)
-  end
-
   it "uploads a private file" do
     allow(FileStorageService).to receive(:get_object) {
       @object = double(Aws::S3::Object)
@@ -75,34 +66,6 @@ describe FileStorageService do
     expect(@bucket).to receive(:object).with(@storage_key)
     expect(FileStorageService).to receive(:get_object).and_call_original
     FileStorageService.get_object(@storage_key)
-  end
-
-  it "makes an object public" do
-    @storage_key = 'the key, the secret'
-    acl = double(Aws::S3::ObjectAcl)
-    expect(FileStorageService).to receive(:get_object).with(@storage_key) { @got_object }
-    expect(@got_object).to receive(:acl) { acl }
-    expect(acl).to receive(:put).with({ acl: "public-read" })
-    FileStorageService.make_object_public(@storage_key)
-  end
-
-  it "makes an object public from url" do
-    storage_key = 'uploads/5678/the-key-the-secret.csv'
-    url = "https://example.org/#{storage_key}"
-
-    expect(FileStorageService).to receive(:make_object_public).with(storage_key)
-    FileStorageService.make_object_public_from_url(url)
-  end
-
-  it "returns public bucket attributes" do
-    uuid = SecureRandom.uuid
-    key = "uploads/#{uuid}/${filename}"
-
-    bucket_attributes = FileStorageService.bucket_attributes(uuid)
-    expect(bucket_attributes).to be_a(Hash)
-    expect(bucket_attributes[:acl]).to eq 'public-read'
-    expect(bucket_attributes[:success_action_status]).to eq '201'
-    expect(bucket_attributes[:key]).to eq key
   end
 
   it "returns private bucket attributes" do
