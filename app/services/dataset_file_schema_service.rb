@@ -84,4 +84,12 @@ class DatasetFileSchemaService
       end
     end
   end
+
+  class << self
+    extend Gem::Deprecate
+    deprecate :update_dataset_file_schema, :none, 2017, 10
+    deprecate :parse_schema, :none, 2017, 10
+    deprecate :get_parsed_schema_from_csv_lint, :none, 2017, 10
+  end
+
 end
