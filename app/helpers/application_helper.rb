@@ -18,7 +18,7 @@ module ApplicationHelper
     }
   end
 
-  def user_option
+  def user_organization_option
     [
       current_user.github_username,
       current_user.github_username,
@@ -27,7 +27,7 @@ module ApplicationHelper
   end
 
   def organization_select_options
-    organization_options.unshift(user_option)
+    organization_options.unshift(user_organization_option)
   end
 
   class CodeRayify < Redcarpet::Render::HTML

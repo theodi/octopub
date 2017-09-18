@@ -61,8 +61,8 @@ describe ApplicationHelper do
     )
   end
 
-  it 'gets user option' do
-    expect(helper.user_option).to eq(
+  it 'gets user organization option' do
+    expect(helper.user_organization_option).to eq(
       [
         @user.github_username,
         @user.github_username,
