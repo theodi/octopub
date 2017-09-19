@@ -15,6 +15,9 @@ class UpdateDataset
     handle_files(files)
 
     @dataset.report_status(options["channel_id"], :update)
+    
+    # Queue repo access check
+    CheckRepositoryAccess.perform_async(id)
   end
 
   def get_dataset(dataset_id)

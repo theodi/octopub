@@ -36,6 +36,7 @@ feature "Edit dataset page", type: :feature do
     allow_any_instance_of(UpdateDataset).to receive(:get_dataset).with(@dataset.id.to_s) {
       @dataset
     }
+    allow(CheckRepositoryAccess).to receive(:perform_async)
     expect(DatasetFileSchema.count).to be 1
     expect(DatasetFile.count).to be 1
     expect(Dataset.count).to be 1

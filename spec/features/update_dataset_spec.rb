@@ -30,7 +30,7 @@ feature "Update dataset page", type: :feature do
       # Bypass sidekiq completely
       allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
          UpdateDataset.new.perform(a,b,c,d)
-       end
+      end
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
@@ -80,6 +80,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
+      expect(CheckRepositoryAccess).to receive(:perform_async).once
       allow(RepoService).to receive(:fetch_repo)
     end
 
@@ -112,6 +113,7 @@ feature "Update dataset page", type: :feature do
       expect(page).to have_content "My Datasets"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
+      expect(CheckRepositoryAccess).to receive(:perform_async).once
       allow(RepoService).to receive(:fetch_repo)
     end
 
