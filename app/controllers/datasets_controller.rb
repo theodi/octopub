@@ -84,7 +84,7 @@ class DatasetsController < ApplicationController
   def update
     logger.info "DatasetsController: In update"
     files_array = get_files_as_array_for_serialisation
-    UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
+    UpdateDataset.perform_async(params["id"], dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted

@@ -2,10 +2,9 @@ class UpdateDataset
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(id, user_id, dataset_params, files, options = {})
+  def perform(id, dataset_params, files, options = {})
     files = [files] if files.class == Hash
 
-    @user = User.find(user_id)
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     )
