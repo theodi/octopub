@@ -17,10 +17,10 @@ feature "Edit dataset page", type: :feature do
     allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
       UpdateDataset.new.perform(a,b,c,d)
     end
-    @another_user = create(:user, name: "A. N. Other")
+    @another_user = create(:user, name: "A. N. Other", name: "another-username")
     good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
     @dataset_file_schema = create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
-    @dataset = create(:dataset, name: dataset_name, user: @user, license: "CC-BY-4.0", description: dataset_description)
+    @dataset = create(:dataset, name: dataset_name, user: @user, license: "CC-BY-4.0", description: dataset_description, owner: "owner", repo: "repo")
     file = create(:dataset_file, dataset_file_schema: @dataset_file_schema,
                                   filename: "example.csv",
                                   title: dataset_file_name,
@@ -60,6 +60,7 @@ feature "Edit dataset page", type: :feature do
     end
 
     scenario "can change the user" do
+      expect_any_instance_of(Octokit::Client).to receive(:add_collaborator).with("owner/repo", "another-username").once
       # select by ID, because of bootstrap selects hiding the text itself at this level
       select @another_user.github_username, from: '_dataset[user_id]'
       click_on 'Submit'
