@@ -6,7 +6,7 @@
     <%= f.hidden_field :dataset_file_schema_id, value: @dataset_file_schema.id %>
     <%= f.text_field :title, required: true %>
     <%= f.text_area :description %>
-    <%= f.select :owner_username, organization_select_options, { label: "Owner" }, { class: "selectpicker form-control show-tick" } %>
+    <%= f.select :owner_username, organization_select_options, { label: t(:'output_schema.owner') }, { class: "selectpicker form-control show-tick" } %>
   </fieldset>
 
   <h2>Output Schema Fields <small>from <%= link_to @dataset_file_schema.name, dataset_file_schema_path(@dataset_file_schema) %></small></h2>
@@ -35,4 +35,3 @@
     </div>
 </div>
 <% end %>
-
