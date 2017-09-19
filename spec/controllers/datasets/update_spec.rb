@@ -22,7 +22,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     allow_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     allow_any_instance_of(JekyllService).to receive(:create_jekyll_files) { nil }
     allow_any_instance_of(CreateRepository).to receive(:perform)
-    allow(CheckRepositoryAccess).to receive(:perform_async)
   end
 
   before(:each, schema: true) do

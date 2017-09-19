@@ -23,8 +23,7 @@ describe 'PUT /datasets/:id' do
   it 'updates a dataset sucessfully' do
     license = Octopub::API_LICENCES.sample
     frequency = Octopub::PUBLICATION_FREQUENCIES.sample
-    allow(CheckRepositoryAccess).to receive(:perform_async)
-
+    
     put "/api/datasets/#{@dataset.id}", params:
     {
       dataset: {

@@ -8,7 +8,6 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     Sidekiq::Testing.inline!
     allow_any_instance_of(CreateRepository).to receive(:perform)
     skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
-    allow(CheckRepositoryAccess).to receive(:perform_async)
 
     @user = create(:user)
     @dataset = create(:dataset, name: "Dataset", user: @user, dataset_files: [
