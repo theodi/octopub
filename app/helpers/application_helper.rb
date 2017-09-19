@@ -30,6 +30,16 @@ module ApplicationHelper
     organization_options.unshift(user_organization_option)
   end
 
+  def user_select_options(users)
+    users.collect do |user|
+      [
+        user.id,
+        user.github_username,
+        { 'data-content' => "<img src='#{current_user.github_user.avatar_url}' height='20' width='20' /> #{current_user.github_username}" }
+      ]
+    end
+  end
+
   class CodeRayify < Redcarpet::Render::HTML
     def block_code(code, language)
       CodeRay.scan(code, language).div

@@ -17,6 +17,7 @@ feature "Edit dataset page", type: :feature do
     allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d,e|
       UpdateDataset.new.perform(a,b,c,d,e)
     end
+    @another_user = create(:user, name: "A. N. Other")
     good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
     @dataset_file_schema = create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
     @dataset = create(:dataset, name: dataset_name, user: @user, license: "CC-BY-4.0", description: dataset_description)
@@ -58,6 +59,15 @@ feature "Edit dataset page", type: :feature do
       expect(@dataset.description).to eq new_description
     end
 
+    scenario "can change the user" do
+      # select by ID, because of bootstrap selects hiding the text itself at this level
+      select @another_user.id, from: '_dataset[user]'
+      click_on 'Submit'
+      expect(page).to have_content 'Your edits have been queued for creation'
+      @dataset.reload
+      expect(@dataset.user).to eq @another_user
+    end
+
     scenario "can edit the file description" do
       new_description = Faker::Lorem.sentence
       within 'div.visible' do
@@ -78,4 +88,3 @@ feature "Edit dataset page", type: :feature do
     
   end
 end
-
