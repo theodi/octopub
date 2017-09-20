@@ -313,7 +313,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
         }
       ]
 
-      expect(UpdateDataset).to receive(:perform_async).with(@dataset.id.to_s, @user.id, @dataset_hash.stringify_keys!, [
+      expect(UpdateDataset).to receive(:perform_async).with(@dataset.id.to_s, @dataset_hash.stringify_keys!, [
           {
             "id" => @dataset_file.id.to_s,
             "title" => "New title",

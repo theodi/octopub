@@ -36,7 +36,7 @@ module Octopub
 
           process_file(params.file)
 
-          job = UpdateDataset.perform_async(@dataset.id, current_user.id, {}, params.file)
+          job = UpdateDataset.perform_async(@dataset.id, {}, params.file)
 
           status 202
           {

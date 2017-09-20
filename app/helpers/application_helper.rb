@@ -18,7 +18,7 @@ module ApplicationHelper
     }
   end
 
-  def user_option
+  def user_organization_option
     [
       current_user.github_username,
       current_user.github_username,
@@ -27,7 +27,17 @@ module ApplicationHelper
   end
 
   def organization_select_options
-    organization_options.unshift(user_option)
+    organization_options.unshift(user_organization_option)
+  end
+
+  def user_select_options(users)
+    users.collect do |user|
+      [
+        user.github_username,
+        user.id,
+        { 'data-content' => "<img src='#{current_user.github_user.avatar_url}' height='20' width='20' /> #{current_user.github_username}" }
+      ]
+    end
   end
 
   class CodeRayify < Redcarpet::Render::HTML
