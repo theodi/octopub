@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user
+    if user && !user.guest?
       # A user can manage their datasets
       can :manage, Dataset, :user => user
       # and their schemas
