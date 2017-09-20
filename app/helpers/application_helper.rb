@@ -33,9 +33,9 @@ module ApplicationHelper
   def user_select_options(users)
     users.collect do |user|
       [
-        user.github_username,
+        user.name,
         user.id,
-        { 'data-content' => user.github_username }
+        { 'data-content' => user.name }
       ]
     end
   end
