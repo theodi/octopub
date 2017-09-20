@@ -13,13 +13,13 @@
 #  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
-#  role            :integer          default("publisher"), not null
+#  role            :integer          default(0), not null
 #  restricted      :boolean          default(FALSE)
 #
 
 class User < ApplicationRecord
 
-  enum role: [:guest, :publisher, :superuser, :admin]
+  enum role: [:publisher, :superuser, :admin, :guest]
 
   has_many :datasets
   has_many :dataset_file_schemas
