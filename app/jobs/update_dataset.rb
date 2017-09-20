@@ -17,6 +17,7 @@ class UpdateDataset
         user_id && 
         user_id != @dataset.user_id
       new_user = User.find(user_id)
+      dataset_params[:user] = new_user
       if new_user
         @dataset.user.octokit_client.add_collaborator(@dataset.full_name, new_user.github_username)
       end
