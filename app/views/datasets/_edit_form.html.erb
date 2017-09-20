@@ -40,7 +40,7 @@
         <h3 class="panel-title">Danger Zone</h3>
       </div>
       <div class="panel-body">
-        <%= f.select "dataset[user_id]", user_select_options(@users), { label: "Transfer dataset to another user" }, { 'data-live-search': "true", class: "selectpicker form-control show-tick" } %>
+        <%= f.select "dataset[user_id]", options_for_select(user_select_options(@users), dataset.user.id), { label: "Transfer dataset to another user" }, { 'data-live-search': "true", class: "selectpicker form-control show-tick" } %>
         <span id="transferHelpBlock" class="help-block">Selecting another user may make it impossible for you to edit this dataset further. Only change it if you know what you are doing!</span>
       </div>
     </div>
