@@ -20,5 +20,10 @@ FactoryGirl.define do
     factory :admin do
       role :admin
     end
+
+    factory :guest do
+      role :guest
+    end
+
   end
 end

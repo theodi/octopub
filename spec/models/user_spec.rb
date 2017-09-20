@@ -22,9 +22,19 @@ require 'rails_helper'
 describe User do
 
   context "user can have a single role" do
+    it "as a guest" do
+      user = create(:guest)
+      expect(user.role).to eq 'guest'
+      expect(user.guest?).to be true
+      expect(user.publisher?).to be false
+      expect(user.superuser?).to be false
+      expect(user.admin?).to be false
+    end
+
     it "by default, publisher" do
       user = create(:user)
       expect(user.role).to eq 'publisher'
+      expect(user.guest?).to be false
       expect(user.publisher?).to be true
       expect(user.superuser?).to be false
       expect(user.admin?).to be false
@@ -33,14 +43,16 @@ describe User do
     it "as a superuser" do
       user = create(:superuser)
       expect(user.role).to eq 'superuser'
-      expect(user.superuser?).to be true
+      expect(user.guest?).to be false
       expect(user.publisher?).to be false
+      expect(user.superuser?).to be true
       expect(user.admin?).to be false
     end
 
     it "as an admin" do
       user = create(:admin)
       expect(user.role).to eq 'admin'
+      expect(user.guest?).to be false
       expect(user.superuser?).to be false
       expect(user.publisher?).to be false
       expect(user.admin?).to be true
