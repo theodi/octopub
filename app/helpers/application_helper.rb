@@ -35,7 +35,7 @@ module ApplicationHelper
       [
         user.github_username,
         user.id,
-        { 'data-content' => "<img src='#{current_user.github_user.avatar_url}' height='20' width='20' /> #{current_user.github_username}" }
+        { 'data-content' => "<img src='#{user.github_user.avatar_url}' height='20' width='20' /> #{user.github_username}" }
       ]
     end
   end
