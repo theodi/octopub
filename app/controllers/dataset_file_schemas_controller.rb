@@ -102,7 +102,7 @@ class DatasetFileSchemasController < ApplicationController
     params.require(:dataset_file_schema).permit(
       :restricted, 
       schema_fields_attributes: [ :id, :name, :type, :format, schema_constraint_attributes:
-        [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
+        [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :date_pattern, :type]])
   end
 
   def create_empty_constraints_for_edit(dataset_file_schema)
