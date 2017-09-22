@@ -38,7 +38,7 @@ namespace :populate do
             end
           end
         else
-          puts " - schema created with ID #{dataset_file_schema.id}"
+          puts " - schema creation failed: #{dataset_file_schema.errors.full_messages}"
         end
       else
         puts " - already has schemas loaded"
