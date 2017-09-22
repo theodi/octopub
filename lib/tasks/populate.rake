@@ -25,16 +25,17 @@ namespace :populate do
           owner_username: dataset.owner,
           schema: schema, 
           url_in_repo: schema_url,
+          url_in_s3: schema_url, # Not in s3, but this will be deprecated soon anyway
           name: "#{dataset.name} migrated schema"
         )
         if dataset_file_schema.valid?
           puts " - schema created with ID #{dataset_file_schema.id}"
           dataset.dataset_files.each do |dataset_file|
             if dataset_file.dataset_file_schema_id.nil?
-              puts " - assigning schema to file #{dataset_file.name}"
+              puts " - assigning schema to file #{dataset_file.filename}"
               dataset_file.update_columns(dataset_file_schema_id: dataset_file_schema.id) 
             else      
-              puts " - skipping file #{dataset_file.name}"
+              puts " - skipping file #{dataset_file.filename}"
             end
           end
         else
