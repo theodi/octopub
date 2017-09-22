@@ -6,19 +6,44 @@ namespace :populate do
     skip_callback_if_exists( Dataset, :update, :after, :update_in_github) 
 
     Dataset.all.each do |dataset|
-      schema_url = get_schema_url(dataset)
-      schema = get_schema_from_repo(schema_url)
-      next if schema.nil?
+      puts "checking '#{dataset.name}'"
+      if dataset.dataset_files.any? {|f| f.dataset_file_schema.nil? }
 
-      puts "we have schema for #{dataset.name} #{schema}"
-      # We have a schema
-      dataset_file_schema = DatasetFileSchema.create(user_id: dataset.user.id, schema: schema, url_in_repo: schema_url, name: "#{dataset.name} migrated schema")
-      dataset_file_schema.update(url_in_repo: schema_url)
-      dataset.dataset_files.each do |dataset_file|
-        dataset_file.update_columns(dataset_file_schema_id: dataset_file_schema.id) if dataset_file.dataset_file_schema_id.nil?
+        puts " - some files don't have schemas"
+        schema_url = get_schema_url(dataset)
+        schema = get_schema_from_repo(schema_url)
+        
+        if schema.nil?
+          puts(" - no schema found at #{schema_url}")
+          next 
+        end
+
+        puts " - loaded schema from: #{schema_url}"
+        # We have a schema
+        dataset_file_schema = DatasetFileSchema.create(
+          user_id: dataset.user.id, 
+          owner_username: dataset.owner,
+          schema: schema, 
+          url_in_repo: schema_url,
+          name: "#{dataset.name} migrated schema"
+        )
+        if dataset_file_schema.valid?
+          puts " - schema created with ID #{dataset_file_schema.id}"
+          dataset.dataset_files.each do |dataset_file|
+            if dataset_file.dataset_file_schema_id.nil?
+              puts " - assigning schema to file #{dataset_file.name}"
+              dataset_file.update_columns(dataset_file_schema_id: dataset_file_schema.id) 
+            else      
+              puts " - skipping file #{dataset_file.name}"
+            end
+          end
+        else
+          puts " - schema created with ID #{dataset_file_schema.id}"
+        end
+      else
+        puts " - already has schemas loaded"
       end
     end
-    
   end
   
   # Utility methods
@@ -41,13 +66,8 @@ namespace :populate do
     end
   end
 
-  def gh_pages_url(dataset)
-    name = dataset.owner || dataset.user.github_username
-    "http://#{name}.github.io/#{dataset.repo}"
-  end
-
   def get_schema_url(dataset)
-    "#{gh_pages_url(dataset)}/schema.json"
+    "#{dataset.gh_pages_url}/schema.json"
   end
 
 end
