@@ -29,5 +29,9 @@ FactoryGirl.define do
       role :guest
     end
 
+    factory :editor do
+      role :editor
+    end
+
   end
 end

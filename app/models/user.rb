@@ -19,7 +19,7 @@
 
 class User < ApplicationRecord
 
-  enum role: [:publisher, :superuser, :admin, :guest]
+  enum role: [:publisher, :superuser, :admin, :guest, :editor]
 
   has_many :datasets
   has_many :dataset_file_schemas

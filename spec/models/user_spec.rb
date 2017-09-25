@@ -57,6 +57,14 @@ describe User do
       expect(user.publisher?).to be false
       expect(user.admin?).to be true
     end
+
+    it "as an editor" do
+      user = create(:editor)
+      expect(user.role).to eq 'editor'
+      expect(user.guest?).to be false
+      expect(user.editor?).to be true
+    end
+
   end
 
   context "can have dataset file schemas" do
