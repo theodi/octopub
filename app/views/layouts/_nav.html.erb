@@ -9,16 +9,17 @@
         <a href="<%= main_app.datasets_path %>" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">Datasets <span class="caret"></span></a>
         <ul class="dropdown-menu">
 
-          <li><%= link_to "Add dataset", main_app.new_dataset_path %></li>
+          <% unless current_user.restricted %>
+            <li><%= link_to "Add dataset", main_app.new_dataset_path %></li>
+            <li role="separator" class="divider"></li>
+          <% end %>
 
           <% if current_user.allocated_dataset_file_schemas.exists? %>
-            <li role="separator" class="divider"></li>
             <% current_user.allocated_dataset_file_schemas.each do |allocated_schema| %>
               <li><%= link_to "Add dataset for #{allocated_schema.name}", main_app.new_dataset_file_schema_dataset_path(allocated_schema) %></li>
             <% end %>
+            <li role="separator" class="divider"></li>
           <% end %>
-
-          <li role="separator" class="divider"></li>
 
           <li><%= link_to "My datasets", main_app.user_datasets_path(current_user) %></li>
           <% if current_user.organizations.any? %>

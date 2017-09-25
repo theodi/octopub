@@ -41,7 +41,7 @@ describe RestrictedUsersController, type: :controller do
       expect(@publisher.role).to eq 'superuser'
     end
 
-    it "set's a user to restricted" do
+    it "sets a user to restricted" do
       expect(@publisher.restricted).to eq false
       put :update, params: { id: @publisher.id, user: { restricted: true }}
       @publisher.reload

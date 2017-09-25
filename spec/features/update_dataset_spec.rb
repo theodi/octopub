@@ -28,9 +28,9 @@ feature "Update dataset page", type: :feature do
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
       # Bypass sidekiq completely
-      allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d,e|
-         UpdateDataset.new.perform(a,b,c,d,e)
-       end
+      allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
+         UpdateDataset.new.perform(a,b,c,d)
+      end
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}
       end
@@ -74,8 +74,8 @@ feature "Update dataset page", type: :feature do
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
       # Bypass sidekiq completely
-      allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d,e|
-         UpdateDataset.new.perform(a,b,c,d,e)
+      allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
+         UpdateDataset.new.perform(a,b,c,d)
        end
       allow_any_instance_of(UpdateDataset).to receive(:handle_files) do |a,b|
         {}

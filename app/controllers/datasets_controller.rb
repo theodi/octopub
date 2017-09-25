@@ -74,6 +74,7 @@ class DatasetsController < ApplicationController
   def edit
     render_404 and return if @dataset.nil?
     @dataset_file_schemas = available_schemas
+    @users = User.all
     @default_schema = @dataset.dataset_files.first.try(:dataset_file_schema_id)
   end
 
@@ -83,7 +84,7 @@ class DatasetsController < ApplicationController
   def update
     logger.info "DatasetsController: In update"
     files_array = get_files_as_array_for_serialisation
-    UpdateDataset.perform_async(params["id"], current_user.id, dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
+    UpdateDataset.perform_async(params["id"], dataset_update_params.to_h, files_array, channel_id: params[:channel_id])
 
     if params[:async]
       head :accepted
@@ -120,7 +121,7 @@ class DatasetsController < ApplicationController
   end
 
   def dataset_update_params
-    params[:dataset].try(:permit, [:description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method])
+    params[:dataset].try(:permit, [:user_id, :description, :publisher_name, :publisher_url, :license, :frequency, :schema, :schema_name, :schema_description, :dataset_file_schema_id, :publishing_method])
   end
 
   def set_direct_post

@@ -2,15 +2,28 @@ class UpdateDataset
   include Sidekiq::Worker
   sidekiq_options retry: false
 
-  def perform(id, user_id, dataset_params, files, options = {})
+  def perform(id, dataset_params, files, options = {})
     files = [files] if files.class == Hash
 
-    @user = User.find(user_id)
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     )
-
+    
     @dataset = get_dataset(id)
+
+    user_id = dataset_params[:user_id].try(:to_i)
+    # Give new user access to repo
+    if @dataset.publishing_method != 'local_private' && 
+        user_id && 
+        user_id != @dataset.user_id
+      new_user = User.find(user_id)
+      dataset_params[:user] = new_user
+      if new_user
+        @dataset.user.octokit_client.add_collaborator(@dataset.full_name, new_user.github_username)
+      end
+    end
+
+    # Update
     @dataset.assign_attributes(dataset_params) if dataset_params
 
     handle_files(files)
