@@ -41,9 +41,7 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   def update
-    clean_update_params = strip_empty_parameters(update_params)
-
-    if @dataset_file_schema.update(clean_update_params)
+    if @dataset_file_schema.update(update_params)
 
       schema = @dataset_file_schema.to_builder.target!
       @dataset_file_schema.update(schema: schema)
@@ -60,15 +58,6 @@ class DatasetFileSchemasController < ApplicationController
   end
 
   private
-
-  def strip_empty_parameters(dirty_params)
-    dirty_params.delete_if do |_key, value|
-      if value.instance_of?(ActionController::Parameters)
-        strip_empty_parameters(value)
-      end
-      value == ""
-    end
-  end
 
   def process_file
     file_reference = params["dataset_file_schema"]["url_in_s3"]
@@ -102,7 +91,7 @@ class DatasetFileSchemasController < ApplicationController
     params.require(:dataset_file_schema).permit(
       :restricted, 
       schema_fields_attributes: [ :id, :name, :type, :format, schema_constraint_attributes:
-        [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :type]])
+        [:id, :required, :unique, :min_length, :max_length, :minimum, :maximum, :pattern, :date_pattern, :type]])
   end
 
   def create_empty_constraints_for_edit(dataset_file_schema)

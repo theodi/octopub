@@ -26,7 +26,8 @@
           <th>Max Length</th>
           <th>Max</th>
           <th>Min</th>
-          <th class="col-xs-2">Pattern</th>
+          <th>Pattern</th>
+          <th>Date Pattern</th>
           <th>Constraint Type</th>
         </tr>
       </thead>
@@ -43,7 +44,8 @@
                 <td><%= schema_constraint_form.text_field :max_length, hide_label: true %></td>
                 <td><%= schema_constraint_form.text_field :minimum, hide_label: true %></td>
                 <td><%= schema_constraint_form.text_field :maximum, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :pattern, hide_label: true, class: 'input-medium' %></td>
+                <td><%= schema_constraint_form.text_field :pattern, hide_label: true %></td>
+                <td><%= schema_constraint_form.text_field :date_pattern, hide_label: true %></td>
                 <td><%= schema_constraint_form.text_field :type, hide_label: true %></td>
               <% end %>
             <% else %>
@@ -63,4 +65,3 @@
   </div>
   <%= f.primary %>
 <% end %>
-

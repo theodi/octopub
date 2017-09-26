@@ -13,7 +13,7 @@
 <div class="panel panel-default panel-warning">
   <div class="panel-heading"><b>Restricted User and Schemas</b></div>
     <div class="panel-body">
-      <%= f.check_box "user[restricted]", label: "Restrict this user to allocated dataset file schemas", value: @user.restricted %>
+      <%= f.check_box "user[restricted]", label: "Restrict this user to allocated dataset file schemas", checked: @user.restricted %>
       <% if @dataset_file_schemas.any? %>
         <% if SchemaCategory.any? %>
           <div class="form-group">
