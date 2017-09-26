@@ -26,7 +26,12 @@
     },
     "AWS_SECRET_ACCESS_KEY": {
       "required": true
+    },
+    "DEFAULT_ROLE": {
+      "required": false,
+      "value": "publisher"
     }
+
   },
   "formation": {
     "worker": {
