@@ -22,6 +22,7 @@ require 'rails_helper'
 describe User do
 
   context "user can have a single role" do
+        
     it "as a guest" do
       user = create(:guest)
       expect(user.role).to eq 'guest'
@@ -63,6 +64,14 @@ describe User do
       expect(user.role).to eq 'editor'
       expect(user.guest?).to be false
       expect(user.editor?).to be true
+    end
+
+    it "loaded from the environment if set" do
+      ENV['DEFAULT_ROLE'] = "admin"
+      user = create(:user)
+      expect(user.publisher?).to be false
+      expect(user.admin?).to be true
+      ENV['DEFAULT_ROLE'] = nil
     end
 
   end

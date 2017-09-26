@@ -44,6 +44,13 @@ class User < ApplicationRecord
                           )
     user
   end
+  
+  def initialize(options = {})
+    if ENV['DEFAULT_ROLE']
+      options[:role] ||= ENV['DEFAULT_ROLE'].try(:to_sym)
+    end
+    super(options)
+  end
 
   def octokit_client
     @client ||= Octokit::Client.new :access_token => token
