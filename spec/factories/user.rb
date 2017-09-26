@@ -5,12 +5,16 @@ FactoryGirl.define do
     email   { Faker::Internet.unique.email }
     name    { Faker::Name.unique.name }
     token "rwefsadasfesesds3454353few"
-    role { :publisher }
+    # use default role, either from ENV or "publisher"
 
     trait :with_twitter_name do
       after(:build) { |user|
         user.twitter_handle = Faker::Twitter.user[:screen_name]
       }
+    end
+
+    factory :publisher do
+      role :publisher
     end
 
     factory :superuser do
@@ -20,5 +24,14 @@ FactoryGirl.define do
     factory :admin do
       role :admin
     end
+
+    factory :guest do
+      role :guest
+    end
+
+    factory :editor do
+      role :editor
+    end
+
   end
 end

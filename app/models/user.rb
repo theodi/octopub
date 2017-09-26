@@ -13,13 +13,13 @@
 #  api_key         :string
 #  org_dataset_ids :text             default([]), is an Array
 #  twitter_handle  :string
-#  role            :integer          default("publisher"), not null
+#  role            :integer          default(0), not null
 #  restricted      :boolean          default(FALSE)
 #
 
 class User < ApplicationRecord
 
-  enum role: [:publisher, :superuser, :admin]
+  enum role: [:publisher, :superuser, :admin, :guest, :editor]
 
   has_many :datasets
   has_many :dataset_file_schemas
@@ -43,6 +43,13 @@ class User < ApplicationRecord
                            token: auth["credentials"]["token"]
                           )
     user
+  end
+  
+  def initialize(options = {})
+    if ENV['DEFAULT_ROLE']
+      options[:role] ||= ENV['DEFAULT_ROLE'].try(:to_sym)
+    end
+    super(options)
   end
 
   def octokit_client

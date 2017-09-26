@@ -34,7 +34,7 @@
     <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
 
-  <% if dataset.id %>
+  <% if dataset.id && can?(:transfer, dataset) %>
     <div class='panel panel-danger'>
       <div class="panel-heading">
         <h3 class="panel-title">Danger Zone</h3>
