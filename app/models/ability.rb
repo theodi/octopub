@@ -13,7 +13,7 @@ class Ability
       if user.editor? || user.publisher? || user.superuser? || user.admin?
         # Editors can view and edit their existing datasets
         # Publishers will create datasets and assign them to editors
-        can [:read, :edit], Dataset, user: user
+        can [:read, :update, :dashboard, :user_datasets], Dataset, user: user
       end
 
       # Publishers and above
