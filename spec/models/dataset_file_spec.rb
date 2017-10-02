@@ -395,17 +395,17 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it 'errors on update' do
-      storage_key = "datapackage.json"
-      file = create(:dataset_file, filename: "datapackage.json", storage_key: storage_key)
-
+      # Create a nice working file
+      file = create(:dataset_file, title: "Example", storage_key: storage_key)      
       @dataset.dataset_files << file
       @dataset.save
 
+      # Update it with some non-CSV junk
       new_file = {
         "id" => file.id,
         "file" => file,
         "description" => 'A new description',
-        "storage_key" => storage_key
+        "storage_key" => "datapackage.json"
       }
 
       file.update_file(new_file)

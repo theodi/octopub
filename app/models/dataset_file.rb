@@ -21,8 +21,8 @@ class DatasetFile < ApplicationRecord
   belongs_to :dataset
   belongs_to :dataset_file_schema
 
-  validate :check_schema, if: :dataset_file_schema
-  validate :check_csv
+  validate :check_schema, if: :content_or_schema_changed?
+  validate :check_csv, if: :content_or_schema_changed?
   validates_presence_of :title
   validates_presence_of :storage_key
 
@@ -107,6 +107,13 @@ class DatasetFile < ApplicationRecord
   end
 
   private
+  
+    def content_or_schema_changed?
+      # We only need to validate if the file itself or the schema has changed
+      new_record? || 
+      dataset_file_schema_id_changed? ||
+      storage_key_changed?
+    end
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
@@ -158,7 +165,7 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      if dataset && storage_key
+      if storage_key
         string_io = FileStorageService.get_string_io(storage_key)
         unless string_io.nil?
           begin

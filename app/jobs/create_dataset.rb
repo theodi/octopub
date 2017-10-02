@@ -13,7 +13,6 @@ class CreateDataset
       dataset_params.merge(job_id: self.jid)
     ))
 
-    # TODO this new_file thing does funny stuff
     files.each do |dataset_file_creation_hash|
       dataset_file = DatasetFile.create(dataset_file_creation_hash)
       if dataset_file_creation_hash["schema"]
@@ -28,6 +27,7 @@ class CreateDataset
         ).create_dataset_file_schema
 
         dataset_file.dataset_file_schema = schema
+        dataset_file.save
       elsif dataset_file_creation_hash["dataset_file_schema_id"]
         dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
       end
