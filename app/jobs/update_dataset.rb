@@ -58,7 +58,7 @@ class UpdateDataset
   end
 
   def add_file(jekyll_service, new_file_hash)
-    f = DatasetFile.new_file(new_file_hash)
+    f = DatasetFile.create(new_file_hash)
 
     @dataset.dataset_files << f
     if f.save

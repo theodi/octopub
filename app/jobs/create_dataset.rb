@@ -15,7 +15,7 @@ class CreateDataset
 
     # TODO this new_file thing does funny stuff
     files.each do |dataset_file_creation_hash|
-      dataset_file = DatasetFile.new_file(dataset_file_creation_hash)
+      dataset_file = DatasetFile.create(dataset_file_creation_hash)
       if dataset_file_creation_hash["schema"]
         # Create schema
         schema = DatasetFileSchemaService.new(

@@ -48,7 +48,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
-  context "self.new_file" do
+  context "self.create" do
     context "with uploaded file" do
 
       before(:each) do
@@ -64,7 +64,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       end
 
       it "creates a file" do
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("my-file.csv")
@@ -83,7 +83,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
         }
       end
       it "creates a file" do
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("hot-drinks.csv")
@@ -104,7 +104,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
           "storage_key" => storage_key
         }
 
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("hot-drinks.csv")

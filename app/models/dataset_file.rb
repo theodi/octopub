@@ -53,13 +53,13 @@ class DatasetFile < ApplicationRecord
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
-  def self.new_file(dataset_file_creation_hash)
-    Rails.logger.info "DatasetFile: In new_file"
+  def self.create(dataset_file_creation_hash)
+    Rails.logger.info "DatasetFile: In create"
     # allow use of hashes or strings for keys
     dataset_file_creation_hash = get_file_from_the_right_place(dataset_file_creation_hash)
     Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
-    create(
+    super(
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
       file: dataset_file_creation_hash[:file],
