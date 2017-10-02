@@ -74,6 +74,29 @@ describe UpdateDataset, vcr: { :match_requests_on => [:host, :method] } do
     dataset = @worker.perform(@dataset.id, @dataset_params, @files, "channel_id" => "beep-beep")
   end
 
+  context 'with legacy files missing a storage_key' do
+    
+    it 'updates metadata successfully' do
+      file = create(:dataset_file)
+      file.storage_key = nil
+      file.save!(validate: false)
+      @dataset.dataset_files << file
+      
+      expect(@dataset).to receive(:report_status).with('beep-beep', :update)
+
+      files = [
+        {
+          'id' => file.id,
+          'title' => 'My New Filename',
+          'description' => Faker::Company.bs
+        }
+      ]
+
+      @worker.perform(@dataset.id, @dataset_params, files, "channel_id" => "beep-beep")
+    end
+    
+  end
+
   context 'reports errors' do
 
     let(:filename) { 'datapackage.json' }

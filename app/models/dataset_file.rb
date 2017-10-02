@@ -24,7 +24,7 @@ class DatasetFile < ApplicationRecord
   validate :check_schema, if: :content_or_schema_changed?
   validate :check_csv, if: :content_or_schema_changed?
   validates_presence_of :title
-  validates_presence_of :storage_key
+  validates_presence_of :storage_key, on: :create
 
   after_validation :set_filename
 
