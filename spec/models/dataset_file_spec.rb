@@ -48,7 +48,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
-  context "self.new_file" do
+  context "self.create" do
     context "with uploaded file" do
 
       before(:each) do
@@ -64,7 +64,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       end
 
       it "creates a file" do
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("my-file.csv")
@@ -83,7 +83,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
         }
       end
       it "creates a file" do
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("hot-drinks.csv")
@@ -104,7 +104,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
           "storage_key" => storage_key
         }
 
-        file = DatasetFile.new_file(@file)
+        file = DatasetFile.create(@file)
 
         expect(file.title).to eq(@file["title"])
         expect(file.filename).to eq("hot-drinks.csv")
@@ -395,17 +395,17 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     end
 
     it 'errors on update' do
-      storage_key = "datapackage.json"
-      file = create(:dataset_file, filename: "datapackage.json", storage_key: storage_key)
-
+      # Create a nice working file
+      file = create(:dataset_file, title: "Example", storage_key: storage_key)      
       @dataset.dataset_files << file
       @dataset.save
 
+      # Update it with some non-CSV junk
       new_file = {
         "id" => file.id,
         "file" => file,
         "description" => 'A new description',
-        "storage_key" => storage_key
+        "storage_key" => "datapackage.json"
       }
 
       file.update_file(new_file)

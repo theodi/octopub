@@ -238,7 +238,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
           new_file = build(:dataset_file, dataset: @dataset, file: nil, filename: filename)
 
-          expect(DatasetFile).to receive(:new_file) { new_file }
+          expect(DatasetFile).to receive(:create) { new_file }
           expect_any_instance_of(JekyllService).to receive(:add_to_github)
           expect_any_instance_of(JekyllService).to receive(:add_jekyll_to_github)
           allow_any_instance_of(JekyllService).to receive(:push_to_github)
@@ -370,7 +370,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
 
       new_file = build(:dataset_file, dataset: @dataset, file: nil)
 
-      expect(DatasetFile).to receive(:new_file) { new_file }
+      expect(DatasetFile).to receive(:create) { new_file }
       expect_any_instance_of(JekyllService).to_not receive(:add_to_github)
       expect_any_instance_of(JekyllService).to_not receive(:add_jekyll_to_github)
       expect_any_instance_of(JekyllService).to_not receive(:push_to_github)

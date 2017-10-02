@@ -21,8 +21,8 @@ class DatasetFile < ApplicationRecord
   belongs_to :dataset
   belongs_to :dataset_file_schema
 
-  validate :check_schema, if: :dataset_file_schema
-  validate :check_csv
+  validate :check_schema, if: :content_or_schema_changed?
+  validate :check_csv, if: :content_or_schema_changed?
   validates_presence_of :title
   validates_presence_of :storage_key
 
@@ -53,13 +53,13 @@ class DatasetFile < ApplicationRecord
     open(URI.escape(file)).read.force_encoding("UTF-8")
   end
 
-  def self.new_file(dataset_file_creation_hash)
-    Rails.logger.info "DatasetFile: In new_file"
+  def self.create(dataset_file_creation_hash)
+    Rails.logger.info "DatasetFile: In create"
     # allow use of hashes or strings for keys
     dataset_file_creation_hash = get_file_from_the_right_place(dataset_file_creation_hash)
     Rails.logger.info "Dataset file created using new file #{dataset_file_creation_hash[:file]} key: #{dataset_file_creation_hash[:storage_key]}"
     # Do the actual create here
-    create(
+    super(
       title: dataset_file_creation_hash[:title],
       description: dataset_file_creation_hash[:description],
       file: dataset_file_creation_hash[:file],
@@ -107,6 +107,13 @@ class DatasetFile < ApplicationRecord
   end
 
   private
+  
+    def content_or_schema_changed?
+      # We only need to validate if the file itself or the schema has changed
+      new_record? || 
+      dataset_file_schema_id_changed? ||
+      storage_key_changed?
+    end
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
@@ -158,7 +165,7 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      if dataset && storage_key
+      if storage_key
         string_io = FileStorageService.get_string_io(storage_key)
         unless string_io.nil?
           begin
