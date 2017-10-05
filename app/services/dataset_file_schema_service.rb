@@ -53,9 +53,9 @@ class DatasetFileSchemaService
     open(url).read.force_encoding("UTF-8")
   end
 
-  def self.get_parsed_schema_from_csv_lint(url)
+  def self.get_parsed_schema_from_csv_lint(url, schema = nil)
     begin
-      output = Csvlint::Schema.load_from_json(url)
+      output = schema ? Csvlint::Schema.load_from_string(url, schema) : Csvlint::Schema.load_from_uri(url)
     rescue Exception => e
       Rails.logger.error "Unable to parse schema #{url}"
     end

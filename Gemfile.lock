@@ -10,24 +10,6 @@ GIT
       uuid (~> 2.3.8)
 
 GIT
-  remote: https://github.com/jamesjefferies/csvlint.rb.git
-  revision: 117c0eab2d86f3124e51827ed6a769d13e5fa1a5
-  branch: ruby-2.4-rails-5.0-compatibility
-  specs:
-    csvlint (0.3.3)
-      activesupport
-      addressable
-      colorize
-      escape_utils
-      mime-types
-      net-http-persistent (< 3.0)
-      open_uri_redirections
-      rack
-      thor
-      typhoeus
-      uri_template
-
-GIT
   remote: https://github.com/pezholio/grape-swagger-rails.git
   revision: 2b474ff5f848906b67674edae9eff1a822d04312
   branch: change-layout-test-branch
@@ -170,6 +152,18 @@ GEM
       tins (~> 1.6)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    csvlint (0.4.0)
+      activesupport
+      addressable
+      colorize
+      escape_utils
+      mime-types
+      net-http-persistent (< 3.0)
+      open_uri_redirections
+      rack
+      thor
+      typhoeus
+      uri_template
     currencies (0.4.2)
     database_cleaner (1.6.1)
     debug_inspector (0.0.2)
@@ -490,7 +484,7 @@ GEM
       memoizable (~> 0.4.0)
       naught (~> 1.0)
       simple_oauth (~> 0.3.0)
-    typhoeus (1.1.2)
+    typhoeus (1.3.0)
       ethon (>= 0.9.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
@@ -542,7 +536,7 @@ DEPENDENCIES
   coveralls (~> 0.8.21)
   csv2json!
   csv2rest!
-  csvlint!
+  csvlint (~> 0.4)
   database_cleaner
   dotenv-rails
   emd
