@@ -133,7 +133,7 @@ class DatasetFile < ApplicationRecord
     def validate_schema_cotw
       Rails.logger.info "DatasetFile: we have COTW schema and schema is valid, so validate"
 
-      schema = Csvlint::Schema.load_from_uri(URI.escape dataset_file_schema.url)
+      schema = Csvlint::Schema.load_from_string(URI.escape(dataset_file_schema.url), dataset_file_schema.schema)
       tempfile = get_file_for_validation_from_file
 
       if schema.respond_to? :tables
@@ -150,7 +150,7 @@ class DatasetFile < ApplicationRecord
     def validate_schema_non_cotw
       Rails.logger.info "DatasetFile: we have non COTW schema and schema is valid, so validate"
 
-      schema = Csvlint::Schema.load_from_uri(URI.escape dataset_file_schema.url)
+      schema = Csvlint::Schema.load_from_string(URI.escape(dataset_file_schema.url), dataset_file_schema.schema)
 
       string_io = FileStorageService.get_string_io(storage_key)
       validation = Csvlint::Validator.new(string_io, {}, schema)
