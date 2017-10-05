@@ -144,6 +144,8 @@ function addAnotherDataFileButtonClick() {
     clone.find('.bg-upload').each(function(i, elem) {
       bgUpload(elem);
     });
+    // Update all select boxes to create rich search boxes
+    $('.selectpicker').selectpicker('refresh');
   });
 }
 
@@ -178,4 +180,3 @@ $(document).ready(function() {
     setUpFileUpload();
   }
 });
-
