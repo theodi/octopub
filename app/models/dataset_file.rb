@@ -28,6 +28,8 @@ class DatasetFile < ApplicationRecord
 
   after_validation :set_filename
 
+  default_scope { order(:created_at) }
+
   attr_accessor :file
 
   def self.file_from_url(file)
