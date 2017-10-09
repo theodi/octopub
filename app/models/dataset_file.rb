@@ -184,10 +184,27 @@ class DatasetFile < ApplicationRecord
       self.filename = "#{title.parameterize}.csv" rescue nil
     end
 
-    def file_content
+    def file_content      
+      # Try to load from the storage key first.
       if storage_key
-        return FileStorageService.get_string_io(storage_key)
+        # This might fail if the S3 content has gone away.
+        begin
+          return FileStorageService.get_string_io(storage_key)
+        rescue Aws::S3::Errors::NoSuchKey
+          # OK, the S3 content disappeared. Carry on.
+        end
       end
+      # If that didn't help, we try to load from the pubished version on GitHub
+      if dataset && dataset.github_public?
+        begin
+          return open(gh_pages_url)
+        rescue OpenURI::HTTPError => ex
+          # Absorb 404s, but throw anything else up the stack
+          throw unless ex.message === "404 Not Found"
+        end
+      end
+      # Nothing worked. Ah well. We did our best.
+      nil
     end
-
+  
 end
