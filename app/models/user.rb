@@ -36,7 +36,7 @@ class User < ApplicationRecord
   end
 
   def self.find_for_github_oauth(auth)
-    user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create
+    user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create({})
     user.update_attributes(
                            name: auth["info"]["nickname"],
                            email: auth["info"]["email"],
