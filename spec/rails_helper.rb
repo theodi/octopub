@@ -9,7 +9,7 @@ require 'rspec/rails'
 
 require 'git_data'
 require 'database_cleaner'
-require 'factory_girl'
+require 'factory_bot'
 require 'omniauth'
 
 require 'webmock/rspec'
@@ -55,7 +55,7 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.

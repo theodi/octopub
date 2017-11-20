@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :dataset_file do
     title 'My Awesome Dataset'
     description Faker::Company.bs

@@ -40,9 +40,9 @@ ActiveRecord::Schema.define(version: 20170808164922) do
   end
 
   create_table "dataset_files", force: :cascade do |t|
-    t.string   "title",                  limit: 255
-    t.string   "filename",               limit: 255
-    t.string   "mediatype",              limit: 255
+    t.string   "title"
+    t.string   "filename"
+    t.string   "mediatype"
     t.integer  "dataset_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -56,32 +56,31 @@ ActiveRecord::Schema.define(version: 20170808164922) do
   end
 
   create_table "datasets", force: :cascade do |t|
-    t.string   "name",              limit: 255
-    t.string   "url",               limit: 255
+    t.string   "name"
+    t.string   "url"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "repo",              limit: 255
+    t.string   "repo"
     t.text     "description"
-    t.string   "publisher_name",    limit: 255
-    t.string   "publisher_url",     limit: 255
-    t.string   "license",           limit: 255
-    t.string   "frequency",         limit: 255
+    t.string   "publisher_name"
+    t.string   "publisher_url"
+    t.string   "license"
+    t.string   "frequency"
     t.text     "datapackage_sha"
-    t.string   "owner",             limit: 255
-    t.string   "owner_avatar",      limit: 255
-    t.string   "build_status",      limit: 255
-    t.string   "full_name",         limit: 255
-    t.string   "gh_pages_url",      limit: 255
-    t.string   "certificate_url",   limit: 255
-    t.string   "job_id",            limit: 255
-    t.integer  "publishing_method",             default: 0, null: false
+    t.string   "owner"
+    t.string   "owner_avatar"
+    t.string   "build_status"
+    t.string   "full_name"
+    t.string   "certificate_url"
+    t.string   "job_id"
+    t.integer  "publishing_method", default: 0, null: false
     t.datetime "url_deprecated_at"
     t.index ["user_id"], name: "index_datasets_on_user_id", using: :btree
   end
 
   create_table "errors", force: :cascade do |t|
-    t.string "job_id",   limit: 255, null: false
+    t.string "job_id",   null: false
     t.json   "messages"
   end
 
@@ -149,18 +148,18 @@ ActiveRecord::Schema.define(version: 20170808164922) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "provider",        limit: 255
-    t.string   "uid",             limit: 255
-    t.string   "email",           limit: 255
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",            limit: 255
-    t.string   "token",           limit: 255
-    t.string   "api_key",         limit: 255
-    t.text     "org_dataset_ids",             default: [],                 array: true
-    t.string   "twitter_handle",  limit: 255
-    t.integer  "role",                        default: 0,     null: false
-    t.boolean  "restricted",                  default: false
+    t.string   "name"
+    t.string   "token"
+    t.string   "api_key"
+    t.text     "org_dataset_ids", default: [],                 array: true
+    t.string   "twitter_handle"
+    t.integer  "role",            default: 0,     null: false
+    t.boolean  "restricted",      default: false
   end
 
 end

@@ -15,7 +15,7 @@ feature "A visiting, non-logged in user", type: :feature do
     end
 
     scenario "and can see a list of datasets when there are some" do
-      FactoryGirl.create(:dataset, name: 'Woof', url: 'https://meow.com', owner_avatar: 'https://meow.com')
+      FactoryBot.create(:dataset, name: 'Woof', url: 'https://meow.com', owner_avatar: 'https://meow.com')
       click_link "All datasets"
       expect(page).to have_content "Woof"
     end
@@ -42,7 +42,7 @@ feature "A visiting, non-logged in user", type: :feature do
       visit new_dataset_path 
     end
     it "edit dataset path" do 
-      @dataset = FactoryGirl.create(:dataset)
+      @dataset = FactoryBot.create(:dataset)
       visit edit_dataset_path(@dataset.id)
     end
     it "new dashboard path" do 
