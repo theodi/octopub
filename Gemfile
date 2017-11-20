@@ -112,7 +112,7 @@ group :test do
   gem 'pry'
   gem 'poltergeist'
   gem 'faker'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'coveralls', '~> 0.8.21'
   gem 'vcr'
   gem 'webmock'

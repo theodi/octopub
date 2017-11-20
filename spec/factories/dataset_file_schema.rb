@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :dataset_file_schema do
     name Faker::Name.unique.name
     description Faker::Company.bs

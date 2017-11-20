@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :dataset do
     name "My Awesome Dataset"
     description "An awesome dataset"
