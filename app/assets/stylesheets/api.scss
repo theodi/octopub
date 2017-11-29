@@ -31,6 +31,7 @@
   #resources_container {
     ul, li {
       list-style-type: none;
+      text-indent: 0;
       margin: 0;
       padding: 0;
     }
@@ -50,14 +51,12 @@
         }
 
         .options {
-          position: absolute;
-          right: 10px;
-          top: 10px;
+          position: relative;
 
           li {
             display: inline-block;
-            margin: 0 2px;
-            padding: 0 2px;
+            margin: 0;
+            padding-top: 15px;
           }
         }
       }
