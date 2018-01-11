@@ -39,7 +39,7 @@ function bgUpload(elem) {
       progressBar.removeClass('active');
       // extract key and generate URL from response
       var key   = $(data.jqXHR.responseXML).find("Key").text();
-      var url   = 'https://' + form.data('host') + '/' + encodeURI(key);
+      var url   = 'https://' + form.data('host') + '/' + key;
 
       // create hidden field
       var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, class: 's3-file' });

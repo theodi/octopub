@@ -29,24 +29,19 @@ class User < ApplicationRecord
 
   before_validation :generate_api_key, on: :create
 
-  # Update the org_dataset_ids column (an array of dataset ids) on the user.
-  # TODO Refactor this function as it tries to do multiple things.
   def self.refresh_datasets id, channel_id = nil
     user = User.find id
     user.send(:get_user_repos)
-    # This gets called when you click "Refresh datasets" on the "My Datasets" page. 
-    # See app/assets/javascripts/dashboard.js
     Pusher[channel_id].trigger("refreshed", {}) if channel_id
   end
 
-  # Find or create a user using their GitHub uid.
   def self.find_for_github_oauth(auth)
     user = User.where(provider: auth["provider"], uid: auth["uid"]).first_or_create({})
     user.update_attributes(
-      name: auth["info"]["nickname"],
-      email: auth["info"]["email"],
-      token: auth["credentials"]["token"] # Renew access token each time.
-    )
+                           name: auth["info"]["nickname"],
+                           email: auth["info"]["email"],
+                           token: auth["credentials"]["token"]
+                          )
     user
   end
   
@@ -57,10 +52,7 @@ class User < ApplicationRecord
     super(options)
   end
 
-  # Return the user's octokit client (for interacting with the GitHub API).
   def octokit_client
-    # Check if we already have the octokit client stored in an instance variable else fetch it using
-    # the user's access token to authenticate.
     @client ||= Octokit::Client.new :access_token => token
     @client
   end
@@ -82,7 +74,7 @@ class User < ApplicationRecord
   end
 
   def get_organization_memberships
-    # Note cache key is based on model's id and updated at attributes.
+    # Note cache key is based on model's id and updated at attributes
     Rails.cache.fetch("#{cache_key}/organization_memberships", expires_in: 1.day) do
       begin
         octokit_client.org_memberships.select { |m| m[:role] == 'admin' }
@@ -108,13 +100,10 @@ class User < ApplicationRecord
   private
 
     def get_user_repos
-      # Update the org_dataset_ids column (an array of dataset ids) on the user.
       self.update_column(:org_dataset_ids, user_repos)
     end
 
     def user_repos
-      # Loop through user's github repos. If a dataset is found which matches the github repo name, 
-      # add the id of the dataset to an array.
       octokit_client.auto_paginate = true
       repos = octokit_client.repos.map do |r|
         Dataset.find_by_full_name(r.full_name).try(:id)
