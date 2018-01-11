@@ -88,7 +88,7 @@ GEM
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 13.0)
     arel (7.1.4)
-    autoprefixer-rails (7.1.6)
+    autoprefixer-rails (7.2.4)
       execjs
     awesome_print (1.8.0)
     aws-partitions (1.43.0)
