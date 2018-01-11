@@ -10,7 +10,6 @@ module FileHandlingForDatasets
   def process_files
     logger.info "DatasetsController: In process_files"
     @files.each do |f|
-
       if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(f["file"].class)
         Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
         storage_object = FileStorageService.create_and_upload_public_object(f["file"].original_filename, f["file"].read)
@@ -19,7 +18,7 @@ module FileHandlingForDatasets
         f["file"] = storage_object.public_url
       else
         Rails.logger.info "file is not an http uploaded file, it's a URL"
-        f["storage_key"] = URI(f["file"]).path.gsub(/^\//, '') unless f["file"].nil?
+        f["storage_key"] = URI.decode(URI(f["file"]).path.gsub(/^\//, '')) unless f["file"].nil?
       end
     end
   end
