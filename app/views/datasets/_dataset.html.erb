@@ -12,7 +12,7 @@
       <% end %>
     <% end %>
   </td>
-  <td></td>
+  <td><%= dataset.dataset_files.select { |file| file }.count %></td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
   <td><%= dataset.created_at.to_formatted_s(:short) %></td>
   <td></td>
