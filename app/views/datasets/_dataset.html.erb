@@ -1,4 +1,21 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
+  <td>
+    <% if dataset.deprecated_resource.eql?(true) %>
+        <%= dataset.name %> <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="dataset inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
+    <% else %>
+      <% if dataset.github_public? %>
+        <%= link_to dataset.name, dataset.gh_pages_url %>
+      <% elsif dataset.github_private? %>
+        <%= link_to dataset.name, dataset.github_url %>
+      <% elsif dataset.local_private? %>
+        <%= link_to dataset.name, files_path(dataset) %>
+      <% end %>
+    <% end %>
+  </td>
+  <td></td>
+  <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
+  <td><%= dataset.created_at.to_formatted_s(:short) %></td>
+  <!---
   <td class="owner">
     <%= image_tag dataset.owner_avatar, height: 20, width: 20 if dataset.owner_avatar %>
     <%= dataset.repo_owner %>
@@ -15,24 +32,12 @@
       <% end %>
     <% end %>
   </td>
-  <td>
-    <% if dataset.deprecated_resource.eql?(true) %>
-        <%= dataset.name %> <i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="right" title="dataset inaccessible since <%= dataset.url_deprecated_at.to_formatted_s(:short) %>"></i>
-    <% else %>
-      <% if dataset.github_public? %>
-        <%= link_to dataset.name, dataset.gh_pages_url %>
-      <% elsif dataset.github_private? %>
-        <%= link_to dataset.name, dataset.github_url %>
-      <% elsif dataset.local_private? %>
-        <%= link_to dataset.name, files_path(dataset) %>
-      <% end %>
-    <% end %>
-  </td>
-  <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
   <td><%= if dataset.deprecated_resource.eql?(true)
             dataset.url_deprecated_at.to_formatted_s(:short)
-          end%></td>
-  <td><%= dataset.created_at.to_formatted_s(:short) %></td>
+          end%>
+  </td>
+  -->
+  <td></td>
   <td>
     <% if can? :edit, dataset %>
       <%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %>

@@ -7,13 +7,13 @@
   data-filter-control="true">
   <thead>
     <tr>
-      <th data-sortable="true"><%= t(:'dataset.owner') %></th>
-      <th>Type</th>
-      <th data-sortable="true">Name</th>
-      <th data-sortable="true">Schemas?</th>
-      <th data-sortable="true">Deprecated On</th>
-      <th data-sortable="true">Created On</th>
-      <th>Actions</th>
+      <th data-sortable="true">Collection Name</th>
+      <th data-sortable="true">Files</th>
+      <th data-sortable="true">Schema</th>
+      <th data-sortable="true">Creation date</th>
+      <th data-sortable="true">Validation</th>
+      <!--<th data-sortable="true"><%= t(:'dataset.owner') %></th>-->
+      <th>Action</th>
     </tr>
     </thead>
     <%= render(partial: "dataset", collection: @datasets) %>
