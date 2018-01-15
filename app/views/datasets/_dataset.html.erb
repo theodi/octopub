@@ -12,16 +12,19 @@
       <% end %>
     <% end %>
   </td>
-  <td><%= dataset.dataset_files.select { |file| file }.count %></td>
+  <td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
-  <td><%= dataset.created_at.to_formatted_s(:short) %></td>
-  <td></td>
+  <td><%= dataset.created_at.strftime("%d-%m-%Y") %></td>
+  <td><%= dataset.build_status %></td>
   <td>
+    ...
+    <!---
     <% if can? :edit, dataset %>
       <%= link_to("Edit", edit_dataset_path(dataset.id), class: "btn btn-warning") %>
     <% end %>
     <% if can? :delete, dataset %>
       <%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "btn btn-danger") %>
     <% end %>
+    -->
   </td>
 </tr>
