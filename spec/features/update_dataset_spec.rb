@@ -24,7 +24,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
 
       click_link "My datasets"
-      expect(page).to have_content "My Datasets"
+      expect(page).to have_content "Collection Name"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
       # Bypass sidekiq completely
@@ -70,7 +70,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(Dataset).to receive(:update_dataset_in_github)
 
       click_link "My datasets"
-      expect(page).to have_content "My Datasets"
+      expect(page).to have_content "Collection Name"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
       # Bypass sidekiq completely
@@ -109,7 +109,7 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
 
       click_link "My datasets"
-      expect(page).to have_content "My Datasets"
+      expect(page).to have_content "Collection Name"
       expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
       allow(RepoService).to receive(:fetch_repo)
@@ -118,7 +118,7 @@ feature "Update dataset page", type: :feature do
     after(:each) do
       Sidekiq::Testing.fake!
     end
-    
+
     scenario "can access edit dataset page and change description" do
 
       expect(page).to have_content "Edit Dataset"

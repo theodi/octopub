@@ -1,8 +1,15 @@
 <% if @datasets.count > 0 %>
 <div>
-  <button>Pre-published collections</button>
-  <button>Published collections</button>
+  <div id="toolbar">
+    <div class="form-inline" role="form">
+      <div class="form-group">
+        <button>Pre-published collections</button>
+        <button>Published collections</button>
+      </div>
+    </div>
+  </div>
   <table class="table"
+  data-toolbar="#toolbar"
   data-toggle="table"
   data-search="true"
   data-filter-control="true">
