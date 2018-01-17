@@ -1,33 +1,55 @@
 <% if @datasets.count > 0 %>
-<div>
-  <div id="toolbar">
-    <div class="form-inline" role="form">
-      <div class="form-group">
-        <button>Pre-published collections</button>
-        <button>Published collections</button>
-      </div>
-    </div>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#prepublished">Pre-published collections</a></li>
+  <li><a data-toggle="tab" href="#published">Published collections</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="prepublished" class="tab-pane fade in active">
+    <table class="table"
+    data-toggle="table"
+    data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Collection Name</th>
+        <th data-sortable="true">Files</th>
+        <th data-sortable="true">Schema</th>
+        <th data-sortable="true">Creation date</th>
+        <th data-sortable="true">Validation</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+        <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
+    </table>
   </div>
-  <table class="table"
-  data-toolbar="#toolbar"
-  data-toggle="table"
-  data-search="true"
-  data-filter-control="true">
-  <thead>
-    <tr>
-      <th data-sortable="true">Collection Name</th>
-      <th data-sortable="true">Files</th>
-      <th data-sortable="true">Schema</th>
-      <th data-sortable="true">Creation date</th>
-      <th data-sortable="true">Validation</th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <%= render(partial: "dataset", collection: @datasets) %>
-    <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
-  </table>
+
+  <div id="published" class="tab-pane fade">
+    <table class="table"
+    data-toggle="table"
+    data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-sortable="true">Collection Name</th>
+        <th data-sortable="true">Files</th>
+        <th data-sortable="true">Schema</th>
+        <th data-sortable="true">Creation date</th>
+        <th data-sortable="true">Validation</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+        <%= render(partial: "dataset", collection: @datasets) %>
+        <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
+    </table>
+  </div>
 </div>
 
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>
+
+<!-- <div id="prepublished" class="tab-pane fade in active">
+  <%= render(partial: "dataset", collection: @datasets) %>
+</div>
+<div id="published" class="tab-pane fade">
+</div> -->
