@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
-  
+
   authorize_resource
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
@@ -127,7 +127,7 @@ class DatasetsController < ApplicationController
   def set_direct_post
     @s3_direct_post = FileStorageService.private_presigned_post
   end
-  
+
   def available_schemas
     DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end

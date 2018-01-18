@@ -20,7 +20,7 @@ describe 'datasets/_datasets.html.erb' do
     render :partial => 'datasets/datasets.html.erb'
 
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr').count).to eq(6)
+    expect(page.css('tr').count).to eq(7)
   end
 
   it "should display a message if there are no datasets" do

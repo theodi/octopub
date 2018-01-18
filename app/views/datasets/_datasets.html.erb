@@ -20,7 +20,6 @@
         <th>Action</th>
       </tr>
       </thead>
-        <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
     </table>
   </div>
 
@@ -38,8 +37,8 @@
         <th>Action</th>
       </tr>
       </thead>
-        <%= render(partial: "dataset", collection: @datasets) %>
-        <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
+      <%= render(partial: "dataset", collection: @datasets) %>
+      <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
     </table>
   </div>
 </div>
@@ -47,9 +46,3 @@
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>
-
-<!-- <div id="prepublished" class="tab-pane fade in active">
-  <%= render(partial: "dataset", collection: @datasets) %>
-</div>
-<div id="published" class="tab-pane fade">
-</div> -->
