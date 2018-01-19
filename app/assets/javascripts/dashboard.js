@@ -1,6 +1,15 @@
 "use strict";
 
 $(document).ready(function() {
+
+  $('[data-toggle="popover"]').popover({
+    html: true,
+    content: function() {
+      var content = $(this).attr("data-popover-content");
+      return $(content).children(".popover-body").html();
+    }
+  });
+
   if ($('#refresh').length) {
     var pusher = setUpPusher();
 
