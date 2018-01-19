@@ -14,7 +14,7 @@
   </td>
   <td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <td><%= 'Yes' if dataset.dataset_files.select { |file| file.dataset_file_schema }.any? %></td>
-  <td><%= dataset.created_at.strftime("%d-%m-%Y") %></td>
+  <td><%= time_or_date(dataset.created_at.utc) %></td>
   <td>
     <a href="#" class="btn" tabindex="0" data-toggle="popover" data-trigger="click" data-popover-content="#a1" data-placement="bottom">...</a>
     <div id="a1" class="hidden">

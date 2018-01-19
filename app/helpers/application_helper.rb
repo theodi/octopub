@@ -68,9 +68,13 @@ module ApplicationHelper
   def pusher_cluster
     Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster)
   end
-  
+
   def dataset_file_schema_access_options
     [["Private - only you can access this schema", true],["Public - any user may access this schema",false]]
   end
-  
+
+  def time_or_date(date)
+    date.today? ? date.strftime('Today') : date.strftime('%d-%m-%Y')
+  end
+
 end
