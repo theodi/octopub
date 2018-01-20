@@ -77,4 +77,16 @@ module ApplicationHelper
     date.today? ? date.strftime('Today') : date.strftime('%d-%m-%Y')
   end
 
+  def schema_name(dataset)
+    dataset_id = dataset.dataset_files
+    schema_id = dataset_id.each { |f| f }.map(&:dataset_file_schema_id)
+    if schema_id == [nil]
+      '/'
+    elsif schema_id.count > 1
+      'Multiple'
+    else
+      dataset_id[0].schema_name
+    end
+  end
+
 end

@@ -33,7 +33,6 @@ class DatasetsController < ApplicationController
   end
 
   def user_datasets
-    @title = "My Datasets"
     @datasets = current_user.datasets
     render :dashboard
   end
