@@ -13,7 +13,13 @@
     <% end %>
   </td>
   <td><%= dataset.dataset_files.each { |file| file }.count %></td>
-  <td><%= schema_name(dataset) %></td>
+  <% if dataset.schema_names == "" %>
+    <td>/</td>
+  <% elsif dataset.schema_names.include?", " %>
+    <td>multiple</td>
+  <% else %>
+    <td><%= dataset.schema_names %></td>
+  <% end %>
   <td><%= time_or_date(dataset.created_at.utc) %></td>
   <td>
     <a href="#" class="btn" tabindex="0" data-toggle="popover" data-trigger="click" data-popover-content="#a1" data-placement="bottom">...</a>
