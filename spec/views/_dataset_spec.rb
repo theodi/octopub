@@ -29,7 +29,7 @@ describe 'datasets/_dataset.html.erb', :view do
     page = Nokogiri::HTML(rendered)
 
     expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.name}/)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/Yes/)
+    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/#{@dataset.schema_names}/)
   end
 
   def expect_columns(page)

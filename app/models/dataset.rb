@@ -162,18 +162,6 @@ class Dataset < ApplicationRecord
     # is this the better way to do this method? https://github.com/bblimke/webmock#response-with-custom-status-message
   end
 
-  def schema_name(dataset)
-    dataset_id = dataset.dataset_files
-    schema_id = dataset_id.each { |f| f }.map(&:dataset_file_schema_id)
-    if schema_id == [nil]
-      '/'
-    elsif schema_id.count > 1
-      'Multiple'
-    else
-      dataset_id[0].schema_name
-    end
-  end
-
   private
 
     # This is a callback
