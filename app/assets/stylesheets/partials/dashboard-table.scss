@@ -1,3 +1,78 @@
+// Variables
+$orange-primary: #FF6701;
+$orange-secondary: #DF5A02;
+$light-grey: #EBEBEB;
+$dark-grey: #E2E2E2;
+$white: #FFFFFF;
+
+body {
+  background-color: $light-grey;
+}
+
+// Clickable table tabs
+.tab-content {
+  background-color: white;
+  padding: 10px 15px 0 15px;
+}
+
+.fixed-table-container {
+  border: 0;
+
+  .fixed-table-body {
+    border: 0;
+  }
+}
+
+.nav-tabs {
+  border: 0;
+
+  li {
+    background-color: $dark-grey;
+
+    a {
+      color: black;
+      border: 0 !important;
+      border-radius: 0px;
+      outline: 0;
+      margin-right: 0px !important;
+    }
+
+    &.active {
+
+      a {
+        color: $orange-primary !important;
+      }
+    }
+  }
+}
+
+// Removing default Bootrap table styling
+.table {
+  background-color: white;
+  border: 0px;
+
+  thead {
+
+    th {
+      border: 0;
+    }
+  }
+
+  tbody {
+
+    tr {
+
+      td {
+        border: 0;
+
+        .action-button {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+
 // Bootstrap popover for the 'actions' table column in the 'Published' dashboard
 .popover {
     width: 100%;

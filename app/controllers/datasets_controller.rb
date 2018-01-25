@@ -33,7 +33,6 @@ class DatasetsController < ApplicationController
   end
 
   def user_datasets
-    @prepublished_datasets = "test"
     @datasets = current_user.datasets
     render :dashboard
   end
