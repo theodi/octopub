@@ -30,7 +30,7 @@ feature "As a logged in user, viewing dataset files", type: :feature do
       sign_in publisher
     end
 
-    it 'can view dataset files' do
+    pending 'can view dataset files' do
       visit dashboard_path
       click_on(@dataset.name)
       expect(page).to have_content "Dataset Files for #{@dataset.name}"
