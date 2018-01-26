@@ -74,9 +74,9 @@ ActiveRecord::Schema.define(version: 20180126121457) do
     t.string   "full_name"
     t.string   "certificate_url"
     t.string   "job_id"
-    t.integer  "publishing_method", default: 0, null: false
+    t.integer  "publishing_method", default: 0,     null: false
     t.datetime "url_deprecated_at"
-    t.boolean  "published_status"
+    t.boolean  "published_status",  default: false
     t.index ["user_id"], name: "index_datasets_on_user_id", using: :btree
   end
 
