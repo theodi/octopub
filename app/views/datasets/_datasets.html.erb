@@ -1,9 +1,9 @@
-<% if @datasets.count > 0 %>
-
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#prepublished">Pre-published collections</a></li>
   <li class=""><a data-toggle="tab" href="#published">Published collections</a></li>
 </ul>
+
+<% if @datasets.count > 0 %>
 
 <div class="tab-content">
   <div id="prepublished" class="tab-pane fade in active">
@@ -20,6 +20,7 @@
         <th>Action</th>
       </tr>
       </thead>
+      <%= render(partial: "dataset-prepublished", collection: @datasets, as: :dataset)  %>
     </table>
   </div>
 
@@ -37,7 +38,6 @@
       </tr>
       </thead>
       <%= render(partial: "dataset", collection: @datasets) %>
-      <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
     </table>
   </div>
 </div>

@@ -1,4 +1,5 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
+  <% if dataset.published_status %>
   <td>
     <%= dataset.name %>
   </td>
@@ -24,4 +25,5 @@
         </div>
     </div>
   </td>
+  <% end %>
 </tr>
