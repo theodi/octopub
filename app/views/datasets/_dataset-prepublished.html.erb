@@ -1,7 +1,7 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <% if !dataset.published_status %>
   <td>
-    <%= dataset.name %>
+    <%= link_to dataset.name, files_path(dataset) %>
   </td>
   <td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <% if dataset.schema_names == "" %>
