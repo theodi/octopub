@@ -84,7 +84,6 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
-
   def github_url
     "http://github.com/#{full_name}"
   end

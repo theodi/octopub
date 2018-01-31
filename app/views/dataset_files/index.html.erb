@@ -1,29 +1,85 @@
-<h1>Dataset Files for <small><%= @dataset.name %></h1>
-<% if @dataset_files.exists? %>
+<a href="#">Back to all collections</a>
+<div class="">
+  <h1><%= @dataset.name %></h1>
+  <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+  <%= link_to "Download Datapackage", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+</div>
+
+<div class="">
+  <p><strong>Created by: </strong><%= @dataset.owner %></p>
+  <p><strong>Licence: </strong><%= @dataset.license %></p>
+  <p><strong>Collection description</strong></p>
+  <p><%= @dataset.description %></p>
+  <p><strong>Publication frequency: </strong><%= @dataset.frequency %></p>
+  <%= link_to "Subscribe to changes", @dataset.github_url + '/commits/gh-pages.atom', target: "_blank", rel: "alternate" %>
+  <% if @dataset.published_status %>
+    <p><strong>Status: </strong>Published</p>
+  <% else %>
+    <p><strong>Status: </strong>Pre-published</p>
+  <% end %>
+  <button class="btn btn-default">Publish data collection</button>
+</div>
+
+<div class="">
+  <h2>Files</h2>
+  <% if @dataset_files.exists? %>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Schema</th>
+          <th>Creation date</th>
+          <th>Validation</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dataset_files.each do |file| %>
+          <tr>
+            <td><%= file.title %></td>
+            <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
+            <td><%= file.created_at %></td>
+            <td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
+            <td>...</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div class="">
+  <h2>Schemas</h2>
   <table class="table table-bordered table-hover">
     <thead>
       <tr>
-        <th>Dataset Name</th>
-        <th><%= t(:'dataset.owner') %></th>
-        <th>Title</th>
-        <th>File Name</th>
-        <th>File Description</th>
-        <th>File Media Type</th>
-        <th>Schema Name</th>
+        <th>Name</th>
+        <th>Publisher</th>
+        <th>Format</th>
+        <th>Created on</th>
+        <th>Type</th>
+        <th>Files</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% @dataset_files.each do |file| %>
         <tr>
-          <td><%= @dataset.name %></td>
-          <td><%= @dataset.owner %></td>
-          <td><%= file.title %></td>
-          <td><%= link_to file.filename, dataset_file_download_path(file) %></td>
-          <td><%= file.description %></td>
-          <td><%= file.mediatype %></td>
-          <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>...</td>
         </tr>
       <% end %>
     </tbody>
   </table>
-<% end %>
+</div>
+
+<div class="">
+  <h2>Support</h2>
+  <p>If you have support queries, suggestions or corrections to the data, please file a new issue in our Github repository.<br>
+  All comments and subsequent fixes will be logged openly such that you can easily see the provenance of each object in this dataset</p>
+</div>
