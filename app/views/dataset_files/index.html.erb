@@ -1,27 +1,65 @@
 <a href="#">Back to all collections</a>
-<div class="">
-  <h1><%= @dataset.name %></h1>
-  <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-default" %>
-  <%= link_to "Download Datapackage", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+<div class="row">
+  <div class="col-md-7">
+    <h1><%= @dataset.name %></h1>
+  </div>
+  <div class="col-md-5">
+    <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+    <%= link_to "Download Datapackage", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+  </div>
 </div>
 
-<div class="">
-  <p><strong>Created by: </strong><%= @dataset.owner %></p>
-  <p><strong>Licence: </strong><%= @dataset.license %></p>
-  <p><strong>Collection description</strong></p>
-  <p><%= @dataset.description %></p>
-  <p><strong>Publication frequency: </strong><%= @dataset.frequency %></p>
-  <%= link_to "Subscribe to changes", @dataset.github_url + '/commits/gh-pages.atom', target: "_blank", rel: "alternate" %>
-  <% if @dataset.published_status %>
-    <p><strong>Status: </strong>Published</p>
-  <% else %>
-    <p><strong>Status: </strong>Pre-published</p>
-  <% end %>
-  <button class="btn btn-default">Publish data collection</button>
+<div style="background-color: white; padding: 15px;">
+  <div class="row">
+    <div class="col-md-2">
+      <strong>Created by:</strong>
+    </div>
+    <div class="col-md-6">
+      <%= @dataset.owner %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <strong>Licence:</strong>
+    </div>
+    <div class="col-md-6">
+      <%= @dataset.license %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <strong>Collection description:</strong>
+    </div>
+    <div class="col-md-6">
+      <%= @dataset.description %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <strong>Publication frequency:</strong>
+    </div>
+    <div class="col-md-6">
+      <%= @dataset.frequency %>
+      <%= link_to "Subscribe to changes", @dataset.github_url + '/commits/gh-pages.atom', target: "_blank", rel: "alternate" %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <strong>Status:</strong>
+    </div>
+    <div class="col-md-6">
+      <% if @dataset.published_status %>
+        <p>Published</p>
+      <% else %>
+        <p>Pre-published</p>
+        <button class="btn btn-default">Publish data collection</button>
+      <% end %>
+    </div>
+  </div>
 </div>
 
-<div class="">
-  <h2>Files</h2>
+<h1>Files</h1>
+<div class="" style="background-color: white; padding: 15px;">
   <% if @dataset_files.exists? %>
     <table class="table table-bordered table-hover">
       <thead>
@@ -48,8 +86,8 @@
   <% end %>
 </div>
 
-<div class="">
-  <h2>Schemas</h2>
+<h1>Schemas</h1>
+<div class="" style="background-color: white; padding: 15px;">
   <table class="table table-bordered table-hover">
     <thead>
       <tr>
@@ -79,7 +117,7 @@
 </div>
 
 <div class="">
-  <h2>Support</h2>
+  <h1>Support</h1>
   <p>If you have support queries, suggestions or corrections to the data, please file a new issue in our Github repository.<br>
   All comments and subsequent fixes will be logged openly such that you can easily see the provenance of each object in this dataset</p>
 </div>
