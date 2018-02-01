@@ -1,17 +1,8 @@
-// Variables
-$orange-primary: #FF6701;
-$orange-secondary: #DF5A02;
-$light-grey: #EBEBEB;
-$dark-grey: #E2E2E2;
-$white: #FFFFFF;
-
-body {
-  background-color: $light-grey;
-}
+@import "modules/colors";
 
 // Clickable table tabs
 .tab-content {
-  background-color: white;
+  background-color: $white;
   padding: 10px 15px 0 15px;
 }
 
@@ -30,7 +21,7 @@ body {
     background-color: $dark-grey;
 
     a {
-      color: black;
+      color: $black;
       border: 0 !important;
       border-radius: 0px;
       outline: 0;
@@ -46,9 +37,9 @@ body {
   }
 }
 
-// Removing default Bootrap table styling
+// Removing default Bootrap table styling on table
 .table {
-  background-color: white;
+  background-color: $white;
   border: 0px;
 
   thead {

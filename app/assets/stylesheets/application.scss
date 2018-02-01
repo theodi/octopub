@@ -21,6 +21,7 @@
 
 @import "font-awesome-sprockets";
 @import "font-awesome";
+@import "components/*";
 @import "modules/*";
 @import "partials/*";
 @import "api";
@@ -31,9 +32,10 @@ html {
 }
 
 body {
-  background-color: rgba(153, 153, 153, 0.2);
-  padding: 20px 20px 0 0;
-  margin-bottom: 160px;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background-color: #EBEBEB;
+    padding: 20px 20px 0 0;
+    margin-bottom: 160px;
 }
 
 .getting-started {
