@@ -25,8 +25,8 @@ feature "Update dataset page", type: :feature do
 
       click_link "My datasets"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 2
-      page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
+      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      page.find("tr[class='prepublished']").click_link('Edit')
       # Bypass sidekiq completely
       allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
          UpdateDataset.new.perform(a,b,c,d)
@@ -71,8 +71,8 @@ feature "Update dataset page", type: :feature do
 
       click_link "My datasets"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 2
-      page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
+      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      page.find("tr[class='prepublished']").click_link('Edit')
       # Bypass sidekiq completely
       allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
          UpdateDataset.new.perform(a,b,c,d)
@@ -110,8 +110,8 @@ feature "Update dataset page", type: :feature do
 
       click_link "My datasets"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 2
-      page.find("tr[data-dataset-id='#{@dataset.id}']").click_link('Edit')
+      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      page.find("tr[class='prepublished']").click_link('Edit')
       allow(RepoService).to receive(:fetch_repo)
     end
 

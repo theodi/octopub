@@ -98,8 +98,8 @@ describe 'datasets/_dataset.html.erb for admin users', :view do
   it 'displays the edit link' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Delete/)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Delete/)
   end
 
 end

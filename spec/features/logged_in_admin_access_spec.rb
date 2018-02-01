@@ -78,7 +78,7 @@ feature "Logged in admin access to pages", type: :feature do
         within 'table' do
           click_on(dataset.name)
         end
-        expect(page).to have_content "Dataset Files for #{dataset.name}"
+        expect(page).to have_content "#{dataset.name}"
       end
     end
 
@@ -91,4 +91,3 @@ feature "Logged in admin access to pages", type: :feature do
     end
   end
 end
-
