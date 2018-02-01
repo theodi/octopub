@@ -1,0 +1,57 @@
+@import "modules/base";
+
+@mixin button($bg, $hv) {
+  background: $bg;
+  color: $white;
+  border-bottom: 4px solid $hv;
+
+  &:hover {
+    background-color: $hv;
+    color: $white;
+    border-bottom: 4px solid $hv;
+  }
+
+  &:active {
+    background:darken($bg, 0.4);
+    border-bottom: 4px solid $bg;
+  }
+
+  &:focus {
+    color: $white;
+  }
+}
+
+.btn {
+ border-radius:0;
+}
+
+.btn-prim {
+   @include button($bright-orange, $deep-orange);
+
+   &:disabled {
+     opacity: 0.4;
+   }
+}
+
+.btn-secondary {
+  @include button($dusk-blue, $cobalt);
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.btn-tertiary {
+  @include button($white, $cobalt);
+  color: $dusk-blue;
+  border: solid 2px $dusk-blue;
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  &:hover {
+    color: $white;
+    border-bottom: 0 !important;
+  }
+}

@@ -1,65 +1,80 @@
 <a href="#">Back to all collections</a>
-<div class="row">
+<div class="row head-dataset">
   <div class="col-md-7">
     <h1><%= @dataset.name %></h1>
   </div>
   <div class="col-md-5">
-    <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-default" %>
-    <%= link_to "Download Datapackage", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-default" %>
+    <%= link_to "Download Datapackage", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+    <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
   </div>
 </div>
 
-<div style="background-color: white; padding: 15px;">
+<div class="box-dataset">
   <div class="row">
-    <div class="col-md-2">
-      <strong>Created by:</strong>
+    <div class="col-md-3">
+      <p>Created by:</p>
     </div>
-    <div class="col-md-6">
-      <%= @dataset.owner %>
+    <div class="col-md-5">
+      <p><%= @dataset.owner %></p>
+    </div>
+    <div class="col-md-1 col-md-offset-3">
+      <a href="/">Edit</a>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-2">
-      <strong>Licence:</strong>
+    <div class="col-md-3">
+      <p>Licence:</p>
     </div>
-    <div class="col-md-6">
-      <%= @dataset.license %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-2">
-      <strong>Collection description:</strong>
-    </div>
-    <div class="col-md-6">
-      <%= @dataset.description %>
+    <div class="col-md-5">
+      <p><%= @dataset.license %></p>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-2">
-      <strong>Publication frequency:</strong>
+    <div class="col-md-3">
+      <p>Description:</p>
     </div>
     <div class="col-md-6">
-      <%= @dataset.frequency %>
+      <p><%= @dataset.description %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <p>Publication frequency:</p>
+    </div>
+    <div class="col-md-2">
+      <p><%= @dataset.frequency %></p>
+    </div>
+    <div class="col-md-3">
       <%= link_to "Subscribe to changes", @dataset.github_url + '/commits/gh-pages.atom', target: "_blank", rel: "alternate" %>
     </div>
   </div>
   <div class="row">
-    <div class="col-md-2">
-      <strong>Status:</strong>
+    <div class="col-md-3">
+      <p>Status:</p>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-2">
       <% if @dataset.published_status %>
         <p>Published</p>
       <% else %>
         <p>Pre-published</p>
-        <button class="btn btn-default">Publish data collection</button>
       <% end %>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-secondary">Publish data collection</button>
     </div>
   </div>
 </div>
 
-<h1>Files</h1>
-<div class="" style="background-color: white; padding: 15px;">
+<div class="row">
+  <div class="col-md-3">
+    <h1>Files</h1>
+  </div>
+  <div class="col-md-2 col-md-offset-8">
+    <a href="">Add another file</a>
+  </div>
+</div>
+
+<div class="box-dataset">
   <% if @dataset_files.exists? %>
     <table class="table table-bordered table-hover">
       <thead>
@@ -87,7 +102,7 @@
 </div>
 
 <h1>Schemas</h1>
-<div class="" style="background-color: white; padding: 15px;">
+<div class="box-dataset">
   <table class="table table-bordered table-hover">
     <thead>
       <tr>

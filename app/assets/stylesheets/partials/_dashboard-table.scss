@@ -18,7 +18,7 @@
   border: 0;
 
   li {
-    background-color: $dark-grey;
+    background-color: $warm-grey;
 
     a {
       color: $black;
@@ -31,7 +31,7 @@
     &.active {
 
       a {
-        color: $orange-primary !important;
+        color: $bright-orange !important;
       }
     }
   }
