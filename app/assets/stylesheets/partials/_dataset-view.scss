@@ -1,6 +1,14 @@
 @import "modules/base";
 
 .head-dataset {
+  margin-top: 1em;
+  margin-bottom: 1em;
+
+  h1 {
+  	font-size: 20px;
+  	font-weight: 500;
+    margin: 0;
+  }
 
   .btn-tertiary {
     float: right !important;
@@ -10,7 +18,7 @@
 
 .box-dataset {
   background-color: $white;
-  padding: $padding;
+  padding: $padding * 1.5;
 
   .row {
     margin-bottom: $margin;

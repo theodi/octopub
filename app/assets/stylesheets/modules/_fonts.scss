@@ -1,9 +1,15 @@
 // Typography
 h1 {
-  font-size: 20px;
+  font-size: 1.2em;
   font-weight: 500;
+  color: #000000;
 }
 
 p {
-  font-size: 16px;
+  font-size: 1em;
+}
+
+a {
+  color: #2f529f;
+  text-decoration: underline;
 }
