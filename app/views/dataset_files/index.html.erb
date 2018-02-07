@@ -1,142 +1,22 @@
-<a href="#">< Back to all collections</a>
+<%= link_to "< Back to all collections", main_app.user_datasets_path(current_user) %>
 <div class="row head-dataset">
   <div class="col-md-7">
     <h1><%= @dataset.name %></h1>
   </div>
   <div class="col-md-5">
-    <%= link_to "Download data package", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
-    <%= link_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+    <%= bs_button_to "Download data package", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+    <% if @dataset.published_status %>
+      <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+    <% end %>
   </div>
 </div>
-
-<div class="box-dataset">
-  <div class="row">
-    <div class="col-md-3">
-      <p>Created by:</p>
-    </div>
-    <div class="col-md-5">
-      <p><%= @dataset.owner %></p>
-    </div>
-    <div class="col-md-1 col-md-offset-3">
-      <%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <p>Licence:</p>
-    </div>
-    <div class="col-md-5">
-      <% if @dataset.license %>
-        <p><%= @dataset.license %></p>
-      <% else %>
-        <%= link_to "Choose a licence", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-prim" %>
-      <% end %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <p>Description:</p>
-    </div>
-    <div class="col-md-6">
-      <p><%= @dataset.description %></p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <p>Publication frequency:</p>
-    </div>
-    <div class="col-md-2">
-      <p><%= @dataset.frequency %></p>
-    </div>
-    <div class="col-md-3">
-      <%= link_to "Subscribe to changes", @dataset.github_url + '/commits/gh-pages.atom', target: "_blank", rel: "alternate" %>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3">
-      <p>Published:</p>
-    </div>
-    <div class="col-md-2">
-      <% if @dataset.published_status %>
-        <p>Yes</p>
-      <% else %>
-        <p>No</p>
-      <% end %>
-    </div>
-    <div class="col-md-3">
-      <button class="btn btn-secondary">Publish data collection</button>
-    </div>
-  </div>
+<%= render(partial: "dataset")  %>
+<%= render(partial: "dataset-files")  %>
+<%= render(partial: "dataset-schemas")  %>
+<div class="title-dataset">
+  <h1>Support:</h1>
 </div>
-
-<div class="row">
-  <div class="col-md-3">
-    <h1>Files</h1>
-  </div>
-  <div class="col-md-2 col-md-offset-8">
-    <a href="">Add another file</a>
-  </div>
-</div>
-
-<div class="box-dataset">
-  <% if @dataset_files.exists? %>
-    <table class="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Schema</th>
-          <th>Creation date</th>
-          <th>Validation</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @dataset_files.each do |file| %>
-          <tr>
-            <td><%= file.title %></td>
-            <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
-            <td><%= file.created_at %></td>
-            <td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
-            <td>...</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
-</div>
-
-<h1>Schemas</h1>
-<div class="box-dataset">
-  <table class="table table-bordered table-hover">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Publisher</th>
-        <th>Format</th>
-        <th>Created on</th>
-        <th>Type</th>
-        <th>Files</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @dataset_files.each do |file| %>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>...</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
-<div class="">
-  <h1>Support</h1>
+<div>
   <p>If you have support queries, suggestions or corrections to the data, please file a new issue in our Github repository.<br>
   All comments and subsequent fixes will be logged openly such that you can easily see the provenance of each object in this dataset</p>
 </div>

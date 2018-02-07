@@ -40,6 +40,7 @@
 // Removing default Bootrap table styling on table
 .table {
   background-color: $white;
+  margin: 0;
   border: 0px;
 
   thead {

@@ -1,0 +1,59 @@
+<div class="box-dataset">
+  <div class="row">
+    <div class="col-md-3">
+      <p>Created by:</p>
+    </div>
+    <div class="col-md-5">
+      <p><%= @dataset.owner %></p>
+    </div>
+    <div class="col-md-1 col-md-offset-3">
+      <%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <p>Licence:</p>
+    </div>
+    <div class="col-md-5">
+      <% if @dataset.license %>
+        <p><%= @dataset.license %></p>
+      <% else %>
+        <%= bs_button_to "Choose a licence", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-prim" %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <p>Description:</p>
+    </div>
+    <div class="col-md-6">
+      <p><%= @dataset.description %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <p>Publication frequency:</p>
+    </div>
+    <div class="col-md-2">
+      <p><%= @dataset.frequency %></p>
+    </div>
+    <div class="col-md-3">
+      <p>Subscribe to changes</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <p>Published:</p>
+    </div>
+    <div class="col-md-2">
+      <% if @dataset.published_status %>
+        <p>Yes</p>
+      <% else %>
+        <p>No</p>
+      <% end %>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-secondary">Publish data collection</button>
+    </div>
+  </div>
+</div>

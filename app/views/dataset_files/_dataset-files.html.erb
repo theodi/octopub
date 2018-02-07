@@ -1,0 +1,34 @@
+<div class="row title-dataset">
+  <div class="col-md-3">
+    <h1>Files:</h1>
+  </div>
+  <div class="col-md-2 col-md-offset-8">
+    <a href="">Add another file</a>
+  </div>
+</div>
+<div class="box-dataset">
+  <% if @dataset_files.exists? %>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Schema</th>
+          <th>Creation date</th>
+          <th>Validation</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dataset_files.each do |file| %>
+          <tr>
+            <td><%= file.title %></td>
+            <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
+            <td><%= file.created_at %></td>
+            <td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
+            <td>...</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
