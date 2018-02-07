@@ -17,6 +17,6 @@
   <h1>Support:</h1>
 </div>
 <div>
-  <p>If you have support queries, suggestions or corrections to the data, please file a new issue in our Github repository.<br>
-  All comments and subsequent fixes will be logged openly such that you can easily see the provenance of each object in this dataset</p>
+  <p>If you have support queries, suggestions or corrections to the data, please <%= link_to "file a new issue", @dataset.github_url + '/issues' %> in our Github repository.<br>
+  All comments and subsequent fixes will be <%= link_to "logged openly", @dataset.github_url + '/issues' %> such that you can easily see the provenance of each object in this dataset</p>
 </div>
