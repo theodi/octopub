@@ -7,22 +7,19 @@
       <tr>
         <th>Name</th>
         <th>Publisher</th>
-        <th>Format</th>
         <th>Created on</th>
-        <th>Type</th>
         <th>Files</th>
         <th>Actions</th>
       </tr>
     </thead>
+    <%= @dataset_file_schemas %>
     <tbody>
       <% @dataset_files.each do |file| %>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= file.dataset_file_schema.name %></td>
+          <td><%= file.dataset_file_schema.owner_username %></td>
+          <td><%= time_or_date(file.dataset_file_schema.created_at) %></td>
+          <td><%= file.dataset_file_schema.count_datasets_using_this_schema %></td>
           <td>...</td>
         </tr>
       <% end %>
