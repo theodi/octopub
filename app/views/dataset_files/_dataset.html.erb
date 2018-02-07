@@ -18,7 +18,7 @@
       <% if @dataset.license %>
         <p><%= @dataset.license %></p>
       <% else %>
-        <%= bs_button_to "Choose a licence", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-prim" %>
+        <%= bs_button_to "Choose a licence", @dataset.github_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-prim" %>
       <% end %>
     </div>
   </div>

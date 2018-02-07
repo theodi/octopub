@@ -4,7 +4,7 @@
     <h1><%= @dataset.name %></h1>
   </div>
   <div class="col-md-5">
-    <%= bs_button_to "Download data package", @dataset.github_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+    <%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
     <% if @dataset.published_status %>
       <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
     <% end %>
