@@ -1,68 +1,48 @@
-@import "modules/colors";
+@import "modules/base";
 
-// Clickable table tabs
-.tab-content {
-  background-color: $white;
-  padding: 10px 15px 0 15px;
+// Table toolbar
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-bottom: $margin * 2;
+
+  col {
+    padding: 0;
+  }
+
+  h1 {
+    font-weight: bold;
+    color: $bright-orange !important;
+  }
+}
+
+// Overwrite Bootstrap styling
+.bootstrap-table {
+  background: white;
+  padding: 0.5em 1em 0.5em 1em;
 }
 
 .fixed-table-container {
-  border: 0;
-
-  .fixed-table-body {
-    border: 0;
-  }
+  border:0px !important;
 }
 
-.nav-tabs {
-  border: 0;
-
-  li {
-    background-color: $warm-grey;
-
-    a {
-      color: $black;
-      border: 0 !important;
-      border-radius: 0px;
-      outline: 0;
-      margin-right: 0px !important;
-    }
-
-    &.active {
-
-      a {
-        color: $bright-orange !important;
-      }
-    }
-  }
-}
-
-// Removing default Bootrap table styling on table
 .table {
-  background-color: $white;
-  margin: 0;
-  border: 0px;
+  border-bottom:0px !important;
+}
 
-  thead {
+.table th, .table td {
+  border: 1px !important;
+}
 
-    th {
-      border: 0;
-    }
-  }
+.table-striped>tbody>tr:nth-child(even)>td,
+.table-striped>tbody>tr:nth-child(even)>th {
+   background-color: $light-grey; // Choose your own color here
+ }
 
-  tbody {
-
-    tr {
-
-      td {
-        border: 0;
-
-        .action-button {
-          display: inline;
-        }
-      }
-    }
-  }
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+  background-color: $white; // Choose your own color here
 }
 
 // Bootstrap popover for the 'actions' table column in the 'Published' dashboard

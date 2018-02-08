@@ -1,8 +1,10 @@
+@import "colors";
+
 // Typography
 h1 {
-  font-size: 1.2em;
+  font-size: 1.3em;
   font-weight: 500;
-  color: #000000;
+  color: $black;
 }
 
 p {
@@ -10,6 +12,6 @@ p {
 }
 
 a {
-  color: #2f529f;
-  text-decoration: underline;
+  color: $dusk-blue;
+  text-decoration: none;
 }

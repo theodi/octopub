@@ -1,5 +1,4 @@
 <tr class="published" data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
-  <% if dataset.published_status %>
   <td>
     <%= dataset.name %>
   </td>
@@ -12,6 +11,8 @@
     <td><%= dataset.schema_names %></td>
   <% end %>
   <td><%= time_or_date(dataset.created_at.utc) %></td>
+  <td>Validation</td>
+  <td>Published</td>
   <td>
     <a href="#" class="btn action-button" tabindex="0" data-toggle="popover" data-trigger="click" data-popover-content="#a1" data-placement="bottom">...</a>
     <div id="a1" class="hidden">
@@ -25,5 +26,4 @@
         </div>
     </div>
   </td>
-  <% end %>
 </tr>

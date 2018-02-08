@@ -1,47 +1,34 @@
-<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#prepublished">Pre-published collections</a></li>
-  <li class=""><a data-toggle="tab" href="#published">Published collections</a></li>
-</ul>
-
 <% if @datasets.count > 0 %>
-
-<div class="tab-content">
-  <div id="prepublished" class="tab-pane fade in active">
-    <table class="table table-striped"
-    data-toggle="table"
-    data-filter-control="true">
-    <thead>
-      <tr>
-        <th data-sortable="true">Collection Name</th>
-        <th data-sortable="true">Files</th>
-        <th data-sortable="true">Schema</th>
-        <th data-sortable="true">Creation date</th>
-        <th data-sortable="true">Validation</th>
-        <th>Action</th>
-      </tr>
-      </thead>
-      <%= render(partial: "dataset-prepublished", collection: @datasets, as: :dataset)  %>
-    </table>
+  <div class="toolbar" id="toolbar">
+    <div class="col-md-7">
+      <h1 class="orange">All your data collections</h1>
+    </div>
+    <div class="col-md-3">
+      <%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group" style="margin-bottom: 0;">
+        <input name="search" class="form-control" type="text" placeholder="Search sets">
+      </div>
+    </div>
   </div>
-
-  <div id="published" class="tab-pane fade">
-    <table class="table table-striped"
-    data-toggle="table"
-    data-filter-control="true">
-    <thead>
-      <tr>
-        <th data-sortable="true">Collection Name</th>
-        <th data-sortable="true">Files</th>
-        <th data-sortable="true">Schema</th>
-        <th data-sortable="true">Publication date</th>
-        <th>Action</th>
-      </tr>
-      </thead>
-      <%= render(partial: "dataset", collection: @datasets) %>
-    </table>
-  </div>
-</div>
-
+  <table class="table table-striped"
+  data-toggle="table"
+  data-classes="table"
+  data-filter-control="true">
+  <thead>
+    <tr>
+      <th data-sortable="true">Collection Name</th>
+      <th data-sortable="true">Files</th>
+      <th data-sortable="true">Schema</th>
+      <th data-sortable="true">Creation date</th>
+      <th data-sortable="true">Validation</th>
+      <th data-sortable="true">Published</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+  </table>
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>
