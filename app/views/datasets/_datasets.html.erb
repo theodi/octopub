@@ -1,14 +1,16 @@
 <% if @datasets.count > 0 %>
   <div class="toolbar" id="toolbar">
-    <div class="col-md-7">
-      <h1 class="orange">All your data collections</h1>
-    </div>
-    <div class="col-md-3">
-      <%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %>
-    </div>
-    <div class="col-md-2">
-      <div class="form-group" style="margin-bottom: 0;">
-        <input name="search" class="form-control" type="text" placeholder="Search sets">
+    <div class="row">
+      <div class="col-sm">
+        <h1 class="orange">All your data collections</h1>
+      </div>
+      <div class="col-sm">
+        <%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %>
+      </div>
+      <div class="col-sm">
+        <div class="form-group" style="margin-bottom: 0;">
+          <input name="search" class="form-control" type="text" placeholder="Search sets">
+        </div>
       </div>
     </div>
   </div>
