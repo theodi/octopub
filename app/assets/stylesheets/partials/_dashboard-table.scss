@@ -32,7 +32,7 @@
 // Overwrite Bootstrap styling
 .bootstrap-table {
   background: white;
-  padding: 0.5em 1em 0.5em 1em;
+  padding: $padding;
 
   .fixed-table-container {
     border:0px !important;
@@ -69,5 +69,19 @@
 
 // Bootstrap popover for the 'actions' table column in the 'Published' dashboard
 .popover {
-    width: 100%;
+    background: $dusk-blue;
+    width: 200px;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+
+    .arrow {
+      color: $dusk-blue;
+    }
+
+    a {
+      color: $white;
+      padding-bottom: 1em * 0.5;
+      border-bottom: 1px solid $white;
+    }
 }
