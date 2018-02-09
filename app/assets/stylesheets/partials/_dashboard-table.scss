@@ -2,18 +2,30 @@
 
 // Table toolbar
 .toolbar {
-  display: flex;
-  align-items: center;
-  padding: 0;
+  margin-top: $margin;
   margin-bottom: $margin * 2;
-
-  col {
-    padding: 0;
-  }
 
   h1 {
     font-weight: bold;
     color: $bright-orange !important;
+  }
+
+  .col-md-offset-3 {
+    padding-right: 0;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+
+    .form-control {
+      height: 36.85px;
+      font-family: FontAwesome, "Open Sans", Verdana, sans-serif;
+      border-radius: 0;
+      border: none;
+      -webkit-box-shadow:inset 0 -2px 0 $warm-grey;
+      -moz-box-shadow:inset 0 -2px 0 $warm-grey;
+      box-shadow:inset 0 -2px 0 $warm-grey;
+    }
   }
 }
 
@@ -21,28 +33,38 @@
 .bootstrap-table {
   background: white;
   padding: 0.5em 1em 0.5em 1em;
-}
 
-.fixed-table-container {
-  border:0px !important;
-}
+  .fixed-table-container {
+    border:0px !important;
 
-.table {
-  border-bottom:0px !important;
-}
+    .table {
+      border-bottom:0px !important;
+    }
 
-.table th, .table td {
-  border: 1px !important;
-}
+    thead > tr {
+      border-bottom: 1px solid $light-grey;
+    }
 
-.table-striped>tbody>tr:nth-child(even)>td,
-.table-striped>tbody>tr:nth-child(even)>th {
-   background-color: $light-grey; // Choose your own color here
- }
+    tbody > tr > td {
+      vertical-align: middle;
+    }
 
-.table-striped>tbody>tr:nth-child(odd)>td,
-.table-striped>tbody>tr:nth-child(odd)>th {
-  background-color: $white; // Choose your own color here
+    th, td {
+      border: 1px !important;
+      vertical-align: middle;
+    }
+
+    // Setting background color for each row
+    .table-striped>tbody>tr:nth-child(even)>td,
+    .table-striped>tbody>tr:nth-child(even)>th {
+       background-color: $light-grey;
+     }
+
+    .table-striped>tbody>tr:nth-child(odd)>td,
+    .table-striped>tbody>tr:nth-child(odd)>th {
+      background-color: $white;
+    }
+  }
 }
 
 // Bootstrap popover for the 'actions' table column in the 'Published' dashboard
