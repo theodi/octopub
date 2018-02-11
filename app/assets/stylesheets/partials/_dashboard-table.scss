@@ -10,7 +10,7 @@
     color: $bright-orange !important;
   }
 
-  .col-md-offset-3 {
+  .col-md-offset-4 {
     padding-right: 0;
   }
 
@@ -47,11 +47,20 @@
 
     tbody > tr > td {
       vertical-align: middle;
+      outline: 0;
     }
 
     th, td {
       border: 1px !important;
       vertical-align: middle;
+
+      .action-button {
+        font-size: 1.2em;
+        font-weight: bold;
+        outline: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
     }
 
     // Setting background color for each row
@@ -69,19 +78,40 @@
 
 // Bootstrap popover for the 'actions' table column in the 'Published' dashboard
 .popover {
-    background: $dusk-blue;
-    width: 200px;
-    border-radius: 0;
-    border: 0;
-    box-shadow: none;
+  background: $dusk-blue;
+  width: 150px;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  margin-left: -67px;
+  margin-right: 20px;
+  padding-right: 1em;
 
-    .arrow {
-      color: $dusk-blue;
-    }
+  .arrow {
+    left: 90% !important;
+  }
 
-    a {
-      color: $white;
-      padding-bottom: 1em * 0.5;
-      border-bottom: 1px solid $white;
+  .bottom {
+    margin-top: 0;
+  }
+
+  ul {
+    list-style: none;
+    -webkit-padding-start: 0;
+    padding-left: 0;
+
+    li {
+      border-bottom: solid 0.5px white;
+      padding: 1em 0 1em 0;
+
+      &:first-child {
+        padding-top: 0.5em;
+      }
+
+      a {
+        color: $white;
+        padding-left: 0.3em;
+      }
     }
+  }
 }
