@@ -12,7 +12,7 @@ h1 {
   display: flex;
   align-items: center;
   margin-top: $margin;
-  margin-bottom: $margin;
+  margin-bottom: 2em;
 
   .fa-folder-open {
     margin-right: $margin / 2;
@@ -26,8 +26,8 @@ h1 {
 
 .box-dataset {
   background-color: $white;
-  padding: $padding * 2;
-  margin-bottom: $margin * 2;
+  padding: $padding * 1.5;
+  margin-bottom: 2em;
 
   .row {
     margin-bottom: $margin;
@@ -41,5 +41,5 @@ h1 {
 .title-dataset {
   display: flex;
   align-items: center;
-  margin-bottom: $margin;
+  margin-bottom: 1em;
 }

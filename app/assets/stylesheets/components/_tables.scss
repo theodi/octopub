@@ -1,4 +1,65 @@
-.table-bordered > thead > tr > th {
-  border: 0;
-  border-bottom: 1px solid #ddd;
+@import "modules/base";
+
+.fixed-table-container {
+  border: none;
+
+  .table {
+    border-bottom:0px !important;
+
+    thead > tr {
+      border-bottom: 1px solid $light-grey;
+    }
+
+    tbody > tr > td {
+      vertical-align: middle;
+      outline: 0;
+
+      .collection-link {
+        color: $black;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+
+    th, td {
+      border: 1px !important;
+      vertical-align: middle;
+
+      .dropdown-toggle {
+        font-size: 1em;
+      }
+
+      .dropdown-menu {
+        background: $dusk-blue;
+        border-radius: 0;
+        padding: 1em 0 0 1em;
+        margin-right: 1.5em;
+
+        .dropdown-item {
+          display: block;
+          color: white;
+          font-size: 16px;
+          padding-bottom: 1em;
+          position: relative !important;
+        }
+      }
+    }
+  }
+
+  // Setting background color for each row
+  .table-striped>tbody>tr:nth-child(even)>td,
+  .table-striped>tbody>tr:nth-child(even)>th {
+     background-color: $light-grey;
+   }
+
+  .table-striped>tbody>tr:nth-child(odd)>td,
+  .table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: $white;
+  }
+
+  .fixed-table-body {
+    overflow: visible;
+  }
 }

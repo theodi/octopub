@@ -1,6 +1,6 @@
-<tr class="published" data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
+<tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <td>
-    <%= dataset.name.truncate(30) %>
+    <%= link_to(dataset.name.truncate(30), files_path(dataset.id), class:"collection-link") %>
   </td>
   <td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <% if dataset.schema_names == "" %>
@@ -22,7 +22,7 @@
       <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         ...
       </a>
-      <div class="dropdown-menu dropdown-menu-right action-box" aria-labelledby="dropdownMenuLink">
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
         <% if !dataset.published_status %>
           <%= link_to("Publish*", '#', class: "dropdown-item") %>
         <% end %>

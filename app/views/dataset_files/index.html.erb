@@ -1,22 +1,26 @@
-<%= link_to "< Back to all collections", main_app.user_datasets_path(current_user) %>
-<div class="row head-dataset">
-  <div class="col-md-7">
-    <h1><span class="fa fa-folder-open"></span><%= @dataset.name %></h1>
+<div class="col-md-10 col-md-offset-1">
+  <%= link_to "< Back to all collections", main_app.user_datasets_path(current_user) %>
+  <div class="row head-dataset">
+    <div class="col-md-7">
+      <h1><span class="fa fa-folder-open"></span><%= @dataset.name %></h1>
+    </div>
+    <div class="col-md-5">
+      <%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+      <% if @dataset.published_status %>
+        <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+      <% end %>
+    </div>
   </div>
-  <div class="col-md-5">
-    <%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
-    <% if @dataset.published_status %>
-      <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
-    <% end %>
+  <%= render(partial: "dataset")  %>
+  <%= render(partial: "dataset-files")  %>
+  <%= render(partial: "dataset-schemas")  %>
+  <div class="title-dataset">
+    <h1>Support:</h1>
   </div>
-</div>
-<%= render(partial: "dataset")  %>
-<%= render(partial: "dataset-files")  %>
-<%= render(partial: "dataset-schemas")  %>
-<div class="title-dataset">
-  <h1>Support:</h1>
-</div>
-<div>
-  <p>If you have support queries, suggestions or corrections to the data, please <%= link_to "file a new issue", @dataset.github_url + '/issues' %> in our Github repository.<br>
-  All comments and subsequent fixes will be <%= link_to "logged openly", @dataset.github_url + '/issues' %> such that you can easily see the provenance of each object in this dataset</p>
+  <div class="row">
+    <div class="col-md-10">
+      <p>If you have support queries, suggestions or corrections to the data, please <%= link_to "file a new issue", @dataset.github_url + '/issues' %> in our Github repository.<br>
+      All comments and subsequent fixes will be <%= link_to "logged openly", @dataset.github_url + '/issues' %> such that you can easily see the provenance of each object in this dataset</p>
+    </div>
+  </div>
 </div>
