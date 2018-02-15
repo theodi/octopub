@@ -12,16 +12,19 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <%= @dataset_file_schemas %>
     <tbody>
       <% @dataset_files.each do |file| %>
-        <tr>
-          <td><%= file.dataset_file_schema.name %></td>
-          <td><%= file.dataset_file_schema.owner_username %></td>
-          <td><%= time_or_date(file.dataset_file_schema.created_at) %></td>
-          <td><%= file.dataset_file_schema.count_datasets_using_this_schema %></td>
-          <td>...</td>
-        </tr>
+        <% if file.dataset_file_schema_id %>
+          <tr>
+            <td><%= file.dataset_file_schema.name %></td>
+            <td><%= file.dataset_file_schema.owner_username %></td>
+            <td><%= time_or_date(file.dataset_file_schema.created_at) %></td>
+            <td><%= file.dataset_file_schema.count_datasets_using_this_schema %></td>
+            <td>...</td>
+          </tr>
+        <% else %>
+          <p class='text-center lead'>You currently have no schemas associated with this dataset, why not add one?</p>
+        <% end %>
       <% end %>
     </tbody>
   </table>

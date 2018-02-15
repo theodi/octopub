@@ -29,7 +29,9 @@
       <th>Action</th>
     </tr>
     </thead>
-    <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+    <tbody>
+      <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+    </tbody>
   </table>
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>

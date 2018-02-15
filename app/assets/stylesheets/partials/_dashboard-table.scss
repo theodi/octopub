@@ -45,6 +45,10 @@
       border-bottom: 1px solid $light-grey;
     }
 
+    thead > th > .sortable {
+      padding-right: 50px;
+    }
+
     tbody > tr > td {
       vertical-align: middle;
       outline: 0;
@@ -76,42 +80,23 @@
   }
 }
 
-// Bootstrap popover for the 'actions' table column in the 'Published' dashboard
-.popover {
+// Bootstrap dropdown for the 'actions' table column in the 'Published' dashboard
+.dropdown {
+  overflow: inherit;
+}
+
+.action-box {
   background: $dusk-blue;
-  width: 150px;
   border-radius: 0;
-  border: 0;
-  box-shadow: none;
-  margin-left: -67px;
-  margin-right: 20px;
-  padding-right: 1em;
+  padding: 1em 0 0 1em;
+  margin-right: 1.5em;
+  display: block;
 
-  .arrow {
-    left: 90% !important;
-  }
-
-  .bottom {
-    margin-top: 0;
-  }
-
-  ul {
-    list-style: none;
-    -webkit-padding-start: 0;
-    padding-left: 0;
-
-    li {
-      border-bottom: solid 0.5px white;
-      padding: 1em 0 1em 0;
-
-      &:first-child {
-        padding-top: 0.5em;
-      }
-
-      a {
-        color: $white;
-        padding-left: 0.3em;
-      }
-    }
+  .dropdown-item {
+    display: block;
+    color: white;
+    font-size: 16px;
+    padding-bottom: 1em;
+    position: relative !important;
   }
 }
