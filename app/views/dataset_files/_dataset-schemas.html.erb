@@ -4,13 +4,16 @@
   </div>
 </div>
 <div class="box-dataset">
-  <table class="table table-bordered">
+  <table class="table table-striped"
+  data-toggle="table"
+  data-classes="table"
+  data-filter-control="true">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Publisher</th>
-        <th>Created on</th>
-        <th>Files</th>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Publisher</th>
+        <th data-sortable="true">Created on</th>
+        <th data-sortable="true">Files</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -24,8 +27,6 @@
             <td><%= file.dataset_file_schema.count_datasets_using_this_schema %></td>
             <td>...</td>
           </tr>
-        <% else %>
-          <p class='text-center lead'>You currently have no schemas associated with this dataset, why not add one?</p>
         <% end %>
       <% end %>
     </tbody>

@@ -9,13 +9,16 @@
 </div>
 <div class="box-dataset">
   <% if @dataset_files.exists? %>
-    <table class="table table-striped">
+    <table class="table table-striped"
+    data-toggle="table"
+    data-classes="table"
+    data-filter-control="true">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Schema</th>
-          <th>Creation date</th>
-          <th>Validation</th>
+          <th data-sortable="true">Name</th>
+          <th data-sortable="true">Schema</th>
+          <th data-sortable="true">Creation date</th>
+          <th data-sortable="true">Validation</th>
           <th>Actions</th>
         </tr>
       </thead>

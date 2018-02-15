@@ -26,8 +26,12 @@ h1 {
 
 .box-dataset {
   background-color: $white;
-  padding: $padding * 1.5;
+  padding: $padding;
   margin-bottom: 2em;
+
+  .bootstrap-table {
+    padding: 0;
+  }
 
   .row {
     margin-bottom: $margin;
