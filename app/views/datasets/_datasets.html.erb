@@ -9,7 +9,7 @@
       </div>
       <div class="col-md-2">
         <div class="form-group">
-          <input name="search" class="form-control" type="text" placeholder='&#xf002; Search sets'>
+          <input name="search" id="myInput" class="form-control" type="text" placeholder='&#xf002; Search sets'>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <th>Action</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="myTable">
       <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
     </tbody>
   </table>
