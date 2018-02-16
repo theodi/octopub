@@ -34,7 +34,9 @@
                   <%= link_to("View", dataset_path(:dataset_id), class: "dropdown-item") %>
                   <%= link_to("Download", dataset_path(:dataset_id), class: "dropdown-item") %>
                   <%= link_to("Edit", dataset_path(:dataset_id), class: "dropdown-item") %>
-                  <%= link_to("Delete", dataset_path(:dataset_id), class: "dropdown-item") %>
+                  <% if can? :delete, file.dataset_file_schema %>
+                    <%= link_to("Delete", dataset_file_schema_path(file.dataset_file_schema_id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset file schema?" }, class: "dropdown-item") %>
+                  <% end %>
                 </div>
               </div>
             </td>
