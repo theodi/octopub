@@ -1,0 +1,53 @@
+@import "modules/base";
+
+.navbar {
+  background: $black;
+  color: $white;
+  border-radius: 0;
+  padding: $padding / 2;
+  margin: 0 -15px 2em -15px;
+
+  .navbar-header > .navbar-brand {
+    color: $bright-orange;
+    font-size: 1.9em;
+    font-weight: 500;
+    margin-right: 1em;
+
+    .pub {
+      font-weight: 100;
+    }
+  }
+
+  .navbar-nav {
+    li > a {
+      color: $white;
+      font-size: 18px;
+      margin-right: 1em;
+
+      &:hover {
+        color: $white;
+      }
+    }
+
+    .disabled {
+      font-size: 18px;
+      margin-right: 1em;
+      color: grey;
+      pointer-events: none;
+    }
+  }
+
+  .navbar-text {
+    margin: 7px 15px 5px 0 !important;
+
+    .btn-prim {
+      margin-left: $margin;
+      text-decoration: none;
+    }
+
+    a {
+      color: $white;
+      text-decoration: underline;
+    }
+  }
+}

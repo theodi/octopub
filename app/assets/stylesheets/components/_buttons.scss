@@ -17,11 +17,13 @@
 
   &:active {
     background:darken($bg, 0.4);
-    // border-bottom: 0.3em solid $bg;
   }
 
   &:focus {
     color: $white;
+    outline: 0;
+    border: none;
+    -moz-outline-style: none
   }
 }
 

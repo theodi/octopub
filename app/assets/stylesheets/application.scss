@@ -35,7 +35,7 @@ body {
     font-family: 'Helvetica', 'Arial', sans-serif;
     background-color: #EBEBEB;
     font-size: 16px;
-    padding: 1.2em 1.2em 0 0;
+    padding: 0 1.2em 0 0;
     margin-bottom: 160px;
 }
 
@@ -63,24 +63,6 @@ body {
 .license-list {
   margin-left: 15px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.navbar-text {
-  margin: 7px 15px 5px 0 !important;
-
-  .btn {
-    margin-left: 7px;
-  }
-}
-
-/* Non javascript dropdown menu */
-.navbar-nav > li > a:hover {
-  background-color: #90d2ec;
-  color: #666;
-  text-decoration: none;
-}
-.dropdown:hover .dropdown-menu {
-  display: block;
 }
 
 footer {
