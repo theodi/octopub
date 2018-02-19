@@ -29,6 +29,14 @@
       }
     }
 
+    .active {
+      color: $bright-orange;
+
+      &:hover {
+        color: $bright-orange;
+      }
+    }
+
     .disabled {
       font-size: 18px;
       margin-right: 1em;

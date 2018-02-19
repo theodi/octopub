@@ -77,4 +77,9 @@ module ApplicationHelper
     date.today? ? date.strftime('Today') : date.strftime('%d-%m-%Y')
   end
 
+  def current_class?(test_path)
+    return 'active' if request.path == test_path
+    ''
+  end
+
 end
