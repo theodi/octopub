@@ -2,13 +2,7 @@
 
 // Table toolbar
 .toolbar {
-  margin-top: $margin;
   margin-bottom: $margin * 2;
-
-  h1 {
-    font-weight: bold;
-    color: $bright-orange !important;
-  }
 
   .col-md-offset-4 {
     padding-right: 0;
