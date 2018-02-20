@@ -1,6 +1,7 @@
-$( document ).ready(function() {
+$(document).ready(function() {
   var rowCount = function(id) {
-    return $("id > tbody").children.length
+    string = id + " tbody tr"
+    return $(string).length
   };
 
   $('#data-count').append(rowCount('#home-table-data'));

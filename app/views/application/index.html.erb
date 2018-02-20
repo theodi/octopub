@@ -10,14 +10,14 @@
       <%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %>
       <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary" %>
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
           <h3>Recent data collections:</h3>
         </div>
-        <div class="col-md-2 col-md-offset-5 table-count-box">
+        <div class="col-md-3 col-md-offset-5 table-count-box">
           <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
         </div>
       </div>
-      <table class="table table-striped"
+      <table id="home-table-data" class="table table-striped"
       data-toggle="table"
       data-classes="table"
       data-filter-control="true">
@@ -31,20 +31,20 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody id="myTable home-table-data">
+        <tbody id="myTable">
           <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
         </tbody>
       </table>
 
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
           <h3>Recent schemas:</h3>
         </div>
-        <div class="col-md-2 col-md-offset-5 table-count-box">
-          <p><span id='schema-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
+        <div class="col-md-3 col-md-offset-5 table-count-box">
+          <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
         </div>
       </div>
-      <table class="table table-striped"
+      <table id="schema-table-data" class="table table-striped"
       data-toggle="table"
       data-classes="table"
       data-filter-control="true">
@@ -56,7 +56,7 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody id="myTable schema-table-data">
+        <tbody id="myTable">
           <%= render(partial: "dataset-schemas", collection: @dataset_file_schemas, as: :schema)  %>
         </tbody>
       </table>
