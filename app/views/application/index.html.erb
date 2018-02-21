@@ -6,16 +6,20 @@
     </div>
     <div class="home-box grey">
       <h3 style="display: block">Quick actions:</h3>
-      <%= bs_button_to "Getting started", '/getting-started', :class => "btn btn-secondary" %>
-      <%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %>
+      <% if @datasets.count == 0 %>
+        <%= bs_button_to "<i class='fas fa-question-circle'></i> Getting started".html_safe, '/getting-started', :class => "btn btn-secondary" %>
+      <% end %>
+      <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data collection".html_safe, new_dataset_path, :class => "btn btn-secondary" %>
       <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary" %>
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-5">
           <h3>Recent data collections:</h3>
         </div>
-        <div class="col-md-3 col-md-offset-5 table-count-box">
-          <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
-        </div>
+        <% if !@datasets.count.nil? %>
+          <div class="col-md-3 col-md-offset-5 col-sm-offset-4 table-count-box">
+            <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
+          </div>
+        <% end %>
       </div>
       <table id="home-table-data" class="table table-striped"
       data-toggle="table"
@@ -37,12 +41,14 @@
       </table>
 
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-5">
           <h3>Recent schemas:</h3>
         </div>
-        <div class="col-md-3 col-md-offset-5 table-count-box">
-          <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
-        </div>
+        <% if !@dataset_file_schemas.count.nil? %>
+          <div class="col-md-3 col-md-offset-5 col-sm-3 col-sm-offset-4 table-count-box">
+            <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
+          </div>
+        <% end %>
       </div>
       <table id="schema-table-data" class="table table-striped"
       data-toggle="table"
