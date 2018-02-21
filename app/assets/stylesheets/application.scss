@@ -65,13 +65,6 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-footer {
-  margin-top: 60px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  border-top: 1px solid #e5e5e5;
-}
-
 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
   left: 15px;
 }
@@ -91,21 +84,6 @@ td.owner {
 .jumbotron {
   padding-top: 0;
   margin-top: 0;
-}
-
-footer {
-  img {
-    width: 175px;
-    margin: 0 0 0 -10px;
-  }
-  background-color: #f7f7f9;
-  padding: 10px 0;
-  text-align: left;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 140px;
 }
 
 /* Tooltip container */

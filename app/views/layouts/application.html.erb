@@ -23,23 +23,12 @@
   <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
     <div class="container">
       <%= render 'layouts/nav' %>
-
       <div class="row">
         <div class="col-md-12" id="main">
           <%= yield %>
         </div>
       </div>
     </div>
-
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-10 col-md-offset-1">
-            <%= image_tag 'labs-72-linked-200px.png', alt: 'ODI Labs' %>
-            <p>An <a href="http://theodi.org/labs">ODI Labs</a> experiment</p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <%= render 'layouts/footer' %>
   </body>
 </html>
