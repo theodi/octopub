@@ -15,7 +15,7 @@
         <div class="col-md-4 col-sm-5">
           <h3>Recent data collections:</h3>
         </div>
-        <% if !@datasets.count.nil? %>
+        <% if @datasets.count > 0 %>
           <div class="col-md-3 col-md-offset-5 col-sm-offset-4 table-count-box">
             <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
           </div>
@@ -44,7 +44,7 @@
         <div class="col-md-4 col-sm-5">
           <h3>Recent schemas:</h3>
         </div>
-        <% if !@dataset_file_schemas.count.nil? %>
+        <% if @dataset_file_schemas.count > 0 %>
           <div class="col-md-3 col-md-offset-5 col-sm-3 col-sm-offset-4 table-count-box">
             <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
           </div>

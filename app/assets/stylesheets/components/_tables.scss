@@ -35,18 +35,27 @@
       .dropdown-menu {
         background: $dusk-blue;
         border-radius: 0;
-        padding: $padding 0 0 $padding;
         margin-top: 0;
 
         .dropdown-item {
           display: block;
           color: white;
           font-size: 1em;
-          padding-bottom: $padding;
           position: relative !important;
           outline: 0;
+
+          .dropdown-link {
+            padding: $padding 0 $padding 0;
+            border-bottom: 1px solid $white;
+            margin: 0 $margin 0 $margin;
+
+            .a {
+              text-decoration: none;
+            }
+          }
         }
       }
+
       .dropdown-menu:after,
       .dropdown-menu:before {
          bottom: 100%;

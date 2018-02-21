@@ -23,19 +23,19 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
         <% if !dataset.published_status %>
-          <%= link_to("Publish*", '#', class: "dropdown-item") %>
+          <%= link_to("<div class='dropdown-link'>Publish*</div>".html_safe, '#', class: "dropdown-item") %>
         <% end %>
         <% if can? :edit, dataset %>
-          <%= link_to("Edit", edit_dataset_path(dataset.id), class: "dropdown-item") %>
+          <%= link_to("<div class='dropdown-link'>Edit</div>".html_safe, edit_dataset_path(dataset.id), class: "dropdown-item") %>
         <% end %>
         <% if can? :delete, dataset %>
-          <%= link_to("Delete", dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "dropdown-item") %>
+          <%= link_to("<div class='dropdown-link'>Delete</div>".html_safe, dataset_path(dataset.id), method: :delete, data: { confirm: "Are you sure you want to delete this dataset?\r\n\r\nNote: This will also delete the repo from Github" }, class: "dropdown-item") %>
         <% end %>
-        <%= link_to("View", files_path(dataset.id), class: "dropdown-item") %>
+        <%= link_to("<div class='dropdown-link'>View</div>".html_safe, files_path(dataset.id), class: "dropdown-item") %>
         <% if !dataset.published_status %>
-          <%= link_to("Download", dataset.gh_pages_url + '/datapackage.json', class: "dropdown-item") %>
+          <%= link_to("<div class='dropdown-link'>Download</div>".html_safe, dataset.gh_pages_url + '/datapackage.json', class: "dropdown-item") %>
         <% end %>
-        <%= link_to("Add files*", edit_dataset_path(dataset.id), class: "dropdown-item") %>
+        <%= link_to("<div class='dropdown-link'>Add files*</div>".html_safe, edit_dataset_path(dataset.id), class: "dropdown-item") %>
       </div>
     </div>
   </td>
