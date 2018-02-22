@@ -1,6 +1,8 @@
 <nav class="navbar navbar-default" role="navigation">
   <div class="navbar-header">
-    <a class="navbar-brand" href="/">Octo<span class="pub">pub</span></a>
+    <a class="navbar-brand" href="/">
+      <%= image_tag 'octopub-logo.svg', alt: 'Octopub', class: "nav-img" %>
+      Octo<span class="pub">pub</span></a>
   </div>
   <ul class="nav navbar-nav">
     <li><%= link_to "About", '/getting-started', class: current_class?('/getting-started') %></li>
