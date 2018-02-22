@@ -37,27 +37,11 @@ body {
     font-size: 16px;
     padding: 0 1.2em 0 0;
     margin-bottom: 160px;
+    overflow-x: hidden;
 }
 
 .container {
   width: 100vw;
-}
-
-.getting-started {
-
-  p {
-    font-size: 1.2em;
-    line-height: 1.5em;
-    margin: 5px 0px 5px 5px;
-  }
-
-  img {
-
-    border: 1px solid #eee;
-    padding: 5px;
-    margin: 5px 5px 0px 0px;
-
-  }
 }
 
 .license-list {
@@ -67,10 +51,6 @@ body {
 
 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
   left: 15px;
-}
-
-.dropdown-menu > li > a {
-  padding: 3px 40px;
 }
 
 td.owner {
@@ -84,31 +64,4 @@ td.owner {
 .jumbotron {
   padding-top: 0;
   margin-top: 0;
-}
-
-/* Tooltip container */
-.tooltips {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
-
-/* Tooltip text */
-.tooltips .tooltiptexts {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltips:hover .tooltiptexts {
-  visibility: visible;
 }

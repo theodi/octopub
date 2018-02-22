@@ -11,7 +11,7 @@
     color: $bright-orange;
     font-size: 1.9em;
     font-weight: 500;
-    margin-right: 1em;
+    margin-right: $margin;
 
     .pub {
       font-weight: 100;
@@ -22,7 +22,7 @@
     li > a {
       color: $white;
       font-size: 18px;
-      margin-right: 1em;
+      margin-right: $margin;
 
       &:hover {
         color: $white;
