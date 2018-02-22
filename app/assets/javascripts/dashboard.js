@@ -2,11 +2,31 @@
 
 $(document).ready(function() {
 
-  $("#myInput").on("keyup", function() {
+  // Search input for the dashboard
+  // Search occurs upon keydown on 'Enter'
+  $("#myInput").on("keydown", function(e) {
     var value = $(this).val().toLowerCase();
-    $("#myTable tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
+    if(e.which === 13){
+      $("#myTable tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    }
+  });
+
+  // Clearing the search input and reseting the dashboard
+  $(".hasclear").keyup(function () {
+    var t = $(this);
+    t.next('span').toggle(Boolean(t.val()));
+  });
+
+  $(".clearer").hide($(this).prev('input').val());
+
+  $(".clearer").click(function (event) {
+    $(this).prev('input').val('').focus();
+    $(this).hide();
+    var e = $.Event('keydown');
+    e.which = 13;
+    $('input').trigger(e);
   });
 
   if ($('#refresh').length) {

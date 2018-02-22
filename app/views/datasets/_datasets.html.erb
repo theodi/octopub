@@ -8,8 +8,9 @@
         <span class="pull-right"><%= bs_button_to "Create a new data collection", new_dataset_path, :class => "btn btn-secondary" %></span>
       </div>
       <div class="col-md-2">
-        <div class="form-group">
-          <input name="search" id="myInput" class="form-control" type="text" placeholder='&#xf002; Search sets'>
+        <div class="form-group has-feedback">
+          <input name="search" id="myInput" class="form-control hasclear" type="text" placeholder='&#xf002; Search sets'>
+          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
         </div>
       </div>
     </div>
