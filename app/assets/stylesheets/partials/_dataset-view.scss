@@ -18,7 +18,7 @@ h1 {
     margin-right: $margin / 2;
   }
 
-  .btn-tertiary {
+  .btn-tertiary, .btn-prim {
     float: right !important;
     margin-left: $margin;
   }
@@ -27,7 +27,7 @@ h1 {
 .box-dataset {
   background-color: $white;
   padding: $padding;
-  margin-bottom: $margin * 2;
+  margin-bottom: $margin;
 
   .bootstrap-table {
     padding: 0;
@@ -46,4 +46,8 @@ h1 {
   display: flex;
   align-items: center;
   margin-bottom: $margin;
+
+  a {
+    line-height: 0 !important;
+  }
 }

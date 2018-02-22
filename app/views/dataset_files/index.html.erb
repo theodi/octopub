@@ -1,12 +1,17 @@
 <div class="col-md-10 col-md-offset-1">
   <%= link_to "< Back to all collections", main_app.user_datasets_path(current_user) %>
   <div class="row head-dataset">
-    <div class="col-md-7">
-      <h1><span class="fa fa-folder-open"></span><%= @dataset.name %></h1>
+    <div class="col-md-4">
+      <h2><span class="fa fa-folder-open"></span><%= @dataset.name %></h2>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-8">
+      <% if !@dataset.published_status %>
+        <button class="btn btn-prim">Publish data collection</button>
+      <% end %>
       <%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
-      <% if @dataset.published_status %>
+      <% if !@dataset.published_status %>
+        <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
+      <% else %>
         <%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
       <% end %>
     </div>
@@ -15,7 +20,7 @@
   <%= render(partial: "dataset-files")  %>
   <%= render(partial: "dataset-schemas")  %>
   <div class="title-dataset">
-    <h1>Support:</h1>
+    <h2>Support:</h2>
   </div>
   <div class="row">
     <div class="col-md-10">
