@@ -36,6 +36,7 @@
         background: $dusk-blue;
         border-radius: 0;
         margin-top: 0;
+        padding: 0;
 
         .dropdown-item {
           display: block;
@@ -45,41 +46,18 @@
           outline: 0;
 
           .dropdown-link {
-            padding: $padding 0 $padding 0;
-            border-bottom: 1px solid $white;
-            margin: 0 $margin 0 $margin;
+            padding: $padding 0 $padding $padding;
+            // border-bottom: 1px solid $white;
 
             .a {
               text-decoration: none;
             }
+
+            &:hover {
+              background-color: $cobalt;
+            }
           }
         }
-      }
-
-      .dropdown-menu:after,
-      .dropdown-menu:before {
-         bottom: 100%;
-         border: solid transparent;
-         content: " ";
-         height: 0;
-         width: 0;
-         position: absolute;
-         pointer-events: none;
-      }
-
-      .dropdown-menu:after {
-         border-color: rgba(255, 255, 255, 0);
-         border-bottom-color: $dusk-blue;
-         border-width: 12px;
-         left: 74%;
-         margin-left: -19px;
-      }
-      .dropdown-menu:before {
-         border-color: rgba(113, 158, 206, 0);
-         border-bottom-color: $dusk-blue;
-         border-width: 13px;
-         left: 74%;
-         margin-left: -20px;
       }
     }
   }
