@@ -1,3 +1,4 @@
+<% if false %>
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
   <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
   <% if dataset.id.nil? %>
@@ -33,4 +34,29 @@
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>
+<% end %>
+<% end %>
+
+
+<% if true %>
+<%= form_for @dataset, validate: true, url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
+
+  <%= label_tag :name %>
+  <%= f.text_field :name %>
+
+  <%= label_tag :description %>
+  <%= f.text_area :description %>
+
+  <%= label_tag :frequency %>
+  <%= f.select :frequency, Octopub::PUBLICATION_FREQUENCIES %>
+
+  <p class="text-right">
+    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
+
+<% end %>
 <% end %>

@@ -40,6 +40,8 @@ class Dataset < ApplicationRecord
   validate :check_repo, on: :create
   validates_associated :dataset_files
 
+  validates :name, presence: true
+
   def report_status(channel_id, action = :create)
     Rails.logger.info "Dataset: in report_status #{channel_id} with #{dataset_files.count} files"
 
