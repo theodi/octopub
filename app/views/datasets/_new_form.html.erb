@@ -1,13 +1,20 @@
-<% if false %>
-<%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
+<% if true %>
+
+<%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
+  
+<div id="section-one">
+  <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name') %>
   <% if dataset.id.nil? %>
     <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
   <% end %>
   <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
-  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, required: true, placeholder: t(:'dataset.publisher_name') %>
+  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
   <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
   <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
+  <a>validate</a>
+</div>
+
+
   <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
     <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
     <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
@@ -15,6 +22,7 @@
   <% end %>
 
   <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>
       <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
@@ -27,28 +35,6 @@
       <% end %>
     <% end %>
   </div>
-  <p class="text-right">
-    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
-  </p>
-
-  <button type="submit" class="btn btn-primary btn-lg btn-block">
-    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
-  </button>
-<% end %>
-<% end %>
-
-
-<% if true %>
-<%= form_for @dataset, validate: true, url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
-
-  <%= label_tag :name %>
-  <%= f.text_field :name %>
-
-  <%= label_tag :description %>
-  <%= f.text_area :description %>
-
-  <%= label_tag :frequency %>
-  <%= f.select :frequency, Octopub::PUBLICATION_FREQUENCIES %>
 
   <p class="text-right">
     <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
@@ -57,6 +43,128 @@
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
   </button>
+<% end %>
+<% end %>
+
+<script>
+
+    $(document).ready(function () { 
+
+      var form = $('#add-dataset-form')
+      var validator = form.validate({
+        rules: {
+          'dataset[name]': {
+            required: true
+          },
+          'dataset[description]': {
+            required: true
+          }
+        }
+      });
+
+      var formSections = ["#section-one"]
+
+      $.each(formSections, function(i, sectionSelector) {
+        var fieldSelectors = fieldSelectorsForSection(sectionSelector)
+
+        $(document).on('click', '#section-one a', function (e) {
+          var valid = fieldsValid(fieldSelectors)
+
+          console.log(valid)
+          if (valid) alert(sectionSelector + " is valid")
+          e.preventDefault()
+        })
+      })
+
+      // Check if all fields are valid
+      // Accepts array of strings, returns boolean
+      function fieldsValid(fieldSelectors) {
+        return fieldSelectors.map((selector) =>
+          validator.element(selector) // validate field and return true/false
+        ).reduce((accumulator, currentValue) =>
+          accumulator && currentValue // return sum all field booleans
+        )
+      }
+      
+      // Return an array of ID selectors for all the form fields in a section div
+      // Accepts string, returns array of strings
+      function fieldSelectorsForSection(sectionSelector) {
+        var fields = $(sectionSelector).find(':input')
+        return fields.map(function() {
+          if (this.id) return '#' + escapeSquareBrackets(this.id)
+        }).get()
+      }
+
+      function escapeSquareBrackets(str) {
+        return str.replace(/\[/g,'\\[').replace(/\]/g,'\\]')
+      }
+
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+<% if false %>
+<h2>dataset</h2>
+<%= form_for @dataset, url: url, method: method, multipart: true, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
+
+  <div id="section-one">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+
+    <%= f.label :frequency %>
+    <%= f.select :frequency, Octopub::PUBLICATION_FREQUENCIES %>
+    <button>validate</button>
+  </div>
+
+  <%= f.label :license %>
+  <%= f.select :license, licenses %>
+
+  <div id="files">
+    <%= f.fields_for :dataset_files do |builder| %>
+      <h3>dataset file</h3>
+      <%= builder.label :title %>
+      <%= builder.text_field :title %>
+
+      <%= builder.label :description %>
+      <%= builder.text_field :description %>
+      
+      <%= builder.label :file %>
+      <%= builder.file_field :file, accept: ".csv" %>
+
+      <%= fields_for :dataset_file_schema do |builder2| %>
+        <h4>dataset file schema</h4>
+        <%= builder2.label :dataset_file_schema_id %>
+        <%= builder2.select :dataset_file_schema_id, options_from_collection_for_select(@dataset_file_schemas, :id, :name) %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <p class="text-right">
+    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+  </p>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">
+    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+  </button>
 
 <% end %>
 <% end %>
+
+
+
+
+
+
+
+

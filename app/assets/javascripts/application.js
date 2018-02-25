@@ -23,4 +23,4 @@
 //= require file_upload
 //= require dashboard
 //= require tooltips
-//= require rails.validations
+//= require jquery.validate
