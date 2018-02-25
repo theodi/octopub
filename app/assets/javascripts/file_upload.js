@@ -131,6 +131,16 @@ function addAnotherDataFileButtonClick() {
 
     e.preventDefault();
     var clone = $(file).clone();
+
+    // replace input ids with unique ids
+    var new_id = new Date().getTime();
+    clone.find(':input').each(function() {
+      this.id = this.id + new_id
+      $(this).rules( "add", {
+        required: true
+      });
+    })
+
     clone.find('.title').attr('required', 'required');
     // Add delete file button
     var buttonAndSpan = $('<span class="pull-right"><button type="button" class="btn btn-danger btn-xs">Delete file</button></span>');
@@ -179,4 +189,57 @@ $(document).ready(function() {
   if ($('div.schema-panel').length) {
     setUpFileUpload();
   }
+
+  var form = $('#add-dataset-form')
+  var validator = form.validate({
+    rules: {
+      'dataset[name]': { required: true },
+      'dataset[description]': { required: true },
+      'dataset[frequency]': { required: true },
+      'dataset[license]': { required: true },
+      'files[][title]': { required: true },
+      'files[][description]': { required: true },
+      'files[][file]': { required: true },
+      'files[][dataset_file_schema_id]': { required: true },
+    }
+  });
+
+  var formSections = ["#section-one", "#section-two", "#section-three"]
+
+  $.each(formSections, function(i, sectionSelector) {
+    var fieldSelectors = fieldSelectorsForSection(sectionSelector)
+    var sectionButton = sectionSelector + ' a'
+
+    $(document).on('click', sectionButton, function (e) {
+      var valid = fieldsValid(fieldSelectors)
+
+      console.log(valid)
+      if (valid) { alert(sectionSelector + " is valid") }
+      e.preventDefault()
+    })
+  })
+
+  // Check if all fields are valid
+  // Accepts array of strings, returns boolean
+  function fieldsValid(fieldSelectors) {
+    return fieldSelectors.map((selector) =>
+      validator.element(selector) // validate field and return true/false
+    ).reduce((accumulator, currentValue) =>
+      accumulator && currentValue // return sum all field booleans
+    )
+  }
+  
+  // Return an array of ID selectors for all the form fields in a section div
+  // Accepts string, returns array of strings
+  function fieldSelectorsForSection(sectionSelector) {
+    var fields = $(sectionSelector).find(':input')
+    return fields.map(function() {
+      if (this.id) { return '#' + escapeSquareBrackets(this.id) }
+    }).get()
+  }
+
+  function escapeSquareBrackets(str) {
+    return str.replace(/\[/g,'\\[').replace(/\]/g,'\\]')
+  }
+
 });

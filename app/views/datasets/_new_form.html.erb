@@ -2,38 +2,43 @@
 
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
   
-<div id="section-one">
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name') %>
-  <% if dataset.id.nil? %>
-    <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
-  <% end %>
-  <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
-  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
-  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
-  <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-  <a>validate</a>
-</div>
-
-
-  <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
-    <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
-    <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
-    <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
-  <% end %>
-
-  <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
-
-  <div id="files">
-    <% if dataset.dataset_files.count == 0 %>
-      <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
-    <% else %>
-      <% dataset.dataset_files.each_with_index do |file, i| %>
-        <div class="hidden">
-          <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i, dataset_file_schemas: dataset_file_schemas } %>
-        </div>
-        <%= render partial: "dataset_files/new_form", locals: { file: file, f: f, i: i } %>
-      <% end %>
+  <div id="section-one">
+    <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name') %>
+    <% if dataset.id.nil? %>
+      <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
     <% end %>
+    <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
+    <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
+    <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
+    <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
+    <a href="#" class="btn btn-primary">validate</a>
+  </div>
+
+  <div id="section-two">
+    <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
+      <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
+      <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
+      <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
+    <% end %>
+
+    <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+    <a href="#" class="btn btn-primary">validate</a>
+  </div>
+
+  <div id="section-three">
+    <div id="files">
+      <% if dataset.dataset_files.count == 0 %>
+        <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f,dataset_file_schemas: dataset_file_schemas } %>
+      <% else %>
+        <% dataset.dataset_files.each_with_index do |file, i| %>
+          <div class="hidden">
+            <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i, dataset_file_schemas: dataset_file_schemas } %>
+          </div>
+          <%= render partial: "dataset_files/new_form", locals: { file: file, f: f, i: i } %>
+        <% end %>
+      <% end %>
+    </div>
+    <a href="#" class="btn btn-primary">validate</a>
   </div>
 
   <p class="text-right">
@@ -45,67 +50,6 @@
   </button>
 <% end %>
 <% end %>
-
-<script>
-
-    $(document).ready(function () { 
-
-      var form = $('#add-dataset-form')
-      var validator = form.validate({
-        rules: {
-          'dataset[name]': {
-            required: true
-          },
-          'dataset[description]': {
-            required: true
-          }
-        }
-      });
-
-      var formSections = ["#section-one"]
-
-      $.each(formSections, function(i, sectionSelector) {
-        var fieldSelectors = fieldSelectorsForSection(sectionSelector)
-
-        $(document).on('click', '#section-one a', function (e) {
-          var valid = fieldsValid(fieldSelectors)
-
-          console.log(valid)
-          if (valid) { alert(sectionSelector + " is valid") }
-          e.preventDefault()
-        })
-      })
-
-      // Check if all fields are valid
-      // Accepts array of strings, returns boolean
-      function fieldsValid(fieldSelectors) {
-        return fieldSelectors.map((selector) =>
-          validator.element(selector) // validate field and return true/false
-        ).reduce((accumulator, currentValue) =>
-          accumulator && currentValue // return sum all field booleans
-        )
-      }
-      
-      // Return an array of ID selectors for all the form fields in a section div
-      // Accepts string, returns array of strings
-      function fieldSelectorsForSection(sectionSelector) {
-        var fields = $(sectionSelector).find(':input')
-        return fields.map(function() {
-          if (this.id) { return '#' + escapeSquareBrackets(this.id) }
-        }).get()
-      }
-
-      function escapeSquareBrackets(str) {
-        return str.replace(/\[/g,'\\[').replace(/\]/g,'\\]')
-      }
-
-    });
-
-</script>
-
-
-
-
 
 
 
