@@ -71,7 +71,7 @@
           var valid = fieldsValid(fieldSelectors)
 
           console.log(valid)
-          if (valid) alert(sectionSelector + " is valid")
+          if (valid) { alert(sectionSelector + " is valid") }
           e.preventDefault()
         })
       })
@@ -91,7 +91,7 @@
       function fieldSelectorsForSection(sectionSelector) {
         var fields = $(sectionSelector).find(':input')
         return fields.map(function() {
-          if (this.id) return '#' + escapeSquareBrackets(this.id)
+          if (this.id) { return '#' + escapeSquareBrackets(this.id) }
         }).get()
       }
 
