@@ -60,8 +60,12 @@ class DatasetsController < ApplicationController
 
   def create
     logger.info "DatasetsController: In create"
-    files_array = get_files_as_array_for_serialisation
+		logger.info "RLW 1"
+		files_array = get_files_as_array_for_serialisation
+		logger.info "RLW 2"
+
     CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
+		logger.info "RLW 3"
 
     if params[:async]
       logger.info "DatasetsController: In create with params aysnc"
