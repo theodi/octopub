@@ -54,7 +54,7 @@ module FileHandlingForDatasets
 
   def get_files_as_array_for_serialisation
 		logger.info "get files for serialisation"
-		logger.info @files
+		logger.info "files=" + @files
     @files.map { |file_param_object| file_param_object.to_unsafe_hash }
   end
 
