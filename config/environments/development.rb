@@ -74,5 +74,4 @@ Rails.application.configure do
 	config.logger = ActiveSupport::TaggedLogging.new(logger)
 
   config.active_record.logger = nil
-  config.lograge.enabled = false
 end
