@@ -1,5 +1,7 @@
 <% if true %>
 
+<a href="#" id="validate-form" class="btn btn-danger">validate form</a>
+
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
   
   <div id="section-one">
@@ -11,7 +13,7 @@
     <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
     <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
     <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-    <a href="#" class="btn btn-primary">validate</a>
+    <a href="#" class="btn btn-danger">validate section 1</a>
   </div>
 
   <div id="section-two">
@@ -22,7 +24,7 @@
     <% end %>
 
     <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
-    <a href="#" class="btn btn-primary">validate</a>
+    <a href="#" class="btn btn-danger">validate section 2</a>
   </div>
 
   <div id="section-three">
@@ -38,7 +40,6 @@
         <% end %>
       <% end %>
     </div>
-    <a href="#" class="btn btn-primary">validate</a>
   </div>
 
   <p class="text-right">
@@ -57,7 +58,7 @@
 
 <% if false %>
 <h2>dataset</h2>
-<%= form_for @dataset, url: url, method: method, multipart: true, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
+<%= form_for @dataset, url: url, method: method, multipart: true, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
 
   <div id="section-one">
     <%= f.label :name %>

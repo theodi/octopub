@@ -4,8 +4,8 @@
     <div class="panel-heading clearfix" name="data_file_heading">Data Files</div>
     <div class="panel-body">
       <fieldset class="file bg-upload">
-        <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
-        <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
+        <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil?, required: true %>
+        <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description'), required: true %>
 
         <% if file.filename %>
           <div class="form-group filename-wrapper">
@@ -15,7 +15,7 @@
             </div>
           </div>
         <% else %>
-          <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
+          <%= f.file_field "files[][file]", label: "File", accept: ".csv", required: true %>
         <% end %>
 
         <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
