@@ -20,47 +20,28 @@ describe 'datasets/_dataset.html.erb', :view do
   it 'displays a single dataset' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.repo_owner}/)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/My Dataset/)
-    expect(page.css('tr')[0].css('td')[3].inner_text).to eq ""
+    expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.name}/)
+    expect(page.css('tr')[0].css('td')[4].inner_text).to include "...", "Edit", "Delete"
   end
 
   it 'displays a single dataset with schemas' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset_with_schema}
     page = Nokogiri::HTML(rendered)
 
-    expect(page.css('tr')[0].css('td')[0].inner_text).to have_content(@dataset.repo_owner)
-    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/#{@dataset.name}/)
-    expect(page.css('tr')[0].css('td')[3].inner_text).to match(/Yes/)
+    expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.name}/)
+    expect(page.css('tr')[0].css('td')[2].inner_text).to match(/#{@dataset.schema_names}/)
   end
 
   def expect_columns(page)
-    expect(page.css('tr')[0].css('td').count).to eq(7)
+    expect(page.css('tr')[0].css('td').count).to eq(5)
   end
 
   it 'displays the edit link' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
-    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Delete/)
-  end
-
-  it 'displays access icon' do
-    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
-    page = Nokogiri::HTML(rendered)
-    expect_columns(page)
-    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-globe');
-    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="public"]');
-  end
-
-  it 'displays private icon' do
-    render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @restricted_dataset}
-    page = Nokogiri::HTML(rendered)
-    expect_columns(page)
-
-    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i.fa.fa-lock');
-    expect(page.css('tr:first-child > td:nth-child(2)')).to have_css('i[title="private"]');
+    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Delete/)
   end
 
   context 'deprecated dataset URLs' do
@@ -75,17 +56,11 @@ describe 'datasets/_dataset.html.erb', :view do
       Timecop.return
     end
 
-    it 'displays warning icon for URL inaccessible dataset' do
-      render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
-      page = Nokogiri::HTML(rendered)
-      expect(page.css('tr:first-child > td:nth-child(3)')).to have_css('i.fa.fa-exclamation-triangle');
-    end
-
     it 'displays deprecation date when in the dashboard' do
       render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
       page = Nokogiri::HTML(rendered)
       expect_columns(page)
-      expect(DateTime.parse(page.css('tr')[0].css('td')[5].inner_text).instance_of?(DateTime))
+      expect(DateTime.parse(page.css('tr')[0].css('td')[3].inner_text).instance_of?(DateTime))
     end
 
   end
@@ -105,8 +80,8 @@ describe 'datasets/_dataset.html.erb for other users', :view do
   it "doesn't display the edit link" do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[6].inner_text).not_to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[6].inner_text).not_to match(/Delete/)
+    expect(page.css('tr')[0].css('td')[4].inner_text).not_to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[4].inner_text).not_to match(/Delete/)
   end
 
 end
@@ -123,8 +98,8 @@ describe 'datasets/_dataset.html.erb for admin users', :view do
   it 'displays the edit link' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[6].inner_text).to match(/Delete/)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Edit/)
+    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Delete/)
   end
 
 end

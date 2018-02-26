@@ -1,0 +1,29 @@
+@import "modules/base";
+
+.home-box {
+  background: $white;
+  padding: $padding * 3;
+  margin: -2em -16px 0 -16px;
+
+  h1 {
+    font-weight: 100 !important;
+  }
+
+  span {
+    font-weight: 500 !important;
+  }
+
+  &.grey {
+    background: $light-grey;
+    padding-top: $padding;
+  }
+
+  .row {
+    margin-top: $margin * 2;
+
+    .table-count-box {
+      padding-top: 1.2em;
+      text-align: right;
+    }
+  }
+}

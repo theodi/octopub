@@ -109,10 +109,10 @@ class DatasetFile < ApplicationRecord
   end
 
   private
-  
+
     def content_or_schema_changed?
       # We only need to validate if the file itself or the schema has changed
-      new_record? || 
+      new_record? ||
       dataset_file_schema_id_changed? ||
       storage_key_changed?
     end
@@ -184,7 +184,7 @@ class DatasetFile < ApplicationRecord
       self.filename = "#{title.parameterize}.csv" rescue nil
     end
 
-    def file_content      
+    def file_content
       # Try to load from the storage key first.
       if storage_key
         # This might fail if the S3 content has gone away.
@@ -206,5 +206,5 @@ class DatasetFile < ApplicationRecord
       # Nothing worked. Ah well. We did our best.
       nil
     end
-  
+
 end

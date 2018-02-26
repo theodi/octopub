@@ -1,14 +1,13 @@
 <tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <td>
-    <%= link_to(dataset.name.truncate(30), files_path(dataset.id), class:"collection-link") %>
+    <%= link_to(dataset.name.truncate(20), files_path(dataset.id), class:"collection-link") %>
   </td>
-  <td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <% if dataset.schema_names == "" %>
     <td></td>
   <% elsif dataset.schema_names.include?", " %>
     <td>multiple</td>
   <% else %>
-    <td><%= dataset.schema_names.truncate(30) %></td>
+    <td><%= dataset.schema_names.truncate(20) %></td>
   <% end %>
   <td><%= time_or_date(dataset.created_at.utc) %></td>
   <td>Temp</td>

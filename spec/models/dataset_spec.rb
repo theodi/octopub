@@ -22,6 +22,7 @@
 #  certificate_url   :string
 #  job_id            :string
 #  publishing_method :integer          default("github_public"), not null
+#  published_status: :boolean          default: false
 #
 
 require 'rails_helper'
@@ -324,6 +325,13 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(updated_dataset.restricted).to be false
 
       skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
+    end
+  end
+
+  context "prepublishing a dataset" do
+    it "creates a dataset with a published status of false" do
+      dataset = create(:dataset, user: @user)
+      expect(dataset.published_status).to eq(false)
     end
   end
 

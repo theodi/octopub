@@ -23,3 +23,4 @@
 //= require file_upload
 //= require dashboard
 //= require tooltips
+//= require index

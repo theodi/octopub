@@ -1,0 +1,45 @@
+@import "modules/base";
+
+// Table toolbar
+.toolbar {
+  margin-bottom: $margin * 2;
+
+  .col-md-offset-4 {
+    padding-right: 0;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+
+    .form-control {
+      height: 36.85px;
+      font-family: FontAwesome, "Open Sans", Verdana, sans-serif;
+      border-radius: 0;
+      border: none;
+      -webkit-box-shadow:inset 0 -2px 0 $warm-grey;
+      -moz-box-shadow:inset 0 -2px 0 $warm-grey;
+      box-shadow:inset 0 -2px 0 $warm-grey;
+
+      &:focus {
+        -webkit-box-shadow:inset 0 -2px 0 $dusk-blue;
+        -moz-box-shadow:inset 0 -2px 0 $dusk-blue;
+        box-shadow:inset 0 -2px 0 $dusk-blue;
+      }
+    }
+
+    .form-control-clear {
+      z-index: 10;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .form-control-feedback {
+      top: 0;
+    }
+  }
+}
+
+.bootstrap-table {
+  background: white;
+  padding: $padding;
+}

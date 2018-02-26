@@ -10,7 +10,7 @@ class DatasetsController < ApplicationController
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
-  
+
   authorize_resource
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
@@ -23,6 +23,7 @@ class DatasetsController < ApplicationController
   def dashboard
     @title = "My Datasets"
     @datasets = current_user.datasets
+    @files = @datasets.dataset_files
   end
 
   def organisation_index
@@ -33,7 +34,6 @@ class DatasetsController < ApplicationController
   end
 
   def user_datasets
-    @title = "My Datasets"
     @datasets = current_user.datasets
     render :dashboard
   end
@@ -60,8 +60,12 @@ class DatasetsController < ApplicationController
 
   def create
     logger.info "DatasetsController: In create"
-    files_array = get_files_as_array_for_serialisation
+		logger.info "RLW 1"
+		files_array = get_files_as_array_for_serialisation
+		logger.info "RLW 2"
+
     CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
+		logger.info "RLW 3"
 
     if params[:async]
       logger.info "DatasetsController: In create with params aysnc"
@@ -127,7 +131,7 @@ class DatasetsController < ApplicationController
   def set_direct_post
     @s3_direct_post = FileStorageService.private_presigned_post
   end
-  
+
   def available_schemas
     DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end
