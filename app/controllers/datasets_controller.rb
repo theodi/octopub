@@ -68,7 +68,7 @@ class DatasetsController < ApplicationController
 		logger.info "RLW 3"
 
     if params[:async]
-      logger.info "DatasetsController: In create with params aysnc"
+      logger.info "DatasetsController: In create with params async"
       head :accepted
     else
       redirect_to created_datasets_path(publishing_method: dataset_params[:publishing_method])
