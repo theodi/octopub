@@ -1,7 +1,3 @@
-<% if true %>
-
-<a href="#" id="validate-form" class="btn btn-danger">validate form</a>
-
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
   
   <div id="section-one">
@@ -16,7 +12,7 @@
     <a href="#" class="btn btn-danger">validate section 1</a>
   </div>
 
-  <div id="section-two">
+  <div id="section-two" class="hidden">
     <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
       <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
       <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
@@ -27,7 +23,7 @@
     <a href="#" class="btn btn-danger">validate section 2</a>
   </div>
 
-  <div id="section-three">
+  <div id="section-three" class="hidden">
     <div id="files">
       <% if dataset.dataset_files.count == 0 %>
         <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f,dataset_file_schemas: dataset_file_schemas } %>
@@ -40,21 +36,16 @@
         <% end %>
       <% end %>
     </div>
+
+    <p class="text-right">
+      <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
+    </p>
+
+    <button type="submit" class="btn btn-primary btn-lg btn-block">
+      Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+    </button>
   </div>
-
-  <p class="text-right">
-    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
-  </p>
-
-  <button type="submit" class="btn btn-primary btn-lg btn-block">
-    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
-  </button>
 <% end %>
-<% end %>
-
-
-
-
 
 <% if false %>
 <h2>dataset</h2>
@@ -105,11 +96,3 @@
 
 <% end %>
 <% end %>
-
-
-
-
-
-
-
-

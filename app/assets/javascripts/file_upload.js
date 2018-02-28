@@ -9,69 +9,6 @@ $(document).ready(function() {
     setUpFileUpload();
   }
 
-  var form = $('#add-dataset-form')
-  var validator = form.validate({
-    rules: {
-      'dataset[name]': { required: true },
-      'dataset[description]': { required: true },
-      'dataset[frequency]': { required: true },
-      'dataset[license]': { required: true }
-    },
-  });
-
-  var formSections = ["#section-one", "#section-two", "#section-three"]
-
-  $.each(formSections, function(i, sectionSelector) {
-    if (sectionSelector != '#section-three') {
-      var sectionButton = sectionSelector + ' a'
-
-      $(document).on('click', sectionButton, function (e) {
-        console.log(sectionInputs(sectionSelector).valid())
-        if (sectionInputs(sectionSelector).valid()) { alert(sectionSelector + " is valid") }
-        e.preventDefault()
-      })
-    }
-  })
-
-  function sectionInputs(sectionSelector) {
-    return $(sectionSelector).find(':input:not(:button)')
-  }
-
-  $(document).on('click', '#validate-form', function (e) {
-    // showRules(sectionInputs('#section-three'))
-    sectionInputs('#section-one').valid()
-    sectionInputs('#section-two').valid()
-    sectionInputs('#section-three').valid()
-    e.preventDefault()
-  })
-
-  // function showRules(inputs) {
-  //   $.each(inputs, function (i, input) {
-  //     // console.log(input)
-  //     console.log($(input).attr('name'))
-  //     console.log($(input).rules())
-  //   })
-  // }
-
-  // function fieldsValid(fieldSelectors) {
-  //   return fieldSelectors.map((selector) =>
-  //     $(selector).valid() // validate field and return true/false
-  //   ).reduce((accumulator, currentValue) =>
-  //     accumulator && currentValue // return sum of all field booleans
-  //   )
-  // }
-
-  // function fieldSelectorsForSection(sectionSelector) {
-  //   var fields = $(sectionSelector).find(':input')
-  //   return fields.map(function() {
-  //     if (this.id) { return '#' + escapeSquareBrackets(this.id) }
-  //   }).get()
-  // }
-
-  // function escapeSquareBrackets(str) {
-  //   return str.replace(/\[/g,'\\[').replace(/\]/g,'\\]')
-  // }
-
   function bgUpload(elem) {
     var container    = $(elem);
     var fileInput    = $(elem).find('input[type="file"]');
@@ -200,19 +137,19 @@ $(document).ready(function() {
 
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
-
       e.preventDefault();
       var clone = $(file).clone();
+      var timestamp = new Date().getTime();
 
-      // replace input ids with unique ids
-      var new_id = new Date().getTime();
-      clone.find(':input').each(function() {
+      // Remove the error labels from the cloned inputs else they will have duplicates
+      clone.find('label.error').remove()
+      // Generate unique ids for the cloned inputs
+      clone.find(':input').not(':button').not("[aria-label='Search']").each(function() {
         if (this.id) {
-          this.id = this.id + new_id
+          this.id = this.id + timestamp
         }
       })
 
-      // clone.find('.title').attr('required', 'required');
       // Add delete file button
       var buttonAndSpan = $('<span class="pull-right"><button type="button" class="btn btn-danger btn-xs">Delete file</button></span>');
       clone.find('div[name="data_file_heading"]').append(buttonAndSpan);
@@ -220,10 +157,18 @@ $(document).ready(function() {
         var parentSection = $(event.target).closest('div.file-panel');
         parentSection.remove();
       });
-      
+
+      // Append the cloned inputs and attach file uploader listeners
       clone.appendTo('#files');
       clone.find('.bg-upload').each(function(i, elem) {
         bgUpload(elem);
+      });
+
+      // Add validation rules (Jquery Validate)
+      sectionInputs("#section-three").each(function () {
+        $(this).rules("add", {
+          required: true
+        });
       });
 
       // Update all select boxes to create rich search boxes
@@ -236,15 +181,15 @@ $(document).ready(function() {
     $('form').submit(function(e) {
       e.preventDefault();
 
-      // $('#spinner').removeClass('hidden');
+      $('#spinner').removeClass('hidden');
 
-      // if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
-      //   postForm($(this));
-      // } else {
-      //   // $('body').scrollTop(0);
-      //   // addError('You must add at least one file');
-      //   $('#spinner').addClass('hidden');
-      // }
+      if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
+        postForm($(this));
+      } else {
+        // $('body').scrollTop(0);
+        // addError('You must add at least one file');
+        $('#spinner').addClass('hidden');
+      }
 
     });
   }
@@ -254,5 +199,66 @@ $(document).ready(function() {
     addAjaxFormUploading();
     setUpFileUpload();
   }
+
+  // ###################################### Validation Code ######################################
+
+  // Instantiate Jquery Validate on form
+  var validator = $('#add-dataset-form').validate({
+    // Setup rules for each input (identified by their name attribute)
+    rules: {
+      'dataset[name]': { required: true },
+      'dataset[description]': { required: true },
+      'dataset[frequency]': { required: true },
+      'dataset[license]': { required: true },
+      'files[][title]': { required: true },
+      'files[][description]': { required: true },
+      '[files[][file]]': { required: true },
+      '_files[][dataset_file_schema_id]': { required: true }
+    },
+    onfocusout: function(element) {
+      this.element(element)
+    }
+  });
+
+  var formSections = ['#section-one', '#section-two', '#section-three']
+
+  // Setup validation of form sections
+  $.each(formSections, function(i, sectionSelector) {
+    if (sectionSelector != '#section-three') {
+      var sectionButton = sectionSelector + ' a'
+
+      $(document).on('click', sectionButton, function (e) {
+        console.log(sectionInputs(sectionSelector).valid())
+
+        if (sectionInputs(sectionSelector).valid()) {
+          $(sectionSelector).addClass('hidden')
+          $(formSections[formSections.indexOf(sectionSelector) + 1]).removeClass('hidden')
+          alert(sectionSelector + ' is valid') 
+        }
+        e.preventDefault()
+      })
+    }
+  })
+
+  // Get inputs for a section
+  function sectionInputs(sectionSelector) {
+    return $(sectionSelector).find(':input').not(':button').not("[aria-label='Search']")
+  }
+
+  // Override Jquery Validate checkForm function to allow validation of array inputs with same name
+  // This is neccesary for the file and schema inputs
+  $.validator.prototype.checkForm = function() {
+    this.prepareForm();
+    for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+        if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
+            for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
+                this.check(this.findByName(elements[i].name)[cnt]);
+            }
+        } else {
+            this.check(elements[i]);
+        }
+    }
+    return this.valid();
+  };
 
 });
