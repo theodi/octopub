@@ -226,14 +226,15 @@ $(document).ready(function() {
 
   // Setup navigation and validation of form steps
   $.each(formSteps, function(i, targetStep) {
-    var button = '.show-' + targetStep
+    var targetStepButton = '.show-' + targetStep
 
-    $(document).on('click', button, function (e) {
+    $(document).on('click', targetStepButton, function (e) {
       console.log(stepsToValidate(targetStep))
 
       if (valid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
+        $('#wizard-breadcrumb').find(targetStepButton).attr('disabled', false)
         currentStep = targetStep
       }
       e.preventDefault()
@@ -256,7 +257,7 @@ $(document).ready(function() {
     return steps
   }
 
-  // Validate steps and returns true if all steps are valid, false otherwise
+  // Validate steps and returns true if all passed-in steps are valid, false otherwise
   // Accepts array of strings e.g. ['step-one', 'step-two']
   // Returns boolean
   function valid(steps) {
@@ -293,22 +294,6 @@ $(document).ready(function() {
   function showTargetStep(selector) {
     $('#' + selector).removeClass('hidden')
   }
-
-  // function nextStep() {
-  //   return formSteps[indexOf(currentStep) + 1]
-  // }
-
-  // function prevStep() {
-  //   return formSteps[indexOf(currentStep) - 1]
-  // }
-
-  // function lastStep() {
-  //   return formSteps[formSteps.length - 1]
-  // }
-
-  // function firstStep() {
-  //   return formSteps[0]
-  // }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs

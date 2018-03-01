@@ -1,7 +1,7 @@
 <ul id="wizard-breadcrumb">
   <li><button class="show-step-one btn btn-primary">Step 1</button></li>
-  <li><button class="show-step-two btn btn-primary">Step 2</button></li>
-  <li><button class="show-step-three btn btn-primary">Step 3</button></li>
+  <li><button class="show-step-two btn btn-primary" disabled="true">Step 2</button></li>
+  <li><button class="show-step-three btn btn-primary" disabled="true">Step 3</button></li>
 </ul>
 
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
