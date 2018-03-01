@@ -204,8 +204,7 @@ $(document).ready(function() {
 
   // Initialise Jquery Validate on form
   var validator = $('#add-dataset-form').validate({
-    // Validation rules (inputs are identified by name attribute)
-    rules: {
+    rules: { // Validation rules (inputs are identified by name attribute)
       'dataset[name]': { required: true },
       'dataset[description]': { required: true },
       'dataset[frequency]': { required: true },
@@ -216,22 +215,21 @@ $(document).ready(function() {
       '_files[][dataset_file_schema_id]': { required: true }
     },
     onfocusout: function(element) {
-      // Validate elements on onfocusout
-      this.element(element)
+      this.element(element) // Validate elements on onfocusout
     }
   });
 
   var formSteps = ['step-one', 'step-two', 'step-three']
   var currentStep = formSteps[0]
 
-  // Setup navigation and validation of form steps
+  // Setup click handlers for step navigation buttons
   $.each(formSteps, function(i, targetStep) {
     var targetStepButton = '.show-' + targetStep
 
     $(document).on('click', targetStepButton, function (e) {
       console.log(stepsToValidate(targetStep))
 
-      if (valid(stepsToValidate(targetStep))) {
+      if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
         $('#wizard-breadcrumb').find(targetStepButton).attr('disabled', false)
@@ -260,7 +258,7 @@ $(document).ready(function() {
   // Validate steps and returns true if all passed-in steps are valid, false otherwise
   // Accepts array of strings e.g. ['step-one', 'step-two']
   // Returns boolean
-  function valid(steps) {
+  function stepsValid(steps) {
     if (!steps.length) { return true }
 
     // This builds an array of booleans, each one representing the validity of a step
@@ -300,13 +298,13 @@ $(document).ready(function() {
   $.validator.prototype.checkForm = function() {
     this.prepareForm();
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
-        if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
-            for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-                this.check(this.findByName(elements[i].name)[cnt]);
-            }
-        } else {
-            this.check(elements[i]);
+      if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
+        for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
+          this.check(this.findByName(elements[i].name)[cnt]);
         }
+      } else {
+        this.check(elements[i]);
+      }
     }
     return this.valid();
   };
