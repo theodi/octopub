@@ -1,6 +1,12 @@
+<ul id="wizard-breadcrumb">
+  <li><button class="show-step-one btn btn-primary">Step 1</button></li>
+  <li><button class="show-step-two btn btn-primary">Step 2</button></li>
+  <li><button class="show-step-three btn btn-primary">Step 3</button></li>
+</ul>
+
 <%= bootstrap_form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
   
-  <div id="section-one">
+  <div id="step-one">
     <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name') %>
     <% if dataset.id.nil? %>
       <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
@@ -9,10 +15,10 @@
     <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
     <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
     <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-    <a href="#" class="btn btn-danger">validate section 1</a>
+    <a href="#" class="show-step-two btn btn-danger">Next</a>
   </div>
 
-  <div id="section-two" class="hidden">
+  <div id="step-two" class="hidden">
     <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
       <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
       <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
@@ -20,10 +26,11 @@
     <% end %>
 
     <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
-    <a href="#" class="btn btn-danger">validate section 2</a>
+    <a href="#" class="show-step-one btn btn-danger">Back</a>
+    <a href="#" class="show-step-three btn btn-danger">Next</a>
   </div>
 
-  <div id="section-three" class="hidden">
+  <div id="step-three" class="hidden">
     <div id="files">
       <% if dataset.dataset_files.count == 0 %>
         <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f,dataset_file_schemas: dataset_file_schemas } %>
@@ -40,6 +47,8 @@
     <p class="text-right">
       <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
     </p>
+
+    <a href="#" class="show-step-two btn btn-danger">Back</a>
 
     <button type="submit" class="btn btn-primary btn-lg btn-block">
       Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>

@@ -165,7 +165,7 @@ $(document).ready(function() {
       });
 
       // Add validation rules (Jquery Validate)
-      sectionInputs("#section-three").each(function () {
+      stepInputs("#step-three").each(function () {
         $(this).rules("add", {
           required: true
         });
@@ -202,9 +202,9 @@ $(document).ready(function() {
 
   // ###################################### Validation Code ######################################
 
-  // Instantiate Jquery Validate on form
+  // Initialise Jquery Validate on form
   var validator = $('#add-dataset-form').validate({
-    // Setup rules for each input (identified by their name attribute)
+    // Validation rules (inputs are identified by name attribute)
     rules: {
       'dataset[name]': { required: true },
       'dataset[description]': { required: true },
@@ -216,37 +216,102 @@ $(document).ready(function() {
       '_files[][dataset_file_schema_id]': { required: true }
     },
     onfocusout: function(element) {
+      // Validate elements on onfocusout
       this.element(element)
     }
   });
 
-  var formSections = ['#section-one', '#section-two', '#section-three']
+  var formSteps = ['step-one', 'step-two', 'step-three']
+  var currentStep = formSteps[0]
 
-  // Setup validation of form sections
-  $.each(formSections, function(i, sectionSelector) {
-    if (sectionSelector != '#section-three') {
-      var sectionButton = sectionSelector + ' a'
+  // Setup navigation and validation of form steps
+  $.each(formSteps, function(i, targetStep) {
+    var button = '.show-' + targetStep
 
-      $(document).on('click', sectionButton, function (e) {
-        console.log(sectionInputs(sectionSelector).valid())
+    $(document).on('click', button, function (e) {
+      console.log(stepsToValidate(targetStep))
 
-        if (sectionInputs(sectionSelector).valid()) {
-          $(sectionSelector).addClass('hidden')
-          $(formSections[formSections.indexOf(sectionSelector) + 1]).removeClass('hidden')
-          alert(sectionSelector + ' is valid') 
-        }
-        e.preventDefault()
-      })
-    }
+      if (valid(stepsToValidate(targetStep))) {
+        hideCurrentStep()
+        showTargetStep(targetStep)
+        currentStep = targetStep
+      }
+      e.preventDefault()
+    })
   })
 
-  // Get inputs for a section
-  function sectionInputs(sectionSelector) {
-    return $(sectionSelector).find(':input').not(':button').not("[aria-label='Search']")
+  // Get the steps that require validation inbetween currentStep and targetStep
+  // Accepts string e.g. 'step-three'
+  // Returns array of steps e.g. ['step-one', 'step-two']
+  function stepsToValidate(targetStep) {
+    var currentStepIndex = formSteps.indexOf(currentStep)
+    var targetStepIndex = formSteps.indexOf(targetStep)
+    var steps = []
+
+    if (targetStepIndex > currentStepIndex) {
+      for (var i = currentStepIndex; i < targetStepIndex; i++) {
+        steps.push(formSteps[i])
+      }
+    }
+    return steps
   }
 
+  // Validate steps and returns true if all steps are valid, false otherwise
+  // Accepts array of strings e.g. ['step-one', 'step-two']
+  // Returns boolean
+  function valid(steps) {
+    if (!steps.length) { return true }
+
+    // This builds an array of booleans, each one representing the validity of a step
+    // Then it sums the booleans to get the validity of all steps combined
+    return steps.map(function(step) {   
+      return stepValid(step)
+    }).reduce(function(sum, bool) {
+      return sum && bool
+    })
+  }
+
+  // Return true if step is valid, false otherwise
+  // Accepts string e.g. 'step-one'
+  function stepValid(step) {
+    // .valid() is a JQuery Validate function
+    return stepInputs('#' + step).valid()
+  }
+
+  // Get the inputs for a step
+  // Accepts string e.g. 'step-one'
+  // Returns JQuery object
+  function stepInputs(step) {
+    // Return all step inputs except buttons and search boxes for dropdowns
+    return $(step).find(':input').not(':button', "[aria-label='Search']")
+  }
+
+  function hideCurrentStep() {
+    $('#' + currentStep).addClass('hidden')
+  }
+
+  function showTargetStep(selector) {
+    $('#' + selector).removeClass('hidden')
+  }
+
+  // function nextStep() {
+  //   return formSteps[indexOf(currentStep) + 1]
+  // }
+
+  // function prevStep() {
+  //   return formSteps[indexOf(currentStep) - 1]
+  // }
+
+  // function lastStep() {
+  //   return formSteps[formSteps.length - 1]
+  // }
+
+  // function firstStep() {
+  //   return formSteps[0]
+  // }
+
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
-  // This is neccesary for the file and schema inputs
+  // This is neccessary for the file and schema inputs
   $.validator.prototype.checkForm = function() {
     this.prepareForm();
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
