@@ -11,7 +11,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     allow(DatasetFileSchemaService).to receive(:read_file_with_utf_8).and_return(read_fixture_schema_file('good-schema.json'))
     allow_any_instance_of(DatasetFileSchema).to receive(:is_schema_otw?).and_return(false)
     visit root_path
-    click_link 'Dataset file schemas'
+    click_link 'Schemas'
     expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
   end
 
@@ -65,7 +65,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(DatasetFileSchema.count).to be 1
       expect(dataset_file_schema.schema_categories).to eq [ category_1, category_2 ]
     end
-  
+
     scenario "and can add a public dataset file schema" do
       click_link 'Add a new dataset file schema'
       before_datasets = DatasetFileSchema.count
@@ -88,7 +88,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       expect(dataset_file_schema.restricted).to eq false
       expect(dataset_file_schema.schema_fields).to_not be_empty
     end
-        
+
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do
@@ -120,4 +120,3 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     end
   end
 end
-

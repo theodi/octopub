@@ -1,0 +1,46 @@
+<div class="box-dataset">
+  <div class="row">
+    <div class="col-md-2">
+      <p>Created by:</p>
+    </div>
+    <div class="col-md-5">
+      <p><%= @dataset.owner %></p>
+    </div>
+    <div class="col-md-1 col-md-offset-4 icon-blue">
+      <i class="fa fa-pencil"></i>
+      <%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <p>Licence:</p>
+    </div>
+    <div class="col-md-5">
+      <% if @dataset.license %>
+        <p><%= @dataset.license %></p>
+      <% else %>
+        <%= bs_button_to "Choose a licence", @dataset.github_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-prim" %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <p>Description:</p>
+    </div>
+    <div class="col-md-6">
+      <p><%= @dataset.description %></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <p>Published:</p>
+    </div>
+    <div class="col-md-1">
+      <% if @dataset.published_status %>
+        <p>Yes</p>
+      <% else %>
+        <p>No</p>
+      <% end %>
+    </div>
+  </div>
+</div>

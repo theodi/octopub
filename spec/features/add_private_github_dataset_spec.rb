@@ -26,7 +26,7 @@ feature "Add private github dataset page", type: :feature do
   end
 
   it "by completing a simple dataset form without adding a schema" do
-    click_link "Add dataset"
+    click_link "Create a new data collection"
 
     expect_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
     expect_any_instance_of(JekyllService).to receive(:push_to_github) { nil }

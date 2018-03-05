@@ -24,7 +24,7 @@ feature "Add dataset page", type: :feature do
     before(:each) do
       good_schema_url = url_with_stubbed_get_for_fixture_file('schemas/good-schema.json')
       create(:dataset_file_schema, url_in_repo: good_schema_url, name: 'good schema', description: 'good schema description', user: @user)
-      click_link "Add dataset"
+      click_link "Create a new data collection"
       expect(page).to have_content "Dataset name"
     end
 
@@ -55,7 +55,7 @@ feature "Add dataset page", type: :feature do
       expect(RepoService).to receive(:create_repo) { repo }
       expect(RepoService).to receive(:fetch_repo).at_least(:once) { repo }
       expect(RepoService).to receive(:prepare_repo).at_least(:once)
-      click_link "Add dataset"
+      click_link "Create a new data collection"
 
       allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(data_file))
 
@@ -83,7 +83,7 @@ feature "Add dataset page", type: :feature do
     end
 
     context "and while creating a dataset, can upload a schema" do
-      
+
       before :each do
         # repo = double(GitData)
         # expect(repo).to receive(:html_url) { 'https://example.org' }
@@ -99,7 +99,7 @@ feature "Add dataset page", type: :feature do
         # expect_any_instance_of(Dataset).to receive(:publish_public_views) { nil }
         # expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
       end
-      
+
       scenario "privately" do
         pending "can't work out proper mocking"
 
@@ -111,12 +111,12 @@ feature "Add dataset page", type: :feature do
         #   attach_file("[files[][schema]]", schema_file) # doesn't work right
         # end
         # click_on 'Submit'
-        
+
         expect(DatasetFileSchema.count).to eq 1
         expect(DatasetFileSchema.first.name).to eql "ABC123-schema"
         expect(DatasetFileSchema.first.restricted).to eql true
       end
-      
+
       scenario "publicly" do
         pending "can't work out proper mocking"
 
@@ -129,12 +129,12 @@ feature "Add dataset page", type: :feature do
         #   select "Public - any user may access this schema", from: "[files[][schema_restricted]]"
         # end
         # click_on 'Submit'
-        
+
         expect(DatasetFileSchema.count).to eq 1
         expect(DatasetFileSchema.first.name).to eql "ABC123-schema"
         expect(DatasetFileSchema.first.restricted).to eql false
       end
-      
+
     end
 
   end

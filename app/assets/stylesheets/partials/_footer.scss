@@ -1,0 +1,43 @@
+@import 'modules/base';
+
+footer {
+  background-color: $black;
+  color: $white;
+  position: absolute;
+  width: 100vw;
+  bottom: 0;
+  padding-top: $padding;
+  padding-bottom: $padding;
+
+  .row {
+    display: flex;
+    align-items: center;
+  }
+
+  .top {
+    padding-top: $padding;
+  }
+
+  h1 {
+    color: $white;
+  }
+
+  img {
+    width: 105px;
+    margin-bottom: 0.4em;
+
+    &.licence {
+      width: 69px;
+    }
+  }
+
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+
+  small {
+    font-size: 0.75em;
+    line-height: 0.2px !important;
+  }
+}
