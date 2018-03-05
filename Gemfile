@@ -40,6 +40,7 @@ gem 'bootstrap_form'
 gem "bootstrap-table-rails"
 gem 'emd'
 gem 'jquery-validation-rails'
+gem 'nokogiri', '~> 1.8.2'
 
 # Logging and debug
 gem 'awesome_print'
