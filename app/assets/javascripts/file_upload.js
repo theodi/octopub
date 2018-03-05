@@ -243,16 +243,7 @@ $(document).ready(function() {
   // Accepts string e.g. 'step-three'
   // Returns array of steps e.g. ['step-one', 'step-two']
   function stepsToValidate(targetStep) {
-    var currentStepIndex = formSteps.indexOf(currentStep)
-    var targetStepIndex = formSteps.indexOf(targetStep)
-    var steps = []
-
-    if (targetStepIndex > currentStepIndex) {
-      for (var i = currentStepIndex; i < targetStepIndex; i++) {
-        steps.push(formSteps[i])
-      }
-    }
-    return steps
+    return formSteps.slice(formSteps.indexOf(currentStep), formSteps.indexOf(targetStep))
   }
 
   // Validate steps and returns true if all passed-in steps are valid, false otherwise
@@ -262,7 +253,7 @@ $(document).ready(function() {
     if (!steps.length) { return true }
 
     // This builds an array of booleans, each one representing the validity of a step
-    // Then it sums the booleans to get the validity of all steps combined
+    // Then it sums the booleans to get the total validity of the steps
     return steps.map(function(step) {   
       return stepValid(step)
     }).reduce(function(sum, bool) {
@@ -289,8 +280,8 @@ $(document).ready(function() {
     $('#' + currentStep).addClass('hidden')
   }
 
-  function showTargetStep(selector) {
-    $('#' + selector).removeClass('hidden')
+  function showTargetStep(targetStep) {
+    $('#' + targetStep).removeClass('hidden')
   }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
