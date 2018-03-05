@@ -246,9 +246,8 @@ $(document).ready(function() {
     return formSteps.slice(formSteps.indexOf(currentStep), formSteps.indexOf(targetStep))
   }
 
-  // Validate steps and returns true if all passed-in steps are valid, false otherwise
+  // Returns true if all passed-in steps are valid, false otherwise
   // Accepts array of strings e.g. ['step-one', 'step-two']
-  // Returns boolean
   function stepsValid(steps) {
     if (!steps.length) { return true }
 
@@ -268,9 +267,8 @@ $(document).ready(function() {
     return stepInputs('#' + step).valid()
   }
 
-  // Get the inputs for a step
+  // Return the inputs for a step as a JQuery Object
   // Accepts string e.g. 'step-one'
-  // Returns JQuery object
   function stepInputs(step) {
     // Return all step inputs except buttons and search boxes for dropdowns
     return $(step).find(':input').not(':button', "[aria-label='Search']")
