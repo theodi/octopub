@@ -23,9 +23,9 @@ feature "Update dataset page", type: :feature do
       expect(Dataset.count).to be 1
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
 
-      click_link "My datasets"
+      click_link "Data collections"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[class='prepublished']").click_link('Edit')
       # Bypass sidekiq completely
       allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
@@ -69,9 +69,9 @@ feature "Update dataset page", type: :feature do
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
       allow_any_instance_of(Dataset).to receive(:update_dataset_in_github)
 
-      click_link "My datasets"
+      click_link "Data collections"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[class='prepublished']").click_link('Edit')
       # Bypass sidekiq completely
       allow(UpdateDataset).to receive(:perform_async) do |a,b,c,d|
@@ -108,9 +108,9 @@ feature "Update dataset page", type: :feature do
       expect(Dataset.count).to be 1
       allow_any_instance_of(Dataset).to receive(:owner_avatar) { "http://example.org/avatar.png" }
 
-      click_link "My datasets"
+      click_link "Data collections"
       expect(page).to have_content "Collection Name"
-      expect(page.all('table.table tr').count).to be Dataset.count + 3
+      expect(page.all('table.table tr').count).to be Dataset.count + 1
       page.find("tr[class='prepublished']").click_link('Edit')
       allow(RepoService).to receive(:fetch_repo)
     end

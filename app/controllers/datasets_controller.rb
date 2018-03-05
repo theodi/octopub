@@ -23,7 +23,7 @@ class DatasetsController < ApplicationController
   def dashboard
     @title = "My Datasets"
     @datasets = current_user.datasets
-    @files = @datasets.dataset_files
+    # @files = @datasets.dataset_files
   end
 
   def organisation_index

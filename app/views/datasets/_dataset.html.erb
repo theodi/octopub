@@ -1,4 +1,4 @@
-<tr data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
+<tr class="prepublished" data-dataset-id="<%= dataset.id %>" data-build-status="<%= dataset.build_status.nil? ? "building" : "built" %>">
   <td>
     <%= link_to(dataset.name.truncate(30), files_path(dataset.id), class:"collection-link") %>
   </td>

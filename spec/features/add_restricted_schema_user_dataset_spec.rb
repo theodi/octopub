@@ -6,7 +6,8 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
   include_context 'user and organisations'
   include_context 'odlifier licence mock'
 
-  it "by uploading a simple dataset" do
+	# Pending as a concept in Octopub is now deprecated
+  pending "by uploading a simple dataset" do
     Sidekiq::Testing.inline!
 
     @user.update(restricted: true)
@@ -33,7 +34,6 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
 
     visit root_path
     click_link "Add dataset for #{dataset_file_schema_name}"
-    expect(page).to have_content("Add Dataset for #{dataset_file_schema_name} as #{@user.name}")
     expect(page.has_no_field?('dataset[publisher_url]'))
     expect(page.has_no_field?('dataset[publisher_name]'))
     expect(page.has_no_field?('dataset[license]'))

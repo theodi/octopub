@@ -21,7 +21,6 @@ describe 'datasets/_dataset.html.erb', :view do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect(page.css('tr')[0].css('td')[0].inner_text).to match(/#{@dataset.name}/)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to include "...", "Edit", "Delete"
   end
 
   it 'displays a single dataset with schemas' do
@@ -33,15 +32,15 @@ describe 'datasets/_dataset.html.erb', :view do
   end
 
   def expect_columns(page)
-    expect(page.css('tr')[0].css('td').count).to eq(5)
+    expect(page.css('tr')[0].css('td').count).to eq(7)
   end
 
   it 'displays the edit link' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
     expect_columns(page)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[4].inner_text).to match(/Delete/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to have_content(/Edit/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to have_content(/Delete/)
   end
 
   context 'deprecated dataset URLs' do
@@ -98,8 +97,8 @@ describe 'datasets/_dataset.html.erb for admin users', :view do
   it 'displays the edit link' do
     render :partial => 'datasets/dataset.html.erb', :locals => {:dataset => @dataset}
     page = Nokogiri::HTML(rendered)
-    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Edit/)
-    expect(page.css('tr')[0].css('td')[5].inner_text).to match(/Delete/)
+		expect(page.css('tr')[0].css('td')[6].inner_text).to have_content(/Edit/)
+    expect(page.css('tr')[0].css('td')[6].inner_text).to have_content(/Delete/)
   end
 
 end

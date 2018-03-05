@@ -17,7 +17,7 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
     expect_any_instance_of(DatasetMailer).to receive(:success)
 
     visit root_path
-    click_link "Add dataset"
+    click_link "Create a new data collection"
     data_file = get_fixture_file('valid-schema.csv')
     common_name = 'Fri1437'
 
@@ -53,4 +53,3 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
     expect(page).to have_selector("input[value='#{dataset_name}']")
   end
 end
-
