@@ -3,12 +3,14 @@
 @mixin button($bg, $hv) {
   background: $bg;
   color: $white;
+	font-family: Helvetica, sans-serif;
   font-size: 1em;
   font-weight: bold;
   text-decoration: none;
   -webkit-box-shadow:inset 0 -3px 0 $hv;
   -moz-box-shadow:inset 0 -3px 0 $hv;
   box-shadow:inset 0 -3px 0 $hv;
+	margin-right: 20px;
 
   &:hover {
     background-color: $hv;
