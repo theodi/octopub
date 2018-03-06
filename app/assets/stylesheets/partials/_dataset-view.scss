@@ -1,0 +1,53 @@
+@import "modules/base";
+
+h1 {
+  margin: 0;
+}
+
+.icon-blue {
+  color: $dusk-blue;
+}
+
+.head-dataset {
+  display: flex;
+  align-items: center;
+  margin-top: $margin;
+  margin-bottom: 1.5em;
+
+  .fa-folder-open {
+    margin-right: $margin / 2;
+  }
+
+  .btn-tertiary, .btn-prim {
+    float: right !important;
+    margin-left: $margin;
+  }
+}
+
+.box-dataset {
+  background-color: $white;
+  padding: $padding;
+  margin-bottom: $margin;
+
+  .bootstrap-table {
+    padding: 0;
+  }
+
+  .row {
+    margin-bottom: $margin;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.title-dataset {
+  display: flex;
+  align-items: center;
+  margin-bottom: $margin;
+
+  a {
+    line-height: 0 !important;
+  }
+}

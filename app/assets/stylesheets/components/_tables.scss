@@ -1,0 +1,79 @@
+@import "modules/base";
+
+.fixed-table-container {
+  border: none;
+
+  .table {
+    border-bottom:0px !important;
+
+    thead > tr {
+      border-bottom: 1px solid $light-grey;
+    }
+
+    tbody > tr > td {
+      vertical-align: middle;
+      outline: 0;
+
+      .collection-link {
+        color: $black;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+
+    th, td {
+      border: 1px !important;
+      vertical-align: middle;
+
+      .dropdown-toggle {
+        font-size: 1.2em;
+        text-align: center;
+      }
+
+      .dropdown-menu {
+        background: $dusk-blue;
+        border-radius: 0;
+        margin-top: 0;
+        padding: 0;
+
+        .dropdown-item {
+          display: block;
+          color: white;
+          font-size: 1em;
+          position: relative !important;
+          outline: 0;
+
+          .dropdown-link {
+            padding: $padding 0 $padding $padding;
+            // border-bottom: 1px solid $white;
+
+            .a {
+              text-decoration: none;
+            }
+
+            &:hover {
+              background-color: $cobalt;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Setting background color for each row
+  .table-striped>tbody>tr:nth-child(even)>td,
+  .table-striped>tbody>tr:nth-child(even)>th {
+     background-color: $light-grey;
+   }
+
+  .table-striped>tbody>tr:nth-child(odd)>td,
+  .table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: $white;
+  }
+
+  .fixed-table-body {
+    overflow: visible;
+  }
+}

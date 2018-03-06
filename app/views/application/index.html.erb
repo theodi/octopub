@@ -1,13 +1,76 @@
-<div class="jumbotron">
-  <h1>Octopub</h1>
-  <h2>Publish data easily, quickly and correctly</h2>
-  <p>Got a dataset you want to publish, but not sure how to do it? Octopub will help you do it,
-    quickly, easily and correctly.</p>
-  <p>Using the power of <a href="http://github.com">GitHub</a>, we will provide you with a platform
-    to publish your CSV data, as well as automatically creating a webpage for you to point people
-    to.</p>
+<div class="main">
+  <% unless !current_user %>
+    <div class="home-box">
+      <h1 class="orange"><span class="pub">Octo</span>pub</h1>
+      <h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>
+    </div>
+    <div class="home-box grey">
+      <h3 style="display: block">Quick actions:</h3>
+      <% if @datasets.count == 0 %>
+        <%= bs_button_to "<i class='fas fa-question-circle'></i> Getting started".html_safe, '/getting-started', :class => "btn btn-secondary" %>
+      <% end %>
+      <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data collection".html_safe, new_dataset_path, :class => "btn btn-secondary" %>
+      <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary" %>
+      <div class="row">
+        <div class="col-md-4 col-sm-5">
+          <h3>Recent data collections:</h3>
+        </div>
+        <% if @datasets.count > 0 %>
+          <div class="col-md-3 col-md-offset-5 col-sm-offset-4 table-count-box">
+            <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
+          </div>
+        <% end %>
+      </div>
+      <table id="home-table-data" class="table table-striped"
+      data-toggle="table"
+      data-classes="table"
+      data-filter-control="true">
+        <thead>
+          <tr>
+            <th data-sortable="true">Collection Name</th>
+            <th data-sortable="true">Schema</th>
+            <th data-sortable="true">Creation date</th>
+            <th data-sortable="true">Validation</th>
+            <th data-sortable="true">Published</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="myTable">
+          <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+        </tbody>
+      </table>
+
+      <div class="row">
+        <div class="col-md-4 col-sm-5">
+          <h3>Recent schemas:</h3>
+        </div>
+        <% if @dataset_file_schemas.count > 0 %>
+          <div class="col-md-3 col-md-offset-5 col-sm-3 col-sm-offset-4 table-count-box">
+            <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
+          </div>
+        <% end %>
+      </div>
+      <table id="schema-table-data" class="table table-striped"
+      data-toggle="table"
+      data-classes="table"
+      data-filter-control="true">
+        <thead>
+          <tr>
+            <th data-sortable="true">Schema Name</th>
+            <th data-sortable="true">Publisher</th>
+            <th data-sortable="true">Created on</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="myTable">
+          <%= render(partial: "dataset-schemas", collection: @dataset_file_schemas, as: :schema)  %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
 
   <% unless current_user %>
+    <h1>Logged out</h1>
     <p><%= link_to "<i class='fa fa-github'></i> Sign in with Github".html_safe, '/auth/github', class: "btn btn-primary btn-lg" %></p>
     <small><%= link_to "Not got a Github account?", "https://github.com/join" %></small>
   <% end %>
