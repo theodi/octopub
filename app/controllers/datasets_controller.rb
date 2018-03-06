@@ -55,6 +55,7 @@ class DatasetsController < ApplicationController
   def new
     logger.info "DatasetsController: In new"
     @dataset = Dataset.new
+    @dataset.dataset_files.build
     @dataset_file_schemas = available_schemas
   end
 

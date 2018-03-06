@@ -17,6 +17,7 @@
 //= require bootstrap-table
 //= require jquery.ui.widget
 //= require jquery.fileupload
+//= require jquery.validate
 //= require pusher.min
 //= require uuid-random.min
 //= require pusher_setup
