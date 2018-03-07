@@ -24,7 +24,6 @@ module FileHandlingForDatasets
   end
 
   def get_multipart
-    byebug
     @files = params["files"] || Array.new
 
     if params["data"]

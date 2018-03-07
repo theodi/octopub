@@ -223,10 +223,6 @@ $(document).ready(function() {
   var formSteps = ['step-one', 'step-two', 'step-three']
   var currentStep = formSteps[0]
 
-  function getValidationRule(startsWith) {
-    return $(":input[name^=" + startsWith + "]")
-  }
-
   // Setup click handlers for step navigation buttons
   $.each(formSteps, function(i, targetStep) {
     var targetStepButton = '.show-' + targetStep
