@@ -8,24 +8,31 @@
   
   <div id="step-one">
     <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name') %>
-    <% if dataset.id.nil? %>
-      <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
-    <% end %>
     <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
-    <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
-    <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
-    <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
+    <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+
+    <% if true %>
+      <% if dataset.id.nil? %>
+        <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
+      <% end %>
+      <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
+      <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
+    <% end %>
+
     <a href="#" class="show-step-two btn btn-danger">Next</a>
   </div>
 
   <div id="step-two" class="hidden">
-    <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
-      <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
-      <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
-      <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
+    <% if true %>
+      <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
+        <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
+        <%= f.radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
+        <%= f.radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
+      <% end %>
     <% end %>
 
-    <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+    <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
+
     <a href="#" class="show-step-one btn btn-danger">Back</a>
     <a href="#" class="show-step-three btn btn-danger">Next</a>
   </div>

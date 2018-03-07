@@ -113,7 +113,9 @@ class DatasetsController < ApplicationController
     logger.info "DatasetsController: In check_mandatory_fields"
     check_files
     check_publisher
+    byebug
     render 'new' unless flash.empty?
+    byebug
   end
 
   def check_publisher
