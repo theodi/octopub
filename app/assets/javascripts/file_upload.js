@@ -143,9 +143,13 @@ $(document).ready(function() {
 
       // Remove the error labels from the cloned inputs else they will have duplicates
       clone.find('label.error').remove()
+      // Clear the file input
+      // var fileInput = clone.find('input[type=file]')
+      // fileInput.replaceWith(fileInput.val('').clone(true));
       // Generate unique ids for the cloned inputs
       clone.find(':input').not(':button').not("[aria-label='Search']").each(function() {
         if (this.id) {
+          $(this).val('')
           this.id = this.id + timestamp
         }
       })
@@ -183,13 +187,17 @@ $(document).ready(function() {
 
       $('#spinner').removeClass('hidden');
 
-      if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
-        postForm($(this));
-      } else {
-        // $('body').scrollTop(0);
-        // addError('You must add at least one file');
-        $('#spinner').addClass('hidden');
+      if (form.valid()) {
+        console.log('post form yeaaaaah!')
+        // postForm($(this));  
       }
+
+      // if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
+      //   console.log('post form! yeeeeah!')
+      //   postForm($(this));
+      // } else {
+      //   $('#spinner').addClass('hidden');
+      // }
 
     });
   }
@@ -203,7 +211,9 @@ $(document).ready(function() {
   // ###################################### Validation Code ######################################
 
   // Initialise Jquery Validate on form
-  var validator = $('#add-dataset-form').validate({
+  var form = $('#add-dataset-form')
+  var validator = form.validate({
+    ignore: [],
     rules: { // Validation rules (inputs are identified by name attribute)
       'dataset[name]': { required: true },
       'dataset[description]': { required: true },
@@ -227,7 +237,7 @@ $(document).ready(function() {
     var targetStepButton = '.show-' + targetStep
 
     $(document).on('click', targetStepButton, function (e) {
-      console.log(stepsToValidate(targetStep))
+      console.log(stepInputs('#step-three'))
 
       if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
@@ -268,10 +278,10 @@ $(document).ready(function() {
   }
 
   // Return the inputs for a step as a JQuery Object
-  // Accepts string e.g. 'step-one'
+  // Accepts string e.g. '#step-one'
   function stepInputs(step) {
     // Return all step inputs except buttons and search boxes for dropdowns
-    return $(step).find(':input').not(':button', "[aria-label='Search']")
+    return $(step).find(':input').not(':button').not("[aria-label='Search']")
   }
 
   function hideCurrentStep() {

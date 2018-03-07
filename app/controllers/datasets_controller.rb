@@ -55,7 +55,6 @@ class DatasetsController < ApplicationController
   def new
     logger.info "DatasetsController: In new"
     @dataset = Dataset.new
-    @dataset.dataset_files.build
     @dataset_file_schemas = available_schemas
   end
 
@@ -112,10 +111,8 @@ class DatasetsController < ApplicationController
   def check_mandatory_fields
     logger.info "DatasetsController: In check_mandatory_fields"
     check_files
-    check_publisher
-    byebug
-    render 'new' unless flash.empty?
-    byebug
+    # check_publisher
+    # render 'new' unless flash.empty?
   end
 
   def check_publisher
