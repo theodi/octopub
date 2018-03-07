@@ -143,14 +143,10 @@ $(document).ready(function() {
 
       // Remove the error labels from the cloned inputs else they will have duplicates
       clone.find('label.error').remove()
-      // Clear the file input
-      // var fileInput = clone.find('input[type=file]')
-      // fileInput.replaceWith(fileInput.val('').clone(true));
-      // Generate unique ids for the cloned inputs
       clone.find(':input').not(':button').not("[aria-label='Search']").each(function() {
         if (this.id) {
-          $(this).val('')
-          this.id = this.id + timestamp
+          $(this).val('') // Empty the input values
+          this.id = this.id + timestamp // Generate a unique input id
         }
       })
 
@@ -168,13 +164,6 @@ $(document).ready(function() {
         bgUpload(elem);
       });
 
-      // Add validation rules (Jquery Validate)
-      stepInputs("#step-three").each(function () {
-        $(this).rules("add", {
-          required: true
-        });
-      });
-
       // Update all select boxes to create rich search boxes
       $('.selectpicker').selectpicker('refresh');
     });
@@ -186,6 +175,8 @@ $(document).ready(function() {
       e.preventDefault();
 
       $('#spinner').removeClass('hidden');
+
+      console.log(form.valid())
 
       if (form.valid()) {
         console.log('post form yeaaaaah!')
@@ -220,9 +211,9 @@ $(document).ready(function() {
       'dataset[frequency]': { required: true },
       'dataset[license]': { required: true },
       'files[][title]': { required: true },
-      'files[][description]': { required: true },
+      'files[][description]': {},
       '[files[][file]]': { required: true },
-      '_files[][dataset_file_schema_id]': { required: true }
+      '_files[][dataset_file_schema_id]': {}
     },
     onfocusout: function(element) {
       this.element(element) // Validate elements on onfocusout
@@ -232,13 +223,15 @@ $(document).ready(function() {
   var formSteps = ['step-one', 'step-two', 'step-three']
   var currentStep = formSteps[0]
 
+  function getValidationRule(startsWith) {
+    return $(":input[name^=" + startsWith + "]")
+  }
+
   // Setup click handlers for step navigation buttons
   $.each(formSteps, function(i, targetStep) {
     var targetStepButton = '.show-' + targetStep
 
     $(document).on('click', targetStepButton, function (e) {
-      console.log(stepInputs('#step-three'))
-
       if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
