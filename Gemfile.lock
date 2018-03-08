@@ -568,7 +568,6 @@ DEPENDENCIES
   letter_opener
   lograge
   lol_dba
-  nokogiri (~> 1.8.2)
   octokit
   odlifier
   omniauth-github

@@ -16,6 +16,10 @@
   &.grey {
     background: $light-grey;
     padding-top: $padding;
+
+		.btn {
+			margin-right: 20px;
+		}
   }
 
 	.pub {

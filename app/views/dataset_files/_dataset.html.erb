@@ -7,7 +7,7 @@
       <p><%= @dataset.owner %></p>
     </div>
     <div class="col-md-1 col-md-offset-4 icon-blue">
-      <i class="fa fa-pencil"></i>
+      <i class="as fa-pencil-alt"></i>
       <%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
     </div>
   </div>
@@ -35,11 +35,12 @@
     <div class="col-md-2">
       <p>Published:</p>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-6">
       <% if @dataset.published_status %>
         <p>Yes</p>
       <% else %>
         <p>No</p>
+				<p>You are the only one who can see this data. Publishing it will make it public and findable on Github</p>
       <% end %>
     </div>
   </div>
