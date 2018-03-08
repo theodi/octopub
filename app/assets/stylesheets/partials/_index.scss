@@ -1,22 +1,9 @@
 @import "modules/base";
 
-.home-box {
-  background: $white;
+@mixin home-box($hv) {
+  background: $hv;
   padding: $padding * 3;
-  margin: -2em -16px 0 -16px;
-
-  h1 {
-    font-weight: 100 !important;
-  }
-
-  span {
-    font-weight: 500 !important;
-  }
-
-  &.grey {
-    background: $light-grey;
-    padding-top: $padding;
-  }
+  margin: -2em -16px 0.6em -16px;
 
 	.pub {
 		font-weight: 100;
@@ -30,4 +17,38 @@
       text-align: right;
     }
   }
+}
+
+.home-box-white {
+	@include home-box($white);
+
+	h1 {
+		font-weight: 100 !important;
+	}
+
+	span {
+		font-weight: 500 !important;
+	}
+
+}
+
+.home-box-black {
+	@include home-box($black);
+	color: $white;
+	margin: 0 -16px 0 -16px;
+}
+
+.home-box-grey {
+	@include home-box($light-grey);
+	margin: 0 -16px 0 -16px;
+}
+
+.home-box-blue {
+	@include home-box($dusk-blue);
+	margin: 0 -16px 0 -16px;
+}
+
+.home-box-cobalt {
+	@include home-box($cobalt);
+	margin: 0 -16px 0 -16px;
 }
