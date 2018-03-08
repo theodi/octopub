@@ -171,6 +171,7 @@ $(document).ready(function() {
 
   function addAjaxFormUploading() {
    // Do ajax form uploading
+   // just a test
     $('form').submit(function(e) {
       e.preventDefault();
 
@@ -252,7 +253,7 @@ $(document).ready(function() {
 
     // This builds an array of booleans, each one representing the validity of a step
     // Then it sums the booleans to get the total validity of the steps
-    return steps.map(function(step) {   
+    return steps.map(function(step) {
       return stepValid(step)
     }).reduce(function(sum, bool) {
       return sum && bool
