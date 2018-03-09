@@ -59,7 +59,6 @@
 .home-box-table {
 	@include home-box($light-grey);
 	display: block;
-	padding: 1em;
 
 	.row {
 		margin-top: $margin * 2;
@@ -69,6 +68,12 @@
 			text-align: right;
 		}
 	}
+}
+
+.home-box-dashboard {
+	@include home-box($light-grey);
+	display: block;
+	padding: 1em 10% 1em 10%;
 }
 
 .home-box-white {
