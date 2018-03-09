@@ -1,26 +1,43 @@
 @import "modules/base";
 
 @mixin home-box($hv) {
+	display: flex;
+	justify-content: center;
   background: $hv;
-  padding: $padding * 3;
-  margin: -2em -16px 0.6em -16px;
+  padding: 0.6em;
+	margin: 0 -16px 0 -16px;
 
 	.pub {
 		font-weight: 100;
 	}
 
-  .row {
-    margin-top: $margin * 2;
+	.home-text {
+		padding: 2em;
+		text-align: left;
+		max-width: 40%;
 
-    .table-count-box {
-      padding-top: 1.2em;
-      text-align: right;
-    }
-  }
+		.underline {
+			text-decoration: underline;
+		}
+	}
+
+	.home-image {
+		padding: 2em;
+		text-align: left;
+		max-width: 40%;
+
+		img {
+			width: 100%;
+			margin-top: 1em;
+		}
+	}
 }
 
-.home-box-white {
+.home-box-head {
 	@include home-box($white);
+	display: block;
+	padding: 3em;
+	margin: -2em -16px 0.6em -16px;
 
 	h1 {
 		font-weight: 100 !important;
@@ -30,25 +47,47 @@
 		font-weight: 500 !important;
 	}
 
+	.pub {
+		font-weight: 100;
+	}
+}
+
+.home-box-table {
+	@include home-box($light-grey);
+	display: block;
+	margin-bottom: 2em;
+	padding: 1em;
+
+	.row {
+		margin-top: $margin * 2;
+
+		.table-count-box {
+			padding-top: 1.2em;
+			text-align: right;
+		}
+	}
+}
+
+.home-box-white {
+	@include home-box($black);
+	color: $white;
 }
 
 .home-box-black {
 	@include home-box($black);
 	color: $white;
-	margin: 0 -16px 0 -16px;
 }
 
 .home-box-grey {
 	@include home-box($light-grey);
-	margin: 0 -16px 0 -16px;
 }
 
 .home-box-blue {
 	@include home-box($dusk-blue);
-	margin: 0 -16px 0 -16px;
+	color: white;
 }
 
 .home-box-cobalt {
 	@include home-box($cobalt);
-	margin: 0 -16px 0 -16px;
+	color: white;
 }
