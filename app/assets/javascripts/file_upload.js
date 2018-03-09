@@ -180,7 +180,7 @@ $(document).ready(function() {
 
       if (form.valid()) {
         console.log('post form yeaaaaah!')
-        // postForm($(this));  
+        postForm($(this));
       }
 
       // if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
