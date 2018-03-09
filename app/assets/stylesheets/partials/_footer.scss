@@ -3,12 +3,12 @@
 footer {
   background-color: $dark-black;
   color: $white;
-  position: relative;
   width: 100vw;
   bottom: 0;
 	left: 0;
   padding-top: $padding;
   padding-bottom: $padding;
+	position: absolute;
 
   .row {
     display: flex;

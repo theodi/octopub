@@ -23,7 +23,7 @@
   <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
 		<%= render 'layouts/nav' %>
 		<div class="container">
-      <div class="row">
+      <div class="row wrap">
         <div class="col-md-12" id="main">
           <!-- <% flash.each do |name, msg| %>
             <% if msg.is_a?(String) %>
@@ -34,6 +34,6 @@
         </div>
       </div>
     </div>
-    <%= render 'layouts/footer' %>
+		<%= render 'layouts/footer' %>
   </body>
 </html>
