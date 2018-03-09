@@ -82,4 +82,14 @@ module ApplicationHelper
     ''
   end
 
+	def licence_url(licence)
+		number = Octopub::API_LICENCES.index(licence)
+		Octopub::URL_LICENCES[number.to_i]
+	end
+
+	def licence_name(licence)
+		number = Octopub::API_LICENCES.index(licence)
+		Octopub::BIG_LICENCES[number.to_i]
+	end
+
 end

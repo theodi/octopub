@@ -44,10 +44,15 @@
           font-size: 1em;
           position: relative !important;
           outline: 0;
+					text-decoration: none;
+
+					&:hover {
+						background-color: $cobalt;
+						text-decoration: none;
+					}
 
           .dropdown-link {
             padding: $padding 0 $padding $padding;
-            // border-bottom: 1px solid $white;
 
             .a {
               text-decoration: none;
