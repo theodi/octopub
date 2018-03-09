@@ -55,7 +55,6 @@
 .home-box-table {
 	@include home-box($light-grey);
 	display: block;
-	margin-bottom: 2em;
 	padding: 1em;
 
 	.row {
