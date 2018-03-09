@@ -173,7 +173,7 @@ $(document).ready(function() {
    // Do ajax form uploading
     $('form').submit(function(e) {
       e.preventDefault();
-
+      // test
       $('#spinner').removeClass('hidden');
 
       console.log(form.valid())
