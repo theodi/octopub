@@ -8,7 +8,8 @@ class DatasetFilesController < ApplicationController
   end
 
 	def show
-		dataset_id = params[:dataset_id]
+		@dataset_id = params[:dataset_file_id]
+		@dataset_file = DatasetFile.find(@dataset_id)
 	end
 
   def download
