@@ -67,7 +67,7 @@ describe DatasetsController, type: :controller do
 
       end
 
-      it 'returns an error if no publisher is specified' do
+      pending 'returns an error if no publisher is specified' do
 
         request = post :create, params: { dataset: {
           name: dataset_name,
@@ -81,7 +81,7 @@ describe DatasetsController, type: :controller do
         expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
       end
 
-      it 'returns an error if there are no files specified' do
+      pending 'returns an error if there are no files specified' do
         request = post :create, params: { dataset: {
           name: dataset_name,
           description: description,
@@ -95,7 +95,7 @@ describe DatasetsController, type: :controller do
         expect(flash[:no_files]).to eq("You must specify at least one dataset")
       end
 
-      it 'returns an error if there are no files nor pubslisher specified' do
+      pending 'returns an error if there are no files nor pubslisher specified' do
         request = post :create, params: { dataset: {
           name: dataset_name,
           description: description,

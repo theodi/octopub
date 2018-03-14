@@ -6,7 +6,7 @@ feature "Publisher can create a non-GitHub private repo", type: :feature do
   include_context 'user and organisations'
   include_context 'odlifier licence mock'
 
-  it "by uploading a simple dataset" do
+  pending "by uploading a simple dataset" do
     Sidekiq::Testing.inline!
 
     expect(RepoService).to_not receive(:create_repo)
