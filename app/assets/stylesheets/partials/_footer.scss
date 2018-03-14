@@ -1,17 +1,19 @@
 @import 'modules/base';
 
 footer {
-  background-color: $black;
+  background-color: $dark-black;
   color: $white;
-  position: absolute;
   width: 100vw;
   bottom: 0;
+	left: 0;
   padding-top: $padding;
   padding-bottom: $padding;
+	position: absolute;
 
   .row {
     display: flex;
     align-items: center;
+		margin: 0 2em 0 2em;
   }
 
   .top {

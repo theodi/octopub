@@ -36,12 +36,15 @@ body {
     background-color: #EBEBEB;
     font-size: 16px;
     padding: 0 1.2em 0 0;
-    margin-bottom: 160px;
     overflow-x: hidden;
 }
 
 .container {
   width: 100vw;
+
+	.wrap {
+		margin-bottom: 9em;
+	}
 }
 
 .license-list {
@@ -63,5 +66,5 @@ td.owner {
 
 .jumbotron {
   padding-top: 0;
-  margin-top: 0;
+  margin-top: 2em;
 }
