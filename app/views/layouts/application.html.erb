@@ -21,10 +21,10 @@
     <![endif]-->
   </head>
   <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
-    <div class="container">
+    <!-- <div class="container"> -->
       <%= render 'layouts/nav' %>
-      <div class="row">
-        <div class="col-md-12" id="main">
+      <!-- <div class="row"> -->
+        <div id="main">
           <% flash.each do |name, msg| %>
             <% if msg.is_a?(String) %>
               <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
@@ -32,8 +32,8 @@
           <% end %>
           <%= yield %>
         </div>
-      </div>
-    </div>
+      <!-- </div> -->
+    <!-- </div> -->
     <%= render 'layouts/footer' %>
   </body>
 </html>

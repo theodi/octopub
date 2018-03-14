@@ -231,7 +231,6 @@ $(document).ready(function() {
       if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
-        $('#wizard-breadcrumb').find(targetStepButton).attr('disabled', false)
         currentStep = targetStep
       }
       e.preventDefault()
@@ -275,10 +274,21 @@ $(document).ready(function() {
 
   function hideCurrentStep() {
     $('#' + currentStep).addClass('hidden')
+    $('.show-' + currentStep).parents('.wizard-sidebar-step')
+      .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+      .addClass('wizard-sidebar-step-inactive')
   }
 
   function showTargetStep(targetStep) {
     $('#' + targetStep).removeClass('hidden')
+    $.each(stepsToValidate(targetStep), function(i, step) {
+      $('.show-' + step).parents('.wizard-sidebar-step')
+        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+        .addClass('wizard-sidebar-step-inactive')
+    })
+    $('.show-' + targetStep).parents('.wizard-sidebar-step')
+        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+        .addClass('wizard-sidebar-step-active')
   }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name

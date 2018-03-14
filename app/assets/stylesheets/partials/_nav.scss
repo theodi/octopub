@@ -3,9 +3,9 @@
 .navbar {
   background: $black;
   color: $white;
+  border-color: $black;
   border-radius: 0;
-  padding: $padding / 2;
-  margin: -1px -16px 2em -16px;
+  padding: $padding/2;
 
   .navbar-header > .navbar-brand {
     color: $bright-orange;
