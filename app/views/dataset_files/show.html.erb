@@ -1,3 +1,25 @@
 <div class="home-box-table">
 	<h2><%= @dataset_file.title %></h2>
+	<%= @csv %>
+	<div class="box-dataset">
+    <table class="table table-striped"
+    data-toggle="table"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+					<% for item in @csv %>
+						<th><%= item %></th>
+					<% end %>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td><%= %></td>
+            <td><%= %></td>
+            <td><%= %></td>
+          </tr>
+      </tbody>
+    </table>
+	</div>
 </div>
