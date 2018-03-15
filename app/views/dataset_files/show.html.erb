@@ -1,25 +1,67 @@
 <div class="home-box-table">
 	<h2><%= @dataset_file.title %></h2>
-	<%= @csv %>
-	<div class="box-dataset">
-    <table class="table table-striped"
-    data-toggle="table"
-    data-classes="table"
-    data-filter-control="true">
-      <thead>
-        <tr>
-					<% for item in @csv %>
-						<th><%= item %></th>
-					<% end %>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <td><%= %></td>
-            <td><%= %></td>
-            <td><%= %></td>
-          </tr>
-      </tbody>
-    </table>
+	<div class="table-container">
+	  <table class="table table-striped table-bordered" id="data-table">
+	    <thead>
+	      <tr>
+	      </tr>
+	    </thead>
+	    <tbody id="data-table-body"></tbody>
+	  </table>
 	</div>
 </div>
+
+<div id="loading" style="display: none;">
+  <h1>Loading...</h1>
+  <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js"></script>
+<script>
+	console.log('one')
+	function dataTable () {
+		var url = "<%= @s3_file %>"
+
+		Papa.SCRIPT_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js'
+
+	  $('#loading').show()
+	  $('#data-table-body').hide()
+
+	  Papa.parse('https://octo-dev-lang.s3.eu-west-1.amazonaws.com/uploads/b7c48f5e-d23f-452b-b09a-984683b97e7b/counting-two.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJC4FTS6WY6R74IDQ%2F20180315%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20180315T211519Z&X-Amz-Expires=2000&X-Amz-SignedHeaders=host&X-Amz-Signature=81bda3ce8ee15d7a16fb2c987b3b5d57fb82363f7e26c852ec8b459818a87f0e', {
+	    download: true,
+	    step: function(row) {
+	      $('#data-table-body').append(dataRow(row.data[0]))
+	    },
+	    complete: function() {
+	      $('#loading').hide()
+
+	      var $table = $('table.table');
+	      $table.floatThead({
+	        scrollContainer: function($table) {
+	          return $table.closest('.table-container');
+	        }
+	      });
+
+	      $('#data-table-body').show()
+	      $('#download-csv').removeClass('hidden')
+	    }
+	  });
+
+	  function dataRow (data) {
+	    var s = '<tr>'
+
+	    $.each(data, function(index, value) {
+	      s += '<td>'
+	      s += value
+	      s += '</td>'
+	    })
+
+	    s += '</tr>'
+
+	    return s
+	  }
+	};
+
+	dataTable()
+
+</script>

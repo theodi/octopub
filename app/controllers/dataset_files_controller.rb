@@ -10,8 +10,7 @@ class DatasetFilesController < ApplicationController
 	def show
 		dataset_id = params[:dataset_file_id]
 		@dataset_file = DatasetFile.find(dataset_id)
-		@csv_string = FileStorageService.get_string_io(@dataset_file.storage_key).string
-		@csv = CSV.parse(@csv_string, col_sep: "\t", headers: true).map(&:to_h)
+		@s3_file = FileStorageService.get_temporary_download_url(@dataset_file.storage_key)
 	end
 
   def download
