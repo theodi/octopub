@@ -14,10 +14,16 @@
 	</div>
 	<div class="box-dataset">
 	  <div class="row">
+			<%= link_to("Edit", edit_dataset_path(@dataset.id)) %><br />
 			<strong>Description: </strong><p><%= @dataset_file.description %></p>
+			<strong>Schema: </strong><p><%= @dataset_file.dataset_file_schema.name %></p>
 			<strong>Last updated: </strong><p><%= time_or_date(@dataset_file.updated_at) %></p>
-			<strong>Validation status:</strong><a href="https://csvlint.io/?uri=<%= @s3_file %>"><img src="https://csvlint.io/?uri=<%= @s3_file%>&format=svg" alt="CSVlint validation result" /></a><br />
-			<strong>Published: </strong><p><%= @dataset.published_status %></p>
+			<strong>Published: </strong>
+			<% if @dataset.published_status %>
+	      <p>Yes</p>
+			<% else %>
+	      <p>No - this file is not public yet</p>
+			<% end %>
 		</div>
 	</div>
 	<h2>Preview</h2>
