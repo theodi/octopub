@@ -1,11 +1,9 @@
 <div class="home-box-table">
 	<h2><%= @dataset_file.title %></h2>
+	<!-- <%= @s3_file %> -->
 	<div class="table-container">
 	  <table class="table table-striped table-bordered" id="data-table">
-	    <thead>
-	      <tr>
-	      </tr>
-	    </thead>
+	    <thead id="data-table-head"></thead>
 	    <tbody id="data-table-body"></tbody>
 	  </table>
 	</div>
@@ -17,19 +15,22 @@
 </div>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js"></script>
-<script>
-	console.log('one')
-	function dataTable () {
-		var url = "<%= @s3_file %>"
+<script src="//cdnjs.cloudflare.com/ajax/libs/floatthead/2.0.3/jquery.floatThead.min.js"></script>
 
+<script>
+	function dataTable () {
+		// var url = "<%= @s3_file %>"
+		var url = "https://octo-dev-lang.s3.eu-west-1.amazonaws.com/uploads/ff96d8c5-5cef-4bb9-9cfb-ce92b54c140e/counting-two.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJC4FTS6WY6R74IDQ%2F20180316%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20180316T090320Z&X-Amz-Expires=200000&X-Amz-SignedHeaders=host&X-Amz-Signature=42c3dcc6602ffa3d66873e1257680dae002184ac0193f6fc777cfd8a57cca663"
 		Papa.SCRIPT_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js'
 
 	  $('#loading').show()
 	  $('#data-table-body').hide()
 
-	  Papa.parse('https://octo-dev-lang.s3.eu-west-1.amazonaws.com/uploads/b7c48f5e-d23f-452b-b09a-984683b97e7b/counting-two.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJC4FTS6WY6R74IDQ%2F20180315%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20180315T211519Z&X-Amz-Expires=2000&X-Amz-SignedHeaders=host&X-Amz-Signature=81bda3ce8ee15d7a16fb2c987b3b5d57fb82363f7e26c852ec8b459818a87f0e', {
+	  Papa.parse(url, {
 	    download: true,
+			header: true,
 	    step: function(row) {
+				$('#data-table-head').html(dataHead(row.meta['fields']))
 	      $('#data-table-body').append(dataRow(row.data[0]))
 	    },
 	    complete: function() {
@@ -46,6 +47,20 @@
 	      $('#download-csv').removeClass('hidden')
 	    }
 	  });
+
+		function dataHead (data) {
+			var s = '<tr>'
+
+			$.each(data, function(index, value) {
+					s += '<th>'
+					s += value
+					s += '</th>'
+			})
+
+			s += '</tr>'
+
+			return s
+		}
 
 	  function dataRow (data) {
 	    var s = '<tr>'
