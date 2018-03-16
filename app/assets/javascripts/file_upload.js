@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
 
-  if ($('div.file-panel').length) {
+  if ($('div.file-input-group').length) {
     setUpCloneAndFileUpload();
   }
   if ($('div.schema-panel').length) {
@@ -133,7 +133,7 @@ $(document).ready(function() {
   }
 
   function addAnotherDataFileButtonClick() {
-    var file = $('div.file-panel:first').clone();
+    var file = $('div.file-input-group:first').clone();
 
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
@@ -150,11 +150,24 @@ $(document).ready(function() {
         }
       })
 
+      var fileContainer = $('.sidebar-files')
+
+      var fileinputGroup = $('.file-input-group').last()
+      var editLink = $('<button type="button" class="btn btn-danger">Edit file</button>')
+
+      fileContainer.append(editLink)
+      fileinputGroup.hide()
+
+      editLink.click(function(event){
+        $('.file-input-group').hide()
+        fileinputGroup.show()
+      })
+
       // Add delete file button
-      var buttonAndSpan = $('<span class="pull-right"><button type="button" class="btn btn-danger btn-xs">Delete file</button></span>');
-      clone.find('div[name="data_file_heading"]').append(buttonAndSpan);
+      var buttonAndSpan = $('<button type="button" class="btn btn-danger">Delete file</button>');
+      clone.append(buttonAndSpan);
       buttonAndSpan.click(function(event) {
-        var parentSection = $(event.target).closest('div.file-panel');
+        var parentSection = $(event.target).closest('div.file-input-group');
         parentSection.remove();
       });
 

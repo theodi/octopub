@@ -1,5 +1,10 @@
 @import "modules/base";
 
+#add-dataset-form-container {
+  max-width: 500px;
+  margin-left: 100px;
+}
+
 #wizard-sidebar {
   padding: 0;
   margin-top: -20px;
@@ -57,6 +62,9 @@
   &.wizard-sidebar-step-disabled {
     background: $light-grey;
     color: $warm-grey;
+    border: 2px solid $warm-grey;
+    border-top: 0;
+    border-left: 0;
   }
   &:last-child {
     border-bottom: 0;

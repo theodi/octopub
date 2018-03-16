@@ -1,49 +1,36 @@
-<h2>Files</h2>
-<div class="file-panel">
-  <div class="panel panel-default">
-    <div class="panel-heading clearfix" name="data_file_heading">Data Files</div>
-    <div class="panel-body">
-      <fieldset class="file bg-upload">
-        <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
-        <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
+<div class="file-input-group">
+  <fieldset class="file bg-upload">
+    <%= f.text_field "files[][title]", label: "File title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
+    <%= f.text_area "files[][description]", label: "File description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
 
-        <% if file.filename %>
-          <div class="form-group filename-wrapper">
-            <div class="current-file">
-              <label class="control-label">Current file</label>
-              <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
-            </div>
-          </div>
-        <% else %>
-          <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
-        <% end %>
+    <% if file.filename %>
+      <div class="form-group filename-wrapper">
+        <div class="current-file">
+          <label class="control-label">Current file</label>
+          <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
+        </div>
+      </div>
+    <% else %>
+      <%= f.file_field "files[][file]", label: "File upload", accept: ".csv" %>
+    <% end %>
 
-        <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
-      </fieldset>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">Optional Schema</div>
-    <div class="panel-body">
-      <fieldset class="file bg-upload">
+    <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
+  </fieldset>
+  <fieldset class="file bg-upload">
 
-        <% if dataset_file_schemas.any? %>
-          <h4>Choose an existing schema</h4>
-          <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Existing dataset schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
-          <!-- <h4>Or upload a new one</h4> -->
-        <% end %>
+    <% if dataset_file_schemas.any? %>
+      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)'} %>
+    <% end %>
 
-        <% if false %>
-          <h4>Upload a schema for this Data File</h4>
-          <p>Provide an optional <a href='https://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
+    <% if false %>
+      <h4>Upload a schema for this Data File</h4>
+      <p>Provide an optional <a href='https://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
 
-          <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
-          <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
-          <div><%= f.file_field "files[][schema]", label: "File", accept: ".json" %></div>
-          <%= f.select "files[][schema_restricted]", dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
-        <% end %>
+      <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
+      <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
+      <div><%= f.file_field "files[][schema]", label: "File", accept: ".json" %></div>
+      <%= f.select "files[][schema_restricted]", dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
+    <% end %>
 
-      </fieldset>
-    </div>
-  </div>
+  </fieldset>
 </div>
