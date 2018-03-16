@@ -41,6 +41,10 @@ body {
 
 .container {
   width: 100vw;
+
+	.wrap {
+		margin-bottom: 9em;
+	}
 }
 
 .license-list {
@@ -62,5 +66,5 @@ td.owner {
 
 .jumbotron {
   padding-top: 0;
-  margin-top: 0;
+  margin-top: 2em;
 }

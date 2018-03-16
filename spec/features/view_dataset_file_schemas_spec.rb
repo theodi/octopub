@@ -40,12 +40,12 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
       expect(page).to have_content schema_name
     end
 
-    scenario "view a public schema" do
-      click_link 'Schemas'
-      expect(page).to have_content public_schema_name
-      click_link public_schema_name
-      expect(page).to have_content public_schema_name
-    end
+    # scenario "view a public schema" do
+    #   click_link 'Schemas'
+    #   expect(page).to have_content public_schema_name
+    #   click_link public_schema_name
+    #   expect(page).to have_content public_schema_name
+    # end
 
   end
 

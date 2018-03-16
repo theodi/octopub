@@ -4,14 +4,12 @@
   background: $bg;
   color: $white;
   border: none;
-	font-family: Helvetica, sans-serif;
+	font-family: Helvetica Neue, Helvetica, sans-serif;
+	height: 40px;
   font-size: 1em;
-  font-weight: bold;
   text-decoration: none;
   -webkit-box-shadow:inset 0 -3px 0 $hv;
   -moz-box-shadow:inset 0 -3px 0 $hv;
-  box-shadow:inset 0 -3px 0 $hv;
-	margin-right: 20px;
 
   &:hover {
     background-color: $hv;
