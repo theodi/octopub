@@ -35,9 +35,7 @@
                   ...
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                  <%= link_to("<div class='dropdown-link'>View</div>".html_safe, dataset_files_path(file.id), class: "dropdown-item") %>
-                  <%= link_to("<div class='dropdown-link'>Edit*</div>".html_safe, files_path(file), method: :edit, class: "dropdown-item") %>
-                  <%= link_to("<div class='dropdown-link'>Delete*</div>".html_safe, dataset_path(:dataset_id), class: "dropdown-item") %>
+                  <%= link_to("<div class='dropdown-link'>View</div>".html_safe, dataset_files_path(@dataset.id, file.id), class: "dropdown-item") %>
                 </div>
               </div>
             </td>
