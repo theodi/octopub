@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   end
 
 	get "/collection/:dataset_id" => "dataset_files#index", as: :files
-  get "/file/:dataset_file_id" => "dataset_files#show", as: :dataset_files
+  get "collection/:dataset_id/file/:dataset_file_id" => "dataset_files#show", as: :dataset_files
 
   get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
 

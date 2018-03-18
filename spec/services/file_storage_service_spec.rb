@@ -27,7 +27,7 @@ describe FileStorageService do
   end
 
   it "gets a temporary url for an object given a storage key" do
-    expect(@object).to receive(:presigned_url).with(:get, { expires_in: 1.minute })
+    expect(@object).to receive(:presigned_url).with(:get, { :expires_in => 180 })
     FileStorageService.get_temporary_download_url(@storage_key)
   end
 

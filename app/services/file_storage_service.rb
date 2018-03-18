@@ -5,7 +5,7 @@ class FileStorageService
   end
 
 	def self.get_temporary_download_url(storage_key)
-		get_object(storage_key).presigned_url(:get, expires_in: 1.minutes)
+		get_object(storage_key).presigned_url(:get, :expires_in => 180)
 	end
 
   def self.make_object_public(storage_key)

@@ -3,12 +3,12 @@ require 'rails_helper'
 describe DatasetsController, type: :controller do
 
   describe 'basic destruction' do
-    
+
     before :each do
       @user = create(:user)
       sign_in @user
     end
-    
+
     it 'deletes a public github repo dataset' do
       sign_in @user
 
@@ -23,7 +23,6 @@ describe DatasetsController, type: :controller do
 
       request = delete :destroy, params: { id: @dataset.id }
       expect(request).to redirect_to(dashboard_path)
-      expect(flash[:notice]).to eq("Dataset '#{@dataset.name}' deleted sucessfully")
     end
 
     it 'deletes a private github repo dataset' do
@@ -39,7 +38,6 @@ describe DatasetsController, type: :controller do
 
       request = delete :destroy, params: { id: @dataset.id }
       expect(request).to redirect_to(dashboard_path)
-      expect(flash[:notice]).to eq("Dataset '#{@dataset.name}' deleted sucessfully")
     end
 
     it 'deletes a private local repo dataset' do
@@ -55,7 +53,6 @@ describe DatasetsController, type: :controller do
 
       request = delete :destroy, params: { id: @dataset.id }
       expect(request).to redirect_to(dashboard_path)
-      expect(flash[:notice]).to eq("Dataset '#{@dataset.name}' deleted sucessfully")
     end
 
     it 'deletes a public github repo dataset even if it cannot find the repo' do
@@ -67,12 +64,11 @@ describe DatasetsController, type: :controller do
 
       request = delete :destroy, params: { id: @dataset.id }
       expect(request).to redirect_to(dashboard_path)
-      expect(flash[:notice]).to eq("Dataset '#{@dataset.name}' deleted sucessfully - but we could not find the repository in GitHub to delete")
     end
   end
 
   describe 'permissions' do
-    
+
     before :each do
       @user = create(:user)
       @admin = create(:admin)
@@ -89,7 +85,7 @@ describe DatasetsController, type: :controller do
       expect(response.code).to eq("403")
       expect(Dataset.count).to eq 1
     end
-  
+
     it "admin can delete another user's dataset" do
       @dataset = create(:dataset, user: @other_user)
       expect(Dataset.count).to eq 1
@@ -101,7 +97,7 @@ describe DatasetsController, type: :controller do
         @dataset
       }
       allow(RepoService).to receive(:fetch_repo)
-      
+
       expect(@dataset).to receive(:destroy).and_call_original
       delete :destroy, params: { id: @dataset.id }
       expect(response.code).to eq("302")
