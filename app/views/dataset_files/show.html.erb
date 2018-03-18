@@ -1,33 +1,75 @@
 <div class="home-box-dashboard">
 	<%= link_to "< Back to data collection: #{@dataset.name}", files_path(@dataset.id) %>
-	<div class="head-dataset">
-		<div class="col-md-3">
-			<h2><%= @dataset_file.title %></h2>
-		</div>
-		<div class="col-md-9">
-			<% if !@dataset.published_status %>
-				<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
-			<% else %>
-				<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
-			<% end %>
+	<div class="row">
+		<div class="head-dataset">
+			<div class="col-md-3">
+				<h2><span><i class="fas fa-file-alt"></i></span><%= @dataset_file.title %></h2>
+			</div>
+			<div class="col-md-offset-6 col-md-3">
+				<% if !@dataset.published_status %>
+					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
+				<% else %>
+					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+				<% end %>
+			</div>
 		</div>
 	</div>
 	<div class="box-dataset">
 	  <div class="row">
-			<%= link_to("Edit", edit_dataset_path(@dataset.id)) %><br />
-			<strong>Description: </strong><p><%= @dataset_file.description %></p>
-			<strong>Schema: </strong><p><%= @dataset_file.dataset_file_schema.name %></p>
-			<strong>Last updated: </strong><p><%= time_or_date(@dataset_file.updated_at) %></p>
-			<strong>Published: </strong>
-			<% if @dataset.published_status %>
-	      <p>Yes</p>
-			<% else %>
-	      <p>No - this file is not public yet</p>
-			<% end %>
+			<div class="col-md-2 col-sm-2">
+				<strong>Description:</strong>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<p><%= @dataset_file.description %></p>
+			</div>
+			<div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
+				<i class="as fa-pencil-alt"></i>
+				<%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Schema:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<% if @dataset_file.dataset_file_schema %>
+					<p><%= @dataset_file.dataset_file_schema.name %></p>
+				<% else %>
+					<p>No schema</p>
+				<% end %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Last updated:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<p><%= time_or_date(@dataset_file.updated_at) %></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Published:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<% if @dataset.published_status %>
+		      <p>Yes</p>
+				<% else %>
+		      <p>No - this file is not public yet</p>
+				<% end %>
+			</div>
 		</div>
 	</div>
-	<h2>Preview</h2>
-	<%= bs_button_to "Download CSV", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
+	<div class="row">
+		<div class="head-dataset">
+			<div class="col-md-3">
+				<h2>Preview</h2>
+			</div>
+			<div class="col-md-offset-6 col-md-3">
+				<%= bs_button_to "Download CSV", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
+			</div>
+		</div>
+	</div>
 	<div class="box-dataset">
 		<div class="table-container">
 			<table class="table table-striped table-bordered" id="data-table">
