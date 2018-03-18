@@ -132,11 +132,18 @@ $(document).ready(function() {
     });
   }
 
-  function addAnotherDataFileButtonClick() {
-    var file = $('div.file-input-group:first').clone();
+  var file = $('.file-input-group:first').clone()
+  var id = 1
 
+  function addAnotherDataFileButtonClick() {
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
+      addFileInputs(e)
+    });
+  }
+
+  function addFileInputs(e) {
+    if (form.valid()) {
       e.preventDefault();
       var clone = $(file).clone();
       var timestamp = new Date().getTime();
@@ -150,26 +157,10 @@ $(document).ready(function() {
         }
       })
 
-      var fileContainer = $('.sidebar-files')
-
-      var fileinputGroup = $('.file-input-group').last()
-      var editLink = $('<button type="button" class="btn btn-danger">Edit file</button>')
-
-      fileContainer.append(editLink)
-      fileinputGroup.hide()
-
-      editLink.click(function(event){
-        $('.file-input-group').hide()
-        fileinputGroup.show()
-      })
-
-      // Add delete file button
-      var buttonAndSpan = $('<button type="button" class="btn btn-danger">Delete file</button>');
-      clone.append(buttonAndSpan);
-      buttonAndSpan.click(function(event) {
-        var parentSection = $(event.target).closest('div.file-input-group');
-        parentSection.remove();
-      });
+      if ( ! $('.file-input-group:visible').attr('data-id')) {
+        $('.file-input-group:visible').attr('data-id', id)
+        makeLinks(id)
+      }
 
       // Append the cloned inputs and attach file uploader listeners
       clone.appendTo('#files');
@@ -177,10 +168,50 @@ $(document).ready(function() {
         bgUpload(elem);
       });
 
+      $('.file-input-group').hide()
+      clone.show()
+
+      id += 1
+
       // Update all select boxes to create rich search boxes
       $('.selectpicker').selectpicker('refresh');
-    });
+    }
   }
+
+  function makeLinks(id) {
+    var links = $('<li data-id=' + id + '>File name: <a href="#" class="edit">Edit file</a><a href="#" class="delete">Delete file</a></li>')
+    $('.sidebar-files').append(links)
+
+    var fileTitle = $('.file-input-group:visible').find('input:first').val()
+    links.find('.edit').text(fileTitle)
+
+    var inputGroup = $('.file-input-group[data-id=' + id + ']')
+    links.find('.edit').click(function(event){
+      $('.file-input-group').hide()
+      inputGroup.show()
+      $('.file-input-group:not([data-id])').remove()
+      event.preventDefault()
+    })
+
+    links.find('.delete').click(function(event){
+      if ($('.file-input-group[data-id]').length > 1) {
+        // if (inputGroup.is(':visible') || !$('.file-input-group:visible').attr('data-id')) {
+          inputGroup.remove()
+          links.remove()
+          $('.file-input-group:not([data-id])').remove()
+          $('.file-input-group').last().show()
+          event.preventDefault()
+
+        // }
+      }
+    })
+  }
+
+  // stepInputs('#step-three').each(function(){
+  //   $(this).change(function(e){
+  //     addFileInputs(e)
+  //   })
+  // })
 
   function addAjaxFormUploading() {
    // Do ajax form uploading
