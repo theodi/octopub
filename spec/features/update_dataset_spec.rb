@@ -145,7 +145,7 @@ feature "Update dataset page", type: :feature do
       expect_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
       expect_any_instance_of(JekyllService).to receive(:push_to_github) { nil }
       expect_any_instance_of(Dataset).to receive(:publish_public_views) { nil }
-      expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
+      # expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
 
       expect(page).to have_content "Edit Dataset"
       choose('_publishing_method_github_public')
