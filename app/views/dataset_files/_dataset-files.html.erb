@@ -11,13 +11,15 @@
   <% if @dataset_files.exists? %>
     <table class="table table-striped"
     data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
     data-classes="table"
     data-filter-control="true">
       <thead>
         <tr>
           <th data-sortable="true">Name</th>
           <th data-sortable="true">Schema</th>
-          <th data-sortable="true">Creation date</th>
+          <th data-sortable="true" data-field="creation">Creation date</th>
           <th data-sortable="true">Validation</th>
           <th>Actions</th>
         </tr>
