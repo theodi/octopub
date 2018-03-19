@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
 
-  if ($('div.file-panel').length) {
+  if ($('div.file-input-group').length) {
     setUpCloneAndFileUpload();
   }
   if ($('div.schema-panel').length) {
@@ -132,41 +132,108 @@ $(document).ready(function() {
     });
   }
 
-  function addAnotherDataFileButtonClick() {
-    var file = $('div.file-panel:first').clone();
+  var currentInputGroup = $('.file-input-group:first')
 
+  function addAnotherDataFileButtonClick() {
+    var file = $('.file-input-group:first').clone()
+    var inputGroupId = 2
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
-      e.preventDefault();
-      var clone = $(file).clone();
-      var timestamp = new Date().getTime();
+      if (form.valid()) {
+        e.preventDefault();
+        var inputGroup = $(file).clone();
+        var timestamp = new Date().getTime();
 
-      // Remove the error labels from the cloned inputs else they will have duplicates
-      clone.find('label.error').remove()
-      clone.find(':input').not(':button').not("[aria-label='Search']").each(function() {
-        if (this.id) {
-          $(this).val('') // Empty the input values
-          this.id = this.id + timestamp // Generate a unique input id
-        }
-      })
+        // Remove the error labels from the cloned inputs else they will have duplicates
+        inputGroup.find('label.error').remove()
+        inputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+          if (this.id) {
+            $(this).val('') // Empty the input values
+            this.id = this.id + timestamp // Generate a unique input id
+          }
+        })
 
-      // Add delete file button
-      var buttonAndSpan = $('<span class="pull-right"><button type="button" class="btn btn-danger btn-xs">Delete file</button></span>');
-      clone.find('div[name="data_file_heading"]').append(buttonAndSpan);
-      buttonAndSpan.click(function(event) {
-        var parentSection = $(event.target).closest('div.file-panel');
-        parentSection.remove();
-      });
+        inputGroup.attr('data-id', inputGroupId)
 
-      // Append the cloned inputs and attach file uploader listeners
-      clone.appendTo('#files');
-      clone.find('.bg-upload').each(function(i, elem) {
-        bgUpload(elem);
-      });
+        // Append the cloned inputs and attach file uploader listeners
+        inputGroup.appendTo('#files');
+        inputGroup.find('.bg-upload').each(function(i, elem) {
+          bgUpload(elem);
+        });
 
-      // Update all select boxes to create rich search boxes
-      $('.selectpicker').selectpicker('refresh');
+        makeInputGroup(inputGroup, inputGroupId, currentInputGroup)
+
+        $('.file-input-group').hide()
+        inputGroup.show()
+
+        currentInputGroup = inputGroup
+        inputGroupId += 1
+
+        // Update all select boxes to create rich search boxes
+        $('.selectpicker').selectpicker('refresh');
+      }
     });
+  }
+
+  var sidebarLinks = $('.sidebar-files').find('li:first').clone(true)
+
+  function makeInputGroup(inputGroup, inputGroupId, current) {
+    var links = sidebarLinks.clone(true)
+    var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
+
+    links.find('.sidebar-file-links').append(deleteLink)
+    links.attr('data-id', inputGroupId)
+    $('.sidebar-files').append(links)
+
+    links.find('.edit').click(function(event){
+      $('.file-input-group').hide()
+      inputGroup.show()
+      currentInputGroup = $('.file-input-group:visible')
+      event.preventDefault()
+    })
+
+    links.find('.delete').click(function(event){
+      if (inputGroup.is(':visible')) {
+        inputGroup.prev().show()
+      }
+      inputGroup.remove()
+      links.remove()
+      currentInputGroup = $('.file-input-group:visible')
+      event.preventDefault()
+    })
+
+    var fileTitle = current.find('[name="files[][title]"]').first().val()
+    var schemaName = current.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+
+    var fileSize
+    if (window.FileReader) {
+      var file = current.find('input[type="file"]')[0].files[0]
+      fileSize = toMegabytes(file.size) + 'MB'
+    }
+
+    var currentSidebarFile = $('li[data-id='+current.attr('data-id')+']')
+
+    var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
+    currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+    currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
+  }
+
+  function toMegabytes(bytes) {
+    return bytes/1000000
+  }
+
+  // $('[name="files[][title]"]').change(function(){
+  //   console.log('blahahaha')
+  //   console.log($(this).val())
+  //   // $('#chosen-folder').t
+  // })
+
+  function setUpSideBar() {
+    $('.sidebar-files .edit').click(function(event) {
+      $('.file-input-group').hide()
+      $('.file-input-group:first').show()
+      event.preventDefault()
+    })
   }
 
   function addAjaxFormUploading() {
@@ -197,6 +264,7 @@ $(document).ready(function() {
     addAnotherDataFileButtonClick();
     addAjaxFormUploading();
     setUpFileUpload();
+    setUpSideBar();
   }
 
   // ###################################### Validation Code ######################################
@@ -231,7 +299,6 @@ $(document).ready(function() {
       if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
-        $('#wizard-breadcrumb').find(targetStepButton).attr('disabled', false)
         currentStep = targetStep
       }
       e.preventDefault()
@@ -275,10 +342,21 @@ $(document).ready(function() {
 
   function hideCurrentStep() {
     $('#' + currentStep).addClass('hidden')
+    $('.show-' + currentStep).parents('.wizard-sidebar-step')
+      .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+      .addClass('wizard-sidebar-step-inactive')
   }
 
   function showTargetStep(targetStep) {
     $('#' + targetStep).removeClass('hidden')
+    $.each(stepsToValidate(targetStep), function(i, step) {
+      $('.show-' + step).parents('.wizard-sidebar-step')
+        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+        .addClass('wizard-sidebar-step-inactive')
+    })
+    $('.show-' + targetStep).parents('.wizard-sidebar-step')
+        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+        .addClass('wizard-sidebar-step-active')
   }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
