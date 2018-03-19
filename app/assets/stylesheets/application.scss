@@ -21,7 +21,9 @@
 
 @import "font-awesome-sprockets";
 @import "font-awesome";
-@import "extra/*";
+@import "components/*";
+@import "modules/*";
+@import "partials/*";
 @import "api";
 
 html {
@@ -30,25 +32,19 @@ html {
 }
 
 body {
-  padding: 20px 20px 0 0;
-  margin-bottom: 160px;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background-color: $light-grey;
+    font-size: 16px;
+    overflow-x: hidden;
+    line-height: 1em;
 }
 
-.getting-started {
+.container {
+  width: 100vw;
 
-  p {
-    font-size: 1.2em;
-    line-height: 1.5em;
-    margin: 5px 0px 5px 5px;
-  }
-
-  img {
-
-    border: 1px solid #eee;
-    padding: 5px;
-    margin: 5px 5px 0px 0px;
-
-  }
+	.wrap {
+		margin-bottom: 9em;
+	}
 }
 
 .license-list {
@@ -56,37 +52,8 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.navbar-text {
-  margin: 7px 15px 5px 0 !important;
-
-  .btn {
-    margin-left: 7px;
-  }
-}
-
-/* Non javascript dropdown menu */
-.navbar-nav > li > a:hover {
-  background-color: #90d2ec;
-  color: #666;
-  text-decoration: none;
-}
-.dropdown:hover .dropdown-menu {
-  display: block;
-}
-
-footer {
-  margin-top: 60px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  border-top: 1px solid #e5e5e5;
-}
-
 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
   left: 15px;
-}
-
-.dropdown-menu > li > a {
-  padding: 3px 40px;
 }
 
 td.owner {
@@ -97,44 +64,7 @@ td.owner {
   margin-top: 15px;
 }
 
-footer {
-  img {
-    width: 175px;
-    margin: 0 0 0 -10px;
-  }
-  background-color: #f7f7f9;
-  padding: 10px 0;
-  text-align: left;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 140px;
-}
-
-/* Tooltip container */
-.tooltips {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
-
-/* Tooltip text */
-.tooltips .tooltiptexts {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltips:hover .tooltiptexts {
-  visibility: visible;
+.jumbotron {
+  padding-top: 0;
+  margin-top: 2em;
 }

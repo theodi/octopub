@@ -1,14 +1,154 @@
-<div class="jumbotron">
-  <h1>Octopub</h1>
-  <h2>Publish data easily, quickly and correctly</h2>
-  <p>Got a dataset you want to publish, but not sure how to do it? Octopub will help you do it,
-    quickly, easily and correctly.</p>
-  <p>Using the power of <a href="http://github.com">GitHub</a>, we will provide you with a platform
-    to publish your CSV data, as well as automatically creating a webpage for you to point people
-    to.</p>
+<% unless !current_user %>
+	<% if @datasets.count == 0 %>
+    <div class="home-box-head">
+      <h1 class="orange"><span class="pub">Octo</span>pub</h1>
+      <h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>
+    </div>
+	<% end %>
+  <div class="home-box-table">
+    <h3 style="display: block">Quick actions:</h3>
+    <% if @datasets.count == 0 %>
+      <%= bs_button_to "<i class='fas fa-question-circle'></i> Getting started".html_safe, '/getting-started', :class => "btn btn-secondary" %>
+    <% end %>
+    <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data collection".html_safe, new_dataset_path, :class => "btn btn-secondary" %>
+    <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary" %>
+    <div class="row">
+      <div class="col-md-4 col-sm-5">
+        <h3>Recent data collections:</h3>
+      </div>
+      <% if @datasets.count > 0 %>
+        <div class="col-md-3 col-md-offset-5 col-sm-offset-4 table-count-box">
+          <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
+        </div>
+      <% end %>
+    </div>
+    <table id="home-table-data" class="table table-striped"
+    data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Collection Name</th>
+          <th data-sortable="true">Schema</th>
+          <th data-sortable="true" data-field="creation">Creation date</th>
+          <th data-sortable="true">Validation</th>
+          <th data-sortable="true">Published</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+      </tbody>
+    </table>
 
-  <% unless current_user %>
-    <p><%= link_to "<i class='fa fa-github'></i> Sign in with Github".html_safe, '/auth/github', class: "btn btn-primary btn-lg" %></p>
-    <small><%= link_to "Not got a Github account?", "https://github.com/join" %></small>
-  <% end %>
-</div>
+    <div class="row">
+      <div class="col-md-4 col-sm-5">
+        <h3>Recent schemas:</h3>
+      </div>
+      <% if @dataset_file_schemas.count > 0 %>
+        <div class="col-md-3 col-md-offset-5 col-sm-3 col-sm-offset-4 table-count-box">
+          <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
+        </div>
+      <% end %>
+    </div>
+    <table id="schema-table-data" class="table table-striped"
+    data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Schema Name</th>
+          <th data-sortable="true">Publisher</th>
+          <th data-sortable="true" data-field="creation">Created on</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <%= render(partial: "dataset-schemas", collection: @dataset_file_schemas, as: :schema)  %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<% unless current_user %>
+	<div class="home-box-head">
+		<h1 class="orange"><span class="pub">Octo</span>pub</h1>
+		<h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>
+		<%= bs_button_to "Create a Github account", "https://github.com/join", :class => "btn btn-secondary" %>
+		<%= bs_button_to "Sign in with Github", "/auth/github", :class => "btn btn-primary" %>
+	</div>
+	<div class="home-box-black">
+		<div class="home-text">
+			<h2>Create <span class="underline">file collections</span></h2>
+			<p>This is where you'll put your data files.</p>
+			<p>You can write <span class="underline">metadata</span> and decide on update
+			frequencies to help user_datasets_path follow the iterations of you data files.</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-files-collection.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-grey">
+		<div class="home-image">
+			<%= image_tag 'home-page-licence.png', alt: 'Homepage: Files collection' %>
+		</div>
+		<div class="home-text">
+			<h2>Open your data: add a <span class="underline">licence</span></h2>
+			<p><span class="underline">Data isn't open</span> until a licence has
+			been applied. You need to choose the licence that suits your needs</p>
+			<p>And if you know nothing about licences, nothing to worry about, we'll help</p>
+		</div>
+	</div>
+	<div class="home-box-blue">
+		<div class="home-text">
+			<h2>Upload your files</h2>
+			<p>Now that a collection has been created and licensed, you can upload files to it</p>
+			<p><span class="underline">CSV, Excel, Geospatial...</span> whatever your needs, we have you covered</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-add-files.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-cobalt">
+		<div class="home-image">
+			<%= image_tag 'home-page-apply-schema.png', alt: 'Homepage: Files collection' %>
+		</div>
+		<div class="home-text">
+			<h2>Make your data usable</h2>
+			<p>Want your datat to be findable? Reusable? Machine readable? We encourage
+			you to apply <span class="underline">standardised schemas</span> to your
+			files to structure them effectively.</p>
+			<p>There is even a database of useful schemas for you to use here</p>
+		</div>
+	</div>
+	<div class="home-box-grey">
+		<div class="home-text">
+			<h2>Validate your data</h2>
+			<p>Octopub has ways of <span class="underline">checking<span> the quality
+			of your CSV files.</p>
+			<p>We'll give you a quality indication and you can review and reupload as
+			much as you need so that the data that you publish is of the
+			<span class=underline>highest standard</span>.</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-file-status.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-black">
+		<div class="home-image">
+			<%= image_tag 'home-page-file-status.png', alt: 'Homepage: Files collection' %>
+		</div>
+		<div class="home-text">
+			<h2>Create and Publish</h2>
+			<p>You're done. That's it.</p>
+			<p>Your data is ready to be published, with all the nescessry metadata.</p>
+			<p>It'll even have its <span class="underline">own webpage.</span></p>
+			<%= bs_button_to "Learn more about Octopub", "/getting-started", :class => "btn btn-secondary" %>
+			<%= bs_button_to "Get started", "/auth/github", :class => "btn btn-primary" %>
+		</div>
+	</div>
+<% end %>

@@ -4,6 +4,7 @@ dist: trusty
 sudo: false
 rvm:
 - 2.4.2
+before_install: ""
 bundler_args: "--without development --path=~/.bundle"
 before_script:
 - bundle exec rake db:create db:migrate

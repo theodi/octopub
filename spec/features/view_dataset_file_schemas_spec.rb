@@ -24,28 +24,28 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
     end
 
     scenario "list of my own schemas" do
-      click_link 'Dataset file schemas'
+      click_link 'Schemas'
       expect(page).to have_content schema_name
     end
 
     scenario "list of public schemas" do
-      click_link 'Dataset file schemas'
+      click_link 'Schemas'
       expect(page).to have_content public_schema_name
     end
 
     scenario "view a single schema" do
-      click_link 'Dataset file schemas'
+      click_link 'Schemas'
       expect(page).to have_content schema_name
       click_link schema_name
       expect(page).to have_content schema_name
     end
 
-    scenario "view a public schema" do
-      click_link 'Dataset file schemas'
-      expect(page).to have_content public_schema_name
-      click_link public_schema_name
-      expect(page).to have_content public_schema_name
-    end
+    # scenario "view a public schema" do
+    #   click_link 'Schemas'
+    #   expect(page).to have_content public_schema_name
+    #   click_link public_schema_name
+    #   expect(page).to have_content public_schema_name
+    # end
 
   end
 
@@ -55,7 +55,7 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
     create(:dataset_file_schema, url_in_repo: good_schema_url, name: schema_name, description: schema_description, user: other_user)
     visit root_path
 
-    click_link 'Dataset file schemas'
+    click_link 'Schemas'
     expect(page).to have_content "You currently have no dataset file schemas"
   end
 end

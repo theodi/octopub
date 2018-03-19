@@ -22,6 +22,7 @@
 #  certificate_url   :string
 #  job_id            :string
 #  publishing_method :integer          default("github_public"), not null
+#  published_status: :boolean          default: false
 #
 
 require 'rails_helper'
@@ -115,7 +116,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(RepoService).to receive(:fetch_repo)
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
-    expect(dataset).to receive(:send_success_email)
+    # expect(dataset).to receive(:send_success_email)
     expect_any_instance_of(SendTweetService).to receive(:perform)
     dataset.complete_publishing
   end
@@ -324,6 +325,13 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
       expect(updated_dataset.restricted).to be false
 
       skip_callback_if_exists(Dataset, :update, :after, :update_dataset_in_github)
+    end
+  end
+
+  context "prepublishing a dataset" do
+    it "creates a dataset with a published status of false" do
+      dataset = create(:dataset, user: @user)
+      expect(dataset.published_status).to eq(false)
     end
   end
 
