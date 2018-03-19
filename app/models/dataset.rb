@@ -117,7 +117,8 @@ class Dataset < ApplicationRecord
     actual_repo
     set_owner_avatar
     publish_public_views(true)
-    send_success_email
+		# Disabled the below function to remove email notification upon successful upload
+    # send_success_email
     SendTweetService.new(self).perform
   end
 
