@@ -228,7 +228,7 @@ $(document).ready(function() {
       currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
-    current.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
+    current.find('[name="[files[][file]]"]').change(function(){
       var fileTitle = current.find('[name="files[][title]"]').first().val()
       var fileSize
       if (window.FileReader) {
@@ -237,6 +237,11 @@ $(document).ready(function() {
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+    })
+
+    current.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
+      var schemaName = current.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+      currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
     })
   }
 
