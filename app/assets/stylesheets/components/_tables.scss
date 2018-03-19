@@ -5,6 +5,10 @@
 
 	thead > tr > th {
 		border: none;
+
+		.both {
+			float: left;
+		}
 	}
 
   .table {

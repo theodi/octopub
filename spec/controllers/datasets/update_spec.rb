@@ -413,7 +413,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       expect_any_instance_of(JekyllService).to receive(:create_data_files) { nil }
       expect_any_instance_of(JekyllService).to receive(:push_to_github) { nil }
       expect_any_instance_of(Dataset).to receive(:publish_public_views) { nil }
-      expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
+      # expect_any_instance_of(Dataset).to receive(:send_success_email) { nil }
 
       allow_any_instance_of(CreateRepository).to receive(:perform).and_call_original
       Sidekiq::Testing.inline!
