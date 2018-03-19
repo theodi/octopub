@@ -24,13 +24,15 @@
     </div>
     <table id="home-table-data" class="table table-striped"
     data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
     data-classes="table"
     data-filter-control="true">
       <thead>
         <tr>
           <th data-sortable="true">Collection Name</th>
           <th data-sortable="true">Schema</th>
-          <th data-sortable="true">Creation date</th>
+          <th data-sortable="true" data-field="creation">Creation date</th>
           <th data-sortable="true">Validation</th>
           <th data-sortable="true">Published</th>
           <th>Action</th>
@@ -53,13 +55,15 @@
     </div>
     <table id="schema-table-data" class="table table-striped"
     data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
     data-classes="table"
     data-filter-control="true">
       <thead>
         <tr>
           <th data-sortable="true">Schema Name</th>
           <th data-sortable="true">Publisher</th>
-          <th data-sortable="true">Created on</th>
+          <th data-sortable="true" data-field="creation">Created on</th>
           <th>Action</th>
         </tr>
       </thead>
