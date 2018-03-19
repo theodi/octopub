@@ -1,0 +1,3 @@
+<p class="lead">Your collection, <strong><%= @dataset.name %></strong> has been published to your GitHub account and is available at the following url:</p>
+
+<%= link_to @dataset.url, @dataset.url, target: "_blank", rel: "alternate", :class => "lead" %>

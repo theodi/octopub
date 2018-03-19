@@ -15,6 +15,13 @@ class DatasetsController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
+  def spoof_publish
+    @dataset = Dataset.find(params[:dataset_id])
+    @dataset.update_attribute(:published_status, true)
+    # flash[:success] = 'Dataset published!'
+    # redirect_to :back
+  end
+
   def index
     @title = "Public Datasets"
     @datasets = Dataset.github_public.order(created_at: :desc)
