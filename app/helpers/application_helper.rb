@@ -68,28 +68,9 @@ module ApplicationHelper
   def pusher_cluster
     Rails.configuration.pusher_cluster if Rails.configuration.respond_to?(:pusher_cluster)
   end
-
+  
   def dataset_file_schema_access_options
     [["Private - only you can access this schema", true],["Public - any user may access this schema",false]]
   end
-
-  def time_or_date(date)
-    date.today? ? date.strftime('Today') : date.strftime('%d-%m-%Y')
-  end
-
-  def current_class?(test_path)
-    return 'active' if request.path == test_path
-    ''
-  end
-
-	def licence_url(licence)
-		number = Octopub::API_LICENCES.index(licence)
-		Octopub::URL_LICENCES[number.to_i]
-	end
-
-	def licence_name(licence)
-		number = Octopub::API_LICENCES.index(licence)
-		Octopub::BIG_LICENCES[number.to_i]
-	end
-
+  
 end

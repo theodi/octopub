@@ -33,7 +33,7 @@ feature "As a logged in user, viewing dataset files", type: :feature do
     it 'can view dataset files' do
       visit dashboard_path
       click_on(@dataset.name)
-      expect(page).to have_content "#{@dataset.name}"
+      expect(page).to have_content "Dataset Files for #{@dataset.name}"
     end
   end
 
@@ -46,6 +46,6 @@ feature "As a logged in user, viewing dataset files", type: :feature do
   it "cannot view other user's files unless you're an admin" do
     sign_in admin
     visit files_path(@dataset)
-    expect(page).to have_content "#{@dataset.name}"
+    expect(page).to have_content "Dataset Files for #{@dataset.name}"
   end
 end

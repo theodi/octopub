@@ -1,1 +1,8 @@
+<h1 class="page-header">
+  My Datasets
+  <div class="pull-right">
+    <%= link_to "<i class='fa fa-refresh'></i> Refresh datasets".html_safe, dashboard_path(params: {refresh: true}), class: "btn btn-primary", id: "refresh", data: { user_id: current_user.id } %>
+  </div>
+</h1>
+
 <%= render partial: "datasets" %>

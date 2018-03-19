@@ -33,7 +33,7 @@ class CreateDataset
       end
       @dataset.dataset_files << dataset_file
     end
-    # Break below to stop publishing to Github
+
     @dataset.report_status(options["channel_id"])
   end
 
