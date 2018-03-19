@@ -17,11 +17,11 @@
   min-height: 240px;
   width: 100%;
   float: left;
-  padding: $padding;
-  i {
-    font-size: 30px;
-    margin-right: $margin/2;
-  }
+  padding: $padding $padding $padding*3 $padding;
+  // i {
+  //   font-size: 30px;
+  //   margin-right: $margin/2;
+  // }
   &.wizard-sidebar-step-active {
     background: $white;
     color: $black;
@@ -76,4 +76,28 @@
   bottom: 0;
   right: 0;
   padding: $padding;
+}
+
+// sidebar files
+.sidebar-files {
+  margin: 0;
+  padding: 0;
+  li {
+    position: relative;
+    list-style: none;
+    display: block;
+    background: rgba($cobalt, 0.1);
+    padding: $padding;
+    margin-bottom: $margin;
+  }
+}
+
+.sidebar-file-links {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: $padding/2;
+  a {
+    margin-left: $margin;
+  }
 }

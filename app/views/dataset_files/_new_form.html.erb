@@ -1,4 +1,4 @@
-<div class="file-input-group">
+<div data-id="1" class="file-input-group">
   <fieldset class="file bg-upload">
     <%= f.text_field "files[][title]", label: "File title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
     <%= f.text_area "files[][description]", label: "File description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>

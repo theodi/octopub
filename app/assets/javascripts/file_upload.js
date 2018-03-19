@@ -132,86 +132,109 @@ $(document).ready(function() {
     });
   }
 
-  var file = $('.file-input-group:first').clone()
-  var id = 1
+  var currentInputGroup = $('.file-input-group:first')
 
   function addAnotherDataFileButtonClick() {
+    var file = $('.file-input-group:first').clone()
+    var inputGroupId = 2
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
-      addFileInputs(e)
+      if (form.valid()) {
+        e.preventDefault();
+        var inputGroup = $(file).clone();
+        var timestamp = new Date().getTime();
+
+        // Remove the error labels from the cloned inputs else they will have duplicates
+        inputGroup.find('label.error').remove()
+        inputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+          if (this.id) {
+            $(this).val('') // Empty the input values
+            this.id = this.id + timestamp // Generate a unique input id
+          }
+        })
+
+        inputGroup.attr('data-id', inputGroupId)
+
+        // Append the cloned inputs and attach file uploader listeners
+        inputGroup.appendTo('#files');
+        inputGroup.find('.bg-upload').each(function(i, elem) {
+          bgUpload(elem);
+        });
+
+        makeInputGroup(inputGroup, inputGroupId, currentInputGroup)
+
+        $('.file-input-group').hide()
+        inputGroup.show()
+
+        currentInputGroup = inputGroup
+        inputGroupId += 1
+
+        // Update all select boxes to create rich search boxes
+        $('.selectpicker').selectpicker('refresh');
+      }
     });
   }
 
-  function addFileInputs(e) {
-    if (form.valid()) {
-      e.preventDefault();
-      var clone = $(file).clone();
-      var timestamp = new Date().getTime();
+  var sidebarLinks = $('.sidebar-files').find('li:first').clone(true)
 
-      // Remove the error labels from the cloned inputs else they will have duplicates
-      clone.find('label.error').remove()
-      clone.find(':input').not(':button').not("[aria-label='Search']").each(function() {
-        if (this.id) {
-          $(this).val('') // Empty the input values
-          this.id = this.id + timestamp // Generate a unique input id
-        }
-      })
+  function makeInputGroup(inputGroup, inputGroupId, current) {
+    var links = sidebarLinks.clone(true)
+    var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
 
-      if ( ! $('.file-input-group:visible').attr('data-id')) {
-        $('.file-input-group:visible').attr('data-id', id)
-        makeLinks(id)
-      }
-
-      // Append the cloned inputs and attach file uploader listeners
-      clone.appendTo('#files');
-      clone.find('.bg-upload').each(function(i, elem) {
-        bgUpload(elem);
-      });
-
-      $('.file-input-group').hide()
-      clone.show()
-
-      id += 1
-
-      // Update all select boxes to create rich search boxes
-      $('.selectpicker').selectpicker('refresh');
-    }
-  }
-
-  function makeLinks(id) {
-    var links = $('<li data-id=' + id + '>File name: <a href="#" class="edit">Edit file</a><a href="#" class="delete">Delete file</a></li>')
+    links.find('.sidebar-file-links').append(deleteLink)
+    links.attr('data-id', inputGroupId)
     $('.sidebar-files').append(links)
 
-    var fileTitle = $('.file-input-group:visible').find('input:first').val()
-    links.find('.edit').text(fileTitle)
-
-    var inputGroup = $('.file-input-group[data-id=' + id + ']')
     links.find('.edit').click(function(event){
       $('.file-input-group').hide()
       inputGroup.show()
-      $('.file-input-group:not([data-id])').remove()
+      currentInputGroup = $('.file-input-group:visible')
       event.preventDefault()
     })
 
     links.find('.delete').click(function(event){
-      if ($('.file-input-group[data-id]').length > 1) {
-        // if (inputGroup.is(':visible') || !$('.file-input-group:visible').attr('data-id')) {
-          inputGroup.remove()
-          links.remove()
-          $('.file-input-group:not([data-id])').remove()
-          $('.file-input-group').last().show()
-          event.preventDefault()
-
-        // }
+      if (inputGroup.is(':visible')) {
+        inputGroup.prev().show()
       }
+      inputGroup.remove()
+      links.remove()
+      currentInputGroup = $('.file-input-group:visible')
+      event.preventDefault()
     })
+
+    var fileTitle = current.find('[name="files[][title]"]').first().val()
+    var schemaName = current.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+
+    var fileSize
+    if (window.FileReader) {
+      var file = current.find('input[type="file"]')[0].files[0]
+      fileSize = toMegabytes(file.size) + 'MB'
+    }
+
+    var currentSidebarFile = $('li[data-id='+current.attr('data-id')+']')
+
+    var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
+    currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+    currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
   }
 
-  // stepInputs('#step-three').each(function(){
-  //   $(this).change(function(e){
-  //     addFileInputs(e)
-  //   })
+  function toMegabytes(bytes) {
+    return bytes/1000000
+  }
+
+  // $('[name="files[][title]"]').change(function(){
+  //   console.log('blahahaha')
+  //   console.log($(this).val())
+  //   // $('#chosen-folder').t
   // })
+
+  function setUpSideBar() {
+    $('.sidebar-files .edit').click(function(event) {
+      $('.file-input-group').hide()
+      $('.file-input-group:first').show()
+      event.preventDefault()
+    })
+  }
 
   function addAjaxFormUploading() {
    // Do ajax form uploading
@@ -241,6 +264,7 @@ $(document).ready(function() {
     addAnotherDataFileButtonClick();
     addAjaxFormUploading();
     setUpFileUpload();
+    setUpSideBar();
   }
 
   // ###################################### Validation Code ######################################

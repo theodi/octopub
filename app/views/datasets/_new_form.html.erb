@@ -5,7 +5,7 @@
       <p id="chosen-folder">Folder: XXX</p>
       <p id="chosen-frequency">Publication frequency: XXX</p>
 
-      <a class="wizard-sidebar-step-link show-step-one">Edit</a>
+      <a class="wizard-sidebar-step-link show-step-one"><i class="fa fa-pencil-alt"></i> Edit</a>
       <div class="arrow-right"></div>
     </div>
     <div class="wizard-sidebar-step wizard-sidebar-step-disabled">
@@ -13,17 +13,21 @@
       <p>A licence is an essential requirement for sharing your data publicly. It tells other people how, and for what purpose, they may use the data you publish.</p>
       <p id="chosen-licence">Chosen licence: XXX</p>
 
-      <a class="wizard-sidebar-step-link show-step-two" disabled="true">Edit</a>
+      <a class="wizard-sidebar-step-link show-step-two" disabled="true"><i class="fa fa-pencil-alt"></i> Edit</a>
     </div>
     <div class="wizard-sidebar-step wizard-sidebar-step-disabled">
       <h4><i class="fa fa-file-alt"></i> Add your file(s) to the collection</h4>
       <ul class="sidebar-files">
-        <!-- <li>File name: <a href="#" class="edit">...</a> -->
+        <li data-id="1">
+          <p>File: <span class="sidebar-file-details">...</span></p>
+          <p>Schema: <span class="sidebar-schema-details">...</span></p>
+          <span class="sidebar-file-links"><a href="#" class="edit"><i class="fa fa-pencil-alt"></i> Edit</a></span>
+        </li>
       </ul>
       <p>This collection should contain closely related sets of information, but may be composed of separate files that could be processed together.</p>
       <p>Eg. count_of_trees_by_latin_name.csv and tree_names_latin.csv.</p>
       <p>Or you may plan to publish new data for the same purpose, for example count_of_trees_January.csv and at a later date you can add count_of_trees_February.csv</p>
-      <a class="wizard-sidebar-step-link show-step-three" disabled="true">Edit</a>
+      <a class="wizard-sidebar-step-link show-step-three" disabled="true"><i class="fa fa-pencil-alt"></i> Edit</a>
     </div>
   </div>
   <div class="col-sm-8">
