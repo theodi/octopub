@@ -216,17 +216,49 @@ $(document).ready(function() {
     var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
     currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
     currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
+
+    current.find('[name="files[][title]"]').change(function(){
+      var fileTitle = current.find('[name="files[][title]"]').first().val()
+      var fileSize
+      if (window.FileReader) {
+        var file = current.find('input[type="file"]')[0].files[0]
+        fileSize = toMegabytes(file.size) + 'MB'
+      }
+      var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
+      currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+    })
+
+    current.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
+      var fileTitle = current.find('[name="files[][title]"]').first().val()
+      var fileSize
+      if (window.FileReader) {
+        var file = current.find('input[type="file"]')[0].files[0]
+        fileSize = toMegabytes(file.size) + 'MB'
+      }
+      var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
+      currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+    })
   }
 
   function toMegabytes(bytes) {
     return bytes/1000000
   }
 
-  // $('[name="files[][title]"]').change(function(){
-  //   console.log('blahahaha')
-  //   console.log($(this).val())
-  //   // $('#chosen-folder').t
-  // })
+  if ($("input#dataset\\[name\\]").val()) { $('#chosen-folder').text($("input#dataset\\[name\\]").val()) }
+  if ($("#_dataset\\[frequency\\]").find('option:selected').text()) { $('#chosen-frequency').text($("#_dataset\\[frequency\\]").find('option:selected').text()) }
+  if ($("_dataset\\[license\\]").find('option:selected').text()) { $('#chosen-licence').text($("_dataset\\[license\\]").find('option:selected').text()) }
+
+  $("input#dataset\\[name\\]").change(function(){
+    $('#chosen-folder').text($(this).val())
+  })
+
+  $("#_dataset\\[frequency\\]").change(function(){
+    $('#chosen-frequency').text($(this).find('option:selected').text())
+  })
+
+  $("#_dataset\\[license\\]").change(function(){
+    $('#chosen-licence').text($(this).find('option:selected').text())
+  })
 
   function setUpSideBar() {
     $('.sidebar-files .edit').click(function(event) {
