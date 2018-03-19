@@ -2,6 +2,9 @@
   <table class="table table-striped table-bordered" id="data-table">
     <thead>
       <tr>
+        {% for item in data_table.first %}
+          <th>{{ item[0] }}</th>
+        {% endfor %}
       </tr>
     </thead>
     <tbody id="data-table-body">

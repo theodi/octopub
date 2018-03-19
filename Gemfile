@@ -39,7 +39,6 @@ gem 'bootstrap-select-rails'
 gem 'bootstrap_form'
 gem "bootstrap-table-rails"
 gem 'emd'
-gem 'jquery-validation-rails'
 
 # Logging and debug
 gem 'awesome_print'

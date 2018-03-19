@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   layout ENV['LAYOUT'] || 'application'
 
   def index
-    @datasets = current_user.datasets if !current_user.nil?
-    @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc) if !current_user.nil?
     render "#{ENV['INDEX_TEMPLATE'] || 'index'}.html.erb"
   end
 

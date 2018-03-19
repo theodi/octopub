@@ -24,6 +24,7 @@ module FileHandlingForDatasets
   end
 
   def get_multipart
+
     @files = params["files"] || Array.new
 
     if params["data"]
@@ -52,8 +53,6 @@ module FileHandlingForDatasets
   end
 
   def get_files_as_array_for_serialisation
-		logger.info "get files for serialisation"
-		logger.info "files= #{@files}"
     @files.map { |file_param_object| file_param_object.to_unsafe_hash }
   end
 

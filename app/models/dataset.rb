@@ -84,6 +84,7 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
+
   def github_url
     "http://github.com/#{full_name}"
   end
@@ -117,8 +118,7 @@ class Dataset < ApplicationRecord
     actual_repo
     set_owner_avatar
     publish_public_views(true)
-		# Disabled the below function to remove email notification upon successful upload
-    # send_success_email
+    send_success_email
     SendTweetService.new(self).perform
   end
 
