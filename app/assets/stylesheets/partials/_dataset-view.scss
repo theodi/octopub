@@ -14,11 +14,11 @@ h1 {
   margin-top: $margin;
   margin-bottom: 1.5em;
 
-  .fa-folder-open {
+  .fa-folder-open, .fa-file-alt {
     margin-right: $margin / 2;
   }
 
-  .btn-tertiary, .btn-prim {
+  .btn-tertiary, .btn-prim, .btn-secondary {
     float: right !important;
     margin-left: $margin;
   }

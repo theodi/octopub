@@ -1,7 +1,15 @@
 @import "modules/base";
 
-.fixed-table-container {
+.fixed-table-container, .table-container, .table-bordered {
   border: none;
+
+	thead > tr > th {
+		border: none;
+
+		.both {
+			float: left;
+		}
+	}
 
   .table {
     border-bottom:0px !important;
@@ -9,6 +17,10 @@
     thead > tr {
       border-bottom: 1px solid $light-grey;
     }
+
+		thead > tr > th {
+			border: none;
+		}
 
     tbody > tr > td {
       vertical-align: middle;

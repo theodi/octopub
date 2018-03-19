@@ -116,7 +116,7 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
     expect(RepoService).to receive(:fetch_repo)
     expect(dataset).to receive(:set_owner_avatar)
     expect(dataset).to receive(:publish_public_views).with(true)
-    expect(dataset).to receive(:send_success_email)
+    # expect(dataset).to receive(:send_success_email)
     expect_any_instance_of(SendTweetService).to receive(:perform)
     dataset.complete_publishing
   end

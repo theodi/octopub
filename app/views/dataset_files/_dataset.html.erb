@@ -6,8 +6,8 @@
     <div class="col-md-5 col-sm-5">
       <p><%= @dataset.owner %></p>
     </div>
-    <div class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-3 icon-blue">
-      <i class="as fa-pencil-alt"></i>
+    <div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
+      <i class="fas fa-pencil-alt"></i>
       <%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
     </div>
   </div>
@@ -16,7 +16,6 @@
       <p><strong>Licence:</strong></p>
     </div>
     <div class="col-md-5 col-sm-5">
-
       <% if @dataset.license %>
         <p><%= link_to(licence_name(@dataset.license), licence_url(@dataset.license), target: "_blank") %></p>
       <% else %>
