@@ -6,6 +6,7 @@
   border-color: $black;
   border-radius: 0;
   padding: $padding/2;
+
   .navbar-header > .navbar-brand {
     color: $bright-orange;
     font-size: 1.9em;
@@ -53,7 +54,7 @@
     margin: 7px 15px 5px 0 !important;
 		text-align: right !important;
 
-    .btn-prim {
+    .btn-primary {
       margin-left: $margin;
     }
 
