@@ -254,29 +254,21 @@ $(document).ready(function() {
     return bytes/1000000
   }
 
-  if ($("input#dataset\\[name\\]").val()) { $('#chosen-folder').text($("input#dataset\\[name\\]").val()) }
-  if ($("#_dataset\\[frequency\\]").find('option:selected').text()) { $('#chosen-frequency').text($("#_dataset\\[frequency\\]").find('option:selected').text()) }
-  if ($("#_dataset\\[license\\]").find('option:selected').text()) { $('#chosen-licence').text($("#_dataset\\[license\\]").find('option:selected').text()) }
+  if ($('[name="dataset[name]"]').val()) { $('#chosen-folder').text($('[name="dataset[name]"]').val()) }
+  if ($('[name="dataset[frequency]"]').find('option:selected').text()) { $('#chosen-frequency').text($('[name="dataset[frequency]"]').find('option:selected').text()) }
+  if ($('[name="dataset[license]"]').find('option:selected').text()) { $('#chosen-licence').text($('[name="dataset[license]"]').find('option:selected').text()) }
 
-  $("input#dataset\\[name\\]").change(function(){
+  $('[name="dataset[name]"]').change(function(){
     $('#chosen-folder').text($(this).val())
   })
 
-  $("#_dataset\\[frequency\\]").change(function(){
+  $('[name="dataset[frequency]"]').change(function(){
     $('#chosen-frequency').text($(this).find('option:selected').text())
   })
 
-  $("#_dataset\\[license\\]").change(function(){
+  $('[name="dataset[license]"]').change(function(){
     $('#chosen-licence').text($(this).find('option:selected').text())
   })
-
-  // function setUpSideBar() {
-  //   $('.sidebar-files .edit').click(function(event) {
-  //     $('.file-input-group').hide()
-  //     $('.file-input-group:first').show()
-  //     event.preventDefault()
-  //   })
-  // }
 
   function addAjaxFormUploading() {
    // Do ajax form uploading
@@ -306,7 +298,6 @@ $(document).ready(function() {
     addAnotherDataFileButtonClick();
     addAjaxFormUploading();
     setUpFileUpload();
-    // setUpSideBar();
   }
 
   // ###################################### Validation Code ######################################
@@ -323,7 +314,7 @@ $(document).ready(function() {
       'files[][title]': { required: true },
       'files[][description]': {},
       '[files[][file]]': { required: true },
-      '_files[][dataset_file_schema_id]': {}
+      '[files[][dataset_file_schema_id]]': {}
     },
     onfocusout: function(element) {
       this.element(element) // Validate elements on onfocusout

@@ -1,3 +1,5 @@
+@import "modules/base";
+
 /* Tooltip container */
 .tooltips {
   position: relative;
@@ -23,4 +25,17 @@
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltips:hover .tooltiptexts {
   visibility: visible;
+}
+
+.tooltip > .tooltip-inner { 
+  background-color: $dusk-blue;
+  border-radius: 0;
+}
+
+.tooltip.right > .tooltip-arrow { 
+  border-right-color: $dusk-blue; 
+}
+
+.fa-question-circle {
+  color: $dusk-blue;
 }
