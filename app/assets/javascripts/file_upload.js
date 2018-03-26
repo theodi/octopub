@@ -202,7 +202,7 @@ $(document).ready(function() {
     })
 
     links.find('.delete').click(function(event){
-      if (inputGroup.is(':visible')) {
+      if (inputGroup === currentInputGroup) {
         inputGroup.prev().fadeIn()
       }
       inputGroup.remove()
