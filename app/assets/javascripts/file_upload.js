@@ -133,7 +133,7 @@ $(document).ready(function() {
   }
 
   var currentInputGroup = $('.file-input-group:first')
-  var inputGroup = currentInputGroup.clone()  
+  var inputGroup = currentInputGroup.clone()
 
   function addAnotherDataFileButtonClick() {
     // Clone button to create another file to upload
@@ -164,10 +164,15 @@ $(document).ready(function() {
           bgUpload(elem);
         });
 
+        // activate bootstrap tooltips
+        $('body').tooltip({
+          selector: '[data-toggle="tooltip"]'
+        });
+
 
         $('.file-input-group').hide()
         newInputGroup.fadeIn()
-        updateCurrentInputGroup()
+        updateCurrentInputGroup(newInputGroup)
 
         // Update all select boxes to create rich search boxes
         $('.selectpicker').selectpicker('refresh');
@@ -178,7 +183,7 @@ $(document).ready(function() {
 
   var sidebarLinks = $('#sidebar-links').find('li:first').clone(true)
 
-  function makeSidebarLinks(currentInputGroup) {
+  function makeSidebarLinks(inputGroup) {
     var links = sidebarLinks.clone(true)
 
     if ($('.file-input-group').length > 1) {
@@ -191,26 +196,26 @@ $(document).ready(function() {
     links.find('.edit').click(function(event){
       $('.file-input-group').hide()
       $('.file-input-group:not([data-complete])').remove()
-      currentInputGroup.fadeIn()
-      updateCurrentInputGroup()
+      inputGroup.fadeIn()
+      updateCurrentInputGroup(inputGroup)
       event.preventDefault()
     })
 
     links.find('.delete').click(function(event){
-      if (currentInputGroup.is(':visible')) {
-        currentInputGroup.prev().fadeIn()
+      if (inputGroup.is(':visible')) {
+        inputGroup.prev().fadeIn()
       }
-      currentInputGroup.remove()
+      inputGroup.remove()
       links.remove()
       event.preventDefault()
     })
 
-    var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
-    var schemaName = currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+    var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
+    var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
 
     var fileSize
     if (window.FileReader) {
-      var file = currentInputGroup.find('input[type="file"]')[0].files[0]
+      var file = inputGroup.find('input[type="file"]')[0].files[0]
       fileSize = toMegabytes(file.size) + 'MB'
     }
 
@@ -218,36 +223,36 @@ $(document).ready(function() {
     links.find('.sidebar-file-details').text(sidebarFileDetails)
     links.find('.sidebar-schema-details').text(schemaName)
 
-    currentInputGroup.find('[name="files[][title]"]').change(function(){
-      var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
+    inputGroup.find('[name="files[][title]"]').change(function(){
+      var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
       var fileSize
       if (window.FileReader) {
-        var file = currentInputGroup.find('input[type="file"]')[0].files[0]
+        var file = inputGroup.find('input[type="file"]')[0].files[0]
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       links.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
-    currentInputGroup.find('[name="[files[][file]]"]').change(function(){
-      var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
+    inputGroup.find('[name="[files[][file]]"]').change(function(){
+      var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
       var fileSize
       if (window.FileReader) {
-        var file = currentInputGroup.find('input[type="file"]')[0].files[0]
+        var file = inputGroup.find('input[type="file"]')[0].files[0]
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       links.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
-    currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
-      var schemaName = currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+    inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
+      var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
       links.find('.sidebar-schema-details').text(schemaName)
     })
   }
 
-  function updateCurrentInputGroup() {
-    currentInputGroup = $('.file-input-group:visible')
+  function updateCurrentInputGroup(inputGroup) {
+    currentInputGroup = inputGroup
   }
 
   function toMegabytes(bytes) {
