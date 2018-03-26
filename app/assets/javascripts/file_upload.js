@@ -133,116 +133,121 @@ $(document).ready(function() {
   }
 
   var currentInputGroup = $('.file-input-group:first')
+  var inputGroup = currentInputGroup.clone()  
 
   function addAnotherDataFileButtonClick() {
-    var file = $('.file-input-group:first').clone()
-    var inputGroupId = 2
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
       if (form.valid()) {
-        e.preventDefault();
-        var inputGroup = $(file).clone();
-        var timestamp = new Date().getTime();
+        hideStepDescription(currentStep)
+        var newInputGroup = $(inputGroup).clone().removeClass('hidden')
+        var timestamp = new Date().getTime()
 
         // Remove the error labels from the cloned inputs else they will have duplicates
-        inputGroup.find('label.error').remove()
-        inputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+        newInputGroup.find('label.error').remove()
+        newInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
           if (this.id) {
             $(this).val('') // Empty the input values
             this.id = this.id + timestamp // Generate a unique input id
           }
         })
 
-        inputGroup.attr('data-id', inputGroupId)
+        // give the input group a unique data-id
+        if ( ! currentInputGroup.attr('data-complete')) {
+          currentInputGroup.attr('data-complete', true)
+          makeSidebarLinks(currentInputGroup)
+        }
 
-        // Append the cloned inputs and attach file uploader listeners
-        inputGroup.appendTo('#files');
-        inputGroup.find('.bg-upload').each(function(i, elem) {
+        // Append the input group and attach file uploader listeners
+        newInputGroup.appendTo('#files');
+        newInputGroup.find('.bg-upload').each(function(i, elem) {
           bgUpload(elem);
         });
 
-        makeInputGroup(inputGroup, inputGroupId, currentInputGroup)
 
         $('.file-input-group').hide()
-        inputGroup.show()
-
-        currentInputGroup = inputGroup
-        inputGroupId += 1
+        newInputGroup.fadeIn()
+        updateCurrentInputGroup()
 
         // Update all select boxes to create rich search boxes
         $('.selectpicker').selectpicker('refresh');
+        e.preventDefault()
       }
     });
   }
 
-  var sidebarLinks = $('.sidebar-files').find('li:first').clone(true)
+  var sidebarLinks = $('#sidebar-links').find('li:first').clone(true)
 
-  function makeInputGroup(inputGroup, inputGroupId, current) {
+  function makeSidebarLinks(currentInputGroup) {
     var links = sidebarLinks.clone(true)
-    var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
 
-    links.find('.sidebar-file-links').append(deleteLink)
-    links.attr('data-id', inputGroupId)
-    $('.sidebar-files').append(links)
+    if ($('.file-input-group').length > 1) {
+      var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
+      links.find('.sidebar-file-links').append(deleteLink)
+    }
+
+    $('.sidebar-files').append(links).hide().fadeIn()
 
     links.find('.edit').click(function(event){
       $('.file-input-group').hide()
-      inputGroup.show()
-      currentInputGroup = $('.file-input-group:visible')
+      $('.file-input-group:not([data-complete])').remove()
+      currentInputGroup.fadeIn()
+      updateCurrentInputGroup()
       event.preventDefault()
     })
 
     links.find('.delete').click(function(event){
-      if (inputGroup.is(':visible')) {
-        inputGroup.prev().show()
+      if (currentInputGroup.is(':visible')) {
+        currentInputGroup.prev().fadeIn()
       }
-      inputGroup.remove()
+      currentInputGroup.remove()
       links.remove()
-      currentInputGroup = $('.file-input-group:visible')
       event.preventDefault()
     })
 
-    var fileTitle = current.find('[name="files[][title]"]').first().val()
-    var schemaName = current.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+    var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
+    var schemaName = currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
 
     var fileSize
     if (window.FileReader) {
-      var file = current.find('input[type="file"]')[0].files[0]
+      var file = currentInputGroup.find('input[type="file"]')[0].files[0]
       fileSize = toMegabytes(file.size) + 'MB'
     }
 
-    var currentSidebarFile = $('li[data-id='+current.attr('data-id')+']')
-
     var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-    currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
-    currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
+    links.find('.sidebar-file-details').text(sidebarFileDetails)
+    links.find('.sidebar-schema-details').text(schemaName)
 
-    current.find('[name="files[][title]"]').change(function(){
-      var fileTitle = current.find('[name="files[][title]"]').first().val()
+    currentInputGroup.find('[name="files[][title]"]').change(function(){
+      var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
       var fileSize
       if (window.FileReader) {
-        var file = current.find('input[type="file"]')[0].files[0]
+        var file = currentInputGroup.find('input[type="file"]')[0].files[0]
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-      currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+      links.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
-    current.find('[name="[files[][file]]"]').change(function(){
-      var fileTitle = current.find('[name="files[][title]"]').first().val()
+    currentInputGroup.find('[name="[files[][file]]"]').change(function(){
+      var fileTitle = currentInputGroup.find('[name="files[][title]"]').first().val()
       var fileSize
       if (window.FileReader) {
-        var file = current.find('input[type="file"]')[0].files[0]
+        var file = currentInputGroup.find('input[type="file"]')[0].files[0]
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-      currentSidebarFile.find('.sidebar-file-details').text(sidebarFileDetails)
+      links.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
-    current.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
-      var schemaName = current.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
-      currentSidebarFile.find('.sidebar-schema-details').text(schemaName)
+    currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
+      var schemaName = currentInputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
+      links.find('.sidebar-schema-details').text(schemaName)
     })
+  }
+
+  function updateCurrentInputGroup() {
+    currentInputGroup = $('.file-input-group:visible')
   }
 
   function toMegabytes(bytes) {
@@ -251,7 +256,7 @@ $(document).ready(function() {
 
   if ($("input#dataset\\[name\\]").val()) { $('#chosen-folder').text($("input#dataset\\[name\\]").val()) }
   if ($("#_dataset\\[frequency\\]").find('option:selected').text()) { $('#chosen-frequency').text($("#_dataset\\[frequency\\]").find('option:selected').text()) }
-  if ($("_dataset\\[license\\]").find('option:selected').text()) { $('#chosen-licence').text($("_dataset\\[license\\]").find('option:selected').text()) }
+  if ($("#_dataset\\[license\\]").find('option:selected').text()) { $('#chosen-licence').text($("#_dataset\\[license\\]").find('option:selected').text()) }
 
   $("input#dataset\\[name\\]").change(function(){
     $('#chosen-folder').text($(this).val())
@@ -265,13 +270,13 @@ $(document).ready(function() {
     $('#chosen-licence').text($(this).find('option:selected').text())
   })
 
-  function setUpSideBar() {
-    $('.sidebar-files .edit').click(function(event) {
-      $('.file-input-group').hide()
-      $('.file-input-group:first').show()
-      event.preventDefault()
-    })
-  }
+  // function setUpSideBar() {
+  //   $('.sidebar-files .edit').click(function(event) {
+  //     $('.file-input-group').hide()
+  //     $('.file-input-group:first').show()
+  //     event.preventDefault()
+  //   })
+  // }
 
   function addAjaxFormUploading() {
    // Do ajax form uploading
@@ -301,7 +306,7 @@ $(document).ready(function() {
     addAnotherDataFileButtonClick();
     addAjaxFormUploading();
     setUpFileUpload();
-    setUpSideBar();
+    // setUpSideBar();
   }
 
   // ###################################### Validation Code ######################################
@@ -336,11 +341,18 @@ $(document).ready(function() {
       if (stepsValid(stepsToValidate(targetStep))) {
         hideCurrentStep()
         showTargetStep(targetStep)
+        if (currentStep === formSteps[0] || currentStep === formSteps[1]) {
+          hideStepDescription(currentStep)
+        }
         currentStep = targetStep
       }
       e.preventDefault()
     })
   })
+
+  function hideStepDescription(step) {
+    $('.show-' + step).parents('.wizard-sidebar-step').find('.wizard-sidebar-step-description').hide();
+  }
 
   // Get the steps that require validation inbetween currentStep and targetStep
   // Accepts string e.g. 'step-three'
@@ -379,13 +391,13 @@ $(document).ready(function() {
 
   function hideCurrentStep() {
     $('#' + currentStep).addClass('hidden')
-    $('.show-' + currentStep).parents('.wizard-sidebar-step')
-      .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+    var step = $('.show-' + currentStep).parents('.wizard-sidebar-step')
+      step.removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
       .addClass('wizard-sidebar-step-inactive')
   }
 
   function showTargetStep(targetStep) {
-    $('#' + targetStep).removeClass('hidden')
+    $('#' + targetStep).fadeIn().removeClass('hidden')
     $.each(stepsToValidate(targetStep), function(i, step) {
       $('.show-' + step).parents('.wizard-sidebar-step')
         .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
