@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'application#index'
+  root 'application#index', :as => :home
 
   get '/api-docs' => 'application#api'#, :as => :api
 

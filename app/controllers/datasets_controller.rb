@@ -110,7 +110,7 @@ class DatasetsController < ApplicationController
       success_message = "#{success_message} - but we could not find the repository in GitHub to delete"
     end
     @dataset.destroy
-    redirect_to dashboard_path
+    redirect_to home_path
   end
 
   private
