@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/collection/:dataset_id/publish_dataset" => "datasets#spoof_publish"
+  get "/collection/:dataset_id/publish_dataset" => "datasets#publish_dataset"
 
 	get "/collection/:dataset_id" => "dataset_files#index", as: :files
   get "/collection/:dataset_id/file/:dataset_file_id" => "dataset_files#show", as: :dataset_files
