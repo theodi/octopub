@@ -28,6 +28,7 @@
 }
 
 .tooltip > .tooltip-inner { 
+  padding: $padding;
   background-color: $dusk-blue;
   border-radius: 0;
 }

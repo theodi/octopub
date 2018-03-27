@@ -2,7 +2,7 @@
   <div id="wizard-sidebar" class="col-sm-4">
     <div class="wizard-sidebar-step wizard-sidebar-step-active">
       <h4><i class="fa fa-folder"></i> Create a collection for your data</h4>
-      <div class="wizard-sidebar-step-description"><p>You can think of a data collection as a folder of related data files. You may only have one file to upload now, or you may wish to come back and add more related files later.</p></div>
+      <div class="wizard-sidebar-step-description"><p>Think of a data collection as a folder of related data files. Even if you only have one file for now, the collection will be ready to hold more if you want to add more related files later.</p></div>
 
       <strong><p>Folder: <span id="chosen-folder">...</span></p></strong>
       <strong><p>Publication frequency: <span id="chosen-frequency">...</span></p></strong>
@@ -43,15 +43,15 @@
 
       <div id="step-one">
         <div class="form-group">
-          <label for="dataset[name]">Collection name<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+          <label for="dataset[name]">Collection name<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="The name of your collection will be key to people finding it, once published. Make it as descriptive as possible about what it is and its characteristics. Example: Monthly England traffic violation statistics, per county."></i></label>
           <%= text_field_tag "dataset[name]", dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name'), class: "form-control" %>
         </div>
         <div class="form-group">
-          <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+          <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A more detailed summary about this data set. It will be key to helping people decide whether it is relevant to their needs, so you should try and add as much details as possible about its topic coverage, temporal or geographic boundaries, etc. You may decide to add a number of keywords here as well."></i></label>
           <%= text_area_tag "dataset[description]", dataset.description, placeholder: t(:'dataset.description'), class: "form-control"  %>
         </div>
         <div class="form-group">
-          <label for="dataset[frequency]">Publication frequency<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+          <label for="dataset[frequency]">Publication frequency<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often?"></i></label>
           <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES), selected: dataset.frequency, class: "form-control" %>
         </div>
 
@@ -76,7 +76,7 @@
         <% end %>
 
         <div class="form-group">
-          <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+          <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
           <%= select_tag "dataset[license]", options_for_select(licenses), selected: dataset.license, class: "form-control" %>
         </div>
 

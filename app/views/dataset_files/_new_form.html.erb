@@ -5,7 +5,7 @@
       <%= text_field_tag "files[][title]", file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil?, class: "title form-control" %>
     </div>
     <div class="form-group">
-      <label for="files[][description]">File description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+      <label for="files[][description]">File description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A summary about this particular file. Once published, it will be used alongside the description of the collection to determine relevance, and help people find specific data within the collection. You should include details on the data in this file, including whether it covers a specific place, topic, or time. Example: A count of trees in the London area by latin name, grouped by London borough. Data is for January 2017. Keywords: Trees, London, Monthly, 2017-01"></i></label>
       <%= text_area_tag "files[][description]", file.description, placeholder: t(:'dataset_file.description'), class: "description form-control" %>
     </div>
 
@@ -18,7 +18,7 @@
       </div>
     <% else %>
       <div class="form-group">
-        <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+        <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Only CSV files will be checked for errors, but you can upload other file types if you wish."></i></label>
         <%= file_field_tag "[files[][file]]", accept: ".csv" %>
       </div>
     <% end %>
@@ -29,7 +29,8 @@
 
     <% if dataset_file_schemas.any? %>
       <div class="form-group">
-        <label for="[files[][dataset_file_schema_id]]">Apply a schema to your file (optional)<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+        <label for="[files[][dataset_file_schema_id]]">Apply a schema to your file (optional)<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A &quot;schema&quot; is a special document that describes how your dataset should be structured and the rules to which it must adhere. The schema can be used to validate your data and catch common errors. We recommend using standard schemas if possible to make the data easier to compare and combine. You can find some schemas here. For more information see About/Schemas"></i></label>
+        <p><em>We recommend using standard schemas if possible to make the data easier to compare and combine.</em></p>
         <%= select_tag "[files[][dataset_file_schema_id]]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)', class: "form-control" } %>
       </div>
     <% end %>
