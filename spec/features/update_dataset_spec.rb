@@ -134,7 +134,7 @@ feature "Update dataset page", type: :feature do
       expect(@dataset.local_private?).to be true
     end
 
-    scenario "can change a private repo to a public one" do
+    pending "can change a private repo to a public one" do
       repo = double(GitData)
       expect(repo).to receive(:html_url) { 'https://example.org' }
       expect(repo).to receive(:name) { 'examplename'}

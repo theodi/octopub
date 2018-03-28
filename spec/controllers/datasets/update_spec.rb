@@ -424,7 +424,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       Sidekiq::Testing.fake!
     end
 
-    it 'create a new public repo' do
+    pending 'create a new public repo' do
       put :update, params: { id: @dataset.id, dataset: { publishing_method: :github_public }}
       @dataset.reload
 
