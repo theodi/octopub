@@ -19,7 +19,7 @@ class JekyllService
 
     create_jekyll_files
     push_to_github
-    wait_for_gh_pages_build(5, @dataset)
+    # wait_for_gh_pages_build(5, @dataset)
     # create_certificate(dataset)
   end
 
