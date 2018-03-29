@@ -339,7 +339,7 @@ GEM
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
     open_uri_redirections (0.2.1)
-    pg (0.21.0)
+    pg (1.0.0)
     poltergeist (1.16.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
