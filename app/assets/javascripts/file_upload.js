@@ -426,8 +426,12 @@ $(document).ready(function() {
       // param = size (in bytes) 
       // element = element to validate (<input>)
       // value = value of the element (file name)
-      var fileName = element.files[0].name
-      return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
+      if (element.files) {
+        var fileName = element.files[0].name
+        return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
+      } else {
+        return true
+      }
   }, "File name must only contain letters, numbers, and underscores");
 
 });

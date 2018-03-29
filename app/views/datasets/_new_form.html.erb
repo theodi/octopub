@@ -63,7 +63,7 @@
           <%= url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
         <% end %>
 
-        <a href="#" class="show-step-two btn btn-secondary">Next: Add a licence</a>
+        <a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
       </div>
 
       <div id="step-two" class="hidden">
@@ -80,7 +80,7 @@
           <%= select_tag "dataset[license]", options_for_select(licenses), selected: dataset.license, class: "form-control" %>
         </div>
 
-        <a href="#" class="show-step-three btn btn-secondary">Next: Add your file(s)</a>
+        <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
       </div>
 
       <div id="step-three" class="hidden">
