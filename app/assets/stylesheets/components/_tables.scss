@@ -35,6 +35,11 @@
       }
     }
 
+		tbody > .no-records-found > td {
+			text-align: left;
+			font-style: italic;
+		}
+
     th, td {
       border: 1px !important;
       vertical-align: middle;

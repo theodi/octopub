@@ -10,7 +10,7 @@
   <% else %>
     <td><%= dataset.schema_names.truncate(30) %></td>
   <% end %>
-  <td><%= time_or_date(dataset.created_at.utc) %></td>
+  <td><%= time_or_date(dataset.updated_at.utc) %></td>
   <!-- <td>Temp</td> -->
   <% if dataset.published_status %>
     <td>Yes</td>

@@ -22,7 +22,7 @@ describe DatasetsController, type: :controller do
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }
-      expect(request).to redirect_to(dashboard_path)
+      expect(request).to redirect_to(root_path)
     end
 
     it 'deletes a private github repo dataset' do
@@ -37,7 +37,7 @@ describe DatasetsController, type: :controller do
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }
-      expect(request).to redirect_to(dashboard_path)
+      expect(request).to redirect_to(root_path)
     end
 
     it 'deletes a private local repo dataset' do
@@ -52,7 +52,7 @@ describe DatasetsController, type: :controller do
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }
-      expect(request).to redirect_to(dashboard_path)
+      expect(request).to redirect_to(root_path)
     end
 
     it 'deletes a public github repo dataset even if it cannot find the repo' do
@@ -63,7 +63,7 @@ describe DatasetsController, type: :controller do
       expect(@dataset).to receive(:destroy)
 
       request = delete :destroy, params: { id: @dataset.id }
-      expect(request).to redirect_to(dashboard_path)
+      expect(request).to redirect_to(root_path)
     end
   end
 
