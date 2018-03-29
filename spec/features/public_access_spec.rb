@@ -4,7 +4,7 @@ feature "A visiting, non-logged in user", type: :feature do
 
   before(:each) do
     visit root_path
-    expect(page).to have_content "Sign in with Github"
+    expect(page).to have_content "Sign in to start"
   end
 
   # context "can access the home page" do
@@ -32,7 +32,7 @@ feature "A visiting, non-logged in user", type: :feature do
   context "can not access" do
 
     after(:each) do
-      expect(page).to have_content "You must be logged in to do that"
+      expect(page).to have_content "You must be logged in to do that!"
     end
 
     it "new dataset path" do

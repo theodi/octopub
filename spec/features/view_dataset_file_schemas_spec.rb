@@ -12,7 +12,7 @@ feature "As a logged in user, viewing dataset file schemas", type: :feature do
     @other_user = create(:user)
     @user = create(:user, name: "Frank O'Ryan")
     OmniAuth.config.mock_auth[:github]
-    visit root_path
+    visit home_path
     sign_in @user
   end
 

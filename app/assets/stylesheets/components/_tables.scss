@@ -33,15 +33,12 @@
           text-decoration: none;
         }
       }
-
-			.no-records-found {
-
-				td {
-					text-align: left;
-					font-style: italic;
-				}
-			}
     }
+
+		tbody > .no-records-found > td {
+			text-align: left;
+			font-style: italic;
+		}
 
     th, td {
       border: 1px !important;
