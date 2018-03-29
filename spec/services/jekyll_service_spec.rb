@@ -36,7 +36,7 @@ describe JekyllService, vcr: { :match_requests_on => [:host, :method] } do
       jekyll_service.update_file_in_repo("my-file", "File contents")
     end
 
-    it 'waits for the page build to finish then creates certificate' do
+    pending 'waits for the page build to finish then creates certificate' do
       dataset = build(:dataset, user: user, repo: "repo")
 
       jekyll_service = JekyllService.new(dataset, nil)

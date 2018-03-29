@@ -24,6 +24,10 @@ textarea.form-control {
 	font-weight: normal;
 }
 
+label {
+	width: 100%;
+}
+
 // JQuery Validate error styling
 .form-control.error {
 	border: 2px solid red;

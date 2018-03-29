@@ -15,13 +15,6 @@ class DatasetsController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
-  def spoof_publish
-    @dataset = Dataset.find(params[:dataset_id])
-    @dataset.update_attribute(:published_status, true)
-    # flash[:success] = 'Dataset published!'
-    # redirect_to :back
-  end
-
   def index
     @title = "Public Datasets"
     @datasets = Dataset.github_public.order(created_at: :desc)
@@ -65,18 +58,21 @@ class DatasetsController < ApplicationController
     @dataset_file_schemas = available_schemas
   end
 
+  def publish_dataset
+    @dataset = Dataset.find(params[:dataset_id])
+    if @dataset
+      CreateRepository.perform_async(@dataset.id)
+      flash[:success] = "Your dataset is being published and will be available shortly!"
+      redirect_to :back
+    end
+  end
+
   def create
     logger.info "DatasetsController: In create"
 		files_array = get_files_as_array_for_serialisation
-
     CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
-    if params[:async]
-      logger.info "DatasetsController: In create with params async"
-      head :accepted
-    else
-      redirect_to created_datasets_path(publishing_method: dataset_params[:publishing_method])
-    end
+    redirect_to created_datasets_path
   end
 
   def edit
@@ -110,7 +106,7 @@ class DatasetsController < ApplicationController
       success_message = "#{success_message} - but we could not find the repository in GitHub to delete"
     end
     @dataset.destroy
-    redirect_to dashboard_path
+    redirect_to root_path
   end
 
   private

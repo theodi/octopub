@@ -2,6 +2,7 @@
   <td>
     <%= link_to(dataset.name.truncate(20), files_path(dataset.id), class:"collection-link") %>
   </td>
+	<td><%= dataset.dataset_files.each { |file| file }.count %></td>
   <% if dataset.schema_names == "" %>
     <td></td>
   <% elsif dataset.schema_names.include?", " %>
@@ -9,7 +10,7 @@
   <% else %>
     <td><%= dataset.schema_names.truncate(20) %></td>
   <% end %>
-  <td><%= time_or_date(dataset.created_at.utc) %></td>
+  <td><%= time_or_date(dataset.updated_at.utc) %></td>
   <!-- <td>Temp</td> -->
   <% if dataset.published_status %>
     <td>Yes</td>

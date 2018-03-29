@@ -31,8 +31,9 @@
       <thead>
         <tr>
           <th data-sortable="true">Collection Name</th>
+					<th>Number of files</th>
           <th data-sortable="true">Schema</th>
-          <th data-sortable="true" data-field="creation">Creation date</th>
+          <th data-sortable="true" data-field="creation">Last updated</th>
           <!-- <th data-sortable="true">Validation</th> -->
           <th data-sortable="true">Published</th>
           <th>Action</th>
@@ -78,15 +79,15 @@
 	<div class="home-box-head">
 		<h1 class="orange"><span class="pub">Octo</span>pub</h1>
 		<h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>
-		<%= bs_button_to "Create a Github account", "https://github.com/join", :class => "btn btn-secondary" %>
-		<%= bs_button_to "Sign in with Github", "/auth/github", :class => "btn btn-primary" %>
+		<%= bs_button_to "No Github account? Get one", "https://github.com/join", :class => "btn btn-secondary" %>
+		<%= bs_button_to "Sign in to start", "/auth/github", :class => "btn btn-primary" %>
 	</div>
 	<div class="home-box-black">
 		<div class="home-text">
-			<h2>Create <span class="underline">file collections</span></h2>
-			<p>This is where you'll put your data files.</p>
-			<p>You can write <span class="underline">metadata</span> and decide on update
-			frequencies to help user_datasets_path follow the iterations of you data files.</p>
+			<h2>Create file collections</h2>
+			<p>This is where you’ll put your related data files.</p>
+			<p>Add a description so people can find your collection, and tell others
+				about your update frequencies so they come back.</p>
 		</div>
 		<div class="home-image">
 			<%= image_tag 'home-page-files-collection.png', alt: 'Homepage: Files collection' %>
@@ -97,17 +98,19 @@
 			<%= image_tag 'home-page-licence.png', alt: 'Homepage: Files collection' %>
 		</div>
 		<div class="home-text">
-			<h2>Open your data: add a <span class="underline">licence</span></h2>
-			<p><span class="underline">Data isn't open</span> until a licence has
-			been applied. You need to choose the licence that suits your needs.</p>
-			<p>And if you know nothing about licences, nothing to worry about, we'll help.</p>
+			<h2>Open your data: add a licence</h2>
+			<p>Data isn’t open until an open licence has been applied. You can choose
+				a licence that suits your needs.</p>
+			<p>If you know nothing about licences, nothing to worry about, we’ll help
+				you choose.</p>
 		</div>
 	</div>
 	<div class="home-box-blue">
 		<div class="home-text">
 			<h2>Upload your files</h2>
-			<p>Now that a collection has been created and licensed, you can upload files to it.</p>
-			<p><span class="underline">CSV, Excel, Geospatial...</span> whatever your needs, we have you covered.</p>
+			<p>Now that your collection has been created and licensed, you can add
+				files to it.</p>
+			<p>CSV, Excel, Geospatial… Whatever your needs, we have you covered.</p>
 		</div>
 		<div class="home-image">
 			<%= image_tag 'home-page-add-files.png', alt: 'Homepage: Files collection' %>
@@ -119,20 +122,19 @@
 		</div>
 		<div class="home-text">
 			<h2>Make your data usable</h2>
-			<p>Want your datat to be findable? Reusable? Machine readable? We encourage
-			you to apply <span class="underline">standardised schemas</span> to your
-			files to structure them effectively.</p>
-			<p>There is even a database of useful schemas for you to use here.</p>
+			<p>Want your data to be high quality? Reusable? Machine readable? We
+				encourage you to apply schemas to your files, and we can help you get
+				started.</p>
+			<p>There is even a database of useful schemas for you to use.</p>
 		</div>
 	</div>
 	<div class="home-box-grey">
 		<div class="home-text">
 			<h2>Validate your data</h2>
-			<p>Octopub has ways of <span class="underline">checking<span> the quality
-			of your CSV files.</p>
-			<p>We'll give you a quality indication and you can review and reupload as
-			much as you need so that the data that you publish is of the
-			<span class=underline>highest standard</span>.</p>
+			<p>Octopub can check the quality of your CSV files for common errors.</p>
+			<p>We’ll give you quality feedback, and you can review and re-upload as
+				often as you need to until the data you want to publish is of the
+				highest standard.</p>
 		</div>
 		<div class="home-image">
 			<%= image_tag 'home-page-file-status.png', alt: 'Homepage: Files collection' %>
@@ -145,8 +147,9 @@
 		<div class="home-text">
 			<h2>Create and Publish</h2>
 			<p>You're done. That's it.</p>
-			<p>Your data is ready to be published, with all the nescessry metadata.</p>
-			<p>It'll even have its <span class="underline">own webpage.</span></p>
+			<p>Your data is ready to be published online, with all the necessary
+				information to make it findable. </p>
+			<p>It'll even have its own webpage.</p>
 			<%= bs_button_to "Learn more about Octopub", "/getting-started", :class => "btn btn-secondary" %>
 			<%= bs_button_to "Get started", "/auth/github", :class => "btn btn-primary" %>
 		</div>
