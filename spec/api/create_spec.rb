@@ -53,7 +53,7 @@ describe 'POST /datasets' do
     Sidekiq::Testing.fake!
   end
 
-  it 'returns a job ID' do
+  pending 'returns a job ID' do
     expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
     expect(@repo).to receive(:name) { 'my-cool-repo' }
     expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }
@@ -139,7 +139,7 @@ describe 'POST /datasets' do
       @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
     end
 
-    it 'creates a dataset sucessfully' do
+    pending 'creates a dataset sucessfully' do
       expect(@repo).to receive(:html_url) { 'https://github.com/user-mc-user/my-cool-repo' }
       expect(@repo).to receive(:name) { 'my-cool-repo' }
       expect(@repo).to receive(:full_name) { 'user-mc-user/my-cool-repo' }

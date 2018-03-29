@@ -14,14 +14,10 @@
 .wizard-sidebar-step {
   position: relative;
   display: block;
-  min-height: 240px;
+  min-height: 275px;
   width: 100%;
   float: left;
   padding: $padding $padding $padding*3 $padding;
-  // i {
-  //   font-size: 30px;
-  //   margin-right: $margin/2;
-  // }
   &.wizard-sidebar-step-active {
     background: $white;
     color: $black;
@@ -54,7 +50,6 @@
   }
   &.wizard-sidebar-step-inactive {
     background: rgba($cobalt, 0.1);
-    color: $warm-grey;
     border: 2px solid $cobalt;
     border-top: 0;
     border-left: 0;
