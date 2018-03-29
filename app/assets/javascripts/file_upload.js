@@ -239,7 +239,6 @@ $(document).ready(function() {
       var fileSize
       if (window.FileReader) {
         var file = inputGroup.find('input[type="file"]')[0].files[0]
-        console.log(file)
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
@@ -288,10 +287,7 @@ $(document).ready(function() {
 
       $('#spinner').removeClass('hidden');
 
-      console.log(form.valid())
-
       if (form.valid()) {
-        console.log('post form yeaaaaah!')
         postForm($(this));
       }
 
@@ -417,7 +413,7 @@ $(document).ready(function() {
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
       if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
         for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-          this.check(this.findByName(elementss[i].name)[cnt]);
+          this.check(this.findByName(elements[i].name)[cnt]);
         }
       } else {
         this.check(elements[i]);
@@ -431,7 +427,6 @@ $(document).ready(function() {
       // element = element to validate (<input>)
       // value = value of the element (file name)
       var fileName = element.files[0].name
-      console.log(fileName.substring(0, fileName.lastIndexOf('.')))
       return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
   }, "File name must only contain letters, numbers, and underscores");
 

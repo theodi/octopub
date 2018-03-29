@@ -1,7 +1,7 @@
 <div class="file-input-group">
   <fieldset class="file bg-upload">
     <div class="form-group">
-      <label for="files[][title]">File title<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip on right"></i></label>
+      <label for="files[][title]">File title</label>
       <%= text_field_tag "files[][title]", file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil?, class: "title form-control" %>
     </div>
     <div class="form-group">

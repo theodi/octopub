@@ -12,7 +12,7 @@
     </div>
     <div class="wizard-sidebar-step wizard-sidebar-step-disabled">
       <h4><i class="fa fa-address-card"></i> Add a licence</h4>
-      <div class="wizard-sidebar-step-description"><p>A licence is an essential requirement for sharing your data publicly. It tells other people how, and for what purpose, they may use the data you publish.</p></div>
+      <div class="wizard-sidebar-step-description"><p>A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared.</p></div>
       <strong><p>Chosen licence: <span id="chosen-licence">...</span></p></strong>
 
       <a class="wizard-sidebar-step-link show-step-two" disabled="true"><i class="fa fa-pencil-alt"></i> Edit</a>
@@ -47,11 +47,11 @@
           <%= text_field_tag "dataset[name]", dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name'), class: "form-control" %>
         </div>
         <div class="form-group">
-          <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A more detailed summary about this data set. It will be key to helping people decide whether it is relevant to their needs, so you should try and add as much details as possible about its topic coverage, temporal or geographic boundaries, etc. You may decide to add a number of keywords here as well."></i></label>
+          <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A more detailed summary about this data collection. It will be key to helping people decide whether it is relevant to their needs, so you should try and add as much details as possible about its topic coverage, temporal or geographic boundaries, etc. You may decide to add a number of keywords here as well."></i></label>
           <%= text_area_tag "dataset[description]", dataset.description, placeholder: t(:'dataset.description'), class: "form-control"  %>
         </div>
         <div class="form-group">
-          <label for="dataset[frequency]">Publication frequency<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often?"></i></label>
+          <label for="dataset[frequency]">How often do you plan on adding files?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often? Please note that this is a manual step, not automatic."></i></label>
           <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES), selected: dataset.frequency, class: "form-control" %>
         </div>
 
@@ -98,7 +98,7 @@
         </div>
 
         <div class="form-group">
-          <%= bs_button_to 'Add another file', '#', id: "clone", class: "btn btn-secondary" %>
+          <%= bs_button_to 'Save and add another file', '#', id: "clone", class: "btn btn-secondary" %>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-lg btn-block">
