@@ -239,10 +239,12 @@ $(document).ready(function() {
       var fileSize
       if (window.FileReader) {
         var file = inputGroup.find('input[type="file"]')[0].files[0]
+        console.log(file)
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       links.find('.sidebar-file-details').text(sidebarFileDetails)
+      form.validate()
     })
 
     inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
@@ -273,6 +275,10 @@ $(document).ready(function() {
 
   $('[name="dataset[license]"]').change(function(){
     $('#chosen-licence').text($(this).find('option:selected').text())
+  })
+
+  $('[name="[files[][file]]"]').change(function(){
+    $(this).blur().focus();
   })
 
   function addAjaxFormUploading() {
@@ -318,7 +324,7 @@ $(document).ready(function() {
       'dataset[license]': { required: true },
       'files[][title]': { required: true },
       'files[][description]': {},
-      '[files[][file]]': { required: true },
+      '[files[][file]]': { required: true, alphanum_filename: true },
       '[files[][dataset_file_schema_id]]': {}
     },
     onfocusout: function(element) {
@@ -411,7 +417,7 @@ $(document).ready(function() {
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
       if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
         for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-          this.check(this.findByName(elements[i].name)[cnt]);
+          this.check(this.findByName(elementss[i].name)[cnt]);
         }
       } else {
         this.check(elements[i]);
@@ -419,5 +425,14 @@ $(document).ready(function() {
     }
     return this.valid();
   };
+
+  $.validator.addMethod('alphanum_filename', function(value, element) {
+      // param = size (in bytes) 
+      // element = element to validate (<input>)
+      // value = value of the element (file name)
+      var fileName = element.files[0].name
+      console.log(fileName.substring(0, fileName.lastIndexOf('.')))
+      return this.optional(element) || (/^\w+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
+  }, "File name must only contain letters, numbers, and underscores");
 
 });
