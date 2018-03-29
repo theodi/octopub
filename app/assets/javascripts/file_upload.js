@@ -432,7 +432,7 @@ $(document).ready(function() {
       // value = value of the element (file name)
       var fileName = element.files[0].name
       console.log(fileName.substring(0, fileName.lastIndexOf('.')))
-      return this.optional(element) || (/^\w+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
+      return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
   }, "File name must only contain letters, numbers, and underscores");
 
 });
