@@ -545,12 +545,12 @@ http_interactions:
         \"approved\", \n    \"osd_conformance\": \"not reviewed\", \n    \"status\":
         \"active\", \n    \"title\": \"Open Data Commons Attribution License 1.0\",
         \n    \"url\": \"http://www.opendefinition.org/licenses/odc-by\"\n  }, \n
-        \ \"ODC-PDDL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
+        \ \"ODbL-1.0-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
-        \"ODC-PDDL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
+        \"ODbL-1.0-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
         \n    \"osd_conformance\": \"not reviewed\", \n    \"status\": \"active\",
         \n    \"title\": \"Open Data Commons Public Domain Dedication and Licence
-        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/odc-pddl\"\n
+        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/ODbL-1.0\"\n
         \ }, \n  \"ODbL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
         \"ODbL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
@@ -1331,12 +1331,12 @@ http_interactions:
         \"approved\", \n    \"osd_conformance\": \"not reviewed\", \n    \"status\":
         \"active\", \n    \"title\": \"Open Data Commons Attribution License 1.0\",
         \n    \"url\": \"http://www.opendefinition.org/licenses/odc-by\"\n  }, \n
-        \ \"ODC-PDDL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
+        \ \"ODbL-1.0-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
-        \"ODC-PDDL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
+        \"ODbL-1.0-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
         \n    \"osd_conformance\": \"not reviewed\", \n    \"status\": \"active\",
         \n    \"title\": \"Open Data Commons Public Domain Dedication and Licence
-        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/odc-pddl\"\n
+        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/ODbL-1.0\"\n
         \ }, \n  \"ODbL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
         \"ODbL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
@@ -2117,12 +2117,12 @@ http_interactions:
         \"approved\", \n    \"osd_conformance\": \"not reviewed\", \n    \"status\":
         \"active\", \n    \"title\": \"Open Data Commons Attribution License 1.0\",
         \n    \"url\": \"http://www.opendefinition.org/licenses/odc-by\"\n  }, \n
-        \ \"ODC-PDDL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
+        \ \"ODbL-1.0-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
-        \"ODC-PDDL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
+        \"ODbL-1.0-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
         \n    \"osd_conformance\": \"not reviewed\", \n    \"status\": \"active\",
         \n    \"title\": \"Open Data Commons Public Domain Dedication and Licence
-        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/odc-pddl\"\n
+        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/ODbL-1.0\"\n
         \ }, \n  \"ODbL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
         \"ODbL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
@@ -2969,12 +2969,12 @@ http_interactions:
         \"approved\", \n    \"osd_conformance\": \"not reviewed\", \n    \"status\":
         \"active\", \n    \"title\": \"Open Data Commons Attribution License 1.0\",
         \n    \"url\": \"http://www.opendefinition.org/licenses/odc-by\"\n  }, \n
-        \ \"ODC-PDDL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
+        \ \"ODbL-1.0-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
-        \"ODC-PDDL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
+        \"ODbL-1.0-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
         \n    \"osd_conformance\": \"not reviewed\", \n    \"status\": \"active\",
         \n    \"title\": \"Open Data Commons Public Domain Dedication and Licence
-        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/odc-pddl\"\n
+        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/ODbL-1.0\"\n
         \ }, \n  \"ODbL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
         \"ODbL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
@@ -3212,7 +3212,7 @@ http_interactions:
   recorded_at: Tue, 07 Feb 2017 20:33:39 GMT
 - request:
     method: get
-    uri: http://licenses.opendefinition.org/licenses/odc-pddl.json
+    uri: http://licenses.opendefinition.org/licenses/ODbL-1.0.json
     body:
       encoding: US-ASCII
       string: ''
@@ -3755,12 +3755,12 @@ http_interactions:
         \"approved\", \n    \"osd_conformance\": \"not reviewed\", \n    \"status\":
         \"active\", \n    \"title\": \"Open Data Commons Attribution License 1.0\",
         \n    \"url\": \"http://www.opendefinition.org/licenses/odc-by\"\n  }, \n
-        \ \"ODC-PDDL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
+        \ \"ODbL-1.0-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
-        \"ODC-PDDL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
+        \"ODbL-1.0-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
         \n    \"osd_conformance\": \"not reviewed\", \n    \"status\": \"active\",
         \n    \"title\": \"Open Data Commons Public Domain Dedication and Licence
-        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/odc-pddl\"\n
+        1.0\", \n    \"url\": \"http://www.opendefinition.org/licenses/ODbL-1.0\"\n
         \ }, \n  \"ODbL-1.0\": {\n    \"domain_content\": false, \n    \"domain_data\":
         true, \n    \"domain_software\": false, \n    \"family\": \"\", \n    \"id\":
         \"ODbL-1.0\", \n    \"maintainer\": \"\", \n    \"od_conformance\": \"approved\",
