@@ -78,8 +78,8 @@ describe ApplicationController, type: :controller, vcr: { :match_requests_on => 
            "name" => "Open Data Commons Attribution License 1.0"
          },
          {
-           "id" => "ODC-PDDL-1.0",
-           "name" => "Open Data Commons Public Domain Dedication and Licence 1.0"
+           "id" => "ODbL-1.0",
+           "name" => "Open Data Commons Open Database License 1.0"
          }
         ]
         })

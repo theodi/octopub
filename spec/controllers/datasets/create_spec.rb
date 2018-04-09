@@ -67,7 +67,7 @@ describe DatasetsController, type: :controller do
 
       end
 
-      pending 'returns an error if no publisher is specified' do
+      it 'returns an error if no publisher is specified' do
 
         request = post :create, params: { dataset: {
           name: dataset_name,
@@ -77,7 +77,7 @@ describe DatasetsController, type: :controller do
           frequency: frequency
         }, files: @files }
 
-        expect(request).to render_template(:new)
+				expect(request).to redirect_to("/datasets/created")
         expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
       end
 
