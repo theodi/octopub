@@ -67,20 +67,6 @@ describe DatasetsController, type: :controller do
 
       end
 
-      it 'returns an error if no publisher is specified' do
-
-        request = post :create, params: { dataset: {
-          name: dataset_name,
-          description: description,
-          publisher_url: publisher_url,
-          license: license,
-          frequency: frequency
-        }, files: @files }
-
-				expect(request).to redirect_to("/datasets/created")
-        expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
-      end
-
       pending 'returns an error if there are no files specified' do
         request = post :create, params: { dataset: {
           name: dataset_name,
