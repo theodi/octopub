@@ -80,20 +80,6 @@ describe DatasetsController, type: :controller do
         expect(request).to render_template(:new)
         expect(flash[:no_files]).to eq("You must specify at least one dataset")
       end
-
-      pending 'returns an error if there are no files nor pubslisher specified' do
-        request = post :create, params: { dataset: {
-          name: dataset_name,
-          description: description,
-          publisher_url: publisher_url,
-          license: license,
-          frequency: frequency
-        }, files: [] }
-
-        expect(request).to render_template(:new)
-        expect(flash[:no_files]).to eq("You must specify at least one dataset")
-        expect(flash[:no_publisher]).to eq("Please include the name of the publisher")
-      end
     end
 
   end
@@ -124,7 +110,7 @@ describe DatasetsController, type: :controller do
       end
 
       def creation_assertions(publishing_method = :github_public)
-        expect(request).to redirect_to(created_datasets_path(publishing_method: publishing_method))
+        expect(request).to redirect_to('/datasets/created')
         expect(Dataset.count).to eq(1)
         expect(@user.datasets.count).to eq(1)
         the_dataset = @user.datasets.first
@@ -132,7 +118,7 @@ describe DatasetsController, type: :controller do
         expect(the_dataset.dataset_files.first.storage_key).to_not be_nil
       end
 
-      pending 'creates a dataset with one file' do
+      it 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
@@ -149,6 +135,7 @@ describe DatasetsController, type: :controller do
         }, files: @files }
 
         creation_assertions
+				byebug
         expect(@user.datasets.first.owner).to eq @user.github_username
       end
 

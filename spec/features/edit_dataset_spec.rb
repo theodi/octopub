@@ -80,12 +80,12 @@ feature "Edit dataset page", type: :feature do
       @dataset.reload
       expect(@dataset.dataset_files.first.description).to eq new_description
     end
-    
+
     scenario "has an existing schema preselected in the new file form" do
       within '.hidden > .file-panel' do
         expect(find_field("_files[][dataset_file_schema_id]").value).to eql @dataset.dataset_files.first.dataset_file_schema_id.to_s
       end
     end
-    
+
   end
 end

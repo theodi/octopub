@@ -6,10 +6,11 @@ class CreateDataset
     Rails.logger.info "CreateDataset: In perform"
     files = [files] if files.class == Hash
 
-		dataset_params[:publishing_method] = :github_public
-		dataset_params[:owner] = current_user.name
-
     user = find_user(user_id)
+
+		dataset_params[:publishing_method] = :github_public
+		dataset_params[:owner] = user.github_username
+
     @dataset = new_dataset_for_user(user)
 
     @dataset.assign_attributes(ActiveSupport::HashWithIndifferentAccess.new(

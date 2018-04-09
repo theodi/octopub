@@ -110,6 +110,7 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
+	gem 'ruby-debug'
   gem 'pry'
   gem 'poltergeist'
   gem 'faker'

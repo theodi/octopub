@@ -32,7 +32,7 @@ feature "A visiting, non-logged in user", type: :feature do
   context "can not access" do
 
     after(:each) do
-      expect(page).to have_content "You must be logged in to do that!"
+      expect(page).to have_content "Sign in"
     end
 
     it "new dataset path" do
