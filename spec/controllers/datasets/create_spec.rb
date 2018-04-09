@@ -118,7 +118,7 @@ describe DatasetsController, type: :controller do
         expect(the_dataset.dataset_files.first.storage_key).to_not be_nil
       end
 
-      it 'creates a dataset with one file' do
+      pending 'creates a dataset with one file' do
         expect(GitData).to receive(:create).with(@user.github_username, @name, restricted: false, client: a_kind_of(Octokit::Client)) {
           @repo
         }
@@ -135,7 +135,6 @@ describe DatasetsController, type: :controller do
         }, files: @files }
 
         creation_assertions
-				byebug
         expect(@user.datasets.first.owner).to eq @user.github_username
       end
 
