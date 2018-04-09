@@ -6,6 +6,9 @@ class CreateDataset
     Rails.logger.info "CreateDataset: In perform"
     files = [files] if files.class == Hash
 
+		dataset_params[:publishing_method] = :github_public
+		dataset_params[:owner] = current_user.name
+
     user = find_user(user_id)
     @dataset = new_dataset_for_user(user)
 
@@ -33,7 +36,7 @@ class CreateDataset
       end
       @dataset.dataset_files << dataset_file
     end
-    # Break below to stop publishing to Github
+
     @dataset.report_status(options["channel_id"])
   end
 
