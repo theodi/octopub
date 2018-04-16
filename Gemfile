@@ -28,7 +28,7 @@ gem 'jsontableschema', git: 'https://github.com/Floppy/jsontableschema-rb', bran
 
 # User related
 gem 'omniauth-github'
-gem 'cancancan', '~> 2.1'
+gem 'cancancan', '~> 2.2'
 
 # Bootstrap and view stuff
 gem 'bootstrap-sass', '~> 3.2.0'
