@@ -67,6 +67,7 @@
       </div>
 
       <div id="step-two" class="hidden">
+
         <% if false %>
           <%= form_group :publishing_method, label: { text: "Publish publicly?" } do %>
             <%= radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
@@ -77,7 +78,43 @@
 
         <div class="form-group">
           <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
-          <%= select_tag "dataset[license]", options_for_select(licenses), selected: dataset.license, class: "form-control" %>
+
+          <div class="top-buffer">
+            <a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
+            <button id="show-license-wizard" class="btn btn-tertiary pull-right">Help me choose</button>
+            <%= render "license_wizard" %>
+          </div>
+
+          <div class="license-selector top-buffer">
+            <p class="subheading">Government</p>
+              <label class="large-radio">
+                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[3][1] %>">
+                OGL (Open Government Licence 3.0 - UK)
+                 <span class="checkmark"></span>
+              </label>
+            <p class="subheading">Creative Commons</p>
+              <label class="large-radio">
+                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[0][1] %>">
+                CC BY 4.0 (Creative Commons Attribution 4.0 - International)
+                 <span class="checkmark"></span>
+              </label>
+              <label class="large-radio">
+                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[1][1] %>">
+                CC BY-SA (Creative Commons - Attribution share-alike)
+                 <span class="checkmark"></span>
+              </label>
+            <p class="subheading">Open Data Catalogue</p>
+              <label class="large-radio">
+                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[4][1] %>">
+                ODC-BY (Open Data Commons Attribution License 1.0)
+                 <span class="checkmark"></span>
+              </label>
+              <label class="large-radio">
+                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[5][1] %>">
+                ODC-ODbl (Open Data Commons Open Database Licence)
+                 <span class="checkmark"></span>
+              </label>
+          </div>
         </div>
 
         <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>

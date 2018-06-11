@@ -1,0 +1,65 @@
+@import "modules/base";
+
+/* Customize the label (the large-radio) */
+.large-radio {
+  display: block;
+  position: relative;
+  padding-left: 40px;
+  line-height: 30px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.large-radio input {
+  position: absolute;
+  opacity: 0;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 27px;
+  width: 27px;
+  border: 2px solid $cobalt;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.large-radio:hover input ~ .checkmark {
+  background-color: $white;
+}
+
+/* When the radio button is checked, add a blue background */
+.large-radio input:checked ~ .checkmark {
+  background-color: $white;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.large-radio input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.large-radio .checkmark:after {
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: $cobalt;
+} 
