@@ -42,5 +42,12 @@ RSpec.shared_context 'odlifier licence mock', shared_context: :metadata do
       allow(obj).to receive(:url) { "https://example.org" }
       obj
     }
+    allow(Odlifier::License).to receive(:define).with("ODbL-1.0") {
+      obj = double(Odlifier::License)
+      allow(obj).to receive(:title) { "Open Data Commons Open Database License 1.0" }
+      allow(obj).to receive(:id) { "ODbL-1.0" }
+      allow(obj).to receive(:url) { "https://example.org" }
+      obj
+    }
   end
 end
