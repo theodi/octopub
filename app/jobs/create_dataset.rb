@@ -15,6 +15,7 @@ class CreateDataset
 
     files.each do |dataset_file_creation_hash|
       dataset_file = DatasetFile.create(dataset_file_creation_hash)
+
       if dataset_file_creation_hash["schema"]
         # Create schema
         schema = DatasetFileSchemaService.new(
@@ -33,7 +34,7 @@ class CreateDataset
       end
       @dataset.dataset_files << dataset_file
     end
-    # Break below to stop publishing to Github
+
     @dataset.report_status(options["channel_id"])
   end
 
