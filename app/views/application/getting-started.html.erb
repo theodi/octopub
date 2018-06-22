@@ -1,148 +1,300 @@
-<!--<div class="container">-->
-<div style="background:transparent !important" class="jumbotron">
-
+<div class="container">
   <div id="intro" class="getting-started">
-    <p>
-      Creating a dataset using Octopub couldn't be easier. Before getting started,
-      make sure you've got a Github account.
-      If you haven't got one, you can sign up at <%= link_to 'github.com/join', "https://github.com/join" %>.
-      Once you've got an account, follow along with our video tutorial or via the steps below. follow our simple step by step guide to creating your first dataset.
-    </p>
-  </div>
+    <h2 class="orange">About:</h2>
 
-  <div id="video-tutorial" class="container">
-    <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://player.vimeo.com/video/215665401' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+    <div id="about-categories" class="about-categories">
+      <h2>Octopub</h2>
 
-  </div>
-
-  <div id="text-tutorial" class="getting-started">
-
-    <h3>Step by Step: Using Octopub</h3>
-
-    <p>First, go to <%= link_to 'the homepage', "https://octopub.io" %> and click 'Sign in with Github'</p>
-
-
-    <div>
-      <%= image_tag 'tutorial/step1.gif', {class: "img-responsive", alt: 'Step 1: Nav to Homepage'} %>
-    </div>
-
-
-    <p>If you’re not already logged into Github, you’ll be prompted to sign in to your Github account.</p>
-
-    <div>
-      <%= image_tag 'tutorial/step2.png', class: "img-responsive", alt: 'Step 2: Sign In To Github' %>
-    </div>
-
-    <p>
-      Once you're signed in, you’ll see a screen like this, asking you to authorise your
-      account with Octopub. We need these permissions to create and update datasets
-      in Github on your behalf, and won’t use them for any other purpose:
-    </p>
-
-    <div>
-      <%= image_tag 'tutorial/step3.png', class: "img-responsive", alt: 'Step 3: Authorise Octopub with Github' %>
-    </div>
-
-    <p>
-      Next, click ‘Authorize application’.You’ll then be redirected to Octopub with a message telling you you’re logged in.
-    </p>
-
-    <div>
-      <%= image_tag 'tutorial/step4.png', class: "img-responsive", alt: 'Step 4: You have successfully Authorized Octopub with Github' %>
-    </div>
-
-    <p>
-      Next, under the ‘Datasets’ menu, click ‘Add a dataset’. You’ll then be redirected to the dataset creation page:
-    </p>
-
-    <div>
-      <%= image_tag 'tutorial/step5.png', class: "img-responsive", alt: 'Step 5: Add a dataset' %>
-    </div>
-
-    <p>
-      The first thing you’re asked for is the title of the dataset. Keep this short, sweet and descriptive, telling users what the dataset is about.
-    </p>
-
-    <div>
-      <%= image_tag 'tutorial/step7.png', class: "img-responsive", alt: 'Step 7: Descriptively name a dataset' %>
-    </div>
-
-    <p>
-      Next is the description, you can use this to give extra context to the data. This can be as long or as short as you'd like
-    </p>
-
-
-
-    <div>
-      <%= image_tag 'tutorial/step8.png', class: "img-responsive", alt: 'Step 8: Add a description to your dataset' %>
-    </div>
-
-   <p> Now, provide the name and web address of the person of organisation who is publishing the data. Data users like this, so they know who to contact with any questions.</p>
-
-    <div>
-      <%= image_tag 'tutorial/step9.png', class: "img-responsive", alt: 'Step 9: Add publication details to your dataset' %>
-    </div>
-
-    <p>Next, you can choose the license. This lets people know what they can or can't do with the data</p>
-
-    <div>
-      <%= image_tag 'tutorial/step10.png', class: "img-responsive", alt: 'Step 10: Add license details to your dataset' %>
-    </div>
-
-
-    <p>
-      The license options are as follows: <br>
-    </p>
-
-      <div style="margin-left: 5px;">
-        <p style="font-weight: bold;">Creative Commons Attribution 4.0</p>
-        <div class="license-list">Choose this license if you want anyone to use your data on the understanding that they credit you or your organisation</div>
-        <p style="font-weight: bold;">Creative Commons Attribution Share-Alike 4.0</p>
-        <div class="license-list">Choose this license if you want anyone to use your data with the same restrictions as above, with the added requirement that anything created using your data is released under the same license</div>
-        <p style="font-weight: bold;">CC0 1.0</p>
-        <div class="license-list">Choose this license if you want anyone to use your data with no restrictions</div>
-        <p style="font-weight: bold;">Open Government License 3.0 (United Kingdom)</p>
-        <div class="license-list">This license is same as Creative Commons Attribution, but created for UK government. Choose this license if the data you are creating is published by a UK national or local government agency</div>
-        <p style="font-weight: bold;">Open Data Commons Attribution License 1.0</p>
-        <div class="license-list">This license is similar to Creative Commons Attribution, but applies specifically to data</div>
-        <p style="font-weight: bold;">Open Data Commons Public Domain Dedication and License 1.0</p>
-        <div class="license-list">This license is similar to CC0, but applies specifically to data</div>
+      <button class="accordion">Discover Octopub</button>
+      <div class="gs-panel">
+        <br>
+        <p><b>What does it do?</b></p>
+        <p>Octopub will guide you through the publishing process. We will help you validate your data, choose the
+          correct license and, when you are happy, publish it to GitHub.</p>
+        <p>GitHub is a well known website for sharing files, which provides you with a web page for your data that you
+          can share with people.</p>
+        <br>
+        <p><b>Why should I use it? / Who is it for?</b></p>
+        <p>Octopub is for anyone wanting to publish open data: it doesn’t matter if you are a hobbyist, a data
+          professional, or a government department. If this is your first time publishing data, Octopub will guide you
+          through the process to make it as simple as possible.
+          And if this isn’t your first time publishing data, Octopub makes it quick and easy for you to whizz through
+          the process.</p>
+        <br>
       </div>
 
-      <p>For more information of open data licensing, see the <%= link_to 'ODI’s guide to open data licensing', "https://theodi.org/guides/publishers-guide-open-data-licensing" %>.</p>
+      <button class="accordion">Step-by-step guide</button>
+      <div class="gs-panel">
+        <br>
+        <p><b>Octopub should be easy to use, but please get in touch if there is something you don’t understand or think
+          could be improved.</b></p>
+        <p>You will find helpful tips and guidance on the screens and tooltips as you go. If this is your first time
+          using Octopub we recommend that you click on the
+          <span class="gs-img"><%= image_tag 'getting-started/tooltip-example.png', {class: "img-responsive", alt: 'tooltip image'} %></span>
+          by each field for more information and examples.</p>
+        <br>
+        <p><b>1.You will need a GitHub account</b>
+        <p>Octopub will publish data to a file sharing website called GitHub.</p>
+        <p>Before getting started, make sure you've got a GitHub account. If you haven't got one, you can sign up at
+          <a href="github.com/join">github.com/join.</a></p>
+        <br>
+        <p><b>2. Go through the “Three step wizard”</b></p>
+        <p>The wizard will guide you through the process of creating a data collection, choosing a licence, adding a
+          schema (optional), adding file(s) to your collection, validating your file(s) and publishing them once you are
+          ready.</p>
+        <br>
+        <p><b>3. Create data collections and data files</b></p>
+        <p>Many organisations publish data on a topic regularly e.g. for statutory reporting reasons. In this context
+          new data files are added to a data collection.
+          <b>A data collection in this sense is a group of related data files on a particular subject.</b></p>
 
-      <p>You can also choose whether to publish your data privately or publicly. Only people with paid Github accounts can publish privately, so leave this to 'yes' for now.</p>
+        <p>We found that the term <i>dataset</i> often has an <a href="https://blog.ldodds.com/2017/10/23/what-is-a-dataset-part-2-a-working-definition/" target="_blank">ambiguous meaning</a>a>. A useful working definition is <i>"a collection of data that is managed using the same set of governance processes, have a shared provenance and share a common schema"</i>.</p>
 
+        <p>We have used the term <i>collection</i> for both purposes, since they are both collections of related files.
+        </p>
 
+        <p>A collection, for either purpose, is made up of one or more <i>data files</i>, just like you might organise
+          files in a folder on your computer.</p>
+        <br>
+        <p><b>4. Using Schemas</b></p>
+        <p>In order to apply a schema to your data file you will first have to have either uploaded one, had one
+          assigned to you to use, or have inferred one from an existing dataset. <a>More on schemas</a></p>
 
-    <div class="media">
-      <%= image_tag 'tutorial/step11.png', class: "img-responsive", alt: 'Step 11: Determine visibility of your dataset' %>
+        <p>Using a schema isn’t mandatory but it is highly recommended, as they will allow other publishers and machines
+          to find your data and use it effectively.</p>
+
+        <p><b>4a. Upload a Schema</b></p>
+        <p>You can optionally associate a schema with your file. See section below "Ensuring Quality with Schema" for
+          more information on schemas</p>
+
+        <p><b>4b. Inferring Schemas</b></p>
+        <p>If you would like to associate a schema with your file, but do not want to create one yourself from scratch,
+          then Octopub can make a first attempt. Caution: this is an experimental feature, you will probably want to
+          fine-tune the generated schema before you use it.</p>
+        <br>
+        <p><b>5. Submit your collection for validation</b></p>
+        <p>When you submit your collection it will be sent to a validation service called CSVLint. See
+          Data Validation section below for more information on CSVLint and validation errors.</p>
+        <br>
+        <p><b>To note: Pre-publishing and Publishing</b></p>
+        <p>When all the files in your collection have passed the validation stage you are ready to publish it. Until you
+          choose to publish the collection it will stay as “pre-published” data. It is only when you choose to publish
+          it that it will be made available on GitHub. Until then you can continue to review the data, make changes and
+          re-validate the data until you are ready.</p>
+        <br>
+      </div>
+
+      <button class="accordion">Understanding Github</button>
+      <div class="gs-panel">
+        <br>
+        <p>GitHub is a website that allows anyone to share files, but allows the author to keep control of changes. It
+          offers features such as:
+        <ul>
+          <li>A dedicated homepage</li>
+          <li>A home for supporting documentation</li>
+          <li>Version history of all your files</li>
+          <li>Suggestions for corrections with an issue tracker</li>
+          <li>Search files and descriptions</li>
+        </ul>
+        <br>
+        <p>Because GitHub is so useful and well known in the open source community, we thought it was the ideal
+          publishing site for open data.</p>
+        <br>
+        <p><b>Did you know?</b></p>
+        <p>The octopus-cat mascot for GitHub is affectionately known as “Octocat”, which is what inspired the name
+          “Octopub”.</p>
+        <br>
+      </div>
+
+      <button class="accordion">Data Validation</button>
+      <div class="gs-panel">
+        <br>
+        <p>Validation means making sure that the structure of your files is acceptable, regardless of its contents.</p>
+
+        <p>At the moment Octopub is able to validate your data in two ways:</p>
+        <ul>
+          <li>CSV file validation with CSVLint, which is a service that checks for common errors such as:<br>
+            <ul>
+              <li>Missing header rows, or missing column names</li>
+              <li>Rows in the file that dont have the same number of columns as the header</li>
+              <li>Blank rows</li>
+              <li>Odd characters in a file which could cause errors</li>
+              <li>Stray/Unclosed quotes</li>
+              <li>Inconsistent values: for example if most values in a column are numeric but there are are a few that
+                aren't
+              </li>
+            </ul>
+          <li>If you have provided a <i>schema</i> for a data file, Octopub can also use CSVLint to validate the data
+            according to any rules defined in the schema.
+          </li>
+        </ul>
+
+        <p>See <a href="https://csvlint.io/about" target="_blank">csvlint</a>'s website for more information about
+          common errors.</p>
+
+        <p>In the future, we aim to validate more type files, using the Lintol.io application, which would allow to
+          upload and validate almost any file types, from CSVs to Geospatial.</p>
+        <br>
+      </div>
+
+      <h2>Open Data</h2>
+
+      <button class="accordion">Basics of Open Data</button>
+      <div class="gs-panel">
+        <br>
+        <p><b>What is open data?</b></p>
+        <p>Open data is data that’s available to everyone to access, use and share, which should be easy to find.
+          However, it is only useful if shared in ways that people and machines can understand, which is why data needs
+          to be explained, described and often formatted & standardised in reusable, machine-readable ways.</p>
+        <br>
+        <p><b>Why do I have to choose a licence?</b></p>
+        <p>Licensing is key. It's what makes data <i>open</i>. When data is published with an open licence, it's the
+          licence that defines who can use it and for what purposes. Without a licence people just won't know whether
+          they can use it or how, and the lawyers would say that they mustn't. Without a licence the data isn't
+          <i>explicitly</i> free for everyone to access, use and share</p>
+        <p>Read more about licences <a href="">here</a></p>
+        <br>
+        <p><b>Find out more</b></p>
+        <p>Read more about open data <a href="https://theodi.org/what-is-open-data" target="_blank">here</a></p>
+        </p>
+      </div>
+
+      <button class="accordion">Ensuring Quality with Schemas</button>
+      <div class="gs-panel">
+        <br>
+        <p><b>What is a schema?</b></p>
+        <p>The structure (or schema) of a data file is a major factor in how useful your data will be to others. Data
+          can be more easily combined and compared if published in a consistent and predictable format.</p>
+
+        <p>A "schema" is a document that describes the format of your data. It typically describes the columns, the type
+          of data in those columns and rules about the data itself. The schema can be used by a computer to
+          automatically validate your data and catch common errors.
+          Eg. In my data, there will be a column called "age" which is a number and cannot be more than 150 or less than
+          0.</p>
+
+        <p>For publishers, making data available in a consistent format is the best way to make open data useful, both
+          internally and for others:</p>
+
+        <ol>
+          <li>It helps people combine or compare their data with the same type of data from other publishers, for use in
+            their apps or analytics.
+          </li>
+          <li>It saves you time and money when preparing data for publishing, if you can use one that already exists.
+          </li>
+        </ol>
+
+        <p><b>How do I create a schema?</b></p>
+        <p>See <a href="https://csvlint.io/about" target="_blank">here</a> for more information on creating schemas for
+          your data</p>
+
+        <p>Do you think others might want to create new datasets using the same schema as you? If so you can consider
+          creating a new standard schema. See Going Further: Should I create a new common/standard schema?</p>
+        <br>
+      </div>
+
+      <button class="accordion">Making Data Open: Licencing</button>
+      <div class="gs-panel">
+        <br>
+        <p>At its simplest, open data requires just two things: data and openness. There are lots of aspects to
+          openness, but at its most fundamental, the key is how the data is licensed. Data that doesn't explicitly have
+          an open licence is not open data.</p>>
+
+        <p>An open licence is one that places very few restrictions on what anyone can do with the content or data that
+          is being licensed. An open licence allows others to do things like:
+          <ul>
+            <li>republish the content or data on their own website</li>
+            <li>derive new content or data from yours</li>
+            <li>make money by selling products that use your content or data</li>
+            <li>republish the content or data while charging a fee for access</li>
+
+        <p>Read more about licensing
+          <a href="https://theodi.org/article/reusers-guide-to-open-data-licensing/" target="_blank">here</a>.
+        </p>
+        <br>
+      </div>
+
+      <h2>Going further</h2>
+
+      <button class="accordion">Using Standards and Schemas</button>
+      <div class="gs-panel">
+        <br>
+        <p><b>What schemas can I use?</b></p>
+        <p>For common or collaborative reports (Eg. the census, other statutory reporting, or formats agreed by research
+          partners) there may already be a standard schema available for you to use. We recommend using standard schemas
+          if possible because datasets which use the same schema will be easier to compare and combine. You can find
+          some schemas <a href="http://schemas.opendata.esd.org.uk" target="_blank">here</a>
+        <p>
+
+        <p>LGA keeps a definitive set of schemas for those datasets that local authorities have to publish under the
+          Local Government Transparency Code, along with other popular open datasets. If you are publishing data in one
+          of these categories, we strongly recommend finding and following the relevant schema.</p>
+
+        <p>If the dataset you are publishing is not covered by one of the core schemas referenced by LGA, you may be
+          able to find a common schema from other local authorities in the community. For certain types of data, common
+          schemas are published by other communities, such as the open data community Github INSPIRE for geospatial
+          environmental data and BS7666 for address and land use. In addition, the LGA schema directory keeps track of
+          over 640 schemas from local authorities across the UK. Simply search the directory for the type of data you
+          plan to publish, and it will show you the common schemas that match.</p>
+        <p><a href="http://schemas.opendata.esd.org.uk/" target="_blank">Take me to the LGA community schema
+          directory</a></p>
+        <br>
+        <p><b>Should I create a new common/standard schema?</b></p>
+        <p>Is there no common schema for the dataset you are publishing? Do you think others might want to create new
+          datasets using the same schema as you? If so you can consider creating a new standard schema.</p>
+
+        <p>Before creating a new one, find out whether there is already some consensus among an existing community of
+          users somewhere: you might need to create a new standard schema but there may be an opportunity to get the
+          community to help.</p>
+        <p>A good place to start is <a href="http://i-network.org.uk/legsb-3/" target="_blank">iStandUK</a>, an active
+          community of local government experts who can support the development of a new schema.</p>
+        <br>
+      </div>
+
+      <button class="accordion">FAQs</button>
+      <div class="gs-panel">
+        <br>
+        <h3>Licences</h3>
+        <p><b>Can I use different licences for different files in a collection</b></p>
+        <p>The licence you choose will be applied to all the files you add to the collection you’re creating and
+          therefore has to be chosen carefully. If you are not sure then Octopub will help you choose a licence.
+
+        <h3>Data Files</h3>
+        <p><b>Is there a size limit for data files?</b></p>
+        <p>No :)</p>
+
+        <h3>Validation</h3>
+        <p><b>I have an validation error, what does it mean?</b></p>
+        <p>See <a href="https://csvlint.io/about" target="_blank">csvlint</a>'s website' for more information about
+          common errors. If this page doesn’t answer your question please get in touch with us on labs@theodi.org
+        <p></p>
+        <br>
+      </div>
+
+      <button class="accordion">Get Some Training</button>
+      <div class="gs-panel">
+        <br>
+        <p>To discuss tailored training for your organisation or for further details, contact training@theodi.org</p>
+        <br>
+      </div>
+
+      <button class="accordion">Contact the ODI</button>
+      <div class="gs-panel">
+        <br>
+        <p>This is an experimental tool, things may go wrong (sorry!). If they do please get in touch on
+          labs@theodi.org. Or
+          better still raise an issue for
+          <a href="https://github.com/theodi/octopub/issues" target="_blank">Octopub on GitHub</a></p>
+        <p>If you would like to know more about the ODI you can find our contact details, and much more information, on
+          the
+          <a href="https://theodi.org/about-the-odi/contact-us/" target="_blank">ODI's website</a></p>
+        <br>
+      </div>
     </div>
-
-    <p>Next, choose how often you think the data will be updated - this lets data reusers know if this data is likely to change
-
-
-    </p>
-
-    <div class="media">
-      <%= image_tag 'tutorial/step12.png', class: "img-responsive", alt: 'Step 12: Add publication frequency details to your dataset' %>
-    </div>
-
-    <p>Now comes to nitty gritty part, adding the data. Choose a title and description for your data file, then click 'Choose file' to choose a CSV file to upload.</p>
-
-    <div class="media">
-      <%= image_tag 'tutorial/step13.png', class: "img-responsive", alt: 'Step 13: upload data files' %>
-    </div>
-
-    <p>
-      Once the file has uploaded, you can scroll down and click 'Submit' to create your dataset. You'll then see a notice telling you your data has been queued for creation. Within a few minutes, you should recieve an email, with a link allowing you to see your dataset in all its glory!
-    </p>
-
-    <p>
-      For more information and advanced topics, visit the <a href='https://github.com/theodi/octopub/wiki'>Octopub wiki pages</a>.
-    </p>
-
   </div>
-
-
 </div>
+<br>
+<br>
+
+<script type="text/javascript">
+    addAccordionListeners();
+</script>
