@@ -14,6 +14,7 @@
 #  view_sha               :text
 #  dataset_file_schema_id :integer
 #  storage_key            :string
+#  validation							:boolean
 #
 
 class DatasetFile < ApplicationRecord
