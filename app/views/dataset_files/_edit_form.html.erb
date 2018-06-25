@@ -1,27 +1,25 @@
-<div class="file-panel">
-  <fieldset class="file bg-upload">
-    <div class="well bg-info">
-      <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
-      <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
-      <% if file.dataset_file_schema %>
-        <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %> and if you change the file, it will also be validated against that schema.</div>
-      <% end %>
+<fieldset class="file bg-upload">
+  <!-- <div class="well bg-info"> -->
+    <%= f.text_field "files[][title]", label: "File title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
+    <%= f.text_area "files[][description]", label: "File description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
+    <% if file.dataset_file_schema %>
+      <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %> and if you change the file, it will also be validated against that schema.</div>
+    <% end %>
 
-      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name,  selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Dataset file schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
+    <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name,  selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'File schema'}, {'data-live-search': "true", class: 'selectpicker'} %>
 
-      <% if file.filename %>
-        <div class="form-group filename-wrapper">
-          <div class="current-file">
-            <label class="control-label">
-              Current file
-            </label>
-            <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
-          </div>
+    <% if file.filename %>
+      <div class="form-group filename-wrapper">
+        <div class="current-file">
+          <label class="control-label">
+            Current file
+          </label>
+          <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
         </div>
-      <% else %>
-        <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
-      <% end %>
-      <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
-    </div>
-  </fieldset>
-</div>
+      </div>
+    <% else %>
+      <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
+    <% end %>
+    <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
+  <!-- </div> -->
+</fieldset>

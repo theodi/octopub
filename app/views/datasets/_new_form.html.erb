@@ -1,44 +1,11 @@
 <div class="row">
-  <div id="wizard-sidebar" class="col-sm-4">
-    <div class="wizard-sidebar-step wizard-sidebar-step-active">
-      <h4><i class="fa fa-folder"></i> Create a collection for your data</h4>
-      <div class="wizard-sidebar-step-description"><p>Think of a data collection as a folder of related data files. Even if you only have one file for now, the collection will be ready to hold more if you want to add more related files later.</p></div>
-
-      <strong><p>Folder: <span id="chosen-folder">...</span></p></strong>
-      <strong><p>Publication frequency: <span id="chosen-frequency">...</span></p></strong>
-
-      <a class="wizard-sidebar-step-link show-step-one"><i class="fa fa-pencil-alt"></i> Edit</a>
-      <div class="arrow-right"></div>
-    </div>
-    <div class="wizard-sidebar-step wizard-sidebar-step-disabled">
-      <h4><i class="fa fa-address-card"></i> Add a licence</h4>
-      <div class="wizard-sidebar-step-description"><p>A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared.</p></div>
-      <strong><p>Chosen licence: <span id="chosen-licence">...</span></p></strong>
-
-      <a class="wizard-sidebar-step-link show-step-two" disabled="true"><i class="fa fa-pencil-alt"></i> Edit</a>
-    </div>
-    <div class="wizard-sidebar-step wizard-sidebar-step-disabled">
-      <h4><i class="fa fa-file-alt"></i> Add your file(s) to the collection</h4>
-      <ul class="sidebar-files">
-
-      </ul>
-      <div class="wizard-sidebar-step-description"><p>This collection should contain closely related sets of information, but may be composed of separate files that could be processed together.</p>
-      <p>Eg. count_of_trees_by_latin_name.csv and tree_names_latin.csv.</p>
-      <p>Or you may plan to publish new data for the same purpose, for example count_of_trees_January.csv and at a later date you can add count_of_trees_February.csv</p></div>
-      <a class="wizard-sidebar-step-link show-step-three" disabled="true"><i class="fa fa-pencil-alt"></i> Edit</a>
-    </div>
+  <div class="col-sm-4">
+    <%= render "wizard_sidebar" %>
   </div>
-
-  <ul id="sidebar-links" class="hidden">
-    <li>
-      <strong><p>File: <span class="sidebar-file-details">...</span></p></strong>
-      <strong><p>Schema: <span class="sidebar-schema-details">...</span></p></strong>
-      <span class="sidebar-file-links"><a href="#" class="edit"><i class="fa fa-pencil-alt"></i> Edit</a></span>
-    </li>
-  </ul>
 
   <div class="col-sm-8">
     <div id="add-dataset-form-container">
+
       <%= form_tag(url, method: method, :id => "add-dataset-form", :data => {'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }) do %>
 
       <div id="step-one">
@@ -54,81 +21,65 @@
           <label for="dataset[frequency]">How often do you plan on adding files?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often? Please note that this is a manual step, not automatic."></i></label>
           <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES), selected: dataset.frequency, class: "form-control" %>
         </div>
-
-        <% if false %>
-          <% if dataset.id.nil? %>
-            <%= select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
-          <% end %>
-          <%= text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, placeholder: t(:'dataset.publisher_name') %>
-          <%= url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
-        <% end %>
-
         <a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
       </div>
 
       <div id="step-two" class="hidden">
-
-        <% if false %>
-          <%= form_group :publishing_method, label: { text: "Publish publicly?" } do %>
-            <%= radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", checked: true, name: "dataset[publishing_method]" %>
-            <%= radio_button :publishing_method, :github_private, label: sanitize('No, only I should be able to see this data, in a private GitHub repository - <i>only for Paid GitHub accounts</i>'), name: "dataset[publishing_method]" %>
-            <%= radio_button :publishing_method, :local_private, label: "No, only Administrators and I should be able to see this data, stored in Octopub", name: "dataset[publishing_method]" %>
-          <% end %>
-        <% end %>
-
         <div class="form-group">
           <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
 
-<!--           <div class="top-buffer">
+          <div class="top-buffer">
             <a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
             <button id="show-license-wizard" class="btn btn-tertiary pull-right">Help me choose</button>
             <%= render "license_wizard" %>
-          </div> -->
+          </div>
 
           <div class="license-selector top-buffer">
             <p class="subheading">Government</p>
-              <label class="large-radio">
-                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[3][1] %>">
-                OGL (Open Government Licence 3.0 - UK)
-                 <span class="checkmark"></span>
-              </label>
+            <label class="large-radio">
+              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[3][1] %>">
+              OGL (Open Government Licence 3.0 - UK)
+               <span class="checkmark"></span>
+            </label>
             <p class="subheading">Creative Commons</p>
-              <label class="large-radio">
-                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[0][1] %>">
-                CC BY 4.0 (Creative Commons Attribution 4.0 - International)
-                 <span class="checkmark"></span>
-              </label>
-              <label class="large-radio">
-                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[1][1] %>">
-                CC BY-SA (Creative Commons - Attribution share-alike)
-                 <span class="checkmark"></span>
-              </label>
+            <label class="large-radio">
+              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[0][1] %>">
+              CC BY 4.0 (Creative Commons Attribution 4.0 - International)
+               <span class="checkmark"></span>
+            </label>
+            <label class="large-radio">
+              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[1][1] %>">
+              CC BY-SA (Creative Commons - Attribution share-alike)
+               <span class="checkmark"></span>
+            </label>
             <p class="subheading">Open Data Catalogue</p>
-              <label class="large-radio">
-                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[4][1] %>">
-                ODC-BY (Open Data Commons Attribution License 1.0)
-                 <span class="checkmark"></span>
-              </label>
-              <label class="large-radio">
-                <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[5][1] %>">
-                ODC-ODbl (Open Data Commons Open Database Licence)
-                 <span class="checkmark"></span>
-              </label>
+            <label class="large-radio">
+              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[4][1] %>">
+              ODC-BY (Open Data Commons Attribution License 1.0)
+               <span class="checkmark"></span>
+            </label>
+            <label class="large-radio">
+              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[5][1] %>">
+              ODC-ODbl (Open Data Commons Open Database Licence)
+               <span class="checkmark"></span>
+            </label>
           </div>
         </div>
-
         <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
       </div>
 
       <div id="step-three" class="hidden">
         <div id="files">
           <% if dataset.dataset_files.count == 0 %>
-            <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new,dataset_file_schemas: dataset_file_schemas } %>
+            <!-- render blank form inputs for adding new files -->
+            <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
           <% else %>
             <% dataset.dataset_files.each_with_index do |file, i| %>
               <div class="hidden">
+                <!-- render blank form inputs for adding new files -->
                 <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, i: i, dataset_file_schemas: dataset_file_schemas } %>
               </div>
+              <!-- render the existing files -->
               <%= render partial: "dataset_files/new_form", locals: { file: file, i: i } %>
             <% end %>
           <% end %>
@@ -143,11 +94,7 @@
           </button>
         </div>
       </div>
-      <% end %>
+
+    </div>
   </div>
 </div>
-
-<% if false %>
-  <%= form_tag url: url, method: method, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, :html => { :id => "add-dataset-form" } do |f| %>
-  <% end %>
-<% end %> 
