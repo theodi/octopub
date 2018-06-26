@@ -2,62 +2,11 @@
 
 $(document).ready(function() {
 
-  var s = {
-    $files : $('.bg-upload'),
-    $form : $('form'),
-    $currentInputGroup : $('.file-input-group:first'),
-    $datasetNameInput : $('[name="dataset[name]"]'),
-    $datasetFrequencyInput : $('[name="dataset[frequency]"]'),
-    $datasetLicenseInput : $('[name="dataset[license]"]'),
-    $datasetFileInputs : $('[name="[files[][file]]"]'),
-    $sidebarLinks : $('#sidebar-links').find('li:first').clone(true)
+  if ($('div.file-input-group').length) {
+    setUpCloneAndFileUpload();
   }
-
-  init();
-
-  function init() {
-    bindEvents();
-    initFileUploads();
-    loadSidebarValues();
-  }
-
-  function bindEvents() {
-    bindAddFileEvent();
-    bindPostFormEvent();
-    bindInputChangeEvents();
-  }
-
-  function initFileUploads() {
-    s.$files.each(function(i, elem) {
-      bgUpload(elem);
-    });
-  }
-
-  function loadSidebarValues() {
-    if (s.$datasetNameInput.val()) { 
-      $('#chosen-folder').text(s.$datasetNameInput.val()) 
-    }
-    if (s.$datasetFrequencyInput.find('option:selected').text()) { 
-      $('#chosen-frequency').text(s.$datasetFrequencyInput.find('option:selected').text())
-    }
-    if (s.$datasetLicenseInput.is(':checked')) { 
-       $('#chosen-licence').text($('[name="dataset[license]"]:checked').val())
-    }
-  }
-
-  function bindInputChangeEvents() {
-    s.$datasetNameInput.change(function(){
-      $('#chosen-folder').text($(this).val())
-    })
-    s.$datasetFrequencyInput.change(function(){
-      $('#chosen-frequency').text($(this).find('option:selected').text())
-    })
-    s.$datasetLicenseInput.change(function(){
-      $('#chosen-licence').text($('[name="dataset[license]"]:checked').val())
-    })
-    s.$datasetFileInputs.change(function(){
-      $(this).blur().focus();
-    })
+  if ($('div.schema-panel').length) {
+    setUpFileUpload();
   }
 
   function bgUpload(elem) {
@@ -77,13 +26,13 @@ $(document).ready(function() {
       paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
       dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
       replaceFileInput: false,
-      progressall: function(e, data) {
+      progressall: function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
         progressBar.css('width', progress + '%');
         progressBar.attr('aria-valuenow', progress);
         progressBar.text(progress + '%');
       },
-      start: function(e) {
+      start: function (e) {
         submitButton.prop('disabled', true);
 
         barContainer.removeClass('hidden');
@@ -153,7 +102,7 @@ $(document).ready(function() {
       addError(message);
     });
 
-    s.$files.each(function(i, elem) {
+    $('.bg-upload').each(function(i, elem) {
       bgUpload(elem);
     });
 
@@ -166,12 +115,32 @@ $(document).ready(function() {
     $('#main').prepend(alert);
   }
 
-  function bindAddFileEvent() {
+  function setUpFileUpload() {
+    $('.bg-upload').each(function(i, elem) {
+      bgUpload(elem);
+    });
+
+    $('input.change-file').on('click', function(e) {
+      $(this).attr('style', 'color:red');
+      e.stopImmediatePropagation();
+
+      var container = $(this).parents('.file');
+
+      container.find('.current-file').addClass('hidden');
+      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">File</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>');
+      bgUpload(container);
+    });
+  }
+
+  var currentInputGroup = $('.file-input-group:first')
+  var inputGroup = currentInputGroup.clone()
+
+  function addAnotherDataFileButtonClick() {
     // Clone button to create another file to upload
     $('#clone').click(function(e) {
       if (form.valid()) {
         hideStepDescription(currentStep)
-        var newInputGroup = $(s.$currentInputGroup).clone().removeClass('hidden')
+        var newInputGroup = $(inputGroup).clone().removeClass('hidden')
         var timestamp = new Date().getTime()
 
         // Remove the error labels from the cloned inputs else they will have duplicates
@@ -184,9 +153,9 @@ $(document).ready(function() {
         })
 
         // give the input group a unique data-id
-        if ( ! s.$currentInputGroup.attr('data-complete')) {
-          s.$currentInputGroup.attr('data-complete', true)
-          makeSidebarLinks(s.$currentInputGroup)
+        if ( ! currentInputGroup.attr('data-complete')) {
+          currentInputGroup.attr('data-complete', true)
+          makeSidebarLinks(currentInputGroup)
         }
 
         // Append the input group and attach file uploader listeners
@@ -212,8 +181,10 @@ $(document).ready(function() {
     });
   }
 
+  var sidebarLinks = $('#sidebar-links').find('li:first').clone(true)
+
   function makeSidebarLinks(inputGroup) {
-    var links = s.$sidebarLinks.clone(true)
+    var links = sidebarLinks.clone(true)
 
     if ($('.file-input-group').length > 1) {
       var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
@@ -231,7 +202,7 @@ $(document).ready(function() {
     })
 
     links.find('.delete').click(function(event){
-      if (inputGroup === s.$currentInputGroup) {
+      if (inputGroup === currentInputGroup) {
         inputGroup.prev().fadeIn()
       }
       inputGroup.remove()
@@ -282,23 +253,49 @@ $(document).ready(function() {
   }
 
   function updateCurrentInputGroup(inputGroup) {
-    s.$currentInputGroup = inputGroup
+    currentInputGroup = inputGroup
   }
 
   function toMegabytes(bytes) {
     return bytes/1000000
   }
 
-  function bindPostFormEvent() {
-    s.$form.submit(function(e) {
+  if ($('[name="dataset[name]"]').val()) { $('#chosen-folder').text($('[name="dataset[name]"]').val()) }
+  if ($('[name="dataset[frequency]"]').find('option:selected').text()) { $('#chosen-frequency').text($('[name="dataset[frequency]"]').find('option:selected').text()) }
+  if ($('[name="dataset[license]"]').find('option:selected').text()) { $('#chosen-licence').text($('[name="dataset[license]"]').find('option:selected').text()) }
+
+  $('[name="dataset[name]"]').change(function(){
+    $('#chosen-folder').text($(this).val())
+  })
+
+  $('[name="dataset[frequency]"]').change(function(){
+    $('#chosen-frequency').text($(this).find('option:selected').text())
+  })
+
+  $('[name="dataset[license]"]').change(function(){
+    $('#chosen-licence').text($(this).find('option:selected').text())
+  })
+
+  $('[name="[files[][file]]"]').change(function(){
+    $(this).blur().focus();
+  })
+
+  function addAjaxFormUploading() {
+    $('form').submit(function(e) {
       e.preventDefault();
 
-      if (form.valid() && ($('.s3-file').length > 0) || s.$form.hasClass('edit-form')) {
+      if (form.valid() && ($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
         postForm($(this));
         $('#spinner').removeClass('hidden');
         $('button[type=submit]').attr('disabled', true);
       }
     });
+  }
+
+  function setUpCloneAndFileUpload() {
+    addAnotherDataFileButtonClick();
+    addAjaxFormUploading();
+    setUpFileUpload();
   }
 
   // ###################################### Validation Code ######################################
@@ -473,5 +470,7 @@ $(document).ready(function() {
     nextStep.removeClass('hidden')
     currentLicenseStep = nextStep
   }
+
+
 
 });
