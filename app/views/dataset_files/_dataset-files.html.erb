@@ -30,7 +30,7 @@
             <td><%= file.title %></td>
             <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
             <td><%= time_or_date(file.created_at.utc) %></td>
-						<td></td>
+						<td><%= image_tag 'validation/' + file.validate_file(file) + '.svg' %></td>
             <!-- <td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td> -->
             <td>
               <div class="dropdown show">
