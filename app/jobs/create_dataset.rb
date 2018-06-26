@@ -36,7 +36,7 @@ class CreateDataset
     end
 
 		# Validate CSV files with csvlint.rb
-		CsvlintValidateService.validate_csv(@dataset)
+		CsvlintValidateService.validate_dataset_collection(@dataset)
 
     @dataset.report_status(options["channel_id"])
   end

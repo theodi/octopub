@@ -96,23 +96,7 @@ class DatasetFile < ApplicationRecord
   def schema_name
     dataset_file_schema.name if dataset_file_schema
   end
-
-	def validate_file(file)
-		file.validation ? "valid" : invalid_file(file)
-	end
-
-	def invalid_file(file)
-		s3_string = FileStorageService.get_string_io(file.storage_key)
-		validator = Csvlint::Validator.new(s3_string)
-
-		if validator.errors
-			'invalid'
-		elsif validator.warnings
-			'warnings'
-		end
-
-	end
-
+	
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)
