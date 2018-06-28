@@ -1,0 +1,131 @@
+// Place all the styles related to the dataset_file_validation controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$odiBlue: #00b7ff;
+$odiYellow: #F9BC26;
+$odiRed: #d60303;
+
+// Brand colors
+// -------------------------
+
+$brand-primary:         #428bca !default;
+$brand-success:         #5cb85c !default;
+$brand-warning:         #f0ad4e !default;
+$brand-danger:          #d9534f !default;
+$brand-info:            #5bc0de !default;
+
+
+// Components
+
+$border-radius-base:             4px !default;
+
+// Tables
+// -------------------------
+
+$table-cell-padding:                 8px !default;
+$table-condensed-cell-padding:       5px !default;
+
+$table-bg:                           transparent !default; // overall background-color
+$table-bg-accent:                    #f9f9f9 !default; // for striping
+$table-bg-hover:                     none !default;
+$table-bg-active:                    $table-bg-hover !default;
+
+$table-border-color:                 #ddd !default; // table and cell border
+
+
+// Form states and alerts
+// -------------------------
+
+$state-warning-text:             #c09853 !default;
+$state-warning-bg:               #fcf8e3 !default;
+$state-warning-border:           darken(adjust-hue($state-warning-bg, -10), 3%) !default;
+
+$state-danger-text:              #b94a48 !default;
+$state-danger-bg:                #f2dede !default;
+$state-danger-border:            darken(adjust-hue($state-danger-bg, -10), 3%) !default;
+
+$state-success-text:             #468847 !default;
+$state-success-bg:               #dff0d8 !default;
+$state-success-border:           darken(adjust-hue($state-success-bg, -10), 5%) !default;
+
+$state-info-text:                #3a87ad !default;
+$state-info-bg:                  #d9edf7 !default;
+$state-info-border:              darken(adjust-hue($state-info-bg, -10), 7%) !default;
+
+// Alerts
+// -------------------------
+$alert-padding:               15px !default;
+$alert-border-radius:         $border-radius-base !default;
+$alert-link-font-weight:      bold !default;
+
+$alert-success-bg:            $state-success-bg !default;
+$alert-success-text:          $state-success-text !default;
+$alert-success-border:        $state-success-border !default;
+
+$alert-info-bg:               $state-info-bg !default;
+$alert-info-text:             $state-info-text !default;
+$alert-info-border:           $state-info-border !default;
+
+$alert-warning-bg:            $state-warning-bg !default;
+$alert-warning-text:          $state-warning-text !default;
+$alert-warning-border:        $state-warning-border !default;
+
+$alert-danger-bg:             $state-danger-bg !default;
+$alert-danger-text:           $state-danger-text !default;
+$alert-danger-border:         $state-danger-border !default;
+
+
+
+table.report-results {
+	font-size: 13px;
+
+	border-top: none;
+
+		td, th {
+			text-align: center;
+			border:none;
+		}
+
+		th {
+			background-color: #fff;
+			.result {
+				font-size: 30px;
+				line-height: 30px;
+				display: block;
+				text-align: center;
+				border-top: none;
+			}
+		}
+
+	 .errors, .errors-none {
+			background-color: $alert-danger-bg;
+			color: $odiRed;
+		}
+
+		.warnings, .warnings-none {
+			background-color: $alert-warning-bg;
+			color: $odiYellow;
+		}
+
+		.info_messages, .info_messages-none {
+			background-color: $alert-info-bg;
+			color: $odiBlue;
+		}
+
+		.errors-none, .warnings-none, .info_messages-none {
+			background-color: whitesmoke;
+		}
+
+		td.warnings, td.errors, td.info_messages, td.active{
+			font-size: 22px;
+			font-weight: bold;
+			border: 2px solid #fff;
+		}
+
+		td.name {
+			text-align: right;
+			line-height: 31px;
+
+		}
+}
