@@ -1,9 +1,15 @@
-<h1 class="page-header">Edit Collection</h1>
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-3">
+		<h1 class="page-header">Edit Collection</h1>
 
-<%= render 'edit_form',
-  url: dataset_path(@dataset),
-  dataset: @dataset,
-  s3_direct_post: @s3_direct_post,
-  licenses: @licenses,
-  dataset_file_schemas: @dataset_file_schemas,
-  method: :put %>
+		<%= render 'edit_form',
+		  url: dataset_path(@dataset),
+		  dataset: @dataset,
+		  s3_direct_post: @s3_direct_post,
+		  licenses: @licenses,
+		  dataset_file_schemas: @dataset_file_schemas,
+		  method: :put %>
+	</div>
+</div>
+
+<%= javascript_include_tag 'edit_dataset_page' %>

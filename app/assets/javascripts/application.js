@@ -21,7 +21,6 @@
 //= require pusher.min
 //= require uuid-random.min
 //= require pusher_setup
-//= require file_upload
 //= require dashboard
 //= require tooltips
 //= require index
