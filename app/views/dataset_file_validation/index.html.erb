@@ -1,3 +1,54 @@
-<div>
-	<h2><%= @results %></h2>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+         <div class="col-sm-4">
+           <% if @result.valid? %>
+             <% if @result.warnings.count == 0 %>
+              <p><%= t(:valid_html) %></p>
+            <% else %>
+              <p><%= t(:valid_html) %> <%= t(:valid_with_warnings) %></p>
+            <% end %>
+          <% else %>
+            <p><%= t(:invalid_html) %></p>
+          <% end %>
+          <% if @result.header?
+               @rows_processed = @result.current_line-1
+             end
+          %>
+          <p><%= "Total Rows Processed = "+ (@rows_processed-1).to_s %></p>
+         </div>
+         <div class="col-sm-8">
+					 <table class="table table-hover report-results">
+						 <tr>
+							 <th></th>
+							 <th class="errors"><span class="result"><%= @result.errors.count %></span>Errors</td>
+							 <th class="warnings"><span class="result"><%= @result.warnings.count %></span>Warnings</td>
+							 <th class="info_messages"><span class="result"><%= @result.info_messages.count %></span>Messages</td>
+						 </tr>
+						 <tr>
+							 <td class="name">Structure</td>
+							 <td class="<%= category_class(@result, :errors, :structure) %>"><%= category_count(@result.errors, :structure) %></td>
+							 <td class="<%= category_class(@result, :warnings, :structure) %>"><%= category_count(@result.warnings, :structure) %></td>
+							 <td class="<%= category_class(@result, :info_messages, :structure) %>"><%= category_count(@result.info_messages, :structure) %></td>
+						 </tr>
+						 <tr>
+							 <td class="name">Schema</td>
+							 <td class="<%= category_class(@result, :errors, :schema) %>"><%= category_count(@result.errors, :schema) %></td>
+							 <td class="<%= category_class(@result, :warnings, :schema) %>"><%= category_count(@result.warnings, :schema) %></td>
+							 <td class="<%= category_class(@result, :info_messages, :schema) %>"><%= category_count(@result.info_messages, :schema) %></td>
+						 </tr>
+						 <tr>
+							 <td class="name">Context</td>
+							 <td class="<%= category_class(@result, :errors, :context) %>"><%= category_count(@result.errors, :context) %></td>
+							 <td class="<%= category_class(@result, :warnings, :context) %>"><%= category_count(@result.warnings, :context) %></td>
+							 <td class="<%= category_class(@result, :info_messages, :context) %>"><%= category_count(@result.info_messages, :context) %></td>
+						 </tr>
+					 </table>
+          </div>
+      	</div>
+      </div>
+    </div>
+  </div>
 </div>
