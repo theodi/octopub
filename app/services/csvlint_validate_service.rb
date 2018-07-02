@@ -29,11 +29,6 @@ class CsvlintValidateService
 
 	def self.update_database_attributes(csv, file)
 		csv.valid? ? file.update(validation: true) : file.update(validation: false)
-		# if csv.valid?
-		# 	file.update(validation: true)
-		# else
-		# 	file.update(validation: false)
-		# end
 	end
 
 	def self.generate_badge_valid_file(file)
