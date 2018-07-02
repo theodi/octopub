@@ -18,7 +18,7 @@ class CsvlintValidateService
 	end
 
 	def self.generate_badge(file)
-		file.validation ? "valid" : generate_badge_invalid_file(file)
+		!file.validation ? "invalid" : generate_badge_valid_file(file)
 	end
 
 	private
@@ -35,10 +35,11 @@ class CsvlintValidateService
 		end
 	end
 
-	def self.generate_badge_invalid_file(file)
+	def self.generate_badge_valid_file(file)
 		csv_string = get_s3_string(file)
 		csv = lint_csv(csv_string)
-		csv.errors ? 'invalid' : 'warnings'
+
+		csv.warnings.count > 0 ? "warnings" : "valid"
 	end
 
 end
