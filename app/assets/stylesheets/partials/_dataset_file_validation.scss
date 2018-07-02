@@ -9,11 +9,12 @@ table.report-results {
 
 		td, th {
 			text-align: center;
-			border:none;
+			border:none !important;
 		}
 
 		th {
 			background-color: #fff;
+
 			.result {
 				font-size: 30px;
 				line-height: 30px;
