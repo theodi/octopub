@@ -32,11 +32,10 @@ class CreateDataset
       elsif dataset_file_creation_hash["dataset_file_schema_id"]
         dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
       end
+
+			CsvlintValidateService.validate_csv(dataset_file)
       @dataset.dataset_files << dataset_file
     end
-
-		# Validate CSV files with csvlint.rb
-		CsvlintValidateService.validate_dataset_collection(@dataset)
 
     @dataset.report_status(options["channel_id"])
   end
