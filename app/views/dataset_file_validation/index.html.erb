@@ -14,8 +14,8 @@
             	<p><%= t(:invalid_html) %></p>
           	<% end %>
           	<% if @result.header? %>
-          		<% @rows_processed = @result.current_line-1 %>
-							<p><%= "Total Rows Processed = "+ (@rows_processed-1).to_s %></p>
+          		<% @rows_processed = @result.current_line - 1 %>
+							<p><%= "Total Rows Processed = "+ (@rows_processed - 1).to_s %></p>
   					<% end %>
 					</div>
 					<div class="col-sm-8">
@@ -52,7 +52,9 @@
   </div>
 </div>
 
-<h1><%= @result.errors.count %> Error</h1>
+<% if @result.errors.count != 0 %>
+	<h1><%= @result.errors.count %> Error</h1>
+<% end %>
 
 <%= render :partial => 'errors' %>
 
