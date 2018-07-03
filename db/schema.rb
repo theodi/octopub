@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180625143143) do
+ActiveRecord::Schema.define(version: 20180126121457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,7 +51,6 @@ ActiveRecord::Schema.define(version: 20180625143143) do
     t.text     "view_sha"
     t.integer  "dataset_file_schema_id"
     t.string   "storage_key"
-    t.boolean  "validation"
     t.index ["dataset_file_schema_id"], name: "index_dataset_files_on_dataset_file_schema_id", using: :btree
     t.index ["dataset_id"], name: "index_dataset_files_on_dataset_id", using: :btree
   end
