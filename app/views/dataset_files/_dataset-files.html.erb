@@ -30,7 +30,11 @@
             <td><%= file.title %></td>
             <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
             <td><%= time_or_date(file.created_at.utc) %></td>
-            <td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
+						<% if !file.validation.nil? %>
+							<td><%= link_to image_tag('validation/' + CsvlintValidateService.generate_badge(file) + '.svg'), dataset_file_validation_path(@dataset.id, file.id) %></td>
+						<% else %>
+            	<td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
+						<% end %>
             <td>
               <div class="dropdown show">
                 <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

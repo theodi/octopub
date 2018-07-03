@@ -11,7 +11,6 @@
     <td><%= dataset.schema_names.truncate(30) %></td>
   <% end %>
   <td><%= time_or_date(dataset.updated_at.utc) %></td>
-  <!-- <td>Temp</td> -->
   <% if dataset.published_status %>
     <td>Yes</td>
   <% else %>
@@ -23,9 +22,6 @@
         ...
       </a>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-        <!-- <% if !dataset.published_status %>
-          <%= link_to("<div class='dropdown-link'>Publish*</div>".html_safe, '#', class: "dropdown-item") %>
-        <% end %> -->
 				<%= link_to("<div class='dropdown-link'>View</div>".html_safe, files_path(dataset.id), class: "dropdown-item") %>
         <% if can? :edit, dataset %>
           <%= link_to("<div class='dropdown-link'>Edit</div>".html_safe, edit_dataset_path(dataset.id), class: "dropdown-item") %>
@@ -36,7 +32,6 @@
         <% if dataset.published_status %>
           <%= link_to("<div class='dropdown-link'>Download</div>".html_safe, dataset.gh_pages_url + '/datapackage.json', class: "dropdown-item") %>
         <% end %>
-				<!-- <%= link_to("<div class='dropdown-link'>Add files*</div>".html_safe, edit_dataset_path(dataset.id), class: "dropdown-item") %> -->
 			</div>
     </div>
   </td>

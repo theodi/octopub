@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
 
+	get "/collection/:dataset_id/file/:dataset_file_id/validation" => "dataset_file_validation#index", as: :dataset_file_validation
+
   resources :dataset_file_schemas do
     resources :output_schemas, except: [:index, :show, :destroy, :edit, :update]
   end
@@ -44,6 +46,7 @@ Rails.application.routes.draw do
   get "/me" => "users#edit", as: :me
   put "/me" => "users#update"
   get "/licenses" => "application#licenses"
+	get "/privacy-policy" => "application#privacy_policy", as: :privacy_policy 
   get "/getting-started" => "application#getting-started"
 
   mount API => '/'
