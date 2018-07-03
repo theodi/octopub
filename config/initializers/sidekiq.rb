@@ -1,7 +1,7 @@
-if Rails.env.development?
-  require 'sidekiq/testing'
-  Sidekiq::Testing.inline!
-end
+# if Rails.env.development?
+#   require 'sidekiq/testing'
+#   Sidekiq::Testing.inline!
+# end
 
 # Old behaviour, we should look at moving to ActiveJob instead probably to get this
 # https://github.com/mperham/sidekiq/blob/master/5.0-Upgrade.md
