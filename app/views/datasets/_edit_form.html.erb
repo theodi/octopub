@@ -1,22 +1,14 @@
 <%= bootstrap_form_tag url: url, method: method, html: { class: 'edit-form' }, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
 
   <%= f.text_field "dataset[name]", label: "Collection name", value: dataset.name, disabled: !dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
-  <% if dataset.id.nil? %>
-    <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
-  <% end %>
+
   <%= f.text_area "dataset[description]", label: "Collection description", value: dataset.description, placeholder: t(:'dataset.description')  %>
 
   <%= f.select "dataset[license]", licenses, label: "Licence", selected: dataset.license %>
+  
   <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "How often do you plan on adding files?", selected: dataset.frequency %>
 
-  <% if dataset.local_private? %>
-    <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
-      <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", name: "dataset[publishing_method]" %>
-      <%= f.radio_button :publishing_method, :local_private, label: "No, keep as private", checked: true, name: "dataset[publishing_method]" %>
-    <% end %>
-  <% end %>
-
-  <div id="files">
+  <div id="files" class="well">
     <% if dataset.dataset_files.count == 0 %>
       <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
     <% else %>
@@ -33,20 +25,6 @@
   <p class="text-right" id="wut">
     <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
   </p>
-
-  <% if false %>
-  <% if dataset.id && can?(:transfer, dataset) %>
-    <div class='panel panel-danger'>
-      <div class="panel-heading">
-        <h3 class="panel-title">Danger Zone</h3>
-      </div>
-      <div class="panel-body">
-        <%= f.select "dataset[user_id]", options_for_select(user_select_options(@users), dataset.user.id), { label: "Transfer dataset to another user" }, { 'data-live-search': "true", class: "selectpicker form-control show-tick" } %>
-        <span id="transferHelpBlock" class="help-block">Selecting another user may make it impossible for you to edit this dataset further. Only change it if you know what you are doing!</span>
-      </div>
-    </div>
-  <% end %>
-  <% end %>
 
   <button type="submit" class="btn btn-primary btn-lg btn-block">
     Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
