@@ -74,9 +74,15 @@ class ApplicationController < ActionController::Base
   end
 
   def set_licenses
-    @licenses = Octopub::WEB_LICENCES.map do |id|
-      license = Odlifier::License.define(id)
-      [license.title, license.id]
+    license_group = nil
+    @licenses = {}
+    Octopub::LICENCE_GROUPS.each_with_index do |g, i|
+      if g != license_group
+        @licenses[g] = []
+      end
+      odlifier_license = Odlifier::License.define(Octopub::WEB_LICENCES[i])
+      @licenses[g] << { :id => odlifier_license.id, :name => Octopub::BIG_LICENCES[i] }
+      license_group = g
     end
   end
 end

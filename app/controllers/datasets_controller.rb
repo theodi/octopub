@@ -69,8 +69,8 @@ class DatasetsController < ApplicationController
 
   def create
     logger.info "DatasetsController: In create"
-		# files_array = get_files_as_array_for_serialisation
-  #   CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
+		files_array = get_files_as_array_for_serialisation
+    CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
     redirect_to created_datasets_path
   end

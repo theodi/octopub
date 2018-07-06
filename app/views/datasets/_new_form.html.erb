@@ -35,35 +35,18 @@
           </div>
 
           <div class="license-selector top-buffer">
-            <p class="subheading">Government</p>
-            <label class="large-radio">
-              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[3][1] %>">
-              OGL (Open Government Licence 3.0 - UK)
-               <span class="checkmark"></span>
-            </label>
-            <p class="subheading">Creative Commons</p>
-            <label class="large-radio">
-              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[0][1] %>">
-              CC BY 4.0 (Creative Commons Attribution 4.0 - International)
-               <span class="checkmark"></span>
-            </label>
-            <label class="large-radio">
-              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[1][1] %>">
-              CC BY-SA (Creative Commons - Attribution share-alike)
-               <span class="checkmark"></span>
-            </label>
-            <p class="subheading">Open Data Catalogue</p>
-            <label class="large-radio">
-              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[4][1] %>">
-              ODC-BY (Open Data Commons Attribution License 1.0)
-               <span class="checkmark"></span>
-            </label>
-            <label class="large-radio">
-              <input type="radio" id="dataset_license_1" name="dataset[license]" value="<%= licenses[5][1] %>">
-              ODC-ODbl (Open Data Commons Open Database Licence)
-               <span class="checkmark"></span>
-            </label>
+            <% licenses.each do |key, arr| %>
+              <p class="subheading"><%= key %></p>
+              <% arr.each_with_index do |l, i| %>
+                <label class="large-radio">
+                  <%= radio_button_tag 'dataset[license]', l[:id] %>
+                  <%= l[:name] %>
+                  <span class="checkmark"></span>
+                </label>
+              <% end %>
+            <% end %>
           </div>
+
         </div>
         <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
       </div>
@@ -73,9 +56,7 @@
           <% if dataset.dataset_files.count == 0 %>
             <!-- render blank form inputs for adding new files -->
             <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
-          
           <% else %>
-
             <% dataset.dataset_files.each_with_index do |file, i| %>
               <div class="hidden">
                 <!-- render blank form inputs for adding new files -->
@@ -91,6 +72,7 @@
           <button id="clone" class="btn btn-secondary">Save and add another file</button>
           <button id="delete"class="btn btn-lg btn-danger">Delete</button>
         </div>
+
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-lg btn-block">
             Submit collection for validation <i class="fa fa-spinner fa-spin hidden" id="spinner"></i>
@@ -103,4 +85,3 @@
     </div>
   </div>
 </div>
-
