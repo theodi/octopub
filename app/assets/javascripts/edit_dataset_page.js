@@ -53,17 +53,17 @@ $(document).ready(function() {
     });
   }
 
-  function loadSidebarValues() {
-    if (s.$datasetNameInput.val()) { 
-      s.$chosenFolder.text(s.$datasetNameInput.val()) 
-    }
-    if (s.$datasetFrequencyInput.find('option:selected').text()) { 
-      s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
-    }
-    if (s.$datasetLicenseInput.is(':checked')) { 
-       s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
-    }
-  }
+  // function loadSidebarValues() {
+  //   if (s.$datasetNameInput.val()) { 
+  //     s.$chosenFolder.text(s.$datasetNameInput.val()) 
+  //   }
+  //   if (s.$datasetFrequencyInput.find('option:selected').text()) { 
+  //     s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
+  //   }
+  //   if (s.$datasetLicenseInput.is(':checked')) { 
+  //      s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
+  //   }
+  // }
 
   // function bindInputChangeEvents() {
   //   s.$datasetNameInput.change(function(){
