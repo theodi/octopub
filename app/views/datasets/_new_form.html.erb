@@ -19,7 +19,7 @@
         </div>
         <div class="form-group">
           <label for="dataset[frequency]">How often do you plan on adding files?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often? Please note that this is a manual step, not automatic."></i></label>
-          <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES), selected: dataset.frequency, class: "form-control" %>
+          <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES, dataset.frequency), class: "form-control" %>
         </div>
         <a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
       </div>

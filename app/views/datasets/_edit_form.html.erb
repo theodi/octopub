@@ -1,8 +1,8 @@
-<%= form_tag(url, method: method, :id => "add-dataset-form", html: { class: 'edit-form' }, :data => {'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }) do %>
+<%= form_tag(url, method: method, :id => "add-dataset-form", :data => {'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, class: 'edit-form') do %>
 
   <div class="form-group">
     <label for="dataset[name]">Collection name</label>
-    <%= text_field_tag "dataset[name]", dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name'), class: "form-control" %>
+    <%= text_field_tag "dataset[name]", dataset.name, disabled: true, placeholder: t(:'dataset.name'), class: "form-control" %>
   </div>
   <div class="form-group">
     <label for="dataset[description]">Collection description</label>
@@ -10,7 +10,7 @@
   </div>
   <div class="form-group">
     <label for="dataset[frequency]">How often do you plan on adding files?</label>
-    <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES), selected: dataset.frequency, class: "form-control" %>
+    <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES, dataset.frequency), class: "form-control" %>
   </div>
 
   <div class="form-group">
@@ -49,7 +49,7 @@
 
   <div class="form-group">
     <button id="clone" class="btn btn-secondary">Save and add another file</button>
-    <button id="delete"class="btn btn-lg btn-danger">Delete</button>
+    <button id="delete"class="btn btn-tertiary">Delete</button>
   </div>
 
   <div class="form-group">

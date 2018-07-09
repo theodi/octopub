@@ -23,7 +23,7 @@
       </div>
     <% end %>
 
-    <%= hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
+    <%= hidden_field_tag "files[][id]", file.id, id: "_files[][id]" if file.id %>
   </fieldset>
   <fieldset class="file bg-upload">
     <% if @dataset_file_schemas.any? %>

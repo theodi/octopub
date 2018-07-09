@@ -5,8 +5,8 @@ $(document).ready(function() {
   var s = {
     $form                         : $('form'),
     $files                        : $('.bg-upload'),
-    $currentVisibleFileInputGroup : $('.file-input-group:first'),
-    $fileInputGroup               : $('.file-input-group:first').clone(),
+    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
+    $fileInputGroup               : $('div.file-input-group:first').clone(),
     $newFileInputGroup            : null,
     $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
     $wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled',
@@ -166,13 +166,11 @@ $(document).ready(function() {
   }
 
   function newFileInputGroup() {
-    var newFileInputGroup = s.$fileInputGroup.clone()
+    var newFileInputGroup = $(s.$fileInputGroup).clone()
     // Iterate over the inputs of the file input group
     newFileInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
       if (this.id) {
-        // Empty input value
-        $(this).val('')
-        // Add a unique id to the input so Jquery Validate works correctly
+        // Make input id's unique so Jquery Validate works correctly
         this.id = this.id + new Date().getTime()
       }
     })

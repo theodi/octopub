@@ -5,8 +5,8 @@ $(document).ready(function() {
   var s = {
     $form                         : $('form'),
     $files                        : $('.bg-upload'),
-    $currentVisibleFileInputGroup : $('.file-input-group:first'),
-    $fileInputGroup               : $('.file-input-group:first').clone(),
+    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
+    $fileInputGroup               : $('div.file-input-group:first').clone(),
     $newFileInputGroup            : null,
     // $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
     // $wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled',
@@ -41,15 +41,15 @@ $(document).ready(function() {
   }
 
   function bindChangeFileEvent() {
-    $('input.change-file').on('click', function(e) {
-      $(this).attr('style', 'color:red');
-      e.stopImmediatePropagation();
+    $('.change-file').on('click', function(e) {
+      // $(this).attr('style', 'color:red');
+      // e.stopImmediatePropagation();
+      e.preventDefault()
+      var container = $(this).parents('.file')
 
-      var container = $(this).parents('.file');
-
-      container.find('.current-file').addClass('hidden');
-      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">File</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>');
-      initFileUpload(container);
+      container.find('.current-file').addClass('hidden')
+      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">Files</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>')
+      initFileUpload(container)
     });
   }
 
@@ -180,13 +180,14 @@ $(document).ready(function() {
   }
 
   function newFileInputGroup() {
-    var newFileInputGroup = s.$fileInputGroup.clone()
+    var newFileInputGroup = $(s.$fileInputGroup).clone()
     // Iterate over the inputs of the file input group
     newFileInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
       if (this.id) {
-        // Empty input value
-        $(this).val('')
-        // Add a unique id to the input so Jquery Validate works correctly
+        $(this)
+        	.attr('disabled', false)
+    		.attr('readonly', false)
+        // Make input id's unique so Jquery Validate works correctly
         this.id = this.id + new Date().getTime()
       }
     })
@@ -206,11 +207,7 @@ $(document).ready(function() {
       e.preventDefault()
       // Only add new file inputs if the current form is valid
       if (s.$form.valid()) {
-        // Make a sidebar link for the current input group
-        if (hasSidebarLink(s.$currentVisibleFileInputGroup) !== true) {
-          s.$currentVisibleFileInputGroup.attr('data-complete', true)
-          makeSidebarLink(s.$currentVisibleFileInputGroup)
-        }
+      	console.log('addit')
         // Create new file input group
         s.$newFileInputGroup = newFileInputGroup()
         // Append new file input group to DOM
@@ -219,12 +216,9 @@ $(document).ready(function() {
         s.$newFileInputGroup.find('.bg-upload').each(function(i, elem) {
           initFileUpload(elem)
         })
-        // Hide other file input groups
-        s.$newFileInputGroup.siblings().hide()
-        // Update the current visible input group
-        s.$currentVisibleFileInputGroup = s.$newFileInputGroup
-        hideStepDescription(currentStep)
         reloadTooltips()
+      } else {
+      	console.log('potate')
       }
     })
   }
@@ -349,13 +343,13 @@ $(document).ready(function() {
   var validator = s.$form.validate({
     ignore: [],
     rules: { // Validation rules (inputs are identified by name attribute)
-      'dataset[name]': { required: true },
+      // 'dataset[name]': { required: true },
       'dataset[description]': { required: true },
       'dataset[frequency]': { required: true },
       'dataset[license]': { required: true },
-      'files[][title]': { required: true },
+      // 'files[][title]': { required: true },
       'files[][description]': {},
-      '[files[][file]]': { required: true, alphanum_filename: true },
+      // '[files[][file]]': { required: true, alphanum_filename: true },
       '[files[][dataset_file_schema_id]]': {}
     },
     onfocusout: function(element) {
