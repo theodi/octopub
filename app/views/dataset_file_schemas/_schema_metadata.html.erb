@@ -1,0 +1,45 @@
+<div class="box-dataset">
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Created by:</strong></p>
+		</div>
+		<div class="col-md-5 col-sm-5">
+			<p><%= @dataset_file_schema.owner_username %></p>
+		</div>
+		<div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
+			<%= link_to("Edit", edit_dataset_file_schema_path(@dataset_file_schema)) %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Description:</strong></p>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<p><%= @dataset_file_schema.description %></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Access:</strong></p>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<p><%= @dataset_file_schema.restricted ? 'Private' : 'Public' %></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Created on:</strong></p>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<p><%= @dataset_file_schema.created_at.to_formatted_s(:short) %></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Number of files using this schema:</strong></p>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<p><%= @dataset_file_schema.count_datasets_using_this_schema %></p>
+		</div>
+	</div>
+</div>
