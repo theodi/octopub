@@ -7,16 +7,7 @@ $(document).ready(function() {
     $files                        : $('.bg-upload'),
     $currentVisibleFileInputGroup : $('div.file-input-group:first'),
     $fileInputGroup               : $('div.file-input-group:first').clone(),
-    $newFileInputGroup            : null,
-    // $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
-    // $wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled',
-    // $datasetNameInput             : $('[name="dataset[name]"]'),
-    // $datasetFrequencyInput        : $('[name="dataset[frequency]"]'),
-    // $datasetLicenseInput          : $('[name="dataset[license]"]'),
-    // $datasetFileInputs            : $('[name="[files[][file]]"]'),
-    // $chosenFolder                 : $('#chosen-folder'),
-    // $chosenFrequency              : $('#chosen-frequency'),
-    // $chosenLicense                : $('#chosen-licence')
+    $newFileInputGroup            : null
   }
 
   init()
@@ -24,14 +15,12 @@ $(document).ready(function() {
   function init() {
     bindEvents()
     initFileUploads()
-    // loadSidebarValues()
   }
 
   function bindEvents() {
     bindAddFileEvent()
     bindPostFormEvent()
     bindChangeFileEvent()
-    // bindInputChangeEvents()
   }
 
   function initFileUploads() {
@@ -42,8 +31,6 @@ $(document).ready(function() {
 
   function bindChangeFileEvent() {
     $('.change-file').on('click', function(e) {
-      // $(this).attr('style', 'color:red');
-      // e.stopImmediatePropagation();
       e.preventDefault()
       var container = $(this).parents('.file')
 
@@ -52,33 +39,6 @@ $(document).ready(function() {
       initFileUpload(container)
     });
   }
-
-  // function loadSidebarValues() {
-  //   if (s.$datasetNameInput.val()) { 
-  //     s.$chosenFolder.text(s.$datasetNameInput.val()) 
-  //   }
-  //   if (s.$datasetFrequencyInput.find('option:selected').text()) { 
-  //     s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
-  //   }
-  //   if (s.$datasetLicenseInput.is(':checked')) { 
-  //      s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
-  //   }
-  // }
-
-  // function bindInputChangeEvents() {
-  //   s.$datasetNameInput.change(function(){
-  //     s.$chosenFolder.text($(this).val())
-  //   })
-  //   s.$datasetFrequencyInput.change(function(){
-  //     s.$chosenFrequency.text($(this).find('option:selected').text())
-  //   })
-  //   s.$datasetLicenseInput.change(function(){
-  //     s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
-  //   })
-  //   s.$datasetFileInputs.change(function(){
-  //     $(this).blur().focus()
-  //   })
-  // }
 
   function initFileUpload(elem) {
     var container            = $(elem)
@@ -239,93 +199,6 @@ $(document).ready(function() {
     })
   }
 
-  // function hasSidebarLink(inputGroup) {
-  //   return (inputGroup.attr('data-complete')) ? true : false
-  // }
-
-  // function makeSidebarLink(inputGroup) {
-  //   var link = s.$sidebarLink.clone()
-  //   $('.sidebar-files').append(link)
-  //   bindSidebarLinkClickEvents(inputGroup, link)
-  //   bindSidebarLinkChangeEvents(inputGroup, link)
-  // }
-
-  // function bindSidebarLinkClickEvents(inputGroup, link) {
-  //   link.find('.edit').click(function(e){
-  //     e.preventDefault()
-  //     inputGroup.fadeIn().siblings().hide()
-  //     s.$currentVisibleFileInputGroup = inputGroup
-  //     if (s.$newFileInputGroup) { s.$newFileInputGroup.remove() }
-  //   })
-
-  //   link.find('.delete').click(function(e){
-  //     e.preventDefault()
-  //     // Must have at least one file input group
-  //     if ($('.file-input-group[data-complete="true"]').length > 1) {
-  //       if (inputGroup === s.$currentVisibleFileInputGroup) {
-  //         var nearest = nearestFileInputGroup(inputGroup)
-  //         nearest.show()
-  //         s.$currentVisibleFileInputGroup = nearest
-  //       }
-  //       inputGroup.remove()
-  //       link.remove()
-  //     } else {
-  //       alert('Can\'t delete - At least one file is required')
-  //     }
-  //   })
-  // }
-
-  // function nearestFileInputGroup(inputGroup) {
-  //   return (inputGroup.prev().length === 1) ? inputGroup.prev() : inputGroup.next()
-  // }
-
-  // function bindSidebarLinkChangeEvents(inputGroup, link) {
-  //   var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
-  //   var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
-
-  //   var fileSize
-  //   if (window.FileReader) {
-  //     var file = inputGroup.find('input[type="file"]')[0].files[0]
-  //     fileSize = toMegabytes(file.size) + 'MB'
-  //   }
-
-  //   var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-  //   link.find('.sidebar-file-details').text(sidebarFileDetails)
-  //   link.find('.sidebar-schema-details').text(schemaName)
-
-  //   inputGroup.find('[name="files[][title]"]').change(function(){
-  //     var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
-  //     var fileSize
-  //     if (window.FileReader) {
-  //       var file = inputGroup.find('input[type="file"]')[0].files[0]
-  //       fileSize = toMegabytes(file.size) + 'MB'
-  //     }
-  //     var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-  //     link.find('.sidebar-file-details').text(sidebarFileDetails)
-  //   })
-
-  //   inputGroup.find('[name="[files[][file]]"]').change(function(){
-  //     var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
-  //     var fileSize
-  //     if (window.FileReader) {
-  //       var file = inputGroup.find('input[type="file"]')[0].files[0]
-  //       fileSize = toMegabytes(file.size) + 'MB'
-  //     }
-  //     var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-  //     link.find('.sidebar-file-details').text(sidebarFileDetails)
-  //     form.validate()
-  //   })
-
-  //   inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
-  //     var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
-  //     link.find('.sidebar-schema-details').text(schemaName)
-  //   })
-  // }
-
-  // function toMegabytes(bytes) {
-  //   return bytes/1000000
-  // }
-
   function bindPostFormEvent() {
     s.$form.submit(function(e) {
       e.preventDefault()
@@ -356,92 +229,6 @@ $(document).ready(function() {
       this.element(element) // Validate elements on onfocusout
     }
   })
-
-  // var formSteps = ['step-one', 'step-two', 'step-three']
-  // var currentStep = formSteps[0]
-
-  // // Setup click handlers for step navigation buttons
-  // $.each(formSteps, function(i, targetStep) {
-  //   var targetStepButton = '.show-' + targetStep
-
-  //   $(document).on('click', targetStepButton, function (e) {
-  //     if (stepsValid(stepsToValidate(targetStep))) {
-  //       hideStep(currentStep)
-  //       showStep(targetStep)
-  //       if (currentStep === formSteps[0] || currentStep === formSteps[1]) {
-  //         hideStepDescription(currentStep)
-  //       }
-  //       currentStep = targetStep
-  //     }
-  //     e.preventDefault()
-  //   })
-  // })
-
-  // function hideStepDescription(step) {
-  //   getWizardSidebarStep(step).find('.wizard-sidebar-step-description').hide()
-  // }
-
-  // // Get the steps that require validation inbetween currentStep and targetStep
-  // // Accepts string e.g. 'step-three'
-  // // Returns array of steps e.g. ['step-one', 'step-two']
-  // function stepsToValidate(targetStep) {
-  //   return formSteps.slice(formSteps.indexOf(currentStep), formSteps.indexOf(targetStep))
-  // }
-
-  // // Returns true if all passed-in steps are valid, false otherwise
-  // // Accepts array of strings e.g. ['step-one', 'step-two']
-  // function stepsValid(steps) {
-  //   if (!steps.length) { return true }
-
-  //   // This builds an array of booleans, each one representing the validity of a step
-  //   // Then it sums the booleans to get the total validity of the steps
-  //   return steps.map(function(step) {   
-  //     return stepValid(step)
-  //   }).reduce(function(sum, bool) {
-  //     return sum && bool
-  //   })
-  // }
-
-  // // Return true if step is valid, false otherwise
-  // // Accepts string e.g. 'step-one'
-  // function stepValid(step) {
-  //   // .valid() is a JQuery Validate function
-  //   return stepInputs('#' + step).valid()
-  // }
-
-  // // Return the inputs for a step as a JQuery Object
-  // // Accepts string e.g. '#step-one'
-  // function stepInputs(step) {
-  //   // Return all step inputs except buttons and search boxes for dropdowns
-  //   return $(step).find(':input').not(':button').not("[aria-label='Search']")
-  // }
-
-  // function hideStep(step) {
-  //   $('#' + step).addClass('hidden')
-  //   deactivateSidebarStep(step)
-  // }
-
-  // function showStep(step) {
-  //   $('#' + step).show().removeClass('hidden')
-  //   $.each(stepsToValidate(step), function(i, s) { hideStep(s) })
-  //   activateSidebarStep(step)
-  // }
-
-  // function deactivateSidebarStep(step) {
-  //   getWizardSidebarStep(step)
-  //     .removeClass(s.$wizardSidebarStepClasses)
-  //     .addClass('wizard-sidebar-step-inactive')
-  // }
-
-  // function activateSidebarStep(step) {
-  //   getWizardSidebarStep(step)
-  //     .removeClass(s.$wizardSidebarStepClasses)
-  //     .addClass('wizard-sidebar-step-active')
-  // }
-
-  // function getWizardSidebarStep(step) {
-  //   return $('.show-' + step).parents('.wizard-sidebar-step')
-  // }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs
