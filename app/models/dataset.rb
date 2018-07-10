@@ -161,21 +161,22 @@ class Dataset < ApplicationRecord
     # is this the better way to do this method? https://github.com/bblimke/webmock#response-with-custom-status-message
   end
 
-  private
+  # This is a callback
+  def update_dataset_in_github
+    Rails.logger.info "in update_dataset_in_github"
+    return if local_private?
 
-    # This is a callback
-    def update_dataset_in_github
-      Rails.logger.info "in update_dataset_in_github"
-      return if local_private?
-
-      if publishing_method_was == 'local_private' && github_public?
-        CreateRepository.perform_async(id)
-      else
-        jekyll_service.update_dataset_in_github
-        make_repo_public_if_appropriate
-        publish_public_views
-      end
+    if publishing_method_was == 'local_private' && github_public?
+      CreateRepository.perform_async(id)
+    else
+      jekyll_service.update_dataset_in_github
+      make_repo_public_if_appropriate
+      publish_public_views
+      self.update_attribute(:published_status, 'published')
     end
+  end
+
+  private
 
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"

@@ -11,10 +11,7 @@
     <td><%= dataset.schema_names.truncate(20) %></td>
   <% end %>
   <td><%= time_or_date(dataset.updated_at.utc) %></td>
-  <% if dataset.published_status == 'published' %>
-    <td>Yes</td>
-  <% else %>
-    <td>No</td>
+  <td><%= dataset.published_status %></td>
   <% end %>
   <td>
     <div class="dropdown show">

@@ -12,11 +12,7 @@
   <% end %>
   <td><%= time_or_date(dataset.updated_at.utc) %></td>
   <!-- <td>Temp</td> -->
-  <% if dataset.published_status == 'published' %>
-    <td>Yes</td>
-  <% else %>
-    <td>No</td>
-  <% end %>
+  <td><%= dataset.published_status %></td>
   <td>
     <div class="dropdown show">
       <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
