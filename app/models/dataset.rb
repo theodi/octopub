@@ -34,7 +34,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_update :update_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
+  # after_update :update_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
   after_destroy :delete_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
 
   validate :check_repo, on: :create

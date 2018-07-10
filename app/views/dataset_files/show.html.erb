@@ -6,7 +6,7 @@
 				<h2><span><i class="fas fa-file-alt"></i></span><%= @dataset_file.title %></h2>
 			</div>
 			<div class="col-md-offset-6 col-md-3">
-				<% if !@dataset.published_status %>
+				<% if @dataset.published_status == 'unpublished' %>
 					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
 				<% else %>
 					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
@@ -52,10 +52,10 @@
 				<p><strong>Published:</strong></p>
 			</div>
 			<div class="col-md-5 col-sm-5">
-				<% if @dataset.published_status %>
-		      <p>Yes</p>
+				<% if @dataset.published_status == 'published' %>
+		      		<p>Yes</p>
 				<% else %>
-		      <p>No - this file is not public yet</p>
+		      		<p>No - this file is not public yet</p>
 				<% end %>
 			</div>
 		</div>

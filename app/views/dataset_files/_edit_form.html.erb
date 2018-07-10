@@ -34,7 +34,7 @@
     <% if @dataset_file_schemas.any? %>
       <div class="form-group">
         <label for="[files[][dataset_file_schema_id]]">File schema</label>
-        <%= select_tag "[files[][dataset_file_schema_id]]", options_from_collection_for_select(@dataset_file_schemas, :id, :name, selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)', disabled: @dataset.published_status, class: "form-control" } %>
+        <%= select_tag "[files[][dataset_file_schema_id]]", options_from_collection_for_select(@dataset_file_schemas, :id, :name, selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)', disabled: @dataset.published_status == 'published', class: "form-control" } %>
       </div>
     <% end %>
   </fieldset>

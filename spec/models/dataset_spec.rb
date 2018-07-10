@@ -329,9 +329,9 @@ describe Dataset, vcr: { :match_requests_on => [:host, :method] } do
   end
 
   context "prepublishing a dataset" do
-    it "creates a dataset with a published status of false" do
+    it "creates a dataset with a published status of unpublished" do
       dataset = create(:dataset, user: @user)
-      expect(dataset.published_status).to eq(false)
+      expect(dataset.published_status).to eq("unpublished")
     end
   end
 

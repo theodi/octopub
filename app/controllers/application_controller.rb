@@ -76,6 +76,7 @@ class ApplicationController < ActionController::Base
   def set_licenses
     license_group = nil
     @licenses = {}
+    
     Octopub::LICENCE_GROUPS.each_with_index do |g, i|
       if g != license_group
         @licenses[g] = []

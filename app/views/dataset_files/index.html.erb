@@ -13,11 +13,11 @@
 				<h2><span class="fa fa-folder-open"></span><%= @dataset.name %></h2>
 			</div>
 			<div class="col-md-9">
-				<% if !@dataset.published_status %>
+				<% if @dataset.published_status == 'unpublished' %>
 					<%= bs_button_to "Publish data collection", request.original_url + '/publish_dataset', rel: "alternate",:class => "btn btn-primary pull-right" %>
 				<% end %>
 				<%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary pull-right" %>
-				<% if !@dataset.published_status %>
+				<% if @dataset.published_status == 'unpublished' %>
 					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled pull-right" %>
 				<% else %>
 					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary pull-right" %>
