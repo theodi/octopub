@@ -1,12 +1,23 @@
-<h1 class="page-header">Dataset File Schemas <small>for <%= current_user.name %></small></h1>
+<div class="toolbar" id="toolbar">
+	<div class="row">
+		<div class="col-md-3 col-sm-3">
+			<h2 class="orange">Dataset File Schemas <small>for <%= current_user.name %></small></h2>
+		</div>
+		<div class="col-md-5 col-md-offset-2 col-sm-5 col-sm-offset-2">
+			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Infer a new schema".html_safe, new_inferred_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "infer_schema" %>
+			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "add_schema" %>
+		</div>
+		<div class="col-md-2 col-sm-2">
+			<div class="form-group has-feedback">
+				<input name="search" id="myInput" class="form-control hasclear" type="text" placeholder='Search sets'>
+				<span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div>
-  <%= bs_button_to 'Add a new dataset file schema', new_dataset_file_schema_path, style: "success", id: "add_schema", class: "btn-default" %>
-  <%= bs_button_to 'Infer a new dataset file schema from a data file', new_inferred_dataset_file_schema_path, style: "success", id: "infer_schema", class: "btn-info" %>
-</div>
-<div>
   <% if @dataset_file_schemas.any? %>
-    <h2>Your Schemas</h2>
     <%= render partial: 'schema_table', locals: { schemas: @dataset_file_schemas } %>
   <% else %>
     <p class='text-center lead'>You currently have no dataset file schemas, why not <%= link_to 'add one', new_dataset_file_schema_path %>?</p>

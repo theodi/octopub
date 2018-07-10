@@ -42,6 +42,7 @@
 
 .btn-secondary {
   @include button($dusk-blue, $cobalt);
+	margin-right: 0.5em;
 
   &:disabled {
     opacity: 0.4;
