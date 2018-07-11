@@ -1,67 +1,74 @@
-<h1 class="page-header">Edit Dataset File Schema <small><%= @dataset_file_schema.name %></small></h1>
-<% if @dataset_file_schema.schema_categories.exists? %>
-  <h2>Categories</h2>
-  <ul>
-    <% @dataset_file_schema.schema_categories.each do |category| %>
-      <li><%= category.name %></li>
-    <% end %>
-  </ul>
-<% end %>
-
-<%= bootstrap_form_for @dataset_file_schema, method: :put do |f| %>
-
-  <h2>Metadata</h2>
-  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
-
-  <h2>Schema</h2>
-  <div>
-    <table class="table table-bordered table-condensed" >
-      <thead>
-        <tr>
-          <th class="col-xs-2">Name</th>
-          <th class="col-xs-2">Type</th>
-          <th>Required?</th>
-          <th>Unique?</th>
-          <th>Min Length</th>
-          <th>Max Length</th>
-          <th>Max</th>
-          <th>Min</th>
-          <th>Pattern</th>
-          <th>Date Pattern</th>
-          <th>Constraint Type</th>
-        </tr>
-      </thead>
-      <%= f.fields_for :schema_fields do |schema_field_form| %>
-        <tbody>
-          <tr>
-            <td><%= schema_field_form.text_field :name,  hide_label: true %></td>
-            <td><%= schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}, schema_field_form.object.type), { hide_label: true }, { class: 'form-control' } ) %></td>
-            <% if schema_field_form.object.schema_constraint %>
-              <%= schema_field_form.fields_for :schema_constraint do |schema_constraint_form| %>
-                <td><%= schema_constraint_form.check_box :required, hide_label: true %></td>
-                <td><%= schema_constraint_form.check_box :unique, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :min_length, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :max_length, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :minimum, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :maximum, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :pattern, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :date_pattern, hide_label: true %></td>
-                <td><%= schema_constraint_form.text_field :type, hide_label: true %></td>
-              <% end %>
-            <% else %>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            <% end %>
-          </tr>
-        </tbody>
-      <% end %>
-    </table>
-  </div>
-  <%= f.primary %>
-<% end %>
+<div class="home-box-dashboard">
+	<div class="row">
+		<div class="head-dataset">
+			<div class="col-md-5">
+				<h2><span><i class="fas fa-file-alt"></i></span>Edit schema: <%= @dataset_file_schema.name %></h2>
+			</div>
+		</div>
+	</div>
+	<div class="box-dataset">
+		<div class="row">
+			<%= bootstrap_form_for @dataset_file_schema, method: :put do |f| %>
+			<div class="col-md-5 col-sm-5">
+				<%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
+			</div>
+		</div>
+	</div>
+	<div class="box-dataset">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-bordered table-condensed" >
+					<thead>
+						<tr>
+							<th class="col-xs-2">Name</th>
+							<th class="col-xs-2">Type</th>
+							<th>Required?</th>
+							<th>Unique?</th>
+							<th>Min Length</th>
+							<th>Max Length</th>
+							<th>Max</th>
+							<th>Min</th>
+							<th>Pattern</th>
+							<th>Date Pattern</th>
+							<th>Constraint Type</th>
+						</tr>
+					</thead>
+					<%= f.fields_for :schema_fields do |schema_field_form| %>
+						<tbody>
+							<tr>
+								<td><%= schema_field_form.text_field :name,  hide_label: true %></td>
+								<td><%= schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}, schema_field_form.object.type), { hide_label: true }, { class: 'form-control' } ) %></td>
+								<% if schema_field_form.object.schema_constraint %>
+									<%= schema_field_form.fields_for :schema_constraint do |schema_constraint_form| %>
+										<td><%= schema_constraint_form.check_box :required, hide_label: true %></td>
+										<td><%= schema_constraint_form.check_box :unique, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :min_length, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :max_length, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :minimum, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :maximum, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :pattern, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :date_pattern, hide_label: true %></td>
+										<td><%= schema_constraint_form.text_field :type, hide_label: true %></td>
+									<% end %>
+								<% else %>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								<% end %>
+							</tr>
+						</tbody>
+					<% end %>
+				</table>
+				<div class="pull-right">
+					<%= f.primary %>
+				</div>
+			</div>
+		<% end %>
+		</div>
+	</div>
+</div>
