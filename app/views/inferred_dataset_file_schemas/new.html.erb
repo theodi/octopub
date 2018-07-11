@@ -1,25 +1,52 @@
-<h1 class="page-header">Create a new Schema <small>from a CSV Data File</small></h1>
-
-<p>Upload a small, example data file in CSV format, with headers and Octopub will infer a Schema from it.</p>
-<div class="alert alert-warning" role="alert"><b>Note: </b>Please use a small data file, say with 10 lines of data.</div>
-
-<%= bootstrap_form_for @inferred_dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
-  <%= f.hidden_field :user_id, value: @user_id %>
-  <%= f.text_field :name, required: true, label: 'Schema name' %>
-  <%= f.text_area :description, label: 'Schema description' %>
-  <% if SchemaCategory.any? %>
-    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
-  <% end %>
-  <%= f.select :owner_username, organization_select_options, { label: t(:'dataset_file_schema.owner') }, { class: "selectpicker form-control show-tick" } %>
-  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
-  <div class="schema-panel">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <fieldset class="file bg-upload">
-          <%= f.file_field :csv_url, label: 'CSV Data File', accept: ".csv" %>
-        </fieldset>
-      </div>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary btn-lg btn-block"> Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i></button>
-<% end %>
+<div class="row">
+	<div id="wizard-sidebar" class="col-sm-4">
+		<div class="wizard-sidebar-step wizard-sidebar-step-active" style="height: 100vw;">
+			<h4><i class="fa fa-folder"></i> Infer a new schema</h4>
+			<p>Upload a small, example data file in CSV format, with headers and Octopub will infer a Schema from it.</p>
+			<div class="alert alert-warning" role="alert">
+				<b>Note: </b>Please use a small data file, say with 10 lines of data.
+			</div>
+		</div>
+	</div>
+	<div class=" wizard col-sm-8">
+		<div id="add-dataset-form-container">
+			<%= bootstrap_form_for @inferred_dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+			<%= f.hidden_field :user_id, value: @user_id %>
+			<div id="step-one">
+				<div class="form-group">
+					<label for="dataset[name]">Schema name</label>
+					<%= f.text_field :name, required: true, placeholder: t(:'dataset_file_schema.name'), class: "form-control" %>
+				</div>
+				<div class="form-group">
+					<label for="dataset[name]">Description</label>
+					<%= f.text_area :description, placeholder: t(:'dataset_file_schema.description') %>
+				</div>
+				<div class="form-group">
+					<label for="dataset[name]">Organization<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Set the organisation that the schema you are inferring will be attributed to."></i></label>
+					<%= f.select :owner_username, organization_select_options, { label: t(:'dataset_file_schema.owner') }, { class: "selectpicker form-control show-tick" } %>
+				</div>
+				<div class="form-group">
+					<fieldset class="file bg-upload">
+						<label for="dataset[name]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="The file that you are uploading must be CSV file"></i></label>
+			      <%= f.file_field :csv_url, label: "File upload", accept: ".csv" %>
+			    </fieldset>
+				</div>
+				<div class="form-group">
+					<label for="dataset[name]">Access<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Setting your access level to private will mean that the schema you are inferring can only be viewed by you."></i></label>
+					<%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
+				</div>
+				<div class="form-group">
+					<% if SchemaCategory.any? %>
+				    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
+				  <% end %>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-secondary btn-lg btn-block">
+						Add to schemas <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+					</button>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

@@ -7,10 +7,6 @@
 	border-bottom: 2px solid $warm-grey;
 }
 
-.form-control:not(textarea) {
-	height: 45px;
-}
-
 .form-control::placeholder {
 	font-style: italic;
 	color: $warm-grey;
