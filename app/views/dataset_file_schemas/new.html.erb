@@ -34,16 +34,16 @@
 					<%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
 				</div>
 				<div class="form-group">
+					<% if SchemaCategory.any? %>
+				    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
+				  <% end %>
+				</div>
+				<div class="form-group">
 					<button type="submit" class="btn btn-secondary btn-lg btn-block">
 						Add to schemas <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
 					</button>
 				</div>
 			</div>
-
-			  <% if SchemaCategory.any? %>
-			    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
-			  <% end %>
-
 			<% end %>
 		</div>
 	</div>
