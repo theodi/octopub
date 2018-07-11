@@ -27,7 +27,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
         attach_file('dataset_file_schema_url_in_s3', data_file)
 
-        click_on 'Submit'
+        click_on 'Add to schemas'
       end
 
       dataset_file_schema = DatasetFileSchema.first
@@ -57,7 +57,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         check ('cat1')
         check ('cat2')
 
-        click_on 'Submit'
+        click_on 'Add to schemas'
       end
 
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
@@ -78,7 +78,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         select "Public - any user may access this schema", from: 'dataset_file_schema_restricted'
         attach_file('dataset_file_schema_url_in_s3', data_file)
 
-        click_on 'Submit'
+        click_on 'Add to schemas'
       end
 
       dataset_file_schema = DatasetFileSchema.first
@@ -93,17 +93,17 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
       before(:each) do
         click_link 'Create a new schema'
-        expect(page).to have_content 'Add a new Dataset File Schema'
+        expect(page).to have_content 'Add to schemas'
       end
 
       it "errors if no name" do
         within 'form' do
           fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
           attach_file('dataset_file_schema_url_in_s3', data_file)
-          click_on 'Submit'
+        	click_on 'Add to schemas'
         end
 
-        expect(page).to have_content 'Add a new Dataset File Schema'
+				expect(page).to have_content 'Add to schemas'
         expect(page).to have_content 'Please give the schema a meaningful name'
       end
 
@@ -111,10 +111,10 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         within 'form' do
           fill_in 'dataset_file_schema_name', with: "#{common_name}-schema-name"
           fill_in 'dataset_file_schema_description', with: "#{common_name}-schema-description"
-          click_on 'Submit'
+        	click_on 'Add to schemas'
         end
 
-        expect(page).to have_content 'Add a new Dataset File Schema'
+				expect(page).to have_content 'Add to schemas'
         expect(page).to have_content 'You must have a schema file'
       end
     end

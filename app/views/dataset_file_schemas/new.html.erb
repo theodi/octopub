@@ -1,20 +1,31 @@
-<h1 class="page-header">Add a new Dataset File Schema</h1>
+<div class="row">
+	<div class="col-sm-12">
+		<div id="add-dataset-form-container">
+			<%= bootstrap_form_for @dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
+			<%= f.hidden_field :user_id, value: @user_id %>
+			<div id="step-one">
+				<div class="form-group">
+					<label for="dataset[name]">Schema name<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip here"></i></label>
+					<%= f.text_field :name, required: true, placeholder: t(:'dataset.name'), class: "form-control" %>
+				</div>
+			</div>
 
-<%= bootstrap_form_for @dataset_file_schema, method: :post, data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } do |f| %>
-  <%= f.hidden_field :user_id, value: @user_id %>
-  <%= f.text_field :name, required: true %>
-  <%= f.text_area :description %>
-  <% if SchemaCategory.any? %>
-    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
-  <% end %>
-  <%= f.select :owner_username, organization_select_options, { label: t(:'dataset_file_schema.owner') }, { class: "selectpicker form-control show-tick" } %>
-  <div class="schema-panel">
-    <fieldset class="file bg-upload">
-      <%= f.file_field :url_in_s3, label: "File", accept: ".json" %>
-    </fieldset>
-  </div>
-  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
-  <button type="submit" class="btn btn-primary btn-lg btn-block">
-    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
-  </button>
-<% end %>
+
+			  <%= f.text_area :description %>
+			  <% if SchemaCategory.any? %>
+			    <%= f.collection_check_boxes :schema_category_ids, SchemaCategory.all, :id, :name, label: 'Schema Categories' %>
+			  <% end %>
+			  <%= f.select :owner_username, organization_select_options, { label: t(:'dataset_file_schema.owner') }, { class: "selectpicker form-control show-tick" } %>
+			  <div class="schema-panel">
+			    <fieldset class="file bg-upload">
+			      <%= f.file_field :url_in_s3, label: "File", accept: ".json" %>
+			    </fieldset>
+			  </div>
+			  <%= f.select :restricted, dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
+			  <button type="submit" class="btn btn-primary btn-lg btn-block">
+			    Add to schemas <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
+			  </button>
+			<% end %>
+		</div>
+	</div>
+</div>
