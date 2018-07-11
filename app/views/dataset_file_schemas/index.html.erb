@@ -1,9 +1,9 @@
 <div class="toolbar" id="toolbar">
 	<div class="row">
-		<div class="col-md-3 col-sm-3">
+		<div class="col-md-5 col-sm-5">
 			<h2 class="orange">Dataset File Schemas <small>for <%= current_user.name %></small></h2>
 		</div>
-		<div class="col-md-5 col-md-offset-2 col-sm-5 col-sm-offset-2">
+		<div class="col-md-5 col-sm-5">
 			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Infer a new schema".html_safe, new_inferred_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "infer_schema" %>
 			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "add_schema" %>
 		</div>

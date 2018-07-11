@@ -23,7 +23,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
   context "logged in visitors has no schemas" do
     scenario "and can infer a dataset file schema from a data file" do
-      click_link 'Infer a new dataset file schema'
+      click_link 'Infer a new schema'
       expect(page).to have_content page_copy
 
       before_datasets = DatasetFileSchema.count
@@ -48,7 +48,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       category_2 = SchemaCategory.create(name: 'cat2')
       schema_category_ids = [ category_1.id, category_2.id ]
 
-      click_link 'Infer a new dataset file schema'
+      click_link 'Infer a new schema'
       expect(page).to have_content page_copy
 
       within 'form' do
@@ -71,7 +71,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do
-        click_link 'Infer a new dataset file schema'
+      	click_link 'Infer a new schema'
         expect(page).to have_content page_copy
       end
 

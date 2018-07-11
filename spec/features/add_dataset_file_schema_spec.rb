@@ -17,7 +17,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
   context "logged in visitors has no schemas" do
     scenario "and can add a dataset file schema on it's own" do
-      click_link 'Add a new dataset file schema'
+      click_link 'Create a new schema'
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
@@ -45,7 +45,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       category_2 = SchemaCategory.create(name: 'cat2')
       schema_category_ids = [ category_1.id, category_2.id ]
 
-      click_link 'Add a new dataset file schema'
+      click_link 'Create a new schema'
 
       within 'form' do
         expect(page).to have_content @user.github_username
@@ -67,7 +67,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     end
 
     scenario "and can add a public dataset file schema" do
-      click_link 'Add a new dataset file schema'
+      click_link 'Create a new schema'
       before_datasets = DatasetFileSchema.count
 
       within 'form' do
@@ -92,7 +92,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do
-        click_link 'Add a new dataset file schema'
+        click_link 'Create a new schema'
         expect(page).to have_content 'Add a new Dataset File Schema'
       end
 
