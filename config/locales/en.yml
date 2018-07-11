@@ -38,6 +38,10 @@ en:
       want this file instead of any other, what any unusual fields mean, and so on.
   dataset_file_schema:
     owner: Organization
+    name: A descriptive name for this schema
+    description: >
+      A detailed description of the schema. Try including things like how the schema
+      should be interpreted and used.
   output_schema:
     owner: Organization
   allocated_schema_dataset_file:
