@@ -1,16 +1,55 @@
+@import "modules/base";
+
 .getting-started {
 
-  p {
-    font-size: 1.2em;
-    line-height: 1.5em;
-    margin: 5px 0px 5px 5px;
+  .about-categories {
+    padding: 0 75px 0;
   }
 
-  img {
-
-    border: 1px solid #eee;
-    padding: 5px;
-    margin: 5px 5px 0px 0px;
-
+  .accordion {
+    background-color: #ffffff;
+    color: $cobalt;
+    cursor: pointer;
+    padding: 18px;
+    width: 60%;
+    height: 60px;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    margin: 6px 40px 0;
   }
+
+  .accordion:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+  }
+
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .active, .accordion:hover {
+    background-color: rgba(47, 82, 159, 0.2);
+  }
+
+  /* Style the accordion panel. Note: hidden by default */
+  .gs-panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    margin: 0px 40px 0;
+    width: 60%;
+  }
+
+  .img-responsive {
+    display: inline;
+  }
+
 }

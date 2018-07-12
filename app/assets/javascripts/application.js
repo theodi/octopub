@@ -24,3 +24,4 @@
 //= require dashboard
 //= require tooltips
 //= require index
+//= require getting-started.js

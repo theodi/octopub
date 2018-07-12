@@ -7,7 +7,7 @@ feature "Publisher can edit a Dataset File Schema", type: :feature do
   include_context 'odlifier licence mock'
 
   it "by visiting the edit page" do
-    Sidekiq::Testing.inline! 
+    Sidekiq::Testing.inline!
     dataset_file_schema_name = 'this-is-your-schema'
     schema_path = get_fixture_schema_file('good-schema.json')
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
@@ -23,19 +23,19 @@ feature "Publisher can edit a Dataset File Schema", type: :feature do
     visit dataset_file_schema_path(dataset_file_schema_1)
     expect(page).to have_content('Edit')
     click_on 'Edit'
-    expect(page).to have_content('Edit Dataset File Schema')
+    expect(page).to have_content('Edit schema')
 
     expect(dataset_file_schema_1.schema_fields.count).to be 5
     expect(all("table tbody > tr").count).to be dataset_file_schema_1.schema_fields.count
   end
 
   it "but not if it has datasets" do
-    Sidekiq::Testing.inline! 
+    Sidekiq::Testing.inline!
     dataset_file_schema_name = 'this-is-your-schema'
     schema_path = get_fixture_schema_file('good-schema.json')
     filename = 'valid-schema.csv'
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
-    string_io_for_data_file = get_string_io_from_fixture_file(filename) 
+    string_io_for_data_file = get_string_io_from_fixture_file(filename)
 
     dataset_file_schema = DatasetFileSchemaService.new(
       dataset_file_schema_name,
@@ -55,11 +55,11 @@ feature "Publisher can edit a Dataset File Schema", type: :feature do
   end
 
   it "but not if it as COTW" do
-    Sidekiq::Testing.inline! 
+    Sidekiq::Testing.inline!
     dataset_file_schema_name = 'this-is-your-schema'
     schema_path = get_fixture_schema_file('csv-on-the-web-schema.json')
     @url_for_schema = url_for_schema_with_stubbed_get_for(schema_path)
-   
+
     dataset_file_schema = DatasetFileSchemaService.new(
       dataset_file_schema_name,
       'existing schema description',

@@ -14,9 +14,12 @@
 #  view_sha               :text
 #  dataset_file_schema_id :integer
 #  storage_key            :string
+#  validation							:boolean
 #
 
 class DatasetFile < ApplicationRecord
+
+	require 'csvlint'
 
   belongs_to :dataset
   belongs_to :dataset_file_schema
@@ -93,7 +96,7 @@ class DatasetFile < ApplicationRecord
   def schema_name
     dataset_file_schema.name if dataset_file_schema
   end
-
+	
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)

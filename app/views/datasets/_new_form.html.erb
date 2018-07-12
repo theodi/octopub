@@ -8,79 +8,83 @@
 
       <%= form_tag(url, method: method, :id => "add-dataset-form", :data => {'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }) do %>
 
-      <div id="step-one">
-        <div class="form-group">
-          <label for="dataset[name]">Collection name<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="The name of your collection will be key to people finding it, once published. Make it as descriptive as possible about what it is and its characteristics. Example: Monthly England traffic violation statistics, per county."></i></label>
-          <%= text_field_tag "dataset[name]", dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name'), class: "form-control" %>
-        </div>
-        <div class="form-group">
-          <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A more detailed summary about this data collection. It will be key to helping people decide whether it is relevant to their needs, so you should try and add as much details as possible about its topic coverage, temporal or geographic boundaries, etc. You may decide to add a number of keywords here as well."></i></label>
-          <%= text_area_tag "dataset[description]", dataset.description, placeholder: t(:'dataset.description'), class: "form-control"  %>
-        </div>
-        <div class="form-group">
-          <label for="dataset[frequency]">How often do you plan on adding files?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often? Please note that this is a manual step, not automatic."></i></label>
-          <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES, dataset.frequency), class: "form-control" %>
-        </div>
-        <a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
-      </div>
-
-      <div id="step-two" class="hidden">
-        <div class="form-group">
-          <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
-
-          <div class="top-buffer">
-            <a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
-            <button id="show-license-wizard" class="btn btn-tertiary pull-right">Help me choose</button>
-            <%= render "license_wizard" %>
+        <div id="step-one">
+          <div class="form-group">
+            <label for="dataset[name]">Collection name<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="The name of your collection will be key to people finding it, once published. Make it as descriptive as possible about what it is and its characteristics. Example: Monthly England traffic violation statistics, per county."></i></label>
+            <%= text_field_tag "dataset[name]", dataset.name, disabled: !dataset.id.nil?, placeholder: t(:'dataset.name'), class: "form-control" %>
           </div>
+          <div class="form-group">
+            <label for="dataset[description]">Collection description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A more detailed summary about this data collection. It will be key to helping people decide whether it is relevant to their needs, so you should try and add as much details as possible about its topic coverage, temporal or geographic boundaries, etc. You may decide to add a number of keywords here as well."></i></label>
+            <%= text_area_tag "dataset[description]", dataset.description, placeholder: t(:'dataset.description'), class: "form-control"  %>
+          </div>
+          <div class="form-group">
+            <label for="dataset[frequency]">How often do you plan on adding files?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Do you plan to update this data collection regularly, and if so, how often? Please note that this is a manual step, not automatic."></i></label>
+            <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES, dataset.frequency), class: "form-control" %>
+          </div>
+  				<div class="form-group">
+  					<label for="dataset[owner]">Organization?<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Tooltip here"></i></label>
+  					<%= select_tag "dataset[owner]", options_for_select(organization_select_options), { label: t(:'dataset.owner'), class: "form-control selectpicker show-tick" } %>
+  				</div>
+          <a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
+        </div>
 
-          <div class="license-selector top-buffer">
-            <% licenses.each do |key, arr| %>
-              <p class="subheading"><%= key %></p>
-              <% arr.each_with_index do |l, i| %>
-                <label class="large-radio">
-                  <%= radio_button_tag 'dataset[license]', l[:id] %>
-                  <%= l[:name] %>
-                  <span class="checkmark"></span>
-                </label>
+        <div id="step-two" class="hidden">
+          <div class="form-group">
+            <label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
+
+            <div class="top-buffer">
+              <a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
+              <button id="show-license-wizard" class="btn btn-tertiary pull-right">Help me choose</button>
+              <%= render "license_wizard" %>
+            </div>
+
+            <div class="license-selector top-buffer">
+              <% licenses.each do |key, arr| %>
+                <p class="subheading"><%= key %></p>
+                <% arr.each_with_index do |l, i| %>
+                  <label class="large-radio">
+                    <%= radio_button_tag 'dataset[license]', l[:id] %>
+                    <%= l[:name] %>
+                    <span class="checkmark"></span>
+                  </label>
+                <% end %>
+              <% end %>
+            </div>
+
+          </div>
+          <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
+        </div>
+
+        <div id="step-three" class="hidden">
+          <div id="files">
+            <% if dataset.dataset_files.count == 0 %>
+              <!-- render blank form inputs for adding new files -->
+              <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
+            <% else %>
+              <% dataset.dataset_files.each_with_index do |file, i| %>
+                <div class="hidden">
+                  <!-- render blank form inputs for adding new files -->
+                  <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, i: i, dataset_file_schemas: dataset_file_schemas } %>
+                </div>
+                <!-- render the existing files -->
+                <%= render partial: "dataset_files/new_form", locals: { file: file, i: i } %>
               <% end %>
             <% end %>
           </div>
 
-        </div>
-        <a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
-      </div>
+          <div class="form-group">
+            <button id="clone" class="btn btn-secondary">Save and add another file</button>
+            <!-- <button id="delete"class="btn btn-lg btn-tertiary">Delete</button> -->
+          </div>
 
-      <div id="step-three" class="hidden">
-        <div id="files">
-          <% if dataset.dataset_files.count == 0 %>
-            <!-- render blank form inputs for adding new files -->
-            <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
-          <% else %>
-            <% dataset.dataset_files.each_with_index do |file, i| %>
-              <div class="hidden">
-                <!-- render blank form inputs for adding new files -->
-                <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, i: i, dataset_file_schemas: dataset_file_schemas } %>
-              </div>
-              <!-- render the existing files -->
-              <%= render partial: "dataset_files/new_form", locals: { file: file, i: i } %>
-            <% end %>
-          <% end %>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">
+              Submit collection for validation <i class="fa fa-spinner fa-spin hidden" id="spinner"></i>
+            </button>
+          </div>
         </div>
 
-        <div class="form-group">
-          <button id="clone" class="btn btn-secondary">Save and add another file</button>
-          <!-- <button id="delete"class="btn btn-lg btn-tertiary">Delete</button> -->
-        </div>
-
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary btn-lg btn-block">
-            Submit collection for validation <i class="fa fa-spinner fa-spin hidden" id="spinner"></i>
-          </button>
-        </div>
-      </div>
-
-      <% end %>
+      <% end %> 
 
     </div>
   </div>
