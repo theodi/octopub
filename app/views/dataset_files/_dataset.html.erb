@@ -27,7 +27,7 @@
       <p><strong>Published:</strong></p>
     </div>
     <div class="col-md-6 col-sm-6">
-      <% if @dataset.published_status %>
+      <% if @dataset.published_status == 'published' %>
         <p>Yes</p>
       <% else %>
         <p>No</p>

@@ -60,8 +60,13 @@ class DatasetsController < ApplicationController
   def publish_dataset
     @dataset = Dataset.find(params[:dataset_id])
     if @dataset
-      CreateRepository.perform_async(@dataset.id)
-      flash[:success] = "Your dataset is being published and will be available shortly!"
+      if !@dataset.repo
+        CreateRepository.perform_async(@dataset.id)
+        flash[:success] = "Your collection is being published and will be available shortly!"
+      else
+        @dataset.update_dataset_in_github
+        flash[:success] = "Your changes are being published and will be available shortly!"
+      end
       redirect_to :back
     end
   end
