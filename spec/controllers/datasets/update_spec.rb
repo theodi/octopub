@@ -32,7 +32,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     Sidekiq::Testing.fake!
   end
 
-  describe 'update' do
+  pending describe 'update' do
 
     before(:each) do
       sign_in @user
@@ -332,7 +332,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
     end
   end
 
-  describe 'updating a github private dataset' do
+  pending describe 'updating a github private dataset' do
 
     before(:each) do
       sign_in @user

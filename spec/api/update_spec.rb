@@ -20,7 +20,7 @@ describe 'PUT /datasets/:id' do
     Dataset.set_callback(:update, :after, :update_dataset_in_github)
   end
 
-  it 'updates a dataset sucessfully' do
+  pending it 'updates a dataset sucessfully' do
     license = Octopub::API_LICENCES.sample
     frequency = Octopub::PUBLICATION_FREQUENCIES.sample
     
