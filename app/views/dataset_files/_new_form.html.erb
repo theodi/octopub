@@ -19,7 +19,7 @@
     <% else %>
       <div class="form-group">
         <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Only CSV files will be checked for errors, but you can upload other file types if you wish."></i></label>
-        <%= file_field_tag "[files[][file]]", accept: ".csv" %>
+        <%= file_field_tag "[files[][file]]" %>
       </div>
     <% end %>
 
