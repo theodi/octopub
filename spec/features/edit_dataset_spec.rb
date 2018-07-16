@@ -49,7 +49,7 @@ feature "Edit dataset page", type: :feature do
     expect(page).to have_content 'Edit Dataset'
   end
 
-  context "logged in visitor has datasets and" do
+  pending context "logged in visitor has datasets and" do
     scenario "can edit the description" do
       new_description = Faker::Lorem.sentence
       fill_in 'dataset[description]', with: new_description
