@@ -18,7 +18,7 @@
 				<% end %>
 
 				<% if !@dataset.repo %>
-					<%= bs_button_to "Publish", request.original_url + '/publish_dataset', rel: "alternate",:class => "btn btn-primary pull-right" %>
+					<%= bs_button_to "Publish data collection", request.original_url + '/publish_dataset', rel: "alternate",:class => "btn btn-primary pull-right" %>
 				<% end %>
 
 				<% if @dataset.repo %>
