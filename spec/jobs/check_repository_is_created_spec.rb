@@ -21,7 +21,7 @@ describe CheckRepositoryIsCreated do
     expect(RepoService).to receive(:prepare_repo)
   end
 
-  it 'and updates columns' do
+  pending it 'and updates columns' do
     @worker.perform(@dataset.id)
     @dataset.reload
     expect(@dataset.url).to eq(@html_url)

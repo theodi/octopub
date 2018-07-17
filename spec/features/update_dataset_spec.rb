@@ -15,7 +15,7 @@ feature "Update dataset page", type: :feature do
     visit root_path
   end
 
-  context "logged in visitor has a dataset and" do
+  pending context "logged in visitor has a dataset and" do
 
     before(:each) do
       expect(Dataset.count).to be 0
@@ -51,7 +51,7 @@ feature "Update dataset page", type: :feature do
     end
   end
 
-  context "logged in visitor has a dataset with a dataset file schema and" do
+  pending context "logged in visitor has a dataset with a dataset file schema and" do
 
     before(:each) do
       expect(Dataset.count).to be 0
@@ -98,7 +98,7 @@ feature "Update dataset page", type: :feature do
     end
   end
 
-  context "logged in visitor has a private dataset and" do
+  pending context "logged in visitor has a private dataset and" do
 
     before(:each) do
       Sidekiq::Testing.inline!

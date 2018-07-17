@@ -1,27 +1,41 @@
-<div class="file-panel">
+<div class="file-input-group well well-lg">
   <fieldset class="file bg-upload">
-    <div class="well bg-info">
-      <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
-      <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
-      <% if file.dataset_file_schema %>
-        <div class="alert alert-warning" role="alert"><b>Warning</b> This file has been validated against the schema <%= link_to file.dataset_file_schema.name, dataset_file_schema_path(file.dataset_file_schema) %> and if you change the file, it will also be validated against that schema.</div>
-      <% end %>
-
-      <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name,  selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Dataset file schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
-
-      <% if file.filename %>
-        <div class="form-group filename-wrapper">
-          <div class="current-file">
-            <label class="control-label">
-              Current file
-            </label>
-            <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
-          </div>
-        </div>
-      <% else %>
-        <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
-      <% end %>
-      <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
+    <div class="form-group">
+      <label for="files[][title]">File title</label>
+      <%= text_field_tag "files[][title]", file.title, placeholder: t(:'dataset_file.name'), readonly: true, class: "title form-control" %>
     </div>
+    <div class="form-group">
+      <label for="files[][description]">File description</label>
+      <%= text_area_tag "files[][description]", file.description, placeholder: t(:'dataset_file.description'), class: "description form-control" %>
+    </div>
+
+    <% if file.filename %>
+      <div class="form-group filename-wrapper">
+        <div class="current-file">
+          <label class="control-label">Files</label>
+          <% if false %>
+          <p><%= link_to file.filename, file.gh_pages_url %><%= check_box_tag "Change file #{i}", 0, false, label: "Change file", class: "change-file" %></p>
+          <% end %>
+          <p><%= link_to file.filename, file.gh_pages_url %>
+            <button class="change-file">Change file</button>
+          </p>
+        </div>
+      </div>
+    <% else %>
+      <div class="form-group">
+        <label for="[files[][file]]">File upload</label>
+        <%= file_field_tag "[files[][file]]", accept: ".csv" %>
+      </div>
+    <% end %>
+
+    <%= hidden_field_tag "files[][id]", file.id, id: "_files[][id]" if file.id %>
   </fieldset>
+  <% if @dataset_file_schemas.any? %>
+    <fieldset class="file bg-upload">
+      <div class="form-group">
+        <label for="[files[][dataset_file_schema_id]]">File schema</label>
+        <%= select_tag "[files[][dataset_file_schema_id]]", options_from_collection_for_select(@dataset_file_schemas, :id, :name, selected_dataset_file_schema_id(file, @default_schema).to_s), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)', disabled: @dataset.published_status == 'published', class: "form-control" } %>
+      </div>
+    </fieldset>
+  <% end %>
 </div>

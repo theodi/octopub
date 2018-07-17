@@ -126,10 +126,12 @@ class JekyllService
   def update_dataset_in_github
     # Update files
     Rails.logger.info 'update_dataset_in_github'
-    @dataset.dataset_files.each do |d|
-      if d.file
-        update_in_github(d.filename, d.file)
-        update_jekyll_in_github(d.filename) unless @dataset.restricted
+    @dataset.dataset_files.each do |f|
+      add_to_github(f)
+      add_jekyll_to_github(f.filename)
+      if f.file
+        update_in_github(f.filename, f.file)
+        update_jekyll_in_github(f.filename) unless @dataset.restricted
       end
     end
     update_datapackage

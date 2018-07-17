@@ -1,22 +1,83 @@
-"use strict";
+"use strict"
 
 $(document).ready(function() {
 
-  if ($('div.file-input-group').length) {
-    setUpCloneAndFileUpload();
-  }
-  if ($('div.schema-panel').length) {
-    setUpFileUpload();
+  var s = {
+    $form                         : $('form'),
+    $files                        : $('.bg-upload'),
+    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
+    $fileInputGroup               : $('div.file-input-group:first').clone(),
+    $newFileInputGroup            : null,
+    $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
+    $wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled',
+    $datasetNameInput             : $('[name="dataset[name]"]'),
+    $datasetFrequencyInput        : $('[name="dataset[frequency]"]'),
+    $datasetLicenseInput          : $('[name="dataset[license]"]'),
+    $datasetFileInputs            : $('[name="[files[][file]]"]'),
+    $chosenFolder                 : $('#chosen-folder'),
+    $chosenFrequency              : $('#chosen-frequency'),
+    $chosenLicense                : $('#chosen-licence')
   }
 
-  function bgUpload(elem) {
-    var container    = $(elem);
-    var fileInput    = $(elem).find('input[type="file"]');
-    var form         = $(fileInput.parents('form:first'));
-    var submitButton = form.find('button[type="submit"]');
-    var progressBar  = $("<div class='progress-bar progress-bar-success progress-bar-striped active' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>");
-    var barContainer = $("<div class='progress hidden'></div>").append(progressBar);
-    fileInput.after(barContainer);
+  init()
+
+  function init() {
+    bindEvents()
+    initFileUploads()
+    loadSidebarValues()
+  }
+
+  function bindEvents() {
+    bindAddFileEvent()
+    bindPostFormEvent()
+    bindInputChangeEvents()
+  }
+
+  function initFileUploads() {
+    s.$files.each(function(i, elem) {
+      initFileUpload(elem)
+    })
+  }
+
+  function loadSidebarValues() {
+    if (s.$datasetNameInput.val()) { 
+      s.$chosenFolder.text(s.$datasetNameInput.val()) 
+    }
+    if (s.$datasetFrequencyInput.find('option:selected').text()) { 
+      s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
+    }
+    if (s.$datasetLicenseInput.is(':checked')) { 
+       s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
+    }
+  }
+
+  function bindInputChangeEvents() {
+    s.$datasetNameInput.change(function(){
+      s.$chosenFolder.text($(this).val())
+    })
+    s.$datasetFrequencyInput.change(function(){
+      s.$chosenFrequency.text($(this).find('option:selected').text())
+    })
+    s.$datasetLicenseInput.change(function(){
+      s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
+    })
+    s.$datasetFileInputs.change(function(){
+      $(this).blur().focus()
+    })
+  }
+
+  function initFileUpload(elem) {
+    var container            = $(elem)
+    var fileInput            = $(elem).find('input[type="file"]')
+    var form                 = $(fileInput.parents('form:first'))
+    var submitButton         = form.find('button[type="submit"]')
+    var progressBar          = $("<div class='progress-bar progress-bar-success progress-bar-striped active' role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'></div>")
+    var progressBarContainer = $("<div class='progress hidden'></div>")
+
+    progressBarContainer.append(progressBar)
+    fileInput.after(progressBarContainer)
+
+    // Plugin: https://github.com/blueimp/jQuery-File-Upload
     fileInput.fileupload({
       fileInput:       fileInput,
       url:             form.data('url'),
@@ -26,190 +87,189 @@ $(document).ready(function() {
       paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
       dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
       replaceFileInput: false,
-      progressall: function (e, data) {
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        progressBar.css('width', progress + '%');
-        progressBar.attr('aria-valuenow', progress);
-        progressBar.text(progress + '%');
+      progressall: function(e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10)
+        progressBar.css('width', progress + '%')
+        progressBar.attr('aria-valuenow', progress)
+        progressBar.text(progress + '%')
       },
-      start: function (e) {
-        submitButton.prop('disabled', true);
-
-        barContainer.removeClass('hidden');
-
+      start: function(e) {
+        submitButton.prop('disabled', true)
+        progressBarContainer.removeClass('hidden')
         // Remove existing hidden fields
-        container.find('.s3-file').remove();
-
-        progressBar.css('width', '0%');
+        container.find('.s3-file').remove()
+        progressBar.css('width', '0%')
       },
       done: function(e, data) {
-        submitButton.prop('disabled', false);
-        progressBar.text("Done");
-        progressBar.removeClass('active');
-        // extract key and generate URL from response
-        var key   = $(data.jqXHR.responseXML).find("Key").text();
-        var url   = 'https://' + form.data('host') + '/' + encodeURI(key);
+        submitButton.prop('disabled', false)
+        progressBar.text("Done")
+        progressBar.removeClass('active')
 
-        // create hidden field
-        var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, class: 's3-file' });
-        container.append(input);
+        var key = $(data.jqXHR.responseXML).find("Key").text()
+        var url = 'https://' + form.data('host') + '/' + encodeURI(key)
+        // Create hidden field
+        var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, class: 's3-file' })
+        container.append(input)
       },
       fail: function(e, data) {
-        submitButton.prop('disabled', false);
-        progressBar.removeClass('progress-bar-success');
-        progressBar.addClass('progress-bar-danger');
-
-        progressBar.
-          css("background", "red").
-          text("Upload Failed");
+        submitButton.prop('disabled', false)
+        progressBar.removeClass('progress-bar-success')
+        progressBar.addClass('progress-bar-danger')
+        progressBar.css("background", "red").text("Upload Failed")
       }
-    });
+    })
   }
 
   function postForm(form) {
     var formMethod = $('input:hidden[name=_method]').val() || 'post'
-    var channelID = formMethod + '-' +  uuid();
-    console.log("Pusher channelID: " + channelID);
+    var channelID = formMethod + '-' +  uuid()
+    console.log("Pusher channelID: " + channelID)
 
     $.ajax({
       type: formMethod,
       url: form.attr('action'),
       data: form.serialize() + '&async=true&channel_id=' + channelID,
       success: bindToPusher(channelID)
-    });
+    })
   }
 
   function bindToPusher(channelID) {
-    var pusher = setUpPusher();
-    var channel = pusher.subscribe(channelID);
+    var pusher = setUpPusher()
+    var channel = pusher.subscribe(channelID)
 
     channel.bind('dataset_created', function(data) {
       if (channelID.match(/post/)) {
-        window.location = '/datasets/created?publishing_method=' + data.publishing_method;
+        window.location = '/datasets/created?publishing_method=' + data.publishing_method
       } else {
-        window.location = '/datasets/edited';
+        window.location = '/datasets/edited'
       }
-    });
+    })
     channel.bind('dataset_failed', function(data) {
-      addErrors(data);
-    });
+      addErrors(data)
+    })
   }
 
   function addErrors(data) {
-    $('#spinner').addClass('hidden');
-    $('body').scrollTop(0);
+    $('#spinner').addClass('hidden')
+    $('body').scrollTop(0)
     $(data).each(function(i, message) {
-      addError(message);
-    });
-
-    $('.bg-upload').each(function(i, elem) {
-      bgUpload(elem);
-    });
-
+      addError(message)
+    })
+    initFileUploads()
     // Destroy any existing progress bars
-    $('.progress').addClass('hidden');
+    $('.progress').addClass('hidden')
   }
 
   function addError(message) {
-    alert = $('<div class="alert alert-danger" role="alert">').text(message);
-    $('#main').prepend(alert);
+    var alert = $('<div class="alert alert-danger" role="alert">').text(message)
+    $('#main').prepend(alert)
   }
 
-  function setUpFileUpload() {
-    $('.bg-upload').each(function(i, elem) {
-      bgUpload(elem);
-    });
-
-    $('input.change-file').on('click', function(e) {
-      $(this).attr('style', 'color:red');
-      e.stopImmediatePropagation();
-
-      var container = $(this).parents('.file');
-
-      container.find('.current-file').addClass('hidden');
-      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">File</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>');
-      bgUpload(container);
-    });
+  function newFileInputGroup() {
+    var newFileInputGroup = $(s.$fileInputGroup).clone()
+    // Iterate over the inputs of the file input group
+    newFileInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+      if (this.id) {
+        // Make input id's unique so Jquery Validate works correctly
+        this.id = this.id + new Date().getTime()
+      }
+    })
+    // newFileInputGroup.append("<button class='btn btn-lg btn-danger delete'>delete</button>")
+    // newFileInputGroup.find('.delete').click(function(e) {
+    //   e.preventDefault()
+    //   var nearest = nearestFileInputGroup(newFileInputGroup)
+    //   nearest.show()
+    //   s.$currentVisibleFileInputGroup = nearest
+    //   newFileInputGroup.remove()
+    // })
+    return newFileInputGroup
   }
 
-  var currentInputGroup = $('.file-input-group:first')
-  var inputGroup = currentInputGroup.clone()
-
-  function addAnotherDataFileButtonClick() {
-    // Clone button to create another file to upload
+  function bindAddFileEvent() {
     $('#clone').click(function(e) {
-      if (form.valid()) {
-        hideStepDescription(currentStep)
-        var newInputGroup = $(inputGroup).clone().removeClass('hidden')
-        var timestamp = new Date().getTime()
-
-        // Remove the error labels from the cloned inputs else they will have duplicates
-        newInputGroup.find('label.error').remove()
-        newInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
-          if (this.id) {
-            $(this).val('') // Empty the input values
-            this.id = this.id + timestamp // Generate a unique input id
-          }
-        })
-
-        // give the input group a unique data-id
-        if ( ! currentInputGroup.attr('data-complete')) {
-          currentInputGroup.attr('data-complete', true)
-          makeSidebarLinks(currentInputGroup)
+      e.preventDefault()
+      // Only add new file inputs if the current form is valid
+      if (s.$form.valid()) {
+        // Make a sidebar link for the current input group
+        if (hasSidebarLink(s.$currentVisibleFileInputGroup) !== true) {
+          s.$currentVisibleFileInputGroup.attr('data-complete', true)
+          makeSidebarLink(s.$currentVisibleFileInputGroup)
         }
-
-        // Append the input group and attach file uploader listeners
-        newInputGroup.appendTo('#files');
-        newInputGroup.find('.bg-upload').each(function(i, elem) {
-          bgUpload(elem);
-        });
-
-        // activate bootstrap tooltips
-        $('body').tooltip({
-          selector: '[data-toggle="tooltip"]'
-        });
-
-
-        $('.file-input-group').hide()
-        newInputGroup.fadeIn()
-        updateCurrentInputGroup(newInputGroup)
-
-        // Update all select boxes to create rich search boxes
-        $('.selectpicker').selectpicker('refresh');
-        e.preventDefault()
+        // Create new file input group
+        s.$newFileInputGroup = newFileInputGroup()
+        // Append new file input group to DOM
+        s.$newFileInputGroup.appendTo('#files').hide().fadeIn()
+        // Attach file upload listeners
+        s.$newFileInputGroup.find('.bg-upload').each(function(i, elem) {
+          initFileUpload(elem)
+        })
+        // Hide other file input groups
+        s.$newFileInputGroup.siblings().hide()
+        // Update the current visible input group
+        s.$currentVisibleFileInputGroup = s.$newFileInputGroup
+        hideStepDescription(currentStep)
+        reloadTooltips()
       }
-    });
+    })
   }
 
-  var sidebarLinks = $('#sidebar-links').find('li:first').clone(true)
+  function bindDeleteFileEvent() {
+    $('#delete').click(function(e) {
+      e.preventDefault()
+      var nearest = nearestFileInputGroup(newFileInputGroup)
+      s.$currentVisibleFileInputGroup.remove()
+      s.$currentVisibleFileInputGroup = nearest
+      nearest.show()
+    })
+  }
 
-  function makeSidebarLinks(inputGroup) {
-    var links = sidebarLinks.clone(true)
+  function reloadTooltips() {
+    $('body').tooltip({
+      selector: '[data-toggle="tooltip"]'
+    })
+  }
 
-    if ($('.file-input-group').length > 1) {
-      var deleteLink = "<a href='#' class='delete'><i class='fa fa-trash-alt'></i> Delete</a>"
-      links.find('.sidebar-file-links').append(deleteLink)
-    }
+  function hasSidebarLink(inputGroup) {
+    return (inputGroup.attr('data-complete')) ? true : false
+  }
 
-    $('.sidebar-files').append(links).hide().fadeIn()
+  function makeSidebarLink(inputGroup) {
+    var link = s.$sidebarLink.clone()
+    $('.sidebar-files').append(link)
+    bindSidebarLinkClickEvents(inputGroup, link)
+    bindSidebarLinkChangeEvents(inputGroup, link)
+  }
 
-    links.find('.edit').click(function(event){
-      $('.file-input-group').hide()
-      $('.file-input-group:not([data-complete])').remove()
-      inputGroup.fadeIn()
-      updateCurrentInputGroup(inputGroup)
-      event.preventDefault()
+  function bindSidebarLinkClickEvents(inputGroup, link) {
+    link.find('.edit').click(function(e){
+      e.preventDefault()
+      inputGroup.fadeIn().siblings().hide()
+      s.$currentVisibleFileInputGroup = inputGroup
+      if (s.$newFileInputGroup) { s.$newFileInputGroup.remove() }
     })
 
-    links.find('.delete').click(function(event){
-      if (inputGroup === currentInputGroup) {
-        inputGroup.prev().fadeIn()
+    link.find('.delete').click(function(e){
+      e.preventDefault()
+      // Must have at least one file input group
+      if ($('.file-input-group[data-complete="true"]').length > 1) {
+        if (inputGroup === s.$currentVisibleFileInputGroup) {
+          var nearest = nearestFileInputGroup(inputGroup)
+          nearest.show()
+          s.$currentVisibleFileInputGroup = nearest
+        }
+        inputGroup.remove()
+        link.remove()
+      } else {
+        alert('Can\'t delete - At least one file is required')
       }
-      inputGroup.remove()
-      links.remove()
-      event.preventDefault()
     })
+  }
 
+  function nearestFileInputGroup(inputGroup) {
+    return (inputGroup.prev().length === 1) ? inputGroup.prev() : inputGroup.next()
+  }
+
+  function bindSidebarLinkChangeEvents(inputGroup, link) {
     var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
     var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
 
@@ -220,8 +280,8 @@ $(document).ready(function() {
     }
 
     var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-    links.find('.sidebar-file-details').text(sidebarFileDetails)
-    links.find('.sidebar-schema-details').text(schemaName)
+    link.find('.sidebar-file-details').text(sidebarFileDetails)
+    link.find('.sidebar-schema-details').text(schemaName)
 
     inputGroup.find('[name="files[][title]"]').change(function(){
       var fileTitle = inputGroup.find('[name="files[][title]"]').first().val()
@@ -231,7 +291,7 @@ $(document).ready(function() {
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-      links.find('.sidebar-file-details').text(sidebarFileDetails)
+      link.find('.sidebar-file-details').text(sidebarFileDetails)
     })
 
     inputGroup.find('[name="[files[][file]]"]').change(function(){
@@ -242,76 +302,35 @@ $(document).ready(function() {
         fileSize = toMegabytes(file.size) + 'MB'
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
-      links.find('.sidebar-file-details').text(sidebarFileDetails)
+      link.find('.sidebar-file-details').text(sidebarFileDetails)
       form.validate()
     })
 
     inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
       var schemaName = inputGroup.find('[name="[files[][dataset_file_schema_id]]"] option:selected').text()
-      links.find('.sidebar-schema-details').text(schemaName)
+      link.find('.sidebar-schema-details').text(schemaName)
     })
-  }
-
-  function updateCurrentInputGroup(inputGroup) {
-    currentInputGroup = inputGroup
   }
 
   function toMegabytes(bytes) {
     return bytes/1000000
   }
 
-  if ($('[name="dataset[name]"]').val()) { $('#chosen-folder').text($('[name="dataset[name]"]').val()) }
-  if ($('[name="dataset[frequency]"]').find('option:selected').text()) { $('#chosen-frequency').text($('[name="dataset[frequency]"]').find('option:selected').text()) }
-  if ($('[name="dataset[license]"]').find('option:selected').text()) { $('#chosen-licence').text($('[name="dataset[license]"]').find('option:selected').text()) }
-
-  $('[name="dataset[name]"]').change(function(){
-    $('#chosen-folder').text($(this).val())
-  })
-
-  $('[name="dataset[frequency]"]').change(function(){
-    $('#chosen-frequency').text($(this).find('option:selected').text())
-  })
-
-  $('[name="dataset[license]"]').change(function(){
-    $('#chosen-licence').text($(this).find('option:selected').text())
-  })
-
-  $('[name="[files[][file]]"]').change(function(){
-    $(this).blur().focus();
-  })
-
-  function addAjaxFormUploading() {
-   // Do ajax form uploading
-    $('form').submit(function(e) {
-      e.preventDefault();
-
-      $('#spinner').removeClass('hidden');
-
-      if (form.valid()) {
-        postForm($(this));
+  function bindPostFormEvent() {
+    s.$form.submit(function(e) {
+      e.preventDefault()
+      if (s.$form.valid() && ($('.s3-file').length > 0) || s.$form.hasClass('edit-form')) {
+        postForm($(this))
+        $('#spinner').removeClass('hidden')
+        $('button[type=submit]').attr('disabled', true)
       }
-
-      // if (($('.s3-file').length > 0) || $('form').hasClass('edit-form')) {
-      //   console.log('post form! yeeeeah!')
-      //   postForm($(this));
-      // } else {
-      //   $('#spinner').addClass('hidden');
-      // }
-
-    });
-  }
-
-  function setUpCloneAndFileUpload() {
-    addAnotherDataFileButtonClick();
-    addAjaxFormUploading();
-    setUpFileUpload();
+    })
   }
 
   // ###################################### Validation Code ######################################
 
   // Initialise Jquery Validate on form
-  var form = $('#add-dataset-form')
-  var validator = form.validate({
+  var validator = s.$form.validate({
     ignore: [],
     rules: { // Validation rules (inputs are identified by name attribute)
       'dataset[name]': { required: true },
@@ -326,7 +345,7 @@ $(document).ready(function() {
     onfocusout: function(element) {
       this.element(element) // Validate elements on onfocusout
     }
-  });
+  })
 
   var formSteps = ['step-one', 'step-two', 'step-three']
   var currentStep = formSteps[0]
@@ -337,8 +356,8 @@ $(document).ready(function() {
 
     $(document).on('click', targetStepButton, function (e) {
       if (stepsValid(stepsToValidate(targetStep))) {
-        hideCurrentStep()
-        showTargetStep(targetStep)
+        hideStep(currentStep)
+        showStep(targetStep)
         if (currentStep === formSteps[0] || currentStep === formSteps[1]) {
           hideStepDescription(currentStep)
         }
@@ -349,7 +368,7 @@ $(document).ready(function() {
   })
 
   function hideStepDescription(step) {
-    $('.show-' + step).parents('.wizard-sidebar-step').find('.wizard-sidebar-step-description').hide();
+    getWizardSidebarStep(step).find('.wizard-sidebar-step-description').hide()
   }
 
   // Get the steps that require validation inbetween currentStep and targetStep
@@ -387,99 +406,57 @@ $(document).ready(function() {
     return $(step).find(':input').not(':button').not("[aria-label='Search']")
   }
 
-  function hideCurrentStep() {
-    $('#' + currentStep).addClass('hidden')
-    var step = $('.show-' + currentStep).parents('.wizard-sidebar-step')
-      step.removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
+  function hideStep(step) {
+    $('#' + step).addClass('hidden')
+    deactivateSidebarStep(step)
+  }
+
+  function showStep(step) {
+    $('#' + step).show().removeClass('hidden')
+    $.each(stepsToValidate(step), function(i, s) { hideStep(s) })
+    activateSidebarStep(step)
+  }
+
+  function deactivateSidebarStep(step) {
+    getWizardSidebarStep(step)
+      .removeClass(s.$wizardSidebarStepClasses)
       .addClass('wizard-sidebar-step-inactive')
   }
 
-  function showTargetStep(targetStep) {
-    $('#' + targetStep).fadeIn().removeClass('hidden')
-    $.each(stepsToValidate(targetStep), function(i, step) {
-      $('.show-' + step).parents('.wizard-sidebar-step')
-        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
-        .addClass('wizard-sidebar-step-inactive')
-    })
-    $('.show-' + targetStep).parents('.wizard-sidebar-step')
-        .removeClass('wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled')
-        .addClass('wizard-sidebar-step-active')
+  function activateSidebarStep(step) {
+    getWizardSidebarStep(step)
+      .removeClass(s.$wizardSidebarStepClasses)
+      .addClass('wizard-sidebar-step-active')
+  }
+
+  function getWizardSidebarStep(step) {
+    return $('.show-' + step).parents('.wizard-sidebar-step')
   }
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs
   $.validator.prototype.checkForm = function() {
-    this.prepareForm();
+    this.prepareForm()
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
       if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
         for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-          this.check(this.findByName(elements[i].name)[cnt]);
+          this.check(this.findByName(elements[i].name)[cnt])
         }
       } else {
-        this.check(elements[i]);
+        this.check(elements[i])
       }
     }
-    return this.valid();
-  };
+    return this.valid()
+  }
 
+  // Add a validator to Jquery Validate for alphanumeric filenames
   $.validator.addMethod('alphanum_filename', function(value, element) {
-      // param = size (in bytes) 
-      // element = element to validate (<input>)
-      // value = value of the element (file name)
-      if (element.files) {
-        var fileName = element.files[0].name
-        return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
-      } else {
-        return true
-      }
-  }, "File name must only contain letters, numbers, and underscores");
-
-  // ###################################### License Wizard Code ######################################
-
-  var currentLicenseStep = $("[data-step=1A]")
-  var licenseWizard = $('#license-wizard')
-  var buttons = $('.license-wizard-step button')
-
-  $('#show-license-wizard').click(function(event){
-    event.preventDefault()
-    if (licenseWizard.hasClass('hidden')) {
-      licenseWizard.removeClass('hidden')
+    if (element.files) {
+      var fileName = element.files[0].name
+      return this.optional(element) || (/^[a-z\d\-_\s]+$/i.test(fileName.substring(0, fileName.lastIndexOf('.'))))
     } else {
-      close()
+      return true
     }
-  })
+  }, 'File name must only contain letters, numbers, and underscores')
 
-  buttons.each(function(){
-    $(this).click(function(){
-      var action = $(this).data('action')
-      var nextStep = $(this).data('next-step')
-
-      if (action == 'restart') {
-        restart()
-      } else if (action == 'close') {
-        close()
-      } else if (nextStep) {
-        loadStep(nextStep)
-      }
-    })
-  })
-
-  function close() {
-    licenseWizard.addClass('hidden')
-    loadStep('1A')
-  }
-
-  function restart() {
-    loadStep('1A')
-  }
-
-  function loadStep(id) {
-    var nextStep = $("[data-step=" + id + "]")
-    currentLicenseStep.addClass('hidden')
-    nextStep.removeClass('hidden')
-    currentLicenseStep = nextStep
-  }
-
-
-
-});
+})
