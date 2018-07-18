@@ -29,9 +29,9 @@ class UpdateDataset
 
     @dataset.report_status(options["channel_id"], :update)
 
-		if @dataset.published_status == 'published'
-    	@dataset.update_attribute(:published_status, 'revised')
-		end
+    if @dataset.published_status == 'published'
+      @dataset.update_attribute(:published_status, 'revised')
+    end
   end
 
   def get_dataset(dataset_id)
