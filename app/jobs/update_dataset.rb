@@ -8,13 +8,13 @@ class UpdateDataset
     dataset_params = ActiveSupport::HashWithIndifferentAccess.new(
       dataset_params.merge(job_id: self.jid)
     )
-    
+
     @dataset = get_dataset(id)
 
     user_id = dataset_params[:user_id].try(:to_i)
     # Give new user access to repo
-    if @dataset.publishing_method != 'local_private' && 
-        user_id && 
+    if @dataset.publishing_method != 'local_private' &&
+        user_id &&
         user_id != @dataset.user_id
       new_user = User.find(user_id)
       dataset_params[:user] = new_user
@@ -28,7 +28,10 @@ class UpdateDataset
     handle_files(files)
 
     @dataset.report_status(options["channel_id"], :update)
-    @dataset.update_attribute(:published_status, 'revised')
+
+		if @dataset.published_status == 'published'
+    	@dataset.update_attribute(:published_status, 'revised')
+		end
   end
 
   def get_dataset(dataset_id)
