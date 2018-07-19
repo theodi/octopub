@@ -59,7 +59,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
           "title" => 'My File',
           "file" => @tempfile,
           "description" => 'A description',
-          "storage_key" => @storage_key
+          "storage_key" => 'test-data.csv'
         }
       end
 

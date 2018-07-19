@@ -41,7 +41,7 @@ class DatasetFile < ApplicationRecord
     tempfile.write read_file_with_utf_8(file)
     tempfile.rewind
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
-                                           content_type: 'text/csv',
+                                           # content_type: 'text/csv',
                                            tempfile: tempfile
   end
 
@@ -50,7 +50,7 @@ class DatasetFile < ApplicationRecord
 
     fs_file = FileStorageService.get_string_io(storage_key)
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
-                                           content_type: 'text/csv',
+                                           # content_type: 'text/csv',
                                            tempfile: fs_file
   end
 
@@ -77,6 +77,7 @@ class DatasetFile < ApplicationRecord
     dataset_file_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_hash)
     if dataset_file_hash[:file].class == String
       if dataset_file_hash[:storage_key]
+        # File already uploaded so fetch from S3
         dataset_file_hash[:file] = file_from_url_with_storage_key(dataset_file_hash[:file], dataset_file_hash[:storage_key])
       else
         dataset_file_hash[:file] = file_from_url(dataset_file_hash[:file])
@@ -169,22 +170,29 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      content = file_content
-      unless content.nil?
-        begin
-          CSV.parse(content.read)
-        rescue CSV::MalformedCSVError
-          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
-        rescue
-          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
-        ensure
-          file_content.rewind
+      if ['.csv', '.json'].include? file_extension
+        content = file_content
+        unless content.nil?
+          begin
+            CSV.parse(content.read)
+          rescue CSV::MalformedCSVError
+            errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+          rescue
+            errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+          ensure
+            file_content.rewind
+          end
         end
       end
     end
 
+    def file_extension
+      file = self.storage_key || self.file.original_filename || ''
+      File.extname(file)
+    end
+
     def set_filename
-      self.filename = "#{title.parameterize}.csv" rescue nil
+      self.filename = "#{title.parameterize}" << file_extension rescue nil
     end
 
     def file_content

@@ -35,7 +35,7 @@ $(document).ready(function() {
       var container = $(this).parents('.file')
 
       container.find('.current-file').addClass('hidden')
-      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">Files</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" accept=".csv" /></div>')
+      container.find('.filename-wrapper').append('<div class="form-group"><label class="control-label" for="files[][file]">Files</label><input class="bg-upload" id="_files[][file]" label="File" name="[files[][file]]" type="file" /></div>')
       initFileUpload(container)
     });
   }
