@@ -354,7 +354,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
 
   end
 
-  context 'with a non-csv file' do
+  pending context 'with a non-csv file' do
     before(:each) do
       @dataset = build(:dataset)
       path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')

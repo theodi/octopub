@@ -170,7 +170,7 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      if ['.csv', '.json'].include? file_extension
+      if file_extension == '.csv'
         content = file_content
         unless content.nil?
           begin
