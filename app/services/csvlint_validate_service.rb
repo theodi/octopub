@@ -3,18 +3,27 @@ class CsvlintValidateService
 	require 'csvlint'
 
 	def self.validate_csv(file)
-		csv_string = get_s3_string(file)
-		validator = lint_csv(csv_string)
+		csv = get_s3_string(file)
+		validator = validator(csv, file)
 		update_database_attributes(validator, file)
 	end
 
-	def self.get_validated_csv(file)
-		csv_string = get_s3_string(file)
-		lint_csv(csv_string)
+	def self.validator(csv, file)
+		if file.dataset_file_schema
+			schema = file.dataset_file_schema.parsed_schema
+			return Csvlint::Validator.new(csv, {}, schema)
+		else
+			return Csvlint::Validator.new(csv)
+		end
 	end
 
-	def self.lint_csv(csv_string)
-		return Csvlint::Validator.new(csv_string)
+	def self.get_s3_string(file)
+		return FileStorageService.get_string_io(file.storage_key)
+	end
+
+	def self.get_validated_csv(file)
+		csv = get_s3_string(file)
+		validator(csv, file)
 	end
 
 	def self.generate_badge(file)
@@ -23,19 +32,14 @@ class CsvlintValidateService
 
 	private
 
-	def self.get_s3_string(file)
-		return FileStorageService.get_string_io(file.storage_key)
-	end
-
 	def self.update_database_attributes(csv, file)
 		csv.valid? ? file.update(validation: true) : file.update(validation: false)
 	end
 
 	def self.generate_badge_valid_file(file)
-		csv_string = get_s3_string(file)
-		csv = lint_csv(csv_string)
-
-		csv.warnings.count > 0 ? "warnings" : "valid"
+		csv = get_s3_string(file)
+		validated_csv = validator(csv, file)
+		validated_csv.warnings.count > 0 ? "warnings" : "valid"
 	end
 
 end
