@@ -25,7 +25,7 @@ class DatasetFile < ApplicationRecord
   belongs_to :dataset_file_schema
 
   validate :check_schema, if: :content_or_schema_changed?
-  # validate :check_csv, if: :content_or_schema_changed?
+  validate :check_csv, if: :content_or_schema_changed?
   validates_presence_of :title
   validates_presence_of :storage_key, on: :create
 
@@ -170,22 +170,29 @@ class DatasetFile < ApplicationRecord
     end
 
     def check_csv
-      content = file_content
-      unless content.nil?
-        begin
-          CSV.parse(content.read)
-        rescue CSV::MalformedCSVError
-          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
-        rescue
-          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
-        ensure
-          file_content.rewind
+      if ['.csv', '.json'].include? file_extension
+        content = file_content
+        unless content.nil?
+          begin
+            CSV.parse(content.read)
+          rescue CSV::MalformedCSVError
+            errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+          rescue
+            errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+          ensure
+            file_content.rewind
+          end
         end
       end
     end
 
+    def file_extension
+      file = self.storage_key || self.file.original_filename || ''
+      File.extname(file)
+    end
+
     def set_filename
-      self.filename = "#{title.parameterize}" << File.extname(self.storage_key) rescue nil
+      self.filename = "#{title.parameterize}" << file_extension rescue nil
     end
 
     def file_content
