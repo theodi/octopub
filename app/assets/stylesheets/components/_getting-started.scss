@@ -6,7 +6,7 @@
     padding: 0 75px 0;
   }
 
-  .accordion {
+  .opener {
     background-color: #ffffff;
     color: $cobalt;
     cursor: pointer;
@@ -20,7 +20,7 @@
     margin: 6px 40px 0;
   }
 
-  .accordion:after {
+  .opener:after {
     content: '\02795'; /* Unicode character for "plus" sign (+) */
     font-size: 13px;
     color: #777;
@@ -33,7 +33,7 @@
   }
 
   /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-  .active, .accordion:hover {
+  .active, .opener:hover {
     background-color: rgba(47, 82, 159, 0.2);
   }
 
