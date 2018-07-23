@@ -167,7 +167,6 @@ $(document).ready(function() {
       e.preventDefault()
       // Only add new file inputs if the current form is valid
       if (s.$form.valid()) {
-      	console.log('addit')
         // Create new file input group
         s.$newFileInputGroup = newFileInputGroup()
         // Append new file input group to DOM
@@ -177,8 +176,6 @@ $(document).ready(function() {
           initFileUpload(elem)
         })
         reloadTooltips()
-      } else {
-      	console.log('potate')
       }
     })
   }
@@ -203,9 +200,12 @@ $(document).ready(function() {
     s.$form.submit(function(e) {
       e.preventDefault()
       if (s.$form.valid() && ($('.s3-file').length > 0 || s.$form.hasClass('edit-form'))) {
-        postForm($(this))
-        $('#spinner').removeClass('hidden')
-        $('button[type=submit]').attr('disabled', true)
+        console.log('postForm')
+        // postForm($(this))
+        // $('#spinner').removeClass('hidden')
+        // $('button[type=submit]').attr('disabled', true)
+      } else {
+        console.log(validator.errorList)
       }
     })
   }
@@ -214,15 +214,14 @@ $(document).ready(function() {
 
   // Initialise Jquery Validate on form
   var validator = s.$form.validate({
-    ignore: [],
     rules: { // Validation rules (inputs are identified by name attribute)
-      // 'dataset[name]': { required: true },
+      'dataset[name]': { required: true },
       'dataset[description]': { required: true },
       'dataset[frequency]': { required: true },
       'dataset[license]': { required: true },
-      // 'files[][title]': { required: true },
+      'files[][title]': { required: true },
       'files[][description]': {},
-      // '[files[][file]]': { required: true, alphanum_filename: true },
+      '[files[][file]]': { required: true, alphanum_filename: true },
       '[files[][dataset_file_schema_id]]': {}
     },
     onfocusout: function(element) {
@@ -230,17 +229,26 @@ $(document).ready(function() {
     }
   })
 
+  $.fn.isnot = function(selector){
+    return !this.is(selector);
+  };
+
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs
   $.validator.prototype.checkForm = function() {
     this.prepareForm()
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+      // If there is more than one field with this name i.e. array fields
       if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
+        // Loop through elements with the same name and validate seperately
         for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-          this.check(this.findByName(elements[i].name)[cnt])
+          // Check it's not supposed to be ignored
+          if ($(this.findByName(elements[i].name)[cnt]).isnot(this.settings.ignore)) {
+            this.check(this.findByName(elements[i].name)[cnt])
+          }
         }
       } else {
-        this.check(elements[i])
+        this.check(elements[i]) // Validate uniquely named fields as normal
       }
     }
     return this.valid()

@@ -34,11 +34,11 @@
       <!-- render blank form inputs for adding new files -->
       <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
     <% else %>
+      <div class="hidden">
+        <!-- render blank form inputs for adding new files -->
+        <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
+      </div>
       <% dataset.dataset_files.order(created_at: :asc).each_with_index do |file, i| %>
-        <div class="hidden">
-          <!-- render blank form inputs for adding new files -->
-          <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, i: i, dataset_file_schemas: dataset_file_schemas } %>
-        </div>
         <div class="visible">
           <!-- render the existing files -->
           <%= render partial: "dataset_files/edit_form", locals: { file: file, i: i, dataset_file_schemas: dataset_file_schemas } %>
