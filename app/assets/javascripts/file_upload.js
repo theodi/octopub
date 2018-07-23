@@ -319,7 +319,7 @@ $(document).ready(function() {
   function bindPostFormEvent() {
     s.$form.submit(function(e) {
       e.preventDefault()
-      if (s.$form.valid() && ($('.s3-file').length > 0) || s.$form.hasClass('edit-form')) {
+      if (s.$form.valid() && ($('.s3-file').length > 0 || s.$form.hasClass('edit-form'))) {
         postForm($(this))
         $('#spinner').removeClass('hidden')
         $('button[type=submit]').attr('disabled', true)
