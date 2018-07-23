@@ -5,7 +5,7 @@ $(document).ready(function() {
   var s = {
     $form                         : $('form'),
     $files                        : $('.bg-upload'),
-    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
+    $currentVisibleFileInputGroup : $('div.file-input-group:nth-child(2)'),
     $fileInputGroup               : $('div.file-input-group:first').clone(),
     $newFileInputGroup            : null,
     $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
@@ -213,15 +213,15 @@ $(document).ready(function() {
     })
   }
 
-  function bindDeleteFileEvent() {
-    $('#delete').click(function(e) {
-      e.preventDefault()
-      var nearest = nearestFileInputGroup(newFileInputGroup)
-      s.$currentVisibleFileInputGroup.remove()
-      s.$currentVisibleFileInputGroup = nearest
-      nearest.show()
-    })
-  }
+  // function bindDeleteFileEvent() {
+  //   $('#delete').click(function(e) {
+  //     e.preventDefault()
+  //     var nearest = nearestFileInputGroup(newFileInputGroup)
+  //     s.$currentVisibleFileInputGroup.remove()
+  //     s.$currentVisibleFileInputGroup = nearest
+  //     nearest.show()
+  //   })
+  // }
 
   function reloadTooltips() {
     $('body').tooltip({
@@ -252,7 +252,7 @@ $(document).ready(function() {
       e.preventDefault()
       // Must have at least one file input group
       if ($('.file-input-group[data-complete="true"]').length > 1) {
-        if (inputGroup === s.$currentVisibleFileInputGroup) {
+        if (inputGroup.is(s.$currentVisibleFileInputGroup)) {
           var nearest = nearestFileInputGroup(inputGroup)
           nearest.show()
           s.$currentVisibleFileInputGroup = nearest
@@ -266,7 +266,7 @@ $(document).ready(function() {
   }
 
   function nearestFileInputGroup(inputGroup) {
-    return (inputGroup.prev().length === 1) ? inputGroup.prev() : inputGroup.next()
+    return (inputGroup.prev().length === 1 && inputGroup.prev('[data-complete="true"]').length === 1) ? inputGroup.prev() : inputGroup.next()
   }
 
   function bindSidebarLinkChangeEvents(inputGroup, link) {
@@ -303,7 +303,6 @@ $(document).ready(function() {
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       link.find('.sidebar-file-details').text(sidebarFileDetails)
-      form.validate()
     })
 
     inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){
@@ -319,10 +318,13 @@ $(document).ready(function() {
   function bindPostFormEvent() {
     s.$form.submit(function(e) {
       e.preventDefault()
-      if (s.$form.valid() && ($('.s3-file').length > 0) || s.$form.hasClass('edit-form')) {
+      if (s.$form.valid() && ($('.s3-file').length > 0 || s.$form.hasClass('edit-form'))) {
+        console.log('postForm')
         postForm($(this))
         $('#spinner').removeClass('hidden')
         $('button[type=submit]').attr('disabled', true)
+      } else {
+        console.log(validator.errorList)
       }
     })
   }
@@ -331,7 +333,6 @@ $(document).ready(function() {
 
   // Initialise Jquery Validate on form
   var validator = s.$form.validate({
-    ignore: [],
     rules: { // Validation rules (inputs are identified by name attribute)
       'dataset[name]': { required: true },
       'dataset[description]': { required: true },
@@ -433,17 +434,26 @@ $(document).ready(function() {
     return $('.show-' + step).parents('.wizard-sidebar-step')
   }
 
+  $.fn.isnot = function(selector){
+    return !this.is(selector);
+  };
+
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs
   $.validator.prototype.checkForm = function() {
     this.prepareForm()
     for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
+      // If there is more than one field with this name i.e. array fields
       if (this.findByName(elements[i].name).length !== undefined && this.findByName(elements[i].name).length > 1) {
+        // Loop through elements with the same name and validate seperately
         for (var cnt = 0; cnt < this.findByName(elements[i].name).length; cnt++) {
-          this.check(this.findByName(elements[i].name)[cnt])
+          // Check it's not supposed to be ignored
+          if ($(this.findByName(elements[i].name)[cnt]).isnot(this.settings.ignore)) {
+            this.check(this.findByName(elements[i].name)[cnt])
+          }
         }
       } else {
-        this.check(elements[i])
+        this.check(elements[i]) // Validate uniquely named fields as normal
       }
     }
     return this.valid()
