@@ -213,15 +213,15 @@ $(document).ready(function() {
     })
   }
 
-  function bindDeleteFileEvent() {
-    $('#delete').click(function(e) {
-      e.preventDefault()
-      var nearest = nearestFileInputGroup(newFileInputGroup)
-      s.$currentVisibleFileInputGroup.remove()
-      s.$currentVisibleFileInputGroup = nearest
-      nearest.show()
-    })
-  }
+  // function bindDeleteFileEvent() {
+  //   $('#delete').click(function(e) {
+  //     e.preventDefault()
+  //     var nearest = nearestFileInputGroup(newFileInputGroup)
+  //     s.$currentVisibleFileInputGroup.remove()
+  //     s.$currentVisibleFileInputGroup = nearest
+  //     nearest.show()
+  //   })
+  // }
 
   function reloadTooltips() {
     $('body').tooltip({

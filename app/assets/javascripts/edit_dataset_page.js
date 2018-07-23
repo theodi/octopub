@@ -5,7 +5,6 @@ $(document).ready(function() {
   var s = {
     $form                         : $('form'),
     $files                        : $('.bg-upload'),
-    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
     $fileInputGroup               : $('div.file-input-group:first').clone(),
     $newFileInputGroup            : null
   }
@@ -151,14 +150,11 @@ $(document).ready(function() {
         this.id = this.id + new Date().getTime()
       }
     })
-    // newFileInputGroup.append("<button class='btn btn-lg btn-danger delete'>delete</button>")
-    // newFileInputGroup.find('.delete').click(function(e) {
-    //   e.preventDefault()
-    //   var nearest = nearestFileInputGroup(newFileInputGroup)
-    //   nearest.show()
-    //   s.$currentVisibleFileInputGroup = nearest
-    //   newFileInputGroup.remove()
-    // })
+    newFileInputGroup.prepend("<div class='row'><div class='col-sm-12'><button class='btn btn-sm btn-danger pull-right delete'>Delete</button></div></div>")
+    newFileInputGroup.find('.delete').click(function(e) {
+      e.preventDefault()
+      newFileInputGroup.remove()
+    })
     return newFileInputGroup
   }
 
@@ -177,16 +173,6 @@ $(document).ready(function() {
         })
         reloadTooltips()
       }
-    })
-  }
-
-  function bindDeleteFileEvent() {
-    $('#delete').click(function(e) {
-      e.preventDefault()
-      var nearest = nearestFileInputGroup(newFileInputGroup)
-      s.$currentVisibleFileInputGroup.remove()
-      s.$currentVisibleFileInputGroup = nearest
-      nearest.show()
     })
   }
 
