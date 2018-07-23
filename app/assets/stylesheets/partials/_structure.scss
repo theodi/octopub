@@ -85,18 +85,38 @@
 .home-box-black {
 	@include home-box($black);
 	color: $white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
 }
 
 .home-box-grey {
 	@include home-box($light-grey);
+
+	a {
+		color: black;
+		text-decoration: underline;
+	}
 }
 
 .home-box-blue {
 	@include home-box($dusk-blue);
 	color: white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
 }
 
 .home-box-cobalt {
 	@include home-box($cobalt);
 	color: white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
 }
