@@ -62,5 +62,14 @@
       color: $white;
       text-decoration: underline;
     }
+
+		.beta {
+			font-size: 18px;
+			text-decoration: none;
+			border: 3px solid white;
+			border-radius: 25px;
+			padding: 0.4em 0.4em 0.2em 0.4em;
+			margin-left: 1em;
+		}
   }
 }

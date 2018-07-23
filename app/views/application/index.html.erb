@@ -1,10 +1,20 @@
 <% unless !current_user %>
 	<% if @datasets.count == 0 %>
+		<div class="home-box-beta">
+			<p>This is an early preview of a completely new user experience for Octopub.</p>
+			<p>Because it is in BETA you may encounter errors, in which case please raise an issue on <a href="https://github.com/theodi/octopub/issues" title="Octopub Github Issues" alt="Octopub Github Issues">Github</a> or contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a></p>
+			<p>The old version of octopub is available <a href="https://octopub.herokuapp.com/" title="ODI Heroku App" alt="ODI Heroku App">here</a> until the end of August 2018 after which it will be deleted.  Please contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a> if you urgently need to transfer details from the old system.  However all data on github will remain untouched and available indefinitely.</p>
+		</div>
     <div class="home-box-head">
       <h1 class="orange"><span class="pub">Octo</span>pub</h1>
       <h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>
     </div>
 	<% end %>
+	<div class="home-box-beta">
+		<p>This is an early preview of a completely new user experience for Octopub.</p>
+		<p>Because it is in BETA you may encounter errors, in which case please raise an issue on <a href="https://github.com/theodi/octopub/issues" title="Octopub Github Issues" alt="Octopub Github Issues">Github</a> or contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a></p>
+		<p>The old version of octopub is available <a href="https://octopub.herokuapp.com/" title="ODI Heroku App" alt="ODI Heroku App">here</a> until the end of August 2018 after which it will be deleted.  Please contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a> if you urgently need to transfer details from the old system.  However all data on github will remain untouched and available indefinitely.</p>
+	</div>
   <div class="home-box-table">
     <h3 style="display: block">Quick actions:</h3>
     <% if @datasets.count == 0 %>
@@ -75,6 +85,11 @@
 <% end %>
 
 <% unless current_user %>
+	<div class="home-box-beta">
+		<p>This is an early preview of a completely new user experience for Octopub.</p>
+		<p>Because it is in BETA you may encounter errors, in which case please raise an issue on <a href="https://github.com/theodi/octopub/issues" title="Octopub Github Issues" alt="Octopub Github Issues">Github</a> or contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a></p>
+		<p>The old version of octopub is available <a href="https://octopub.herokuapp.com/" title="ODI Heroku App" alt="ODI Heroku App">here</a> until the end of August 2018 after which it will be deleted.  Please contact us on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs.theodi.org</a> if you urgently need to transfer details from the old system.  However all data on github will remain untouched and available indefinitely.</p>
+	</div>
 	<div class="home-box-head">
 		<h1 class="orange"><span class="pub">Octo</span>pub</h1>
 		<h1>A <span>SIMPLE</span> WAY TO PUBLISH <br /> QUALITY <span>OPEN DATA</span></h1>

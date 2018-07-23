@@ -21,6 +21,7 @@ function anchorTagOpener() {
 		let hash = window.location.hash.replace('#','');
 		let opener = document.getElementsByClassName(hash)[0];
 		var panel = opener.nextElementSibling;
+		console.log(panel)
 
 		opener.classList.toggle('active')
 

@@ -25,10 +25,12 @@
   <% if current_user %>
     <p class="navbar-text navbar-right">
       <%= link_to current_user.name, main_app.me_path %>
+			<%= link_to "BETA", "/getting-started#beta-notice", class: "beta" %>
       <%= bs_button_to 'Sign out', main_app.signout_path, class: "btn btn-primary" %>
     </p>
   <% else %>
     <p class="navbar-text navbar-right">
+			<%= link_to "BETA", "/getting-started#beta-notice", class: "beta" %>
       <%= bs_button_to 'Sign in', '/auth/github', class: "btn btn-primary" %>
     </p>
   <% end %>
