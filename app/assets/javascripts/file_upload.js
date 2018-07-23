@@ -5,7 +5,7 @@ $(document).ready(function() {
   var s = {
     $form                         : $('form'),
     $files                        : $('.bg-upload'),
-    $currentVisibleFileInputGroup : $('div.file-input-group:first'),
+    $currentVisibleFileInputGroup : $('div.file-input-group:nth-child(2)'),
     $fileInputGroup               : $('div.file-input-group:first').clone(),
     $newFileInputGroup            : null,
     $sidebarLink                  : $('#sidebar-links').find('li:first').clone(),
@@ -252,7 +252,7 @@ $(document).ready(function() {
       e.preventDefault()
       // Must have at least one file input group
       if ($('.file-input-group[data-complete="true"]').length > 1) {
-        if (inputGroup === s.$currentVisibleFileInputGroup) {
+        if (inputGroup.is(s.$currentVisibleFileInputGroup)) {
           var nearest = nearestFileInputGroup(inputGroup)
           nearest.show()
           s.$currentVisibleFileInputGroup = nearest
@@ -266,7 +266,7 @@ $(document).ready(function() {
   }
 
   function nearestFileInputGroup(inputGroup) {
-    return (inputGroup.prev().length === 1) ? inputGroup.prev() : inputGroup.next()
+    return (inputGroup.prev().length === 1 && inputGroup.prev('[data-complete="true"]').length === 1) ? inputGroup.prev() : inputGroup.next()
   }
 
   function bindSidebarLinkChangeEvents(inputGroup, link) {
@@ -303,7 +303,6 @@ $(document).ready(function() {
       }
       var sidebarFileDetails = fileSize ? `${fileTitle} (${fileSize})` : fileTitle
       link.find('.sidebar-file-details').text(sidebarFileDetails)
-      form.validate()
     })
 
     inputGroup.find('[name="[files[][dataset_file_schema_id]]"]').change(function(){

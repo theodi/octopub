@@ -57,15 +57,15 @@
 
         <div id="step-three" class="hidden">
           <div id="files">
+            <div class="hidden">
+              <!-- render blank form inputs for adding new files -->
+              <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
+            </div>
             <% if dataset.dataset_files.count == 0 %>
               <!-- render blank form inputs for adding new files -->
               <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
             <% else %>
               <% dataset.dataset_files.each_with_index do |file, i| %>
-                <div class="hidden">
-                  <!-- render blank form inputs for adding new files -->
-                  <%= render partial: "dataset_files/new_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, i: i, dataset_file_schemas: dataset_file_schemas } %>
-                </div>
                 <!-- render the existing files -->
                 <%= render partial: "dataset_files/new_form", locals: { file: file, i: i } %>
               <% end %>
