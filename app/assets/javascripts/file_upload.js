@@ -321,9 +321,9 @@ $(document).ready(function() {
       e.preventDefault()
       if (s.$form.valid() && ($('.s3-file').length > 0 || s.$form.hasClass('edit-form'))) {
         console.log('postForm')
-        // postForm($(this))
-        // $('#spinner').removeClass('hidden')
-        // $('button[type=submit]').attr('disabled', true)
+        postForm($(this))
+        $('#spinner').removeClass('hidden')
+        $('button[type=submit]').attr('disabled', true)
       } else {
         console.log(validator.errorList)
       }
@@ -434,6 +434,10 @@ $(document).ready(function() {
   function getWizardSidebarStep(step) {
     return $('.show-' + step).parents('.wizard-sidebar-step')
   }
+
+  $.fn.isnot = function(selector){
+    return !this.is(selector);
+  };
 
   // Override Jquery Validate checkForm function to allow validation of array inputs with same name
   // This is neccessary for the file and schema inputs
