@@ -120,3 +120,16 @@
 		text-decoration: underline;
 	}
 }
+
+.home-box-beta {
+	@include home-box(#2f529f);
+	display: block;
+	color: white;
+	padding: 1em 3em 1em 3em;
+	margin: -20px -16px 0.6em -16px;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+}
