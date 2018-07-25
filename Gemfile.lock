@@ -88,11 +88,11 @@ GEM
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 13.0)
     arel (7.1.4)
-    autoprefixer-rails (8.6.5)
+    autoprefixer-rails (9.0.0)
       execjs
     awesome_print (1.8.0)
     aws-eventstream (1.0.1)
-    aws-partitions (1.95.0)
+    aws-partitions (1.96.0)
     aws-sdk-core (3.22.1)
       aws-eventstream (~> 1.0)
       aws-partitions (~> 1.0)
@@ -101,7 +101,7 @@ GEM
     aws-sdk-kms (1.6.0)
       aws-sdk-core (~> 3)
       aws-sigv4 (~> 1.0)
-    aws-sdk-s3 (1.16.1)
+    aws-sdk-s3 (1.17.0)
       aws-sdk-core (~> 3, >= 3.21.2)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.0)
@@ -128,7 +128,7 @@ GEM
       thor (~> 0.18)
     byebug (10.0.2)
     cancancan (2.2.0)
-    capybara (3.3.1)
+    capybara (3.4.2)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -194,7 +194,7 @@ GEM
     factory_bot_rails (4.10.0)
       factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
-    faker (1.8.7)
+    faker (1.9.1)
       i18n (>= 0.7)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
@@ -221,9 +221,9 @@ GEM
       activesupport
       grape (>= 0.16.0)
       rake
-    grape-swagger (0.27.3)
+    grape-swagger (0.26.0)
       grape (>= 0.16.2)
-    grape-swagger-entity (0.2.5)
+    grape-swagger-entity (0.2.1)
       grape-entity (>= 0.5.0)
       grape-swagger (>= 0.20.4)
     guard (2.14.2)
@@ -353,7 +353,7 @@ GEM
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
-    puma (3.11.4)
+    puma (3.12.0)
     pusher (1.3.1)
       httpclient (~> 2.7)
       multi_json (~> 1.0)
@@ -433,7 +433,7 @@ GEM
     rspec-support (3.7.1)
     ruby_dep (1.5.0)
     safe_yaml (1.0.4)
-    sass (3.5.6)
+    sass (3.5.7)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -502,7 +502,7 @@ GEM
       ethon (>= 0.9.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.14)
+    uglifier (4.1.16)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -561,8 +561,8 @@ DEPENDENCIES
   git
   grape
   grape-route-helpers
-  grape-swagger (= 0.27.3)
-  grape-swagger-entity (~> 0.2.3)
+  grape-swagger (= 0.26.0)
+  grape-swagger-entity (= 0.2.1)
   grape-swagger-rails!
   guard
   guard-rails

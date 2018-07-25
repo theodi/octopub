@@ -48,8 +48,8 @@ gem 'awesome_print'
 gem 'grape'
 gem 'grape-route-helpers'
 # There are breaking changes in 0.26.1 so freeze here for now
-gem 'grape-swagger', '0.27.3'
-gem 'grape-swagger-entity', '~> 0.2.3'
+gem 'grape-swagger', '0.26.0'
+gem 'grape-swagger-entity', '0.2.1'
 
 # Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'
