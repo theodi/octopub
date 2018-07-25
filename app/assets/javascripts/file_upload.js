@@ -40,13 +40,13 @@ $(document).ready(function() {
   }
 
   function loadSidebarValues() {
-    if (s.$datasetNameInput.val()) { 
-      s.$chosenFolder.text(s.$datasetNameInput.val()) 
+    if (s.$datasetNameInput.val()) {
+      s.$chosenFolder.text(s.$datasetNameInput.val())
     }
-    if (s.$datasetFrequencyInput.find('option:selected').text()) { 
+    if (s.$datasetFrequencyInput.find('option:selected').text()) {
       s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
     }
-    if (s.$datasetLicenseInput.is(':checked')) { 
+    if (s.$datasetLicenseInput.is(':checked')) {
        s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
     }
   }
@@ -386,7 +386,7 @@ $(document).ready(function() {
 
     // This builds an array of booleans, each one representing the validity of a step
     // Then it sums the booleans to get the total validity of the steps
-    return steps.map(function(step) {   
+    return steps.map(function(step) {
       return stepValid(step)
     }).reduce(function(sum, bool) {
       return sum && bool
