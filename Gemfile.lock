@@ -88,7 +88,7 @@ GEM
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 13.0)
     arel (7.1.4)
-    autoprefixer-rails (8.6.5)
+    autoprefixer-rails (9.0.0)
       execjs
     awesome_print (1.8.0)
     aws-eventstream (1.0.1)
@@ -128,7 +128,7 @@ GEM
       thor (~> 0.18)
     byebug (10.0.2)
     cancancan (2.2.0)
-    capybara (3.3.1)
+    capybara (3.4.2)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -433,7 +433,7 @@ GEM
     rspec-support (3.7.1)
     ruby_dep (1.5.0)
     safe_yaml (1.0.4)
-    sass (3.5.6)
+    sass (3.5.7)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -502,7 +502,7 @@ GEM
       ethon (>= 0.9.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.15)
+    uglifier (4.1.16)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
