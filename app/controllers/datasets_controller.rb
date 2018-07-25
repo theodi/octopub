@@ -15,11 +15,6 @@ class DatasetsController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
-  def index
-    @title = "Public Datasets"
-    @datasets = Dataset.github_public.order(created_at: :desc)
-  end
-
   def dashboard
     @title = "My Datasets"
     @datasets = current_user.datasets
