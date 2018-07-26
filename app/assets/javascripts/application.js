@@ -25,3 +25,4 @@
 //= require tooltips
 //= require index
 //= require getting-started.js
+//= require homepage

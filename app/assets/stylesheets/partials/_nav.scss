@@ -7,6 +7,10 @@
   border-radius: 0;
   padding: $padding/2;
 
+	.menu-icon {
+		display: none;
+	}
+
   .navbar-header > .navbar-brand {
     color: $bright-orange;
     font-size: 1.9em;
