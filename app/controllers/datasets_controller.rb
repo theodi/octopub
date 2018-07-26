@@ -15,7 +15,11 @@ class DatasetsController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
-  def dashboard
+	def index
+		redirect_to :dashboard
+	end
+
+	def dashboard
     @title = "My Datasets"
     @datasets = current_user.datasets
   end
