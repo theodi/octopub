@@ -5,11 +5,11 @@
       Octo<span class="pub">pub</span>
 		</a>
 		<a href="#" class="menu-icon">
-			<%= image_tag 'menu-icon.svg', alt: 'Octopub', class: "nav-img" %>
+			<%= image_tag 'menu-icon.svg', alt: 'Nav menu button', class: "nav-img" %>
 		</a>
   </div>
   <ul class="nav navbar-nav">
-    <li><%= link_to "About", '/getting-started', class: current_class?('/getting-started') %></li>
+    <li><%= link_to "About", '/getting-started', class: current_class?('/getting-started'), alt: 'Octopub Getting Started', title: 'Octopub Getting Started' %></li>
     <% if !current_user.nil? %>
       <li><%= link_to "Data collections", main_app.user_datasets_path(current_user), class: current_class?(main_app.user_datasets_path(current_user)) %></li>
     <% else %>
