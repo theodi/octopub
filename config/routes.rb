@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   get "/me" => "users#edit", as: :me
   put "/me" => "users#update"
   get "/licenses" => "application#licenses"
-	get "/privacy-policy" => "application#privacy_policy", as: :privacy_policy 
+	get "/privacy-policy" => "application#privacy_policy", as: :privacy_policy
   get "/getting-started" => "application#getting-started"
 
   mount API => '/'
