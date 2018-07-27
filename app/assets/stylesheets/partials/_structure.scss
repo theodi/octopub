@@ -137,3 +137,55 @@
 		text-decoration: underline;
 	}
 }
+
+@media only screen and (max-width: 480px){
+
+	.navbar {
+
+		.menu-icon {
+			display: block;
+			float: right;
+			padding: $padding/2;
+			margin-right: $padding/2;
+		}
+	}
+
+	.home-box-head, .home-box-beta, .home-box-white, .home-box-black,
+	.home-box-grey, .home-box-blue, .home-box-cobalt {
+		padding: 1.4em !important;
+
+		.home-text {
+			width: 100%;
+			padding: 0 !important;
+			max-width: 100% !important;
+		}
+		.home-image {
+			display: none;
+		}
+	}
+
+	.navbar-nav {
+		text-align: right;
+		display: none;
+	}
+
+	.btn-secondary {
+		margin-bottom: 1em;
+	}
+
+	footer {
+		width: 100vw;
+
+		.row {
+			margin: 0;
+
+			div {
+				padding: 0;
+			}
+		}
+
+		.tools, .help, .licence {
+			display: none;
+		}
+	}
+}
