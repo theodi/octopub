@@ -14,9 +14,9 @@
         <div class="current-file">
           <label class="control-label">Files</label>
           <% if false %>
-          <p><%= link_to file.filename, file.gh_pages_url %><%= check_box_tag "Change file #{i}", 0, false, label: "Change file", class: "change-file" %></p>
+          <p><%= link_to file.filename, FileStorageService.get_temporary_download_url(file.storage_key) %><%= check_box_tag "Change file #{i}", 0, false, label: "Change file", class: "change-file" %></p>
           <% end %>
-          <p><%= link_to file.filename, file.gh_pages_url %>
+          <p><%= link_to file.filename, FileStorageService.get_temporary_download_url(file.storage_key) %>
             <button class="change-file">Change file</button>
           </p>
         </div>

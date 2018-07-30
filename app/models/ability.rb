@@ -3,8 +3,8 @@ class Ability
 
   def initialize(user)
     alias_action :create, :read, :update, :destroy, to: :crud
-    
-    if user 
+
+    if user
       # There might be a better idiom for this, but this will do for now.
 
       # Things everyone logged in can do go here
