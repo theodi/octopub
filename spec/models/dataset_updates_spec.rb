@@ -101,7 +101,7 @@ describe Dataset do
       expect(updated_dataset.description).to eq 'Woof woof'
     end
 
-    it "the private local repo will be updated if the dataset is private local, but no github action" do
+    pending it "the private local repo will be updated if the dataset is private local, but no github action" do
       mock_client = mock_pusher('beep-beep')
       mock_client = mock_pusher('beep-beep-boop')
       name = "this dataset"

@@ -104,7 +104,6 @@ class Dataset < ApplicationRecord
   end
 
   def actual_repo
-    byebug
     @actual_repo ||= RepoService.fetch_repo(self)
   end
 
