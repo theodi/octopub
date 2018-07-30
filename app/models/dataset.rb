@@ -164,16 +164,11 @@ class Dataset < ApplicationRecord
   # This is a callback
   def update_dataset_in_github
     Rails.logger.info "in update_dataset_in_github"
-    return if local_private?
-
-    if publishing_method_was == 'local_private' && github_public?
-      CreateRepository.perform_async(id)
-    else
-      jekyll_service.update_dataset_in_github
-      make_repo_public_if_appropriate
-      publish_public_views
-      self.update_attribute(:published_status, 'published')
-    end
+    UpdateDatasetInGithub.perform_async(id)
+    # jekyll_service.update_dataset_in_github
+    make_repo_public_if_appropriate
+    publish_public_views
+    self.update_attribute(:published_status, 'published')
   end
 
   private
