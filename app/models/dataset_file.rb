@@ -97,7 +97,12 @@ class DatasetFile < ApplicationRecord
   def schema_name
     dataset_file_schema.name if dataset_file_schema
   end
-	
+
+	# TEST
+	def is_csv?
+		file_extension == ".csv"
+	end
+
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)
