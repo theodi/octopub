@@ -351,6 +351,27 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.valid?).to eq(false)
       expect(@dataset.valid?).to eq(false)
     end
-
   end
+
+	context 'as a shapefile' do
+		before(:each) do
+			path = File.join(Rails.root, 'spec', 'fixtures', 'test-shapefile.shp')
+			@tempfile = Rack::Test::UploadedFile.new(path, "text/shp")
+
+			@file = {
+				"title" => 'My File',
+				"file" => @tempfile,
+				"description" => 'A description',
+				"storage_key" => 'test-shapefile.shp'
+			}
+		end
+
+		it "creates a file" do
+			file = DatasetFile.create(@file)
+
+			expect(file.title).to eq(@file["title"])
+			expect(file.filename).to eq("my-file.shp")
+			expect(file.description).to eq(@file["description"])
+		end
+	end
 end
