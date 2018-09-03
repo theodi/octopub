@@ -48,6 +48,11 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
+	it "is a csv filetype" do
+		file = create(:dataset_file, title: "Something horrible")
+		expect(file.is_csv?).to eq(true)
+	end
+
   context "self.create" do
     context "with uploaded csv file" do
 

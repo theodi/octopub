@@ -98,7 +98,6 @@ class DatasetFile < ApplicationRecord
     dataset_file_schema.name if dataset_file_schema
   end
 
-	# TEST
 	def is_csv?
 		file_extension == ".csv"
 	end
