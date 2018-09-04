@@ -26,10 +26,12 @@ class CreateDataset
 				dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
 			end
 
-			dataset_file.process_file(dataset_file)
+			shapefile = dataset_file.process_file(dataset_file)
 
 			@dataset.dataset_files << dataset_file
 		end
+
+		ShapefileToGeojsonService.new(@dataset.dataset_files, @dataset.name) if shapefile
 
 		@dataset.report_status(options["channel_id"])
 	end

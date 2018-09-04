@@ -100,6 +100,7 @@ class DatasetFile < ApplicationRecord
 
 	def process_file(file)
 		CsvlintValidateService.validate_csv(file) if is_csv?
+		is_shp?
 	end
 
 	def is_csv?
