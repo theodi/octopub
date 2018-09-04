@@ -169,6 +169,7 @@ GEM
       uri_template
     currencies (0.4.2)
     database_cleaner (1.7.0)
+    dbf (3.1.2)
     debug_inspector (0.0.3)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -409,6 +410,12 @@ GEM
     redis (4.0.1)
     request_store (1.4.1)
       rack (>= 1.4)
+    rgeo (1.1.1)
+    rgeo-geojson (2.0.0)
+      rgeo (~> 1.0)
+    rgeo-shapefile (1.0.0)
+      dbf (~> 3.0)
+      rgeo (~> 1.0)
     rouge (3.1.1)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
@@ -552,6 +559,7 @@ DEPENDENCIES
   csv2rest!
   csvlint (~> 0.4)
   database_cleaner
+  dbf
   dotenv-rails
   emd
   factory_bot_rails
@@ -589,6 +597,9 @@ DEPENDENCIES
   rails-controller-testing
   rails_12factor
   redcarpet
+  rgeo
+  rgeo-geojson
+  rgeo-shapefile
   rouge
   rspec-rails
   sass-rails
@@ -608,4 +619,4 @@ RUBY VERSION
    ruby 2.4.2p198
 
 BUNDLED WITH
-   1.16.1
+   1.16.3

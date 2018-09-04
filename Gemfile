@@ -67,6 +67,10 @@ gem 'odlifier'
 gem 'aws-sdk-s3', '~> 1'
 gem 'pusher'
 gem 'certificate-factory'
+gem 'rgeo'
+gem 'rgeo-shapefile'
+gem 'rgeo-geojson'
+gem 'dbf'
 
 # Queues
 gem 'sidekiq'
