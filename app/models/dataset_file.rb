@@ -98,8 +98,16 @@ class DatasetFile < ApplicationRecord
     dataset_file_schema.name if dataset_file_schema
   end
 
+	def process_file(file)
+		CsvlintValidateService.validate_csv(file) if is_csv?
+	end
+
 	def is_csv?
 		file_extension == ".csv"
+	end
+
+	def is_shp?
+		file_extension == ".shp"
 	end
 
   def update_file(file_update_hash)

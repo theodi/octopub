@@ -5,6 +5,7 @@ class CreateDataset
 	def perform(dataset_params, files, user_id, options = {})
 		Rails.logger.info "CreateDataset: In perform"
 		files = [files] if files.class == Hash
+		shapefile = false
 
 		user = find_user(user_id)
 		@dataset = new_dataset_for_user(user)
@@ -25,12 +26,11 @@ class CreateDataset
 				dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
 			end
 
-			CsvlintValidateService.validate_csv(dataset_file) if dataset_file.is_csv?
+			dataset_file.process_file(dataset_file)
 
 			@dataset.dataset_files << dataset_file
 		end
 
-		# TO DO: Check for Shapefile in @dataset and run conversion if present
 		@dataset.report_status(options["channel_id"])
 	end
 
@@ -42,7 +42,6 @@ class CreateDataset
     user.datasets.new
   end
 
-	# TEST
 	def create_schema(dataset_file_creation_hash, user)
 		schema = DatasetFileSchemaService.new(
 			dataset_file_creation_hash["schema_name"],
@@ -52,6 +51,21 @@ class CreateDataset
 			user.name,
 			dataset_file_creation_hash["schema_restricted"]
 		).create_dataset_file_schema
+	end
+
+	private
+
+	def is_csv?(file)
+		file_extension(file) == ".csv"
+	end
+
+	def is_shapefile?(file)
+		file_extension(file) == ".shp"
+	end
+
+	def file_extension(file)
+		file_ext = file.storage_key || file.file.original_filename || ''
+		File.extname(file_ext)
 	end
 
 end
