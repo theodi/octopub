@@ -27,7 +27,7 @@ class CreateDataset
 				dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
 			end
 
-			CsvlintValidateService.validate_csv(file) if dataset_file.is_csv?
+			CsvlintValidateService.validate_csv(dataset_file) if dataset_file.is_csv?
 
 			@dataset.dataset_files << dataset_file
 		end
