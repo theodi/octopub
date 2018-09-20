@@ -15,6 +15,7 @@ class CreateDataset
 		))
 
 		files.each do |dataset_file_creation_hash|
+
 			dataset_file = DatasetFile.create(dataset_file_creation_hash)
 
 			if dataset_file_creation_hash["schema"]
@@ -26,12 +27,12 @@ class CreateDataset
 				dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
 			end
 
-			shapefile = dataset_file.process_file(dataset_file)
+			CsvlintValidateService.validate_csv(file) if dataset_file.is_csv?
 
 			@dataset.dataset_files << dataset_file
 		end
 
-		ShapefileToGeojsonService.new(@dataset.dataset_files, @dataset.name) if shapefile
+		@dataset.dataset_files << ShapefileToGeojsonService.new(@dataset).perform if @dataset.is_shapefile
 
 		@dataset.report_status(options["channel_id"])
 	end

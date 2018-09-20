@@ -112,6 +112,12 @@ class Dataset < ApplicationRecord
     names.join(', ') unless names.nil?
   end
 
+	def is_shapefile
+		dataset_files.any? do |file|
+			File.extname(file.filename) == '.shp'
+		end
+	end
+
   def complete_publishing
     actual_repo
     set_owner_avatar
