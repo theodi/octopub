@@ -98,12 +98,8 @@ class DatasetFile < ApplicationRecord
     dataset_file_schema.name if dataset_file_schema
   end
 
-	def is_csv?
-		file_extension == ".csv"
-	end
-
-	def is_geojson?
-		file_extension == ".geojson"
+	def file_type
+		file_extension
 	end
 
   def update_file(file_update_hash)

@@ -19,6 +19,7 @@
         <tr>
           <th data-sortable="true">Name</th>
           <th data-sortable="true">Schema</th>
+					<th data-sortable="true">File type</th>
           <th data-sortable="true" data-field="creation">Creation date</th>
 					<% if !@dataset.is_shapefile %>
           	<th data-sortable="true">Validation</th>
@@ -31,8 +32,9 @@
           <tr>
             <td><%= file.title %></td>
             <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
-            <td><%= time_or_date(file.created_at.utc) %></td>
-						<% if file.is_csv? %>
+						<td><%= file.file_type %></td>
+						<td><%= time_or_date(file.created_at.utc) %></td>
+						<% if file.file_type == '.csv' %>
 							<% if !file.validation.nil? %>
 								<%= render :partial => "validation_badge", :locals => {file: file, dataset: @dataset} %>
 							<% else %>

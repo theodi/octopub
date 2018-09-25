@@ -68,7 +68,7 @@
 		</div>
 	</div>
 
-	<% if @dataset_file.is_csv? %>
+	<% if @dataset_file.file_type == '.csv' %>
 		<div class="row">
 			<div class="head-dataset">
 				<div class="col-md-3">
@@ -85,7 +85,7 @@
 				</table>
 			</div>
 		</div>
-	<% elsif @dataset_file.is_geojson? %>
+	<% elsif @dataset_file.file_type == '.geojson' %>
 		<div class="row">
 			<div class="head-dataset">
 				<div class="col-md-3">
@@ -97,7 +97,7 @@
 	<% end %>
 </div>
 
-<% if @dataset_file.is_csv? %>
+<% if @dataset_file.file_type == '.csv' %>
 	<div id="loading" style="display: none; text-align: center;">
 	  <h1>Loading...</h1>
 	  <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
