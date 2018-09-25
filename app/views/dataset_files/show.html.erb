@@ -1,5 +1,6 @@
 <div class="home-box-dashboard">
 	<%= link_to "< Back to data collection: #{@dataset.name}", files_path(@dataset.id) %>
+
 	<div class="row">
 		<div class="head-dataset">
 			<div class="col-md-3">
@@ -15,6 +16,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="box-dataset">
 	  <div class="row">
 			<div class="col-md-2 col-sm-2">
@@ -119,19 +121,19 @@
 		var geojson = "<%= @s3_file %>"
 		geojson = geojson.replace(/&amp;/g, '&');
 
-		$.getJSON(geojson, function(data){
-
+		$.getJSON(geojson,function(data){
 			let datalayer = L.geoJson(data ,{
 				onEachFeature: function(feature, featureLayer) {
-					coordinates = feature.geometry.coordinates
-					L.marker([coordinates[1], coordinates[0]]).addTo(map);
-
 					popupContent = []
+
+					if (feature.geometry.type == 'Point') {
+						coordinates = feature.geometry.coordinates
+						L.marker([coordinates[1], coordinates[0]]).addTo(map);
+					}
 
 					for (var key in feature.properties) {
 						popupContent.push(key + ": " + feature.properties[key]);
 					}
-
 					featureLayer.bindPopup(popupContent.join("<br/>"));
 				}
 			}).addTo(map);
