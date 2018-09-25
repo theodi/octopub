@@ -61,13 +61,20 @@
 				<% end %>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-2 col-sm-2">
-				<p><strong>Validation:</strong></p>
+		<% if @dataset_file.file_type == '.csv' %>
+			<div class="row">
+				<div class="col-md-2 col-sm-2">
+					<p><strong>Validation:</strong></p>
+				</div>
+				<div class="col-md-6 col-sm-6">
+						<% if !@dataset_file.validation.nil? %>
+							<%= link_to image_tag('validation/' + CsvlintValidateService.generate_badge(@dataset_file) + '.svg'), dataset_file_validation_path(@dataset.id, @dataset_file.id) %>
+						<% else %>
+							<a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a>
+						<% end %>
+				</div>
 			</div>
-			<div class="col-md-6 col-sm-6">
-			</div>
-		</div>
+		<% end %>
 	</div>
 
 	<% if @dataset_file.file_type == '.csv' %>
