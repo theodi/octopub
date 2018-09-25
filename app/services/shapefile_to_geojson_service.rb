@@ -64,6 +64,9 @@ class ShapefileToGeojsonService
 
 	def save_geojson(shp_name)
 		geojson_data = File.read("tmp/shapefiles/tmp.geojson")
+
+		shp_name = shp_name.parameterize
+
 		object = FileStorageService.create_and_upload_public_object(shp_name + '.geojson', geojson_data)
 		storage_key = FileStorageService.get_storage_key_from_public_url(object.public_url)
 
