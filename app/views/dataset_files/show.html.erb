@@ -5,7 +5,8 @@
 			<div class="col-md-3">
 				<h2><span><i class="fas fa-file-alt"></i></span><%= @dataset_file.title %></h2>
 			</div>
-			<div class="col-md-offset-6 col-md-3">
+			<div class="col-md-9">
+				<%= bs_button_to "Download File", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
 				<% if @dataset.published_status == 'unpublished' %>
 					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
 				<% else %>
@@ -23,7 +24,6 @@
 				<p><%= @dataset_file.description %></p>
 			</div>
 			<div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
-      	<i class="fas fa-pencil-alt"></i>
 				<%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
 			</div>
 		</div>
@@ -64,18 +64,15 @@
 				<p><strong>Validation:</strong></p>
 			</div>
 			<div class="col-md-6 col-sm-6">
-
 			</div>
 		</div>
 	</div>
+
 	<% if @dataset_file.is_csv? %>
 		<div class="row">
 			<div class="head-dataset">
 				<div class="col-md-3">
 					<h2>Preview</h2>
-				</div>
-				<div class="col-md-offset-6 col-md-3">
-					<%= bs_button_to "Download CSV", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
 				</div>
 			</div>
 		</div>
@@ -88,6 +85,15 @@
 				</table>
 			</div>
 		</div>
+	<% elsif @dataset_file.is_geojson? %>
+		<div class="row">
+			<div class="head-dataset">
+				<div class="col-md-3">
+					<h2>GeoJSON</h2>
+				</div>
+			</div>
+		</div>
+		<div id="mapid" class="map" style="height: 400px;"></div>
 	<% end %>
 </div>
 
@@ -102,6 +108,38 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/floatthead/2.0.3/jquery.floatThead.min.js"></script>
 
 <script>
+
+	$( document ).ready(function() {
+		let map = L.map('mapid').setView([0, 0], 5);
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		var geojson = "<%= @s3_file %>"
+		geojson = geojson.replace(/&amp;/g, '&');
+
+		$.getJSON(geojson, function(data){
+
+			let datalayer = L.geoJson(data ,{
+				onEachFeature: function(feature, featureLayer) {
+					coordinates = feature.geometry.coordinates
+					L.marker([coordinates[1], coordinates[0]]).addTo(map);
+
+					popupContent = []
+
+					for (var key in feature.properties) {
+						popupContent.push(key + ": " + feature.properties[key]);
+					}
+
+					featureLayer.bindPopup(popupContent.join("<br/>"));
+				}
+			}).addTo(map);
+
+			map.fitBounds(datalayer.getBounds());
+		});
+	});
+
 	function dataTable () {
 		Papa.SCRIPT_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js'
 

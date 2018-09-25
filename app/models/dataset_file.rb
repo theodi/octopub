@@ -102,6 +102,10 @@ class DatasetFile < ApplicationRecord
 		file_extension == ".csv"
 	end
 
+	def is_geojson?
+		file_extension == ".geojson"
+	end
+
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)
