@@ -208,7 +208,7 @@ GEM
     git (1.4.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    grape (1.0.3)
+    grape (1.1.0)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -258,7 +258,7 @@ GEM
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.0.1)
+    i18n (1.1.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jbuilder (2.7.0)
@@ -313,7 +313,7 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.2)
+    mustermann (1.0.3)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
     naught (1.1.0)
@@ -569,7 +569,7 @@ DEPENDENCIES
   font-awesome-sass
   foreman
   git
-  grape
+  grape (= 1.1.0)
   grape-route-helpers
   grape-swagger (= 0.26.0)
   grape-swagger-entity (= 0.2.1)

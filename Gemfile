@@ -46,7 +46,7 @@ gem 'leaflet-rails'
 gem 'awesome_print'
 
 # API functionality
-gem 'grape'
+gem 'grape', '1.1.0'
 gem 'grape-route-helpers'
 # There are breaking changes in 0.26.1 so freeze here for now
 gem 'grape-swagger', '0.26.0'
