@@ -128,7 +128,34 @@ describe CreateDataset do
     end
   end
 
-  pending context 'with a bad schema' do
+	context 'as a shapefile' do
+
+		let(:filename) { 'test-shapefile.shp' }
+		let(:storage_key) { filename }
+		let(:url_for_data_file) { url_with_stubbed_get_for_storage_key(storage_key, filename) }
+
+		before(:each) do
+			mock_client = mock_pusher('beep-beep')
+			expect(mock_client).to receive(:trigger).with('dataset_created', instance_of(Dataset))
+		end
+
+		pending 'reports success' do
+			@files = [
+				ActiveSupport::HashWithIndifferentAccess.new(
+					title: 'My File',
+					description: 'My description',
+					file: url_for_data_file,
+					storage_key: storage_key,
+				)
+			]
+
+			@worker.perform(@dataset_params, @files, @user.id, "channel_id" => 'beep-beep')
+
+			expect(Dataset.first.dataset_files.first.is_shp?).to eq true
+		end
+	end
+
+ 	pending 'with a bad schema' do
 
     let(:filename) { 'datapackage.json' }
     let(:storage_key) { filename }
@@ -176,4 +203,5 @@ describe CreateDataset do
 
     end
   end
+
 end

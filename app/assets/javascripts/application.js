@@ -26,3 +26,4 @@
 //= require index
 //= require getting-started.js
 //= require homepage
+//= require leaflet

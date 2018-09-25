@@ -40,12 +40,13 @@ gem 'bootstrap_form'
 gem "bootstrap-table-rails"
 gem 'emd'
 gem 'jquery-validation-rails'
+gem 'leaflet-rails'
 
 # Logging and debug
 gem 'awesome_print'
 
 # API functionality
-gem 'grape'
+gem 'grape', '1.1.0'
 gem 'grape-route-helpers'
 # There are breaking changes in 0.26.1 so freeze here for now
 gem 'grape-swagger', '0.26.0'
@@ -67,6 +68,10 @@ gem 'odlifier'
 gem 'aws-sdk-s3', '~> 1'
 gem 'pusher'
 gem 'certificate-factory'
+gem 'rgeo'
+gem 'rgeo-shapefile'
+gem 'rgeo-geojson'
+gem 'dbf'
 
 # Queues
 gem 'sidekiq'
