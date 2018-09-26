@@ -102,7 +102,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="mapid" class="map" style="height: 400px;"></div>
+		<div id="mapid" class="map"></div>
 	<% end %>
 </div>
 
@@ -119,66 +119,84 @@
 <script>
 
 	$( document ).ready(function() {
-		let map = L.map('mapid').setView([0, 0], 5);
 
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
-		}).addTo(map);
+		// Leaflet.js - Draw map with GeoJSON data from S3
+		drawMap()
 
-		var geojson = "<%= @s3_file %>"
-		geojson = geojson.replace(/&amp;/g, '&');
+		function drawMap() {
+			let map = L.map('mapid').setView([0, 0], 5);
+			var geojson = "<%= @s3_file %>"
+			geojson = geojson.replace(/&amp;/g, '&');
 
-		$.getJSON(geojson,function(data){
-			let datalayer = L.geoJson(data ,{
-				onEachFeature: function(feature, featureLayer) {
-					popupContent = []
+			createLayer(map)
 
-					if (feature.geometry.type == 'Point') {
-						coordinates = feature.geometry.coordinates
-						L.marker([coordinates[1], coordinates[0]]).addTo(map);
+			$.getJSON(geojson,function(data){
+				let datalayer = L.geoJson(data ,{
+					onEachFeature: function(feature, featureLayer) {
+						popupContent = []
+
+						if (feature.geometry.type == 'Point') {
+							placeMarker(feature, map)
+						}
+
+						addProperties(feature, featureLayer, popupContent)
 					}
+				}).addTo(map);
 
-					for (var key in feature.properties) {
-						popupContent.push(key + ": " + feature.properties[key]);
-					}
-					featureLayer.bindPopup(popupContent.join("<br/>"));
-				}
+				map.fitBounds(datalayer.getBounds());
+			});
+		}
+
+		function createLayer(map) {
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
 			}).addTo(map);
+		}
 
-			map.fitBounds(datalayer.getBounds());
-		});
+		function addProperties(feature, featureLayer, popupContent) {
+			for (var key in feature.properties) {
+				popupContent.push(key + ": " + feature.properties[key]);
+			}
+			featureLayer.bindPopup(popupContent.join("<br/>"));
+		}
+
+		function placeMarker(feature, map) {
+			coordinates = feature.geometry.coordinates
+			L.marker([coordinates[1], coordinates[0]]).addTo(map);
+		}
 	});
 
+	// PapaParse - draw table with CSV data from S3
 	function dataTable () {
 		Papa.SCRIPT_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js'
 
 		var url = "<%= @s3_file %>"
 		url = url.replace(/&amp;/g, '&');
 
-	  $('#loading').show()
-	  $('#data-table-body').hide()
+		$('#loading').show()
+		$('#data-table-body').hide()
 
-	  Papa.parse(url, {
-	    download: true,
+		Papa.parse(url, {
+			download: true,
 			header: true,
-	    step: function(row) {
+			step: function(row) {
 				$('#data-table-head').html(dataHead(row.meta['fields']))
-	      $('#data-table-body').append(dataRow(row.data[0]))
-	    },
-	    complete: function() {
-	      $('#loading').hide()
+				$('#data-table-body').append(dataRow(row.data[0]))
+			},
+			complete: function() {
+				$('#loading').hide()
 
-	      var $table = $('table.table');
-	      $table.floatThead({
-	        scrollContainer: function($table) {
-	          return $table.closest('.table-container');
-	        }
-	      });
+				var $table = $('table.table');
+				$table.floatThead({
+					scrollContainer: function($table) {
+						return $table.closest('.table-container');
+					}
+				});
 
-	      $('#data-table-body').show()
-	      $('#download-csv').removeClass('hidden')
-	    }
-	  });
+				$('#data-table-body').show()
+				$('#download-csv').removeClass('hidden')
+			}
+		});
 
 		function dataHead (data) {
 			var s = '<tr>'
@@ -194,21 +212,20 @@
 			return s
 		}
 
-	  function dataRow (data) {
-	    var s = '<tr>'
+		function dataRow (data) {
+			var s = '<tr>'
 
-	    $.each(data, function(index, value) {
-	      s += '<td>'
-	      s += value
-	      s += '</td>'
-	    })
+			$.each(data, function(index, value) {
+				s += '<td>'
+				s += value
+				s += '</td>'
+			})
 
-	    s += '</tr>'
+			s += '</tr>'
 
-	    return s
-	  }
+			return s
+		}
 	};
 
 	dataTable()
-
 </script>
