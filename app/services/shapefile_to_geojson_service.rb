@@ -22,7 +22,7 @@ class ShapefileToGeojsonService
 	def get_shapefiles(shp_files, shp_name)
 		shp_files.each do |file|
 			object = FileStorageService.get_object(file.storage_key)
-			filename = "#{Rails.root}/tmp/shapefiles/#{shp_name}#{file_ext(file.filename)}"
+			filename = "#{Rails.root}/tmp/#{shp_name}#{file_ext(file.filename)}"
 			object.get(response_target: filename)
 		end
 	end
@@ -58,13 +58,13 @@ class ShapefileToGeojsonService
 	def convert_features_collection_to_geojson
 		geojson = RGeo::GeoJSON.encode(@features_collection).to_json
 
-		File.open("#{Rails.root}/tmp/shapefiles/tmp.geojson", "w") do |f|
+		File.open("#{Rails.root}/tmp/tmp.geojson", "w") do |f|
 			f.write(geojson)
 		end
 	end
 
 	def save_geojson(shp_name)
-		geojson_data = File.read("#{Rails.root}/tmp/shapefiles/tmp.geojson")
+		geojson_data = File.read("#{Rails.root}/tmp/tmp.geojson")
 
 		shp_name = shp_name.parameterize
 
@@ -90,7 +90,7 @@ class ShapefileToGeojsonService
 
 	def get_shp_file(shp_name)
 		shp_file = shp_name + '.shp'
-		Rails.root.join("#{Rails.root}/tmp/shapefiles/#{shp_file}")
+		Rails.root.join("#{Rails.root}/tmp/#{shp_file}")
 	end
 
 	def add_features_to_collection(features)
@@ -98,6 +98,6 @@ class ShapefileToGeojsonService
 	end
 
 	def delete_temporary_files
-		`rm -fr #{Rails.root}/tmp/shapefiles/*`
+		`rm -fr #{Rails.root}/tmp/*`
 	end
 end
