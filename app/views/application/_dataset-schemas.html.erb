@@ -1,5 +1,5 @@
 <tr>
-  <td><%= schema.name.truncate(30) %></td>
+  <td><%= link_to schema.name, dataset_file_schema_path(schema) %></td>
   <td><%= schema.owner_username %></td>
   <td><%= time_or_date(schema.created_at) %></td>
   <td>
