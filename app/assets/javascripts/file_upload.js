@@ -40,13 +40,13 @@ $(document).ready(function() {
   }
 
   function loadSidebarValues() {
-    if (s.$datasetNameInput.val()) { 
-      s.$chosenFolder.text(s.$datasetNameInput.val()) 
+    if (s.$datasetNameInput.val()) {
+      s.$chosenFolder.text(s.$datasetNameInput.val())
     }
-    if (s.$datasetFrequencyInput.find('option:selected').text()) { 
+    if (s.$datasetFrequencyInput.find('option:selected').text()) {
       s.$chosenFrequency.text(s.$datasetFrequencyInput.find('option:selected').text())
     }
-    if (s.$datasetLicenseInput.is(':checked')) { 
+    if (s.$datasetLicenseInput.is(':checked')) {
        s.$chosenLicense.text($('[name="dataset[license]"]:checked').val())
     }
   }
@@ -96,6 +96,7 @@ $(document).ready(function() {
       start: function(e) {
         submitButton.prop('disabled', true)
         progressBarContainer.removeClass('hidden')
+				checkForShapefile(fileInput)
         // Remove existing hidden fields
         container.find('.s3-file').remove()
         progressBar.css('width', '0%')
@@ -119,6 +120,15 @@ $(document).ready(function() {
       }
     })
   }
+
+	function checkForShapefile(fileInput) {
+		var fileName = fileInput.prop('files').item(0).name
+		var fileExtension = fileName.substr((fileName.lastIndexOf('.') +1))
+
+		if (/(shp|shx|dbf|prj|sbn|sbx|cpg)$/ig.test(fileExtension)) {
+			$('.shapefile-msg').toggle()
+		}
+	}
 
   function postForm(form) {
     var formMethod = $('input:hidden[name=_method]').val() || 'post'
@@ -386,7 +396,7 @@ $(document).ready(function() {
 
     // This builds an array of booleans, each one representing the validity of a step
     // Then it sums the booleans to get the total validity of the steps
-    return steps.map(function(step) {   
+    return steps.map(function(step) {
       return stepValid(step)
     }).reduce(function(sum, bool) {
       return sum && bool

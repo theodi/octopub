@@ -21,16 +21,16 @@
           <th data-sortable="true">Schema</th>
 					<th data-sortable="true">File type</th>
           <th data-sortable="true" data-field="creation">Creation date</th>
-					<% if !@dataset.is_shapefile %>
-          	<th data-sortable="true">Validation</th>
-					<% end %>
+          <th data-sortable="true">Validation</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody
         <% @dataset_files.each do |file| %>
           <tr>
-            <td><%= file.title %></td>
+            <td>
+							<%= link_to(file.title.truncate(30), dataset_files_path(@dataset.id, file.id), class:"collection-link") %>
+						</td>
             <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
 						<td><%= file.file_type %></td>
 						<td><%= time_or_date(file.created_at.utc) %></td>
@@ -40,6 +40,8 @@
 							<% else %>
 								<td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
 							<% end %>
+						<% else %>
+							<td>N/A</td>
 						<% end %>
             <td>
               <div class="dropdown show">

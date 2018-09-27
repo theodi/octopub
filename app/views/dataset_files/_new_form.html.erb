@@ -9,6 +9,11 @@
       <%= text_area_tag "files[][description]", file.description, placeholder: t(:'dataset_file.description'), class: "description form-control" %>
     </div>
 
+		<div class="shapefile-msg" hidden>
+			<p>The file you are uploading is usually part of a Shapefile. If you are uploading a Shapefile, please ensure to 'Save and add another file', including all corresponding files.</p>
+			<p>A GeoJSON file will be created and added to your collection as an additional Collection Files.</p>
+		</div>
+
     <% if file.filename %>
       <div class="form-group filename-wrapper">
         <div class="current-file">
@@ -18,7 +23,7 @@
       </div>
     <% else %>
       <div class="form-group">
-        <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Only CSV files will be checked for errors, but you can upload other file types if you wish."></i></label>
+        <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Only CSV files will be checked for errors, but you can upload other file types if you wish. Correctly uploaded Shapefiles will produce an additional GeoJSON file."></i></label>
         <%= file_field_tag "[files[][file]]" %>
       </div>
     <% end %>
@@ -35,3 +40,11 @@
     </fieldset>
   <% end %>
 </div>
+
+<script>
+
+	$(document).ready(function() {
+
+	})
+
+</script>

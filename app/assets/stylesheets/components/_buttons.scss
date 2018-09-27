@@ -1,7 +1,7 @@
 @import "modules/base";
 
 @mixin button($bg, $hv) {
-  background: $bg;
+  background-color: $bg !important;
   color: $white;
   border: none;
 	font-family: Helvetica Neue, Helvetica, sans-serif;
@@ -33,11 +33,11 @@
 }
 
 .btn-primary {
-   @include button($bright-orange, $deep-orange);
+	@include button($bright-orange, $deep-orange);
 
-   &:disabled {
-     opacity: 0.4;
-   }
+	&:disabled {
+		opacity: 0.4;
+	}
 }
 
 .btn-secondary {
