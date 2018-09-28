@@ -164,7 +164,7 @@ class JekyllService
     @dataset.dataset_files.each do |file|
       datapackage["resources"] << {
         "name" => file.title,
-        "mediatype" => 'text/csv',
+        "mediatype" => "text/csv",
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => json_schema_for_datapackage(file.dataset_file_schema)
@@ -173,6 +173,11 @@ class JekyllService
 
     datapackage.to_json
   end
+
+	# Use this in the creation of datapackage to set different mediatype
+	# def mediatype_for_datapackage(file)
+	# 	file.file_type == '.geojson' ? "application/json" : "text/csv"
+	# end
 
   def update_datapackage
     update_file_in_repo("datapackage.json", create_json_datapackage)
