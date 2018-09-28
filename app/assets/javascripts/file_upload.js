@@ -96,6 +96,7 @@ $(document).ready(function() {
       start: function(e) {
         submitButton.prop('disabled', true)
         progressBarContainer.removeClass('hidden')
+				// Check if a Shapefile type has been uploaded and prompt user
 				checkForShapefile(fileInput)
         // Remove existing hidden fields
         container.find('.s3-file').remove()
