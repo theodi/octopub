@@ -12,7 +12,7 @@
 		 <% if @dataset_file_schema.csv_on_the_web_schema %>
 			 <h2>Schema on the Web</h2>
 		 <% else %>
-			 <%= render(partial: "schema_overview", locals: { dataset_file_schema: @dataset_file_schema })  %>
+			 <!-- <%= render(partial: "schema_overview", locals: { dataset_file_schema: @dataset_file_schema })  %> -->
 			 <%= render(partial: "schema_json", locals: { dataset_file_schema: @dataset_file_schema })  %>
 	 	 <% end %>
 	 <% else %>
