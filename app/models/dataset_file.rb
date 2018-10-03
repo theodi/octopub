@@ -127,7 +127,7 @@ class DatasetFile < ApplicationRecord
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
-      if dataset_file_schema
+      if dataset_file_schema && is_csv?
         if dataset_file_schema.is_schema_valid?
           if dataset_file_schema.csv_on_the_web_schema
             validate_schema_cotw
@@ -150,9 +150,9 @@ class DatasetFile < ApplicationRecord
         schema.tables["file:#{tempfile.path}"] = schema.tables.delete(schema.tables.keys.first)
       end
       validation = Csvlint::Validator.new(tempfile, {}, schema)
+			update_database_attribute(validation)
 
-      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+			Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
 
@@ -163,9 +163,9 @@ class DatasetFile < ApplicationRecord
       schema = Csvlint::Schema.load_from_string(URI.escape(dataset_file_schema.url), dataset_file_schema.schema)
 
       validation = Csvlint::Validator.new(file_content, {}, schema)
+			update_database_attribute(validation)
 
-      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+			Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
 
@@ -173,8 +173,12 @@ class DatasetFile < ApplicationRecord
       File.new(file.tempfile)
     end
 
+		def update_database_attribute(validation)
+			validation.valid? ? self.update_attribute(:validation, true) : self.update_attribute(:validation, false)
+		end
+
     def check_csv
-      if file_extension == '.csv'
+      if is_csv?
         content = file_content
         unless content.nil?
           begin
@@ -189,6 +193,10 @@ class DatasetFile < ApplicationRecord
         end
       end
     end
+
+		def is_csv?
+			file_extension == '.csv'
+		end
 
     def file_extension
       file = self.storage_key || self.file.original_filename || ''
