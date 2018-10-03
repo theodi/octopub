@@ -1,5 +1,4 @@
 class ShapefileToGeojsonService
-	require 'tempfile'
 
 	def initialize(dataset)
 		@dataset = dataset
