@@ -32,7 +32,7 @@ class CreateDataset
 			@dataset.dataset_files << dataset_file
 		end
 
-		@dataset.dataset_files << ShapefileToGeojsonService.new(@dataset).perform if @dataset.is_shapefile
+		@dataset.dataset_files << ShapefileToGeojsonService.new(@dataset).convert if @dataset.is_shapefile
 
 		@dataset.report_status(options["channel_id"])
 	end
