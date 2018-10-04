@@ -36,51 +36,6 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
   end
 
   describe 'create dataset with a new schema' do
-    context 'returns an error if the file does not match the schema' do
-
-      before(:each) do
-        @files << {
-          title: 'My File',
-          description: 'My Description',
-          file: url_for_not_matching_data_file,
-          storage_key: not_matching_storage_key,
-          schema_name: 'schema name',
-          schema_description: 'schema description',
-          schema: @url_for_schema
-        }
-
-        @dataset = {
-          name: dataset_name,
-          description: description,
-          publisher_name: publisher_name,
-          publisher_url: publisher_url,
-          license: license,
-          frequency: frequency
-        }
-      end
-
-      it 'without websockets' do
-
-        post :create, params: { dataset: @dataset, files: @files }
-
-        expect(Dataset.count).to eq(0)
-        expect(Error.count).to eq(1)
-        expect(Error.first.messages).to eq([
-          "Dataset files is invalid",
-          "Your file 'My File' does not match the schema you provided"
-        ])
-      end
-
-      it 'with websockets' do
-
-        mock_client = mock_pusher('foo-bar')
-        expect(mock_client).to receive(:trigger).with('dataset_failed', [
-          "Dataset files is invalid",
-          "Your file 'My File' does not match the schema you provided"
-        ])
-        post :create, params: { dataset: @dataset, files: @files, channel_id: 'foo-bar' }
-      end
-    end
 
     it 'creates sucessfully if the file matches the schema' do
 
@@ -109,7 +64,7 @@ describe DatasetsController, type: :controller, vcr: { :match_requests_on => [:h
       expect(DatasetFileSchema.count).to eq(1)
 
       expect(DatasetFileSchema.first.restricted).to eq false
-      
+
       expect(@user.dataset_file_schemas.count).to eq(1)
       expect(@user.datasets.count).to eq(1)
       expect(@user.datasets.first.dataset_files.count).to eq(1)
