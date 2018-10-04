@@ -179,47 +179,5 @@ describe 'POST /datasets' do
       expect(@user.datasets.count).to eq(1)
       expect(@user.datasets.first.dataset_files.count).to eq(1)
     end
-
-    it 'errors if a file does not match the schema' do
-
-      @filename = 'invalid-schema.csv'
-      @storage_key = "uploads/#{SecureRandom.uuid}/#{@filename}"
-
-      path = File.join(Rails.root, 'spec', 'fixtures', @filename)
-      allow(DatasetFile).to receive(:read_file_with_utf_8).and_return(File.read(path))
-
-      good_schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      stubbed_schema_url = url_with_stubbed_get_for(good_schema_path)
-
-      file = {
-        title: 'My File',
-        description: 'My Description',
-        file: Rack::Test::UploadedFile.new(path, "text/csv"),
-        storage_key: @storage_key,
-        schema_name: 'schema name',
-        schema_description: 'schema description',
-        schema: stubbed_schema_url
-      }
-
-      post '/api/datasets', params: {
-        dataset: {
-          name: @name,
-          description: @description,
-          publisher_name: @publisher_name,
-          publisher_url: @publisher_url,
-          license: @license,
-          frequency: @frequency,
-        },
-        file: file
-      },
-      headers: { 'Authorization' => "Token token=#{@user.api_key}" }
-
-      expect(Dataset.count).to eq(0)
-      expect(Error.count).to eq(1)
-      expect(Error.first.messages).to eq([
-        "Dataset files is invalid",
-        "Your file 'My File' does not match the schema you provided"
-      ])
-    end
   end
 end

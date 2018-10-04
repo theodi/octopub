@@ -228,23 +228,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(dataset_file.schema_name).to eq schema_name
     end
 
-    it 'does not validate against a good schema with bad data' do
-
-      storage_key = 'invalid-schema.csv'
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: "example.csv",
-                                  title: "My Awesome File",
-                                  description: "My Awesome File Description",
-                                  storage_key: storage_key,
-                                 # file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
-    end
-
     it 'does not validate against a bad schema with good data' do
 
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
@@ -293,24 +276,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.valid?).to eq(true)
       expect(@dataset.valid?).to eq(true)
     end
-
-    it 'does not validate with bad data' do
-      file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-cotw.csv')
-      storage_key = 'invalid-cotw.csv'
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: "people.csv",
-                                  title: "People",
-                                  description: "People are terrible",
-                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  storage_key: storage_key,
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(@dataset_file_schema.is_schema_otw?).to be true
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
-    end
   end
 
   context 'with multiple csv-on-the-web files' do
@@ -337,24 +302,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
 
       expect(file.valid?).to eq(true)
       expect(@dataset.valid?).to eq(true)
-    end
-
-    it 'does not validate with duff data' do
-      file_path = File.join(Rails.root, 'spec', 'fixtures', 'hats-cotw.csv')
-      file_name = 'hats-cotw.csv'
-      storage_key = "uploads/#{file_name}"
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: file_name,
-                                  title: "Hats",
-                                  description: "All around my hat",
-                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  storage_key: storage_key,
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
     end
   end
 

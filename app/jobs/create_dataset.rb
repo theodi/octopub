@@ -18,6 +18,10 @@ class CreateDataset
 
 			dataset_file = DatasetFile.create(dataset_file_creation_hash)
 
+			if !dataset_file_creation_hash["schema"] && dataset_file.file_type == '.csv'
+				CsvlintValidateService.validate_csv(dataset_file)
+			end
+
 			if dataset_file_creation_hash["schema"]
 				schema = create_schema(dataset_file_creation_hash, user)
 
@@ -26,8 +30,6 @@ class CreateDataset
 			elsif dataset_file_creation_hash["dataset_file_schema_id"]
 				dataset_file.dataset_file_schema_id = dataset_file_creation_hash["dataset_file_schema_id"]
 			end
-
-			CsvlintValidateService.validate_csv(dataset_file) if dataset_file.file_type == '.csv'
 
 			@dataset.dataset_files << dataset_file
 		end
