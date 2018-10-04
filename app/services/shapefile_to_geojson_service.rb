@@ -1,6 +1,4 @@
 class ShapefileToGeojsonService
-	require 'rgeo/shapefile'
-	require 'rgeo/geo_json'
 
 	def initialize(dataset)
 		@dataset = dataset
@@ -8,13 +6,12 @@ class ShapefileToGeojsonService
 		@shp_files = dataset.dataset_files
 	end
 
-	def perform
+	def convert
 		Rails.logger.info "ShapefileToGeoJSON: In perform"
 
 		get_shapefiles(@shp_files, @shp_name)
-		create_features_collection
-		convert_features_collection_to_geojson
-		save_geojson(@shp_name)
+		geojson = ShapefileConversion.new(get_shp_file(@shp_name)).convert
+		create_geojson_dataset_file(@shp_name, geojson)
 	end
 
 	private
@@ -27,50 +24,18 @@ class ShapefileToGeojsonService
 		end
 	end
 
-	def create_features_collection
-		features = []
-
-		# Factory to set SRID (WGS84)- Is this being set correctly? Discuss
-		factory = RGeo::Geographic.spherical_factory(:srid => 4326)
-
-		# Open Shapefile with SRID factory
-		RGeo::Shapefile::Reader.open(get_shp_file(@shp_name), :factory => factory) do |file|
-
-			file.each do |record|
-
-				# Factory to create a RGeo 'feature' for each record
-				factory = RGeo::GeoJSON::EntityFactory.instance
-
-				# Feature object for each Shapefile record
-				feature = factory.feature(
-					record.geometry,
-					record.index,
-					record.attributes
-				)
-
-				features << feature
-			end
-		end
-
-		@features_collection = add_features_to_collection(features)
-	end
-
-	def convert_features_collection_to_geojson
-		geojson = RGeo::GeoJSON.encode(@features_collection).to_json
-
-		File.open("#{Rails.root}/tmp/tmp.geojson", "w") do |f|
-			f.write(geojson)
-		end
-	end
-
-	def save_geojson(shp_name)
-		geojson_data = File.read("#{Rails.root}/tmp/tmp.geojson")
-
+	def create_geojson_dataset_file(shp_name, geojson)
 		shp_name = shp_name.parameterize
 
-		object = FileStorageService.create_and_upload_public_object(shp_name + '.geojson', geojson_data)
+		object = FileStorageService.create_and_upload_public_object(shp_name + '.geojson', geojson)
 		storage_key = FileStorageService.get_storage_key_from_public_url(object.public_url)
 
+		create_dataset_file(shp_name, storage_key, object)
+	end
+
+	private
+
+	def create_dataset_file(shp_name, storage_key, object)
 		dataset_file_creation_hash = {
 			"title"=>shp_name,
 			"description"=>shp_name,
@@ -84,17 +49,13 @@ class ShapefileToGeojsonService
 		DatasetFile.create(dataset_file_creation_hash)
 	end
 
-	def file_ext(file)
-		File.extname(file)
-	end
-
 	def get_shp_file(shp_name)
 		shp_file = shp_name + '.shp'
 		Rails.root.join("#{Rails.root}/tmp/#{shp_file}")
 	end
 
-	def add_features_to_collection(features)
-		RGeo::GeoJSON::FeatureCollection.new(features)
+	def file_ext(file)
+		File.extname(file)
 	end
 
 	def delete_temporary_files
