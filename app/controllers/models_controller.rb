@@ -1,0 +1,2 @@
+class ModelsController < ApplicationRecord
+end
