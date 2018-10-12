@@ -16,6 +16,12 @@ Rails.application.routes.draw do
     end
   end
 
+	resources :models do
+		collection do
+			get "/created", action: 'created'
+		end
+	end
+
   get "/collection/:dataset_id/publish_dataset" => "datasets#publish_dataset"
 
 	get "/collection/:dataset_id" => "dataset_files#index", as: :files

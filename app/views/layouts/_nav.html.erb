@@ -24,6 +24,13 @@
         <a href="#" class="disabled">Schemas</a>
       </li>
     <% end %>
+		<% if !current_user.nil? %>
+			<li><%= link_to "Models", main_app.models_path, class: current_class?(main_app.models_path), title: 'Schemas' %></li>
+		<% else %>
+			<li>
+				<a href="#" class="disabled">Models</a>
+			</li>
+		<% end %>
     <li><%= link_to "API", '/api', class: current_class?('/api/'), title: 'Api' %></li>
   </ul>
   <% if current_user %>

@@ -1,2 +1,2 @@
-class ModelsController < ApplicationRecord
+class ModelsController < ApplicationController
 end
