@@ -17,11 +17,19 @@ feature 'Add model', type: :feature do
 
 		before(:each) do
 			create(:model, name: 'good model', description: 'good model description', user: @user)
-			click_link "Models"
+			click_link "Schemas / Models"
+			expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
 		end
 
-		it 'can access the dashboard' do
-			expect(page).to have_content "Your models"
+		context 'logged in user has no model' do
+			scenario 'can create a model' do
+				click_link 'Create a new model'
+				before_models = Model.count
+
+				within 'form' do
+					
+				end
+			end
 		end
 	end
 end

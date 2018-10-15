@@ -5,7 +5,7 @@
 		</div>
 		<div class="col-md-5 col-sm-5">
 			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Infer a new schema".html_safe, new_inferred_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "infer_schema" %>
-			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "add_schema" %>
+			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Upload a new schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary pull-right", id: "add_schema" %>
 		</div>
 		<div class="col-md-2 col-sm-2">
 			<div class="form-group has-feedback">
@@ -28,4 +28,21 @@
     <h2>Public Schemas</h2>
     <%= render partial: 'schema_table', locals: { schemas: @public_schemas } %>
   <% end %>
+</div>
+
+<div class="toolbar" id="toolbar">
+	<div class="row">
+		<div class="col-md-5 col-sm-5">
+			<h2 class="orange">Models <small>for <%= current_user.name %></small></h2>
+		</div>
+		<div class="col-md-5 col-sm-5">
+			<%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new model".html_safe, new_model_path, :class => "btn btn-secondary pull-right", id: "infer_schema" %>
+		</div>
+		<div class="col-md-2 col-sm-2">
+			<div class="form-group has-feedback">
+				<input name="search" id="myInput" class="form-control hasclear" type="text" placeholder='Search models'>
+				<span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+			</div>
+		</div>
+	</div>
 </div>
