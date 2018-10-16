@@ -3,7 +3,6 @@ class DatasetFileSchemasController < ApplicationController
   authorize_resource
 
   def index
-		@models = Model.all
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
     @public_schemas = DatasetFileSchema.where(restricted: false).order(created_at: :desc)
   end

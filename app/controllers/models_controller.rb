@@ -1,7 +1,7 @@
 class ModelsController < ApplicationController
 
 	def index
-		@models = Model.all
+		@models = Model.where(user: current_user)
 		redirect_to :controller => 'dataset_file_schemas', :action => 'index'
 	end
 

@@ -21,5 +21,4 @@ describe Model do
 		expect(model).to be_valid
 		expect(model.name).to eq('My Awesome Model')
 	end
-
 end

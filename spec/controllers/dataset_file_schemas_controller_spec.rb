@@ -55,13 +55,6 @@ describe DatasetFileSchemasController, type: :controller do
       expect(assigns(:public_schemas).count).to eq(1)
     end
 
-		it "gets the right number of models" do
-			sign_in @user
-			2.times { |i| create(:model, user: @user)}
-			get 'index'
-			expect(assigns(:models).count).to eq(2)
-		end
-
     it "gets the right number of dataset file schemas and not someone elses" do
       create(:dataset_file_schema, name: "Dataset File Schema other", user: @other_user)
 
