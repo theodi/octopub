@@ -16,7 +16,9 @@ Rails.application.routes.draw do
     end
   end
 
-	resources :models, except: [:index]
+	resources :models do
+		
+	end
 
   get "/collection/:dataset_id/publish_dataset" => "datasets#publish_dataset"
 

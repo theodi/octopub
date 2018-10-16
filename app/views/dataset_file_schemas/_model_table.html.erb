@@ -1,0 +1,19 @@
+<table class="table table-striped"
+data-toggle="table"
+data-sort-name="creation"
+data-sort-order="desc"
+data-classes="table"
+data-filter-control="true">
+  <thead>
+    <tr>
+			<th data-sortable="true">Name</th>
+    </tr>
+  </thead>
+  <tbody id="myTable">
+    <% models.each do |model| %>
+      <tr>
+				<td><%= model.name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

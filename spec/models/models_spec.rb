@@ -19,6 +19,7 @@ describe Model do
 	it 'creates a valid model' do
 		model = create(:model, user: @user)
 		expect(model).to be_valid
+		expect(model.name).to eq('My Awesome Model')
 	end
 
 end
