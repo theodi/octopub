@@ -26,7 +26,7 @@
 <div>
   <% if @public_schemas.any? %>
     <h2>Public Schemas</h2>
-    <%= render partial: 'schema_table', locals: { models: @public_schemas } %>
+    <%= render partial: 'schema_table', locals: { schemas: @public_schemas } %>
   <% end %>
 </div>
 
@@ -48,7 +48,7 @@
 </div>
 <div>
   <% if @models.any? %>
-    <%= render partial: 'model_table', locals: { schemas: @models } %>
+    <%= render partial: 'model_table', locals: { models: @models } %>
   <% else %>
     <p class='text-center lead'>You currently have no models, why not <%= link_to 'create one', new_model_path %>?</p>
   <% end %>

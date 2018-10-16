@@ -64,6 +64,21 @@ describe DatasetFileSchemasController, type: :controller do
       get 'index'
       expect(assigns(:dataset_file_schemas).count).to eq(2)
     end
+
+		it "gets the right number of models" do
+			sign_in @user
+			2.times { |i| create(:model, user: @user)}
+			get 'index'
+			expect(assigns(:models).count).to eq(2)
+		end
+
+		it 'gets the right number of models and not someone elses' do
+			sign_in @user
+			2.times { |i| create(:model, user: @user)}
+			create(:model, user: @other_user)
+			get 'index'
+			expect(assigns(:models).count).to eq(2)
+		end
   end
 
   describe 'show' do
