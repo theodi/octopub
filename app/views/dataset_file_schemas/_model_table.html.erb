@@ -7,12 +7,20 @@ data-filter-control="true">
   <thead>
     <tr>
 			<th data-sortable="true">Name</th>
+			<th data-sortable="true">Publisher</th>
+			<th data-sortable="true">Created on</th>
+			<th data-sortable="true">Published</th>
+			<th>Actions</th>
     </tr>
   </thead>
   <tbody id="myTable">
     <% models.each do |model| %>
       <tr>
-				<td><%= model.name %></td>
+				<td><%= link_to model.name, model_path(model) %></td>
+				<td></td>
+				<td><%= model.created_at.to_formatted_s(:short) if model.created_at %></td>
+				<td></td>
+				<td>...</td>
       </tr>
     <% end %>
   </tbody>

@@ -4,6 +4,10 @@ class ModelsController < ApplicationController
 		redirect_to :controller => 'dataset_file_schemas', :action => 'index'
 	end
 
+	def show
+		@model = Model.find(params[:id])
+	end
+
 	def new
 		@model = Model.new
 	end
