@@ -173,5 +173,4 @@ ActiveRecord::Schema.define(version: 20181012141400) do
     t.boolean  "restricted",      default: false
   end
 
-  add_foreign_key "models", "users"
 end

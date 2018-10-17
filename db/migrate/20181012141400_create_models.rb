@@ -4,7 +4,7 @@ class CreateModels < ActiveRecord::Migration[5.0]
       t.string :name
       t.text :description
       t.integer :user_id
-      t.belongs_to :user, foreign_key: true
+      t.belongs_to :user
 
       t.timestamps
     end

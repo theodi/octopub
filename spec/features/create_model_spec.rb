@@ -1,35 +1,41 @@
 require "rails_helper"
 require 'features/user_and_organisations'
 
-feature 'Add model', type: :feature do
+feature 'Publisher can create a model', type: :feature do
 	include_context 'user and organisations'
 
 	before(:each) do
 		Sidekiq::Testing.inline!
-		visit root_path
 	end
 
 	after(:each) do
 		Sidekiq::Testing.fake!
 	end
 
-	context "logged in visitor has models and" do
+	it "by entering details in a form" do
 
-		before(:each) do
-			create(:model, name: 'good model', description: 'good model description', user: @user)
-			click_link "Schemas / Models"
-			expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
+		new_name = 'Fri1437'
+		new_description = Faker::Lorem.sentence
+		before_models = Model.count
+
+		visit root_path
+		click_link "Schemas / Models"
+		expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
+
+		click_link 'Create a new model'
+		expect(page).to have_content('Create a model')
+
+		within 'form' do
+			complete_form(new_name, new_description)
 		end
 
-		context 'logged in user has no model' do
-			scenario 'can create a model' do
-				click_link 'Create a new model'
-				before_models = Model.count
+		expect(Model.count).to be before_models + 1
+		expect(Model.last.name).to eq "#{new_name}"
+	end
 
-				within 'form' do
-					
-				end
-			end
-		end
+	def complete_form(name, description)
+		fill_in 'model[name]', with: name
+		fill_in 'model[description]', with: description
+		click_button 'Create'
 	end
 end

@@ -5,7 +5,7 @@ class DatasetFileSchemasController < ApplicationController
   def index
     @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc)
     @public_schemas = DatasetFileSchema.where(restricted: false).order(created_at: :desc)
-		@models = Model.where(user: current_user)
+		@models = Model.where(user: current_user).order(created_at: :desc)
 	end
 
   def show
