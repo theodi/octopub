@@ -1,0 +1,21 @@
+<div class="box-dataset">
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Created by:</strong></p>
+		</div>
+		<div class="col-md-5 col-sm-5">
+			<p><%= model.user.name %></p>
+		</div>
+		<div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
+			<!-- <%= link_to("Edit", edit_model_path(model)) %> -->
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-sm-2">
+			<p><strong>Description:</strong></p>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<p><%= model.description %></p>
+		</div>
+	</div>
+</div>

@@ -1,1 +1,11 @@
-<h1><%= @model.name %></h1>
+<div class="home-box-dashboard">
+	<%= link_to "< Back to all schemas / models", main_app.dataset_file_schemas_path %>
+	<div class="row">
+		<div class="head-dataset">
+			<div class="col-md-3">
+				<h2><span class="fa fa-folder-open"></span><%= @model.name %></h2>
+			</div>
+		</div>
+	</div>
+	<%= render(partial: "model_metadata", locals: { model: @model })  %>
+</div>
