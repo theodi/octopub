@@ -5,7 +5,9 @@ class ModelsController < ApplicationController
 	end
 
 	def show
-		@model = Model.find(params[:id])
+		model_id = params[:id]
+		@model = Model.find(model_id)
+		render_403_permissions unless current_user == @model.user || admin_user
 	end
 
 	def new

@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   end
 
 	resources :models do
-		
 	end
 
   get "/collection/:dataset_id/publish_dataset" => "datasets#publish_dataset"

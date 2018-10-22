@@ -14,24 +14,23 @@ feature 'As a logged in user, viewing models', type: :feature do
 		@model = create(:model, name: model_name, description: model_description, user: publisher)
 	end
 
+	after(:each) do
+		sign_out
+	end
+
 	context 'as the creator' do
 
-		before(:each) do
-			sign_in publisher
-		end
-
 		it 'can view models' do
+			sign_in publisher
 			visit models_path
 			click_on(@model.name)
 			expect(page).to have_content "#{@model.name}"
 		end
 	end
 
-	pending 'cannot view other users models' do
-
-	end
-
-	pending 'can view other users models if an admin' do
-
+	it 'cannot view other users models' do
+		sign_in random_publisher
+		visit model_path(@model)
+		expect(page).to have_content 'You do not have permission'
 	end
 end
