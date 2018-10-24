@@ -5,15 +5,37 @@
 	<div class="col-sm-8">
 		<div id="add-dataset-form-container">
 			<%= form_for @model, url: {action: "create"} do |f| %>
-			<div id="step-one">
-				<div class="form-group">
-					Name: <%= f.text_field :name, class: "form-control" %><br />
-				</div>
-				<div class="form-group">
-					Description: <%= f.text_field :description, class: "form-control" %><br />
-				</div>
-				<div class="form-group">
-					<%= f.submit 'Create', :class => "btn btn-primary btn-lg btn-block" %>
+				<div id="step-one">
+					<div class="form-group">
+						Name: <%= f.text_field :name, class: "form-control" %><br />
+					</div>
+					<div class="form-group">
+						Description: <%= f.text_field :description, class: "form-control" %><br />
+					</div>
+
+					<table class="table table-bordered table-condensed">
+						<thead>
+							<th class="col-xs-2">Name</th>
+							<th class="col-xs-2">Type</th>
+							<th>Required?</th>
+							<th>Unique?</th>
+							<th>Min Length</th>
+							<th>Max Length</th>
+							<th>Max</th>
+							<th>Min</th>
+							<th>Pattern</th>
+							<th>Date Pattern</th>
+							<th>Constraint Type</th>
+						</thead>
+						<%= f.fields_for :schema_fields do |schema_field_form| %>
+
+						<% end %>
+					</table>
+
+					<div class="form-group">
+						<%= f.submit 'Create', :class => "btn btn-primary btn-lg btn-block" %>
+					</div>
+
 				</div>
 			<% end %>
 		</div>
