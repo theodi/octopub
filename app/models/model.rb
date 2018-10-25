@@ -9,5 +9,7 @@
 #  updated_at        :datetime
 
 class Model < ApplicationRecord
+	include Publishable
+	
   belongs_to :user
 end
