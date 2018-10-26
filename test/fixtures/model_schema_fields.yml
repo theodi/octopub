@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  model_id: 1
+  name: MyText
+  description: MyText
+  title: MyText
+  type: 1
+  format: MyText
+  model: one
+
+two:
+  model_id: 1
+  name: MyText
+  description: MyText
+  title: MyText
+  type: 1
+  format: MyText
+  model: two
