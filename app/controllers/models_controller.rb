@@ -18,6 +18,7 @@ class ModelsController < ApplicationController
 		logger.info "ModelController: In create"
 		@model = Model.new (create_params)
 		@model.user_id = current_user.id
+		
 		if @model.save
 			redirect_to dataset_file_schemas_path
 		end

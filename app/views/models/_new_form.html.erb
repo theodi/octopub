@@ -1,20 +1,19 @@
-<div class="row">
-  <div class="col-sm-4">
-    <%= render "wizard_sidebar" %>
-  </div>
-	<div class="col-sm-8">
-		<div id="add-dataset-form-container">
-			<%= form_for @model, url: {action: "create"} do |f| %>
-				<div id="step-one">
-					<div class="form-group">
-						Name: <%= f.text_field :name, class: "form-control" %><br />
-					</div>
-					<div class="form-group">
-						Description: <%= f.text_field :description, class: "form-control" %><br />
-					</div>
-
-					<table class="table table-bordered table-condensed">
-						<thead>
+<div class="home-box-dashboard">
+	<div class="box-dataset">
+		<div class="row">
+			<%= bootstrap_form_for @model, method: :create do |f| %>
+			<div class="col-md-5 col-sm-5">
+				<%= f.text_field :name, placeholder: t(:'model.name'), class: "form-control" %><br />
+				<%= f.text_area :description, placeholder: t(:'model.description'), class: "form-control" %><br />
+			</div>
+		</div>
+	</div>
+	<div class="box-dataset">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
 							<th class="col-xs-2">Name</th>
 							<th class="col-xs-2">Type</th>
 							<th>Required?</th>
@@ -26,17 +25,32 @@
 							<th>Pattern</th>
 							<th>Date Pattern</th>
 							<th>Constraint Type</th>
-						</thead>
-						<%= f.fields_for :schema_fields do |schema_field_form| %>
-
-						<% end %>
-					</table>
-
-					<div class="form-group">
-						<%= f.submit 'Create', :class => "btn btn-primary btn-lg btn-block" %>
-					</div>
-
+						</tr>
+					</thead>
+					<%= f.fields_for :model_schema_fields do |model_schema_field_form| %>
+						<tbody>
+							<tr>
+								<td><%= model_schema_field_form.text_field :name,  hide_label: true %></td>
+								<td><%= model_schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %></td>
+								<%= model_schema_field_form.fields_for :model_schema_constraint do |model_schema_constraint_form| %>
+									<td><%= model_schema_field_form.check_box :required, hide_label: true %></td>
+									<td><%= model_schema_field_form.check_box :unique, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :min_length, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :max_length, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :minimum, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :maximum, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :pattern, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :date_pattern, hide_label: true %></td>
+									<td><%= model_schema_field_form.text_field :type, hide_label: true %></td>
+								<% end %>
+							</tr>
+						</tbody>
+					<% end %>
+				</table>
+				<div class="form-group pull-right">
+					<%= f.submit 'Create', :class => "btn btn-primary btn-lg btn-block" %>
 				</div>
+			</div>
 			<% end %>
 		</div>
 	</div>

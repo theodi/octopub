@@ -50,6 +50,15 @@ en:
       A detailed description of this particular file.
 
   #
+  # Model
+  #
+  model:
+    name: A descriptive name for this model
+    description: >
+      A detailed description of the model. Try including things like what the model
+      describes, what it means, and how it should be interpreted.
+
+  #
   # Validation Summary
   #
   valid_html: "<strong>Congratulations!</strong> Your CSV is valid!"
