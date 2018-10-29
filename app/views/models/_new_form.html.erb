@@ -2,6 +2,7 @@
 	<div class="box-dataset">
 		<div class="row">
 			<%= bootstrap_form_for @model, method: :create do |f| %>
+			<%= f.hidden_field :user_id, value: @user_id %>
 			<div class="col-md-5 col-sm-5">
 				<%= f.text_field :name, placeholder: t(:'model.name'), class: "form-control" %><br />
 				<%= f.text_area :description, placeholder: t(:'model.description'), class: "form-control" %><br />
