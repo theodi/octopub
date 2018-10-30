@@ -62,6 +62,8 @@ class DatasetFileSchemasController < ApplicationController
 
   def process_file
     file_reference = params["dataset_file_schema"]["url_in_s3"]
+		puts "FOOOO"
+		puts file_reference.nil?
     return if file_reference.nil?
 
     # Check to see whether it's a file rather than a URL

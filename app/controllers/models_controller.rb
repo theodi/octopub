@@ -13,17 +13,22 @@ class ModelsController < ApplicationController
 	def new
 		@model = Model.new
 		@user_id = current_user.id
+		@s3_direct_post = FileStorageService.presigned_post
 	end
 
 	def create
-		# PROCESS FILE HERE
 		logger.info "ModelController: In create"
+		process_model
 		@model = Model.new(create_params)
-		update_dataset_file_schema_with_json_schema(@model)
-		populate_schema_fields_and_constraints(@model)
+		# update_dataset_file_schema_with_json_schema(@model)
+		# populate_schema_fields_and_constraints(@model)
 
 		if @model.save
 			redirect_to dataset_file_schemas_path
+		else
+			@s3_direct_post = FileStorageService.presigned_post
+			@user_id = current_user.id
+			render :new
 		end
 	end
 
@@ -33,24 +38,31 @@ class ModelsController < ApplicationController
     params.require(:model).permit(:name, :description, :user_id)
   end
 
-	def update_dataset_file_schema_with_json_schema(model_schema)
-		Rails.logger.info ""
-		model_schema.update(schema: load_json_from_s3(dataset_file_schema.url_in_s3))
+	def process_model
+		model_reference = params["model"]["url_in_s3"]
+		puts "FOOOO"
+		puts model_reference.original_filename
+		return if model_reference.nil?
 	end
 
-	def populate_schema_fields_and_constraints(model_schema)
-    Rails.logger.info "in populate_schema_fields_and_constraints"
-    if model_schema.schema_fields.empty? && model_schema.schema.present?
-      Rails.logger.info "in populate_schema_fields_and_constraints - we have no fields and schema, so crack on"
-      model_schema.json_table_schema['fields'].each do |field|
-        Rails.logger.info "in populate_schema_fields_and_constraints #{field}"
-        unless field['constraints'].nil?
-          field['schema_constraint_attributes'] = field['constraints']
-          field.delete('constraints')
-        end
-        model_schema.schema_fields.create(field)
-      end
-    end
-  end
+	# def update_dataset_file_schema_with_json_schema(model_schema)
+	# 	Rails.logger.info ""
+	# 	model_schema.update(schema: load_json_from_s3(model_schema.url_in_s3))
+	# end
+	#
+	# def populate_schema_fields_and_constraints(model_schema)
+  #   Rails.logger.info "in populate_schema_fields_and_constraints"
+  #   if model_schema.schema_fields.empty? && model_schema.schema.present?
+  #     Rails.logger.info "in populate_schema_fields_and_constraints - we have no fields and schema, so crack on"
+  #     model_schema.json_table_schema['fields'].each do |field|
+  #       Rails.logger.info "in populate_schema_fields_and_constraints #{field}"
+  #       unless field['constraints'].nil?
+  #         field['schema_constraint_attributes'] = field['constraints']
+  #         field.delete('constraints')
+  #       end
+  #       model_schema.schema_fields.create(field)
+  #     end
+  #   end
+  # end
 
 end

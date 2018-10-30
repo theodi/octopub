@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181029155114) do
+ActiveRecord::Schema.define(version: 20181030131134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 20181029155114) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.json     "schema"
+    t.text     "url_in_s3"
     t.index ["user_id"], name: "index_models_on_user_id", using: :btree
   end
 
@@ -206,5 +207,4 @@ ActiveRecord::Schema.define(version: 20181029155114) do
 
   add_foreign_key "model_schema_constraints", "model_schema_fields"
   add_foreign_key "model_schema_fields", "models"
-  add_foreign_key "models", "users"
 end
