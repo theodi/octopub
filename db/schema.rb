@@ -206,4 +206,5 @@ ActiveRecord::Schema.define(version: 20181029155114) do
 
   add_foreign_key "model_schema_constraints", "model_schema_fields"
   add_foreign_key "model_schema_fields", "models"
+  add_foreign_key "models", "users"
 end
