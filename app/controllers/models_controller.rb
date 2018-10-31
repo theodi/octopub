@@ -13,7 +13,6 @@ class ModelsController < ApplicationController
 	def new
 		@model = Model.new
 		@user_id = current_user.id
-		@s3_direct_post = FileStorageService.presigned_post
 	end
 
 	def create
@@ -26,7 +25,6 @@ class ModelsController < ApplicationController
 		if @model.save
 			redirect_to dataset_file_schemas_path
 		else
-			@s3_direct_post = FileStorageService.presigned_post
 			@user_id = current_user.id
 			render :new
 		end
@@ -35,14 +33,17 @@ class ModelsController < ApplicationController
 	private
 
 	def create_params
-    params.require(:model).permit(:name, :description, :user_id)
+    params.require(:model).permit(:name, :description, :user_id, :model_schema_fields, :url_in_s3, :storage_key)
   end
 
 	def process_model
-		model_reference = params["model"]["url_in_s3"]
-		puts "FOOOO"
-		puts model_reference.original_filename
+		model_reference = params["model"]
 		return if model_reference.nil?
+
+		storage_object = FileStorageService.create_and_upload_public_object(model_reference["name"], model_reference["model_schema_fields"].to_s)
+
+		params["model"]["url_in_s3"] = storage_object.public_url
+		params["model"]["storage_key"] = storage_object.key
 	end
 
 	# def update_dataset_file_schema_with_json_schema(model_schema)
