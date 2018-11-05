@@ -33,16 +33,16 @@
 							<tr>
 								<td><%= model_schema_field_form.text_field :name,  hide_label: true %></td>
 								<td><%= model_schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %></td>
-								<%= model_schema_field_form.fields_for :model_schema_constraint do |model_schema_constraint_form| %>
-									<td><%= model_schema_field_form.check_box :required, hide_label: true %></td>
-									<td><%= model_schema_field_form.check_box :unique, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :min_length, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :max_length, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :minimum, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :maximum, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :pattern, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :date_pattern, hide_label: true %></td>
-									<td><%= model_schema_field_form.text_field :type, hide_label: true %></td>
+								<%= model_schema_field_form.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
+									<td><%= model_schema_constraint_form.check_box :required, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.check_box :unique, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :min_length, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :max_length, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :minimum, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :maximum, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :pattern, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :date_pattern, hide_label: true %></td>
+									<td><%= model_schema_constraint_form.text_field :type, hide_label: true %></td>
 								<% end %>
 							</tr>
 						</tbody>

@@ -16,4 +16,7 @@
 class ModelSchemaField < ApplicationRecord
   belongs_to :model
 	has_one :model_schema_constraint
+
+	accepts_nested_attributes_for :model_schema_constraint
+
 end

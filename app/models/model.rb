@@ -14,12 +14,10 @@
 
 class Model < ApplicationRecord
   belongs_to :user
-	has_many :model_schema_field
+	has_many :model_schema_fields
+
+	accepts_nested_attributes_for :model_schema_fields
 
 	validates_presence_of :user_id # Hidden field
-
-	def json_table_schema
-    @json_table_schema ||= JsonTableSchema::Schema.new(JSON.parse(schema))
-  end
 
 end
