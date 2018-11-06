@@ -31,29 +31,29 @@ class ModelsController < ApplicationController
 	private
 
 	def create_params
-		params.require(:model).permit(:name, :description, :user_id,
-			model_schema_fields_attributes: [:name,
-			model_schema_constraints: [:name, :type, :required, :unique, :min_length,
-				:max_length, :minimum, :maximum, :pattern, :date_pattern
-				]
-			]
-		)
+		params.require(:model).permit(:name, :description, :user_id, model_schema_fields_attributes: [:name])
 	end
 
-	# params.require(:model).permit(:name, :description, :user_id,
-	# 	model_schema_fields_attributes: [:name,
-	# 	model_schema_constraints: [:name, :type, :required, :unique, :min_length,
-	# 		:max_length, :minimum, :maximum, :pattern, :date_pattern
-	# 		]
-	# 	]
-	# )
+	def constraint_params
+		params.require(:model).permit!
+	end
 
 	def create_model_constraints(model)
 		model.model_schema_fields.map do |field|
-			constraint = ModelSchemaConstraint.new()
-			constraint.model_schema_field_id = field.id
-			constraint.save
+			constraints = constraint_params["model_schema_fields_attributes"]["0"]["model_schema_constraints"]
+			ModelSchemaConstraint.create({
+				model_schema_field_id: 		field.id,
+				required: 								constraints["required"],
+				unique: 									constraints["unique"],
+				min_length: 							constraints["min_length"],
+				max_length: 							constraints["max_length"],
+				minimum: 									constraints["minimum"],
+				maximum: 									constraints["maximum"],
+				pattern: 									constraints["pattern"],
+				date_pattern: 						constraints["date_pattern"],
+				type: 										constraints["type"]
+			})
 		end
 	end
-
+	
 end

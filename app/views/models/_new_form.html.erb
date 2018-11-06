@@ -6,6 +6,7 @@
 			<div class="col-md-5 col-sm-5">
 				<%= f.text_field :name, placeholder: t(:'model.name'), class: "form-control" %><br />
 				<%= f.text_area :description, placeholder: t(:'model.description'), class: "form-control" %><br />
+				<%= SchemaField.types %>
 			</div>
 		</div>
 	</div>

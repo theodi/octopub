@@ -16,5 +16,9 @@
 #
 
 class ModelSchemaConstraint < ApplicationRecord
+	
+	self.inheritance_column = nil
+
   belongs_to :model_schema_field
+
 end
