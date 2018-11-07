@@ -26,7 +26,7 @@
 
 			<div id="step-two" class="hidden">
 				<div class="form-group">
-					<label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
+					<label for="model[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
 
 					<div class="top-buffer">
 						<a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
@@ -38,7 +38,7 @@
 							<p class="subheading"><%= key %></p>
 							<% arr.each_with_index do |l, i| %>
 								<label class="large-radio">
-									<%= radio_button_tag 'dataset[license]', l[:id] %>
+									<%= radio_button_tag 'model[license]', l[:id] %>
 									<%= l[:name] %>
 									<span class="checkmark"></span>
 								</label>
@@ -47,11 +47,10 @@
 					</div>
 
 				</div>
-				<a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
+				<a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your field(s)</a>
 			</div>
 
 			<div id="step-three" class="hidden">
-				<p>fields & constraints</p>
 				<%= submit_tag "Create", class:"btn btn-primary btn-lg btn-block" %>
 			</div>
 

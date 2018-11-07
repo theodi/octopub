@@ -8,6 +8,7 @@
 #  schema            :json
 #  user_id           :integer
 #  owner						 :owner
+#  license					 :license
 #  url_in_s3				 :text
 #  storage_key       :string
 #  created_at        :datetime
