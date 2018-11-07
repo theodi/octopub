@@ -14,7 +14,7 @@ $(document).ready(function() {
 		rules: { // Validation rules (inputs are identified by name attribute)
 			'model[name]': { required: true },
 			'model[description]': { required: true },
-			'model[license]': { required: true },
+			'model[license]': { required: true }
 		},
 		onfocusout: function(element) {
 			this.element(element) // Validate elements on onfocusout

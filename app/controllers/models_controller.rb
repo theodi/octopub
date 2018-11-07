@@ -14,7 +14,7 @@ class ModelsController < ApplicationController
 
 	def new
 		@model = Model.new
-		@model.model_schema_fields.build
+		fields = @model.model_schema_fields.build
 		@user_id = current_user.id
 	end
 

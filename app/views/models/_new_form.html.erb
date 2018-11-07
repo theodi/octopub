@@ -48,37 +48,29 @@
 			</div>
 
 			<div id="step-three" class="hidden">
-				<%= form.fields_for :model_schema_fields do |model_schema_field_form| %>
-					<div class="form-group">
-						<label for="model_schema_fields[name]">Description</label>
-						<%= model_schema_field_form.text_field :description, placeholder: t(:'model.description'), :class => "form-control" %>
-					</div>
+				<%= form.fields_for :model_schema_fields do |builder| %>
 					<div class="form-group">
 						<label for="model_schema_fields[description]">Field name</label>
-						<%= model_schema_field_form.text_field :name, placeholder: t(:'model.description'), :class => "form-control" %>
+						<%= builder.text_field :name, placeholder: t(:'model_schema_field.name'), :class => "form-control" %>
+					</div>
+					<div class="form-group">
+						<label for="model_schema_fields[name]">Description</label>
+						<%= builder.text_area :description, placeholder: t(:'model_schema_field.description'), :class => "form-control" %>
 					</div>
 					<div class="form-group">
 						<label for="model_schema_fields[type]">Type</label>
-						<%= model_schema_field_form.select(:type, options_for_select(ModelSchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
+						<%= builder.select(:type, options_for_select(ModelSchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
 					</div>
-					<%= model_schema_field_form.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
-						<div class="form-group">
-							<label for="model_schema_fields[required]">Required</label>
-							<%= model_schema_constraint_form.check_box :required, hide_label: true %>
-						</div>
-						<div class="form-group">
-							<label for="model_schema_fields[unique]">Unique</label>
-							<%= model_schema_constraint_form.check_box :unique, hide_label: true %>
-						</div>
+					<%= builder.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
 						<b>Add Constraint</b>
 						<div style ="background-color:#D5D8DE; padding: 1em;">
 							<div class="form-group" >
 								<label>Value Constraint</label>
-								<%= model_schema_field_form.select(:type, options_for_select(ModelSchemaConstraint.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
+								<%= model_schema_constraint_form.select(:type, options_for_select(ModelSchemaConstraint.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
 							</div>
 							<div class="form-group" >
 								<label>Value Constraint Detail</label>
-								<%= model_schema_field_form.text_field :type, hide_label: true %>
+								<%= model_schema_constraint_form.text_area :type, hide_label: true %>
 							</div>
 						</div>
 						<div class="">
@@ -92,7 +84,6 @@
 							</table>
 						</div>
 						<a href="#" class="btn btn-secondary pull-right">Next: Add another constraint</a>
-
 					<% end %>
 				<% end %>
 				<%= submit_tag "Create", class:"btn btn-primary btn-lg btn-block" %>
