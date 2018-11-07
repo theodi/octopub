@@ -17,6 +17,7 @@
 						<tr>
 							<th class="col-xs-2">Name</th>
 							<th class="col-xs-2">Type</th>
+							<th>Description</th>
 							<th>Required?</th>
 							<th>Unique?</th>
 							<th>Min Length</th>
@@ -33,6 +34,7 @@
 							<tr>
 								<td><%= model_schema_field_form.text_field :name,  hide_label: true %></td>
 								<td><%= model_schema_field_form.select(:type, options_for_select(SchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %></td>
+								<td><%= model_schema_field_form.text_field :description, hide_label: true %></td>
 								<%= model_schema_field_form.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
 									<td><%= model_schema_constraint_form.check_box :required, hide_label: true %></td>
 									<td><%= model_schema_constraint_form.check_box :unique, hide_label: true %></td>
