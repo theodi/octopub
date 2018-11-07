@@ -31,7 +31,7 @@ class ModelsController < ApplicationController
 	private
 
 	def create_params
-		params.require(:model).permit(:name, :description, :user_id, model_schema_fields_attributes: [:name, :description, :type])
+		params.require(:model).permit(:name, :description, :user_id, :owner, model_schema_fields_attributes: [:name, :description, :type])
 	end
 
 	def constraint_params
