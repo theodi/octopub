@@ -7,29 +7,55 @@
 
 		<%= form_tag(url, method: method) do %>
 
-		<div id="step-one">
-			<%= hidden_field_tag "model[user_id]", value = user_id %>
-			<div class="form-group">
-				<label for="model[name]">Model name</label>
-				<%= text_field_tag "model[name]", model.name, placeholder: t(:'model.name'), class: "form-control" %>
+			<div id="step-one">
+				<%= hidden_field_tag "model[user_id]", value = user_id %>
+				<div class="form-group">
+					<label for="model[name]">Model name</label>
+					<%= text_field_tag "model[name]", model.name, placeholder: t(:'model.name'), class: "form-control" %>
+				</div>
+				<div class="form-group">
+					<label for="model[description]">Model description</label>
+					<%= text_area_tag "model[description]", model.description, placeholder: t(:'model.description'), class: "form-control" %>
+				</div>
+				<div class="form-group">
+					<label for="model[owner]">Organization?</label>
+					<%= select_tag "model[owner]", options_for_select(organization_select_options), { label: t(:'model.owner'), class: "form-control selectpicker show-tick" } %>
+				</div>
+				<a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
 			</div>
-			<div class="form-group">
-				<label for="model[description]">Model description</label>
-				<%= text_area_tag "model[description]", model.description, placeholder: t(:'model.description'), class: "form-control" %>
-			</div>
-			<div class="form-group">
-				<label for="model[owner]">Organization?</label>
-				<%= select_tag "model[owner]", options_for_select(organization_select_options), { label: t(:'model.owner'), class: "form-control selectpicker show-tick" } %>
-			</div>
-			<a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
-		</div>
 
-		<div id="step-two">
-			<div class="form-group pull-right">
-				<%= submit_tag "Create" %>
-				<% end %>
-			</div>
-		</div>
+			<div id="step-two" class="hidden">
+				<div class="form-group">
+					<label for="dataset[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
 
+					<div class="top-buffer">
+						<a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
+						<%= render "license_wizard" %>
+					</div>
+
+					<div class="license-selector top-buffer">
+						<% licenses.each do |key, arr| %>
+							<p class="subheading"><%= key %></p>
+							<% arr.each_with_index do |l, i| %>
+								<label class="large-radio">
+									<%= radio_button_tag 'dataset[license]', l[:id] %>
+									<%= l[:name] %>
+									<span class="checkmark"></span>
+								</label>
+							<% end %>
+						<% end %>
+					</div>
+
+				</div>
+				<a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your file(s)</a>
+			</div>
+
+			<div id="step-three" class="hidden">
+				<p>fields & constraints</p>
+				<%= submit_tag "Create", class:"btn btn-primary btn-lg btn-block" %>
+			</div>
+
+
+		<% end %>
 	</div>
 </div>

@@ -1,6 +1,7 @@
 <%= render 'new_form',
 	url: models_path,
 	model: @model,
+	licenses: @licenses,
 	user_id: @user_id,
   method: :post %>
 <%= javascript_include_tag 'model_create' %>

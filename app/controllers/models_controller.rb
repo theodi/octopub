@@ -1,5 +1,7 @@
 class ModelsController < ApplicationController
 
+	before_action :set_licenses, only: [:create, :new, :edit, :update]
+
 	def index
 		redirect_to :controller => 'dataset_file_schemas', :action => 'index'
 	end
