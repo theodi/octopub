@@ -53,10 +53,11 @@ en:
   # Model
   #
   model:
-    name: A descriptive name for this model
+    name: A descriptive name for this field
     description: >
-      A detailed description of the model. Try including things like what the model
-      describes, what it means, and how it should be interpreted.
+      A detailed desription of the field. Try including things like how the field
+      should be interpreted and helpful guidance for the data it contains such as
+      any constraints.
 
   #
   # Validation Summary
