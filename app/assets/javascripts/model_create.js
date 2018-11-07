@@ -3,8 +3,23 @@
 $(document).ready(function() {
 
 	var s = {
+		$form                         : $('form'),
 		$wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled'
 	}
+
+	// ###################################### Validation Code ######################################
+
+	// Initialise Jquery Validate on form
+	var validator = s.$form.validate({
+		rules: { // Validation rules (inputs are identified by name attribute)
+			'model[name]': { required: true },
+			'model[description]': { required: true },
+			'model[license]': { required: true },
+		},
+		onfocusout: function(element) {
+			this.element(element) // Validate elements on onfocusout
+		}
+	})
 
 	var formSteps = ['step-one', 'step-two', 'step-three']
   var currentStep = formSteps[0]
@@ -24,6 +39,10 @@ $(document).ready(function() {
 			e.preventDefault()
 		})
 	})
+
+	function hideStepDescription(step) {
+		getWizardSidebarStep(step).find('.wizard-sidebar-step-description').hide()
+	}
 
 	// Get the steps that require validation inbetween currentStep and targetStep
 	// Accepts string e.g. 'step-three'
@@ -75,6 +94,12 @@ $(document).ready(function() {
 		getWizardSidebarStep(step)
 			.removeClass(s.$wizardSidebarStepClasses)
 			.addClass('wizard-sidebar-step-inactive')
+	}
+
+	function activateSidebarStep(step) {
+		getWizardSidebarStep(step)
+			.removeClass(s.$wizardSidebarStepClasses)
+			.addClass('wizard-sidebar-step-active')
 	}
 
 	function getWizardSidebarStep(step) {

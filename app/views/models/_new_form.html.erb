@@ -5,55 +5,98 @@
 
 	<div class="col-sm-5 col-md-offset-1">
 
-		<%= form_tag(url, method: method) do %>
+		<%= form_for(@model) do |form| %>
 
 			<div id="step-one">
-				<%= hidden_field_tag "model[user_id]", value = user_id %>
+				<%= form.hidden_field :user_id, :value => user_id %>
 				<div class="form-group">
 					<label for="model[name]">Model name</label>
-					<%= text_field_tag "model[name]", model.name, placeholder: t(:'model.name'), class: "form-control" %>
+					<%= form.text_field :name, placeholder: t(:'model.name'), :class => "form-control" %>
 				</div>
 				<div class="form-group">
 					<label for="model[description]">Model description</label>
-					<%= text_area_tag "model[description]", model.description, placeholder: t(:'model.description'), class: "form-control" %>
+					<%= form.text_area :description, placeholder: t(:'model.description'), :class => "form-control" %>
 				</div>
 				<div class="form-group">
 					<label for="model[owner]">Organization?</label>
-					<%= select_tag "model[owner]", options_for_select(organization_select_options), { label: t(:'model.owner'), class: "form-control selectpicker show-tick" } %>
+					<%= select_tag "model[owner]", options_for_select(organization_select_options), { label: t(:'model.owner'), :class => "form-control selectpicker show-tick" } %>
 				</div>
 				<a href="#" class="show-step-two btn btn-secondary pull-right">Next: Add a licence</a>
 			</div>
 
 			<div id="step-two" class="hidden">
 				<div class="form-group">
-					<label for="model[frequency]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
-
+					<label for="model[license]">Licence<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A licence is an essential requirement for sharing your data openly. It tells people how the data can be accessed, used and shared"></i></label>
 					<div class="top-buffer">
 						<a href="/getting-started" class="btn btn-tertiary" target="_blank">Why do I need a licence?</a>
 						<%= render "license_wizard" %>
 					</div>
-
 					<div class="license-selector top-buffer">
 						<% licenses.each do |key, arr| %>
 							<p class="subheading"><%= key %></p>
 							<% arr.each_with_index do |l, i| %>
 								<label class="large-radio">
-									<%= radio_button_tag 'model[license]', l[:id] %>
+									<%= form.radio_button :license, l[:id] %>
 									<%= l[:name] %>
 									<span class="checkmark"></span>
 								</label>
 							<% end %>
 						<% end %>
 					</div>
-
 				</div>
 				<a href="#" class="show-step-three btn btn-secondary pull-right">Next: Add your field(s)</a>
 			</div>
 
 			<div id="step-three" class="hidden">
+				<%= form.fields_for :model_schema_fields do |model_schema_field_form| %>
+					<div class="form-group">
+						<label for="model_schema_fields[name]">Description</label>
+						<%= model_schema_field_form.text_field :description, placeholder: t(:'model.description'), :class => "form-control" %>
+					</div>
+					<div class="form-group">
+						<label for="model_schema_fields[description]">Field name</label>
+						<%= model_schema_field_form.text_field :name, placeholder: t(:'model.description'), :class => "form-control" %>
+					</div>
+					<div class="form-group">
+						<label for="model_schema_fields[type]">Type</label>
+						<%= model_schema_field_form.select(:type, options_for_select(ModelSchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
+					</div>
+					<%= model_schema_field_form.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
+						<div class="form-group">
+							<label for="model_schema_fields[required]">Required</label>
+							<%= model_schema_constraint_form.check_box :required, hide_label: true %>
+						</div>
+						<div class="form-group">
+							<label for="model_schema_fields[unique]">Unique</label>
+							<%= model_schema_constraint_form.check_box :unique, hide_label: true %>
+						</div>
+						<b>Add Constraint</b>
+						<div style ="background-color:#D5D8DE; padding: 1em;">
+							<div class="form-group" >
+								<label>Value Constraint</label>
+								<%= model_schema_field_form.select(:type, options_for_select(ModelSchemaConstraint.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
+							</div>
+							<div class="form-group" >
+								<label>Value Constraint Detail</label>
+								<%= model_schema_field_form.text_field :type, hide_label: true %>
+							</div>
+						</div>
+						<div class="">
+							<b>Saved Constraints</b>
+							<table class="table table-bordered table-condensed">
+								<tbody>
+									<tr>
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<a href="#" class="btn btn-secondary pull-right">Next: Add another constraint</a>
+
+					<% end %>
+				<% end %>
 				<%= submit_tag "Create", class:"btn btn-primary btn-lg btn-block" %>
 			</div>
-
 
 		<% end %>
 	</div>
