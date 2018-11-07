@@ -16,10 +16,14 @@
 class ModelSchemaField < ApplicationRecord
 
 	self.inheritance_column = nil
-	
+
   belongs_to :model
 	has_one :model_schema_constraint
 
 	accepts_nested_attributes_for :model_schema_constraint
+
+	def constraint_string(constraint)
+		constraint
+	end
 
 end

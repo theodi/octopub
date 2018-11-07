@@ -25,6 +25,7 @@
 						<td><%= model_field.type %></td>
 						<td><%= model_field.model_schema_constraint.required %></td>
 						<td><%= model_field.model_schema_constraint.unique %></td>
+						<td><%= model_field.constraint_string(model_field.model_schema_constraint) %></td>
 					</tr>
 					<% end %>
 				</tbody>
