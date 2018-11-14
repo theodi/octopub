@@ -1,0 +1,12 @@
+<div class="constraint-input-group">
+	<div style ="background-color:#D5D8DE; padding: 1em; margin-bottom: 1em;">
+		<div class="form-group" >
+			<label for="model_schema_constraints[][name]">Value Constraint</label>
+			<%= select_tag(:type, options_for_select(ModelSchemaConstraint.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), :class => "form-control" ) %>
+		</div>
+		<div class="form-group" >
+			<label for="model_schema_constraints[][type]">Value Constraint Detail</label>
+			<%= text_field_tag "model_schema_constraints[][type]", model_schema_constraint.type, :class => "form-control" %>
+		</div>
+	</div>
+</div>

@@ -3,8 +3,83 @@
 $(document).ready(function() {
 
 	var s = {
-		$form                         : $('form'),
-		$wizardSidebarStepClasses     : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled'
+		$form                         		 : $('form'),
+		$wizardSidebarStepClasses     		 : 'wizard-sidebar-step-active wizard-sidebar-step-inactive wizard-sidebar-step-disabled',
+		$currentVisibleModelFieldGroup 		 : $('div.model-input-group:nth-child(2)'),
+		$modelFieldInputGroup              : $('div.model-input-group:first').clone(),
+		$newModelFieldInputGroup           : null,
+		$currentVisibleConstraintGroup 		 : $('div.constraint-input-group:nth-child(2)'),
+		$constraintInputGroup         		 : $('div.constraint-input-group:first').clone(),
+		$newConstraintInputGroup           : null
+	}
+
+	init()
+
+	function init() {
+		bindEvents()
+	}
+
+	function bindEvents() {
+		bindAddModelFieldEvent()
+		bindAddConstraintEvent()
+	}
+
+	function newModelFieldInputGroup() {
+		var newModelFieldInputGroup = $(s.$modelFieldInputGroup).clone()
+		// Iterate over the inputs of the file input group
+		newModelFieldInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+			if (this.id) {
+				// Make input id's unique so Jquery Validate works correctly
+				this.id = this.id + new Date().getTime()
+			}
+		})
+		return newModelFieldInputGroup
+	}
+
+	function bindAddModelFieldEvent() {
+		$('#clone').click(function(e) {
+			e.preventDefault()
+			// Only add new file inputs if the current form is valid
+			if (s.$form.valid()) {
+				// Create new file input group
+				s.$newModelFieldInputGroup = newModelFieldInputGroup()
+				// Append new file input group to DOM
+				s.$newModelFieldInputGroup.appendTo('#model_fields').hide().fadeIn()
+				// Hide other file input groups
+				s.$newModelFieldInputGroup.siblings().hide()
+				// Update the current visible input group
+				s.$currentVisibleModelFieldGroup = s.$newModelFieldInputGroup
+			}
+		})
+	}
+
+	function newConstraintFieldInputGroup() {
+		var newConstraintInputGroup = $(s.$constraintInputGroup).clone()
+		// Iterate over the inputs of the file input group
+		newConstraintInputGroup.find(':input').not(':button').not("[aria-label='Search']").each(function() {
+			if (this.id) {
+				// Make input id's unique so Jquery Validate works correctly
+				this.id = this.id + new Date().getTime()
+			}
+		})
+		return newConstraintInputGroup
+	}
+
+	function bindAddConstraintEvent() {
+		$('#clone-constraint').click(function(e) {
+			e.preventDefault()
+			// Only add new file inputs if the current form is valid
+			if (s.$form.valid()) {
+				// Create new file input group
+				s.$newConstraintInputGroup = newConstraintFieldInputGroup()
+				// Append new file input group to DOM
+				s.$newConstraintInputGroup.appendTo('#constraint_fields').hide().fadeIn()
+				// Hide other file input groups
+				s.$newConstraintInputGroup.siblings().hide()
+				// Update the current visible input group
+				s.$currentVisibleConstraintGroup = s.$newConstraintInputGroup
+			}
+		})
 	}
 
 	// ###################################### Validation Code ######################################
@@ -14,7 +89,10 @@ $(document).ready(function() {
 		rules: { // Validation rules (inputs are identified by name attribute)
 			'model[name]': { required: true },
 			'model[description]': { required: true },
-			'model[license]': { required: true }
+			'model[license]': { required: true },
+			'model_schema_fields[][name]': { required: true },
+			'model_schema_fields[][description]': { required: true },
+			'model_schema_fields[][type]': { required: true }
 		},
 		onfocusout: function(element) {
 			this.element(element) // Validate elements on onfocusout

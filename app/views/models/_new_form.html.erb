@@ -48,45 +48,22 @@
 			</div>
 
 			<div id="step-three" class="hidden">
-				<%= form.fields_for :model_schema_fields do |builder| %>
-					<div class="form-group">
-						<label for="model_schema_fields[description]">Field name</label>
-						<%= builder.text_field :name, placeholder: t(:'model_schema_field.name'), :class => "form-control" %>
-					</div>
-					<div class="form-group">
-						<label for="model_schema_fields[name]">Description</label>
-						<%= builder.text_area :description, placeholder: t(:'model_schema_field.description'), :class => "form-control" %>
-					</div>
-					<div class="form-group">
-						<label for="model_schema_fields[type]">Type</label>
-						<%= builder.select(:type, options_for_select(ModelSchemaField.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
-					</div>
-					<%= builder.fields_for :model_schema_constraints do |model_schema_constraint_form| %>
-						<b>Add Constraint</b>
-						<div style ="background-color:#D5D8DE; padding: 1em;">
-							<div class="form-group" >
-								<label>Value Constraint</label>
-								<%= model_schema_constraint_form.select(:type, options_for_select(ModelSchemaConstraint.types.map {|type_name, type_integer| [type_name.titleize, type_name]}), { hide_label: true }, { class: 'form-control' } ) %>
-							</div>
-							<div class="form-group" >
-								<label>Value Constraint Detail</label>
-								<%= model_schema_constraint_form.text_area :type, hide_label: true %>
-							</div>
-						</div>
-						<div class="">
-							<b>Saved Constraints</b>
-							<table class="table table-bordered table-condensed">
-								<tbody>
-									<tr>
-										<td></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<a href="#" class="btn btn-secondary pull-right">Next: Add another constraint</a>
+				<div id="model_fields">
+					<% if @model.model_schema_fields.count == 0 %>
+						<!-- render blank form inputs for adding new model -->
+						<%= render partial: "model_schema_fields/new_form", locals: { model_schema_field: ModelSchemaField.new } %>
+					<% else %>
+						<% @model.model_schema_fields.each_with_index do |model_schema_field, i| %>
+							<!-- render the existing model -->
+							<%= render partial: "model_schema_fields/new_form", locals: { model_schema_field: model_schema_field, i: i } %>
+						<% end %>
 					<% end %>
-				<% end %>
-				<%= submit_tag "Create", class:"btn btn-primary btn-lg btn-block" %>
+				</div>
+				<div class="form-group">
+					<button id="clone-constraint" class="btn btn-secondary">Add another field constraint</button>
+					<button id="clone" class="btn btn-secondary">Add another schema field</button>
+				</div>
+				<%= submit_tag "Create Model", class:"btn btn-primary btn-lg btn-block" %>
 			</div>
 
 		<% end %>

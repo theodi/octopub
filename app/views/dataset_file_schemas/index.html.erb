@@ -48,7 +48,7 @@
 </div>
 <div>
   <% if @models.any? %>
-    <%= render partial: 'model_table', locals: { models: @models } %>
+    <%= render partial: 'models/model_table', locals: { models: @models } %>
   <% else %>
     <p class='text-center lead'>You currently have no models, why not <%= link_to 'create one', new_model_path %>?</p>
   <% end %>

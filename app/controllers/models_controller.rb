@@ -14,13 +14,13 @@ class ModelsController < ApplicationController
 
 	def new
 		@model = Model.new
-		fields = @model.model_schema_fields.build
+		@model.model_schema_fields.build
 		@user_id = current_user.id
 	end
 
 	def create
 		@model = Model.create(create_params)
-		create_model_constraints(@model)
+		create_constraints(@model)
 
 		if @model.save
 			redirect_to dataset_file_schemas_path
@@ -33,17 +33,17 @@ class ModelsController < ApplicationController
 	private
 
 	def create_params
-		params.require(:model).permit(:name, :description, :user_id, :owner, :license, model_schema_fields_attributes: [:name, :description, :type])
+		params.require(:model).permit(:name, :description, :user_id, :owner, :license, model_schema_fields: [:name, :description, :type])
 	end
 
 	def constraint_params
 		params.require(:model).permit!
 	end
 
-	def create_model_constraints(model)
+	def create_constraints(model)
 		model.model_schema_fields.map do |field|
 			constraints = constraint_params["model_schema_fields_attributes"]["0"]["model_schema_constraints"]
-			ModelSchemaConstraint.create({
+			ModelSchemaField.create({
 				model_schema_field_id: 		field.id,
 				required: 								constraints["required"],
 				unique: 									constraints["unique"],

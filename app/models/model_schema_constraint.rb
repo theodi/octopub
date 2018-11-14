@@ -21,6 +21,6 @@ class ModelSchemaConstraint < ApplicationRecord
 
   belongs_to :model_schema_field
 
-	enum type: [:required, :unique, :min_length, :max_length, :minimum_value, :maximum_value, :multiple_of, :pattern, :one_of ]
+	enum type: [:required, :unique, :min_length, :max_length, :minimum_value, :maximum_value, :multiple_of, :pattern, :one_of]
 
 end
