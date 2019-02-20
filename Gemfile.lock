@@ -117,7 +117,7 @@ GEM
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bootstrap-select-rails (1.12.1)
-    bootstrap-table-rails (1.11.1.1)
+    bootstrap-table-rails (1.13.4)
     bootstrap_form (2.7.0)
     buftok (0.2.0)
     builder (3.2.3)
