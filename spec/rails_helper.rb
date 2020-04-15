@@ -134,7 +134,7 @@ def normalise_schema(schema)
   normalised = schema
   if schema.instance_of?(Hash) && schema.key?("fields")
     normalised = schema['fields']
-  elsif schema.instance_of?(JsonTableSchema::Schema)
+  elsif schema.instance_of?(TableSchema::Schema)
     normalised = schema.fields
   end
   normalised.sort_by { |k| k["name"] }

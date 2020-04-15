@@ -11,7 +11,7 @@ class DatasetFileSchemasController < ApplicationController
     @dataset_file_schema = DatasetFileSchema.find(params[:id])
     if @dataset_file_schema.schema
       json = JSON.parse(@dataset_file_schema.schema)
-      @json_table_schema = JsonTableSchema::Schema.new(json)
+      @json_table_schema = TableSchema::Schema.new(json)
     end
   end
 
@@ -37,7 +37,7 @@ class DatasetFileSchemasController < ApplicationController
   def edit
     json = JSON.parse(@dataset_file_schema.schema)
     @dataset_file_schema = create_empty_constraints_for_edit(@dataset_file_schema)
-    @json_table_schema = JsonTableSchema::Schema.new(json)
+    @json_table_schema = TableSchema::Schema.new(json)
   end
 
   def update

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.4.2"
+ruby "2.5.0"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.3'
@@ -24,7 +24,7 @@ gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails
 gem 'csvlint', '~> 0.4'
 
 # New way of validating schemas
-gem 'jsontableschema', git: 'https://github.com/Floppy/jsontableschema-rb', branch: 'infer-with-empty-cells'
+gem 'tableschema', '0.3.0'
 
 # User related
 gem 'omniauth-github'
