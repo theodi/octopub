@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :datasets
   has_many :dataset_file_schemas
   has_many :output_schemas
+	has_many :models
 
   has_and_belongs_to_many :allocated_dataset_file_schemas, class_name: 'DatasetFileSchema', join_table: :allocated_dataset_file_schemas_users
 
@@ -34,7 +35,7 @@ class User < ApplicationRecord
   def self.refresh_datasets id, channel_id = nil
     user = User.find id
     user.send(:get_user_repos)
-    # This gets called when you click "Refresh datasets" on the "My Datasets" page. 
+    # This gets called when you click "Refresh datasets" on the "My Datasets" page.
     # See app/assets/javascripts/dashboard.js
     Pusher[channel_id].trigger("refreshed", {}) if channel_id
   end
@@ -49,7 +50,7 @@ class User < ApplicationRecord
     )
     user
   end
-  
+
   def initialize(options = {})
     if ENV['DEFAULT_ROLE']
       options[:role] ||= ENV['DEFAULT_ROLE'].try(:to_sym)
@@ -113,7 +114,7 @@ class User < ApplicationRecord
     end
 
     def user_repos
-      # Loop through user's github repos. If a dataset is found which matches the github repo name, 
+      # Loop through user's github repos. If a dataset is found which matches the github repo name,
       # add the id of the dataset to an array.
       octokit_client.auto_paginate = true
       repos = octokit_client.repos.map do |r|

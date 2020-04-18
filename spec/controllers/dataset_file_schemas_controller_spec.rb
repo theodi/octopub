@@ -64,6 +64,21 @@ describe DatasetFileSchemasController, type: :controller do
       get 'index'
       expect(assigns(:dataset_file_schemas).count).to eq(2)
     end
+
+		it "gets the right number of models" do
+			sign_in @user
+			2.times { |i| create(:model, user: @user)}
+			get 'index'
+			expect(assigns(:models).count).to eq(2)
+		end
+
+		it 'gets the right number of models and not someone elses' do
+			sign_in @user
+			2.times { |i| create(:model, user: @user)}
+			create(:model, user: @other_user)
+			get 'index'
+			expect(assigns(:models).count).to eq(2)
+		end
   end
 
   describe 'show' do
@@ -295,7 +310,7 @@ describe DatasetFileSchemasController, type: :controller do
       expect(response).to render_template("new")
     end
   end
-  
+
   it "handles date patterns" do
     user = create(:user)
     url = url_with_stubbed_get_for(File.join(Rails.root, 'spec', 'fixtures', 'schemas/date-pattern.json'))
@@ -306,9 +321,9 @@ describe DatasetFileSchemasController, type: :controller do
     }
     expect(response).to redirect_to("http://test.host/dataset_file_schemas")
   end
-  
+
   context 'public schemas' do
-  
+
     it 'can be created' do
 
       schema_name = 'schema-name'
@@ -316,8 +331,8 @@ describe DatasetFileSchemasController, type: :controller do
 
       post :create, params: {
         dataset_file_schema: {
-          name: schema_name, description: description, 
-          user_id: @user.id, url_in_s3: @good_schema_url, 
+          name: schema_name, description: description,
+          user_id: @user.id, url_in_s3: @good_schema_url,
           owner_username: @user.name,
           restricted: false
         }
@@ -330,20 +345,20 @@ describe DatasetFileSchemasController, type: :controller do
       expect(dataset_file_schema.user).to eq @user
       expect(dataset_file_schema.restricted).to eq false
     end
-  
-    it "can be switch from public to private and vice versa" do      
+
+    it "can be switch from public to private and vice versa" do
       expect(FileStorageService).to receive(:push_public_object).twice
       schema = create :dataset_file_schema, user_id: @user.id, owner_username: @user.name
-      expect(schema.restricted).to eq true      
+      expect(schema.restricted).to eq true
       post :update, params: { id: schema.id, dataset_file_schema: {  restricted: false }}
       schema.reload
-      expect(schema.reload.restricted).to eq false   
+      expect(schema.reload.restricted).to eq false
       post :update, params: { id: schema.id, dataset_file_schema: {  restricted: true }}
       schema.reload
-      expect(schema.restricted).to eq true   
+      expect(schema.restricted).to eq true
     end
-  
+
   end
 
-  
+
 end

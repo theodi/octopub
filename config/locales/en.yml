@@ -50,6 +50,22 @@ en:
       A detailed description of this particular file.
 
   #
+  # Model
+  #
+  model:
+    name: A descriptive name for this field
+    description: >
+      A detailed desription of the field. Try including things like how the field
+      should be interpreted and helpful guidance for the data it contains such as
+      any constraints.
+  model_schema_field:
+    name: A descriptive name for this field
+    description: >
+      A detailed description of the field. Try including things like how the field
+      should be interpreted and helpful guidance for the data it contains such as
+      any constraints.
+
+  #
   # Validation Summary
   #
   valid_html: "<strong>Congratulations!</strong> Your CSV is valid!"

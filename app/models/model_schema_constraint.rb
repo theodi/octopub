@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: model_schema_constraint
+#
+#  id                			:integer          not null, primary key
+#  description						:text
+#  model_schema_field_id  :integer
+#  required        				:boolean
+#  unique          				:boolean
+#  min_length      				:integer
+#  max_length      				:integer
+#  minimum         				:text
+#  maximum         				:text
+#  pattern         				:text
+#  type            				:text
+#
+
+class ModelSchemaConstraint < ApplicationRecord
+
+	self.inheritance_column = nil
+
+  belongs_to :model_schema_field
+
+	enum type: [:required, :unique, :min_length, :max_length, :minimum_value, :maximum_value, :multiple_of, :pattern, :one_of]
+
+end

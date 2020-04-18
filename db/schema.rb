@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180710110526) do
+ActiveRecord::Schema.define(version: 20181107144113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,49 @@ ActiveRecord::Schema.define(version: 20180710110526) do
   create_table "errors", force: :cascade do |t|
     t.string "job_id",   null: false
     t.json   "messages"
+  end
+
+  create_table "model_schema_constraints", force: :cascade do |t|
+    t.text     "description"
+    t.boolean  "required"
+    t.boolean  "unique"
+    t.integer  "min_length"
+    t.integer  "max_length"
+    t.text     "minimum"
+    t.text     "maximum"
+    t.text     "pattern"
+    t.text     "type"
+    t.string   "date_pattern"
+    t.integer  "model_schema_field_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.index ["model_schema_field_id"], name: "index_model_schema_constraints_on_model_schema_field_id", using: :btree
+  end
+
+  create_table "model_schema_fields", force: :cascade do |t|
+    t.integer  "model_id"
+    t.text     "name"
+    t.text     "description"
+    t.text     "title"
+    t.integer  "type"
+    t.text     "format"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["model_id"], name: "index_model_schema_fields_on_model_id", using: :btree
+  end
+
+  create_table "models", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.json     "schema"
+    t.text     "url_in_s3"
+    t.string   "storage_key"
+    t.string   "owner"
+    t.string   "license"
+    t.index ["user_id"], name: "index_models_on_user_id", using: :btree
   end
 
   create_table "output_schema_fields", force: :cascade do |t|
@@ -164,4 +207,6 @@ ActiveRecord::Schema.define(version: 20180710110526) do
     t.boolean  "restricted",      default: false
   end
 
+  add_foreign_key "model_schema_constraints", "model_schema_fields"
+  add_foreign_key "model_schema_fields", "models"
 end

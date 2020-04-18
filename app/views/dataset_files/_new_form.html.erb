@@ -27,7 +27,6 @@
         <%= file_field_tag "[files[][file]]" %>
       </div>
     <% end %>
-
     <%= hidden_field_tag "files[][id]", file.id, id: "_files[][id]" if file.id %>
   </fieldset>
   <% if @dataset_file_schemas.any? %>
