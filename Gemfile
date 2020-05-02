@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.5.0"
+ruby "2.6.5"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.3'
@@ -31,16 +31,17 @@ gem 'omniauth-github'
 gem 'cancancan', '~> 2.1'
 
 # Bootstrap and view stuff
-gem 'bootstrap-sass', '~> 3.2.0'
+gem 'bootstrap-sass', '~> 3.2.0.4'
 gem 'font-awesome-sass'
 gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
-gem 'bootstrap_form'
-gem "bootstrap-table-rails"
+gem 'bootstrap_form', '~> 2.7'
+gem 'bootstrap-table-rails', '1.12.1'
 gem 'emd'
 gem 'jquery-validation-rails'
 gem 'leaflet-rails'
+gem 'sprockets', '~>3.0'
 
 # Logging and debug
 gem 'awesome_print'
