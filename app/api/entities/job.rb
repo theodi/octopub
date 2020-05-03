@@ -4,7 +4,7 @@ module Octopub
       include GrapeRouteHelpers::NamedRouteMatcher
 
       expose :job_url do |job|
-        api_jobs_path(id: job)
+        jobs_path(id: job)
       end
     end
   end

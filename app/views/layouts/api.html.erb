@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Octopub</title>
+    <%= stylesheet_link_tag 'swagger-ui.css', media: 'all' %>
+    <%= javascript_include_tag 'swagger-ui-bundle.js' %>
+    <%= csrf_meta_tags %>
+    <%= alternate_auto_discovery_link_tags %>
+
+    <%= yield :head %>
+  </head>
+  <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
+    <%= yield %>
+  </body>
+</html>

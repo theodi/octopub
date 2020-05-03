@@ -19,7 +19,6 @@ gem 'jbuilder', '~> 2.7'
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
 gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rails.git'
-gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
 gem 'csvlint', '~> 0.4'
 
@@ -47,11 +46,10 @@ gem 'sprockets', '~>3.0'
 gem 'awesome_print'
 
 # API functionality
-gem 'grape', '1.1.0'
+gem 'grape'
 gem 'grape-route-helpers'
-# There are breaking changes in 0.26.1 so freeze here for now
-gem 'grape-swagger', '0.26.0'
-gem 'grape-swagger-entity', '0.2.1'
+gem 'grape-swagger'
+gem 'grape-swagger-entity'
 
 # Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'

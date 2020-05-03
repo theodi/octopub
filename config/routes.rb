@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
-
   root 'application#index', :as => :root
-
-  get '/api-docs' => 'application#api'#, :as => :api
 
   get "/auth/:provider/callback" => "sessions#create", :as => :callback
   get "/signout" => "sessions#destroy", :as => :signout
@@ -49,7 +46,6 @@ Rails.application.routes.draw do
 	get "/privacy-policy" => "application#privacy_policy", as: :privacy_policy
   get "/getting-started" => "application#getting-started"
 
-  mount API => '/'
-  mount GrapeSwaggerRails::Engine => '/api'
-
+  mount API::Root => '/api'
+  get '/api' => 'application#api'
 end
