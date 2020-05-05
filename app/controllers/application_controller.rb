@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   def api
     url = (Rails.env.production? ? 'https://' : request.protocol) + request.host_with_port + '/api/swagger_doc'
     api_key = current_user ? current_user.api_key : ''
-    render layout: 'api', locals: { url: url, api_key: api_key }
+    render 'api', locals: { url: url, api_key: api_key }
   end
 
   def getting_started
