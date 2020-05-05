@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.5.0"
+ruby "2.6.5"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.3'
@@ -19,7 +19,6 @@ gem 'jbuilder', '~> 2.7'
 gem 'csv2json', git: 'https://github.com/theodi/csv2json.git'
 gem 'csv2rest', git: 'https://github.com/theodi/csv2rest.git'
 gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rails.git'
-gem 'grape-swagger-rails', git: 'https://github.com/pezholio/grape-swagger-rails.git', branch: 'change-layout-test-branch'
 
 gem 'csvlint', '~> 0.4'
 
@@ -31,26 +30,26 @@ gem 'omniauth-github'
 gem 'cancancan', '~> 2.1'
 
 # Bootstrap and view stuff
-gem 'bootstrap-sass', '~> 3.2.0'
+gem 'bootstrap-sass', '~> 3.2.0.4'
 gem 'font-awesome-sass'
 gem 'autoprefixer-rails'
 gem 'rails-bootstrap-helpers'
 gem 'bootstrap-select-rails'
-gem 'bootstrap_form'
-gem "bootstrap-table-rails"
+gem 'bootstrap_form', '~> 2.7'
+gem 'bootstrap-table-rails', '1.12.1'
 gem 'emd'
 gem 'jquery-validation-rails'
 gem 'leaflet-rails'
+gem 'sprockets', '~>3.0'
 
 # Logging and debug
 gem 'awesome_print'
 
 # API functionality
-gem 'grape', '1.1.0'
+gem 'grape'
 gem 'grape-route-helpers'
-# There are breaking changes in 0.26.1 so freeze here for now
-gem 'grape-swagger', '0.26.0'
-gem 'grape-swagger-entity', '0.2.1'
+gem 'grape-swagger'
+gem 'grape-swagger-entity'
 
 # Markdown processing, rendering & syntax highlighting
 gem 'redcarpet'

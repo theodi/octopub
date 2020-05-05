@@ -8,4 +8,10 @@ Rails.application.config.assets.version = '1.0'
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-Rails.application.config.assets.precompile += %w( edit_dataset_page.js file_upload.js license_wizard.js )
+Rails.application.config.assets.precompile += %w(
+  edit_dataset_page.js
+  file_upload.js
+  license_wizard.js
+  swagger-ui.css
+  swagger-ui-bundle.js
+)

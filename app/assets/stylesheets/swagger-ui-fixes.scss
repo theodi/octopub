@@ -1,0 +1,41 @@
+// Some Swagger UI styles (vendor/assets/stylesheets/swagger-ui.css)
+// are broken by the application styles, so they are fixed here.
+
+#swagger-ui {
+  .swagger-ui .info .title {
+    font-weight: 700;
+  }
+  .swagger-ui .info .title small pre {
+    font-weight: 700;
+    padding: 0;
+    line-height: 1;
+    background-color: inherit;
+    border: none;
+    border-radius: 0;
+  }
+  .swagger-ui .info .base-url {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1;
+    color:  #3b4151;
+    background-color: inherit;
+    border: none;
+    border-radius: 0;
+  }
+  .swagger-ui .scheme-container {
+    padding: 0;
+    background: inherit;
+    box-shadow: none;
+  }
+  .swagger-ui .responses-inner h4, .swagger-ui .responses-inner h5 {
+    font-weight: 700;
+  }
+  .swagger-ui .opblock .opblock-section-header > label {
+    width: auto;
+  }
+  .swagger-ui .opblock-body pre.microlight {
+    line-height: 1;
+    border: none;
+  }
+}

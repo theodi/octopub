@@ -5,7 +5,7 @@ module Octopub
 
       expose :id
       expose :url do |dataset|
-        api_datasets_path(id: dataset.id)
+        datasets_path(id: dataset.id)
       end
 
       expose :name

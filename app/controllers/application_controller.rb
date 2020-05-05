@@ -15,6 +15,9 @@ class ApplicationController < ActionController::Base
   end
 
   def api
+    url = (Rails.env.production? ? 'https://' : request.protocol) + request.host_with_port + '/api/swagger_doc'
+    api_key = current_user ? current_user.api_key : ''
+    render 'api', locals: { url: url, api_key: api_key }
   end
 
   def getting_started
@@ -76,7 +79,7 @@ class ApplicationController < ActionController::Base
   def set_licenses
     license_group = nil
     @licenses = {}
-    
+
     Octopub::LICENCE_GROUPS.each_with_index do |g, i|
       if g != license_group
         @licenses[g] = []
