@@ -19,43 +19,17 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34573394-36"></script>
-		<script>
-		 window.dataLayer = window.dataLayer || [];
-		 function gtag(){dataLayer.push(arguments);}
-		 gtag('js', new Date());
-
-		 gtag('config', 'UA-34573394-36');
-		</script>
   </head>
   <body data-pusher-key="<%= Pusher.key %>" data-pusher-cluster="<%= pusher_cluster %>">
-    <div class="container">
-      <%= render 'layouts/nav' %>
-
-      <div class="row">
-        <div class="col-md-10 col-md-offset-1" id="main">
-          <% flash.each do |name, msg| %>
-            <% if msg.is_a?(String) %>
-              <%= bs_alert msg, block: true, dismiss_button: true, style: "info" %>
-            <% end %>
-          <% end %>
-
+		<%= render 'layouts/nav' %>
+		<div class="container">
+      <div class="row wrap">
+        <div class="col-md-12" id="main">
           <%= yield %>
         </div>
       </div>
     </div>
-
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-10 col-md-offset-1">
-            <%= image_tag 'labs-72-linked-200px.png', alt: 'ODI Labs' %>
-            <p>An <a href="http://theodi.org/labs">ODI Labs</a> experiment</p>
-						<%= link_to "Privacy policy", privacy_policy_path %>
-					</div>
-        </div>
-      </div>
-    </footer>
+    <div class="col-md-12"  style="height:50px;"></div>
+		<%= render 'layouts/footer' %>
   </body>
 </html>

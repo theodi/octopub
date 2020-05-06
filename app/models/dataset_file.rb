@@ -14,9 +14,12 @@
 #  view_sha               :text
 #  dataset_file_schema_id :integer
 #  storage_key            :string
+#  validation							:boolean
 #
 
 class DatasetFile < ApplicationRecord
+
+	require 'csvlint'
 
   belongs_to :dataset
   belongs_to :dataset_file_schema
@@ -38,7 +41,7 @@ class DatasetFile < ApplicationRecord
     tempfile.write read_file_with_utf_8(file)
     tempfile.rewind
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
-                                           content_type: 'text/csv',
+                                           # content_type: 'text/csv',
                                            tempfile: tempfile
   end
 
@@ -47,7 +50,7 @@ class DatasetFile < ApplicationRecord
 
     fs_file = FileStorageService.get_string_io(storage_key)
     ActionDispatch::Http::UploadedFile.new filename: File.basename(file),
-                                           content_type: 'text/csv',
+                                           # content_type: 'text/csv',
                                            tempfile: fs_file
   end
 
@@ -74,6 +77,7 @@ class DatasetFile < ApplicationRecord
     dataset_file_hash = ActiveSupport::HashWithIndifferentAccess.new(dataset_file_hash)
     if dataset_file_hash[:file].class == String
       if dataset_file_hash[:storage_key]
+        # File already uploaded so fetch from S3
         dataset_file_hash[:file] = file_from_url_with_storage_key(dataset_file_hash[:file], dataset_file_hash[:storage_key])
       else
         dataset_file_hash[:file] = file_from_url(dataset_file_hash[:file])
@@ -94,6 +98,10 @@ class DatasetFile < ApplicationRecord
     dataset_file_schema.name if dataset_file_schema
   end
 
+	def file_type
+		file_extension
+	end
+
   def update_file(file_update_hash)
     Rails.logger.info "DatasetFile: In update_file"
     file_update_hash = DatasetFile.get_file_from_the_right_place(file_update_hash)
@@ -109,17 +117,17 @@ class DatasetFile < ApplicationRecord
   end
 
   private
-  
+
     def content_or_schema_changed?
       # We only need to validate if the file itself or the schema has changed
-      new_record? || 
+      new_record? ||
       dataset_file_schema_id_changed? ||
       storage_key_changed?
     end
 
     def check_schema
       Rails.logger.info "DatasetFile: In check schema"
-      if dataset_file_schema
+      if dataset_file_schema && is_csv?
         if dataset_file_schema.is_schema_valid?
           if dataset_file_schema.csv_on_the_web_schema
             validate_schema_cotw
@@ -142,9 +150,9 @@ class DatasetFile < ApplicationRecord
         schema.tables["file:#{tempfile.path}"] = schema.tables.delete(schema.tables.keys.first)
       end
       validation = Csvlint::Validator.new(tempfile, {}, schema)
+			update_database_attribute(validation)
 
-      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+			Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
 
@@ -155,9 +163,9 @@ class DatasetFile < ApplicationRecord
       schema = Csvlint::Schema.load_from_string(URI.escape(dataset_file_schema.url), dataset_file_schema.schema)
 
       validation = Csvlint::Validator.new(file_content, {}, schema)
+			update_database_attribute(validation)
 
-      errors.add(:file, 'does not match the schema you provided') unless validation.valid?
-      Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
+			Rails.logger.info "DatasetFile: check schema, number of errors #{errors.count}"
       errors
     end
 
@@ -165,26 +173,41 @@ class DatasetFile < ApplicationRecord
       File.new(file.tempfile)
     end
 
+		def update_database_attribute(validation)
+			validation.valid? ? self.update_attribute(:validation, true) : self.update_attribute(:validation, false)
+		end
+
     def check_csv
-      content = file_content
-      unless content.nil?
-        begin
-          CSV.parse(content.read)
-        rescue CSV::MalformedCSVError
-          errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
-        rescue
-          errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
-        ensure
-          file_content.rewind
+      if is_csv?
+        content = file_content
+        unless content.nil?
+          begin
+            CSV.parse(content.read)
+          rescue CSV::MalformedCSVError
+            errors.add(:file, 'does not appear to be a valid CSV. Please check your file and try again.')
+          rescue
+            errors.add(:file, 'had some problems trying to upload. Please check your file and try again.')
+          ensure
+            file_content.rewind
+          end
         end
       end
     end
 
-    def set_filename
-      self.filename = "#{title.parameterize}.csv" rescue nil
+		def is_csv?
+			file_extension == '.csv'
+		end
+
+    def file_extension
+      file = self.storage_key || self.file.original_filename || ''
+      File.extname(file)
     end
 
-    def file_content      
+    def set_filename
+      self.filename = "#{title.parameterize}" << file_extension rescue nil
+    end
+
+    def file_content
       # Try to load from the storage key first.
       if storage_key
         # This might fail if the S3 content has gone away.
@@ -206,5 +229,5 @@ class DatasetFile < ApplicationRecord
       # Nothing worked. Ah well. We did our best.
       nil
     end
-  
+
 end

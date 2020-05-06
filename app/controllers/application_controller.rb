@@ -9,10 +9,15 @@ class ApplicationController < ActionController::Base
   layout ENV['LAYOUT'] || 'application'
 
   def index
+    @datasets = current_user.datasets if !current_user.nil?
+    @dataset_file_schemas = DatasetFileSchema.where(user: current_user).order(created_at: :desc) if !current_user.nil?
     render "#{ENV['INDEX_TEMPLATE'] || 'index'}.html.erb"
   end
 
   def api
+    url = (Rails.env.production? ? 'https://' : request.protocol) + request.host_with_port + '/api/swagger_doc'
+    api_key = current_user ? current_user.api_key : ''
+    render 'api', locals: { url: url, api_key: api_key }
   end
 
   def getting_started
@@ -72,9 +77,16 @@ class ApplicationController < ActionController::Base
   end
 
   def set_licenses
-    @licenses = Octopub::WEB_LICENCES.map do |id|
-      license = Odlifier::License.define(id)
-      [license.title, license.id]
+    license_group = nil
+    @licenses = {}
+
+    Octopub::LICENCE_GROUPS.each_with_index do |g, i|
+      if g != license_group
+        @licenses[g] = []
+      end
+      odlifier_license = Odlifier::License.define(Octopub::WEB_LICENCES[i])
+      @licenses[g] << { :id => odlifier_license.id, :name => Octopub::BIG_LICENCES[i] }
+      license_group = g
     end
   end
 end

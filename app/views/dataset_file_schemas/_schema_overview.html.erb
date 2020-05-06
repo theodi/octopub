@@ -1,0 +1,80 @@
+<div class="row title-dataset">
+	<div class="col-md-3">
+		<h2>Overview</h2>
+	</div>
+</div>
+<div class="box-dataset">
+	<div>
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Required?</th>
+					<th>Unique?</th>
+					<th>Minimum Length</th>
+					<th>Maximum Length</th>
+					<th>Maximum</th>
+					<th>Minimum</th>
+					<th>Pattern</th>
+					<th>Date Pattern</th>
+					<th>Type</th>
+				</tr>
+			</thead>
+			<% @dataset_file_schema.schema_fields.each do |field| %>
+				<tbody>
+					<tr>
+						<td><%= field.name %></td>
+						<td><%= field.type %></td>
+						<% if field.schema_constraint %>
+							<td><%= field.schema_constraint.required %></td>
+							<td><%= field.schema_constraint.unique %></td>
+							<td><%= field.schema_constraint.min_length %></td>
+							<td><%= field.schema_constraint.max_length %></td>
+							<td><%= field.schema_constraint.minimum %></td>
+							<td><%= field.schema_constraint.maximum %></td>
+							<td><%= field.schema_constraint.pattern %></td>
+							<td><%= field.schema_constraint.date_pattern %></td>
+							<td><%= field.schema_constraint.type %></td>
+						<% else %>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						<% end %>
+					</tr>
+				</tbody>
+			<% end %>
+		</table>
+	</div>
+
+	<% if @dataset_file_schema.foreign_keys.any? %>
+		<h2>Foreign Keys</h2>
+		<div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Fields</th>
+						<th>Reference</th>
+						<th>Datapackage</th>
+						<th>Resource</th>
+						<th>Fields</th>
+					</tr>
+				</thead>
+				<% @json_table_schema.foreign_keys.each do |fk| %>
+					<tr>
+						<td><%= fk["fields"] %></td>
+						<td><%= fk["reference"] %></td>
+						<td><%= fk["reference"]["datapackage"] %></td>
+						<td><%= fk["resource"] %></td>
+						<td><%= fk["fields"] %></td>
+					</tr>
+				<% end %>
+			</table>
+		</div>
+	<% end %>
+</div>

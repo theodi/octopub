@@ -46,7 +46,7 @@ class DatasetFileSchemaService
   end
 
   def self.parse_schema(schema_string)
-    JsonTableSchema::Schema.new(JSON.parse(schema_string))
+    TableSchema::Schema.new(JSON.parse(schema_string))
   end
 
   def self.read_file_with_utf_8(url)

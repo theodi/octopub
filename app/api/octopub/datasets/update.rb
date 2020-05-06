@@ -29,7 +29,7 @@ module Octopub
 
         status 202
         {
-          job_url: api_jobs_path(id: job)
+          job_url: jobs_path(id: job)
         }
       end
 

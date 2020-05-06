@@ -21,14 +21,14 @@ feature "Logged in access to pages for restricted publishers", type: :feature do
     end
 
     scenario "can view it in public list" do
-      expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{user.name}"
-      click_link "Public datasets"
+      expect(CGI.unescapeHTML(page.html)).to have_content "#{user.name}"
+      click_link "Data collections"
       expect(page).to have_content "Woof"
     end
 
     scenario "can view it in my datasets" do
-      expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{user.name}"
-      click_link "My datasets"
+      expect(CGI.unescapeHTML(page.html)).to have_content "#{user.name}"
+      click_link "Data collections"
       expect(page).to have_content "Woof"
     end
   end

@@ -1,17 +1,161 @@
-<div class="jumbotron">
-  <h1>Octopub</h1>
-  <h2>Publish data easily, quickly and correctly</h2>
-  <p>Got a dataset you want to publish, but not sure how to do it? Octopub will help you do it,
-    quickly, easily and correctly.</p>
-  <p>Using the power of <a href="http://github.com">GitHub</a>, we will provide you with a platform
-    to publish your CSV data, as well as automatically creating a webpage for you to point people
-    to.</p>
+<% unless !current_user %>
+	<div class="home-box-beta">
+		<p>This is an early preview of a completely new user experience for Octopub.</p>
+    <p>Please try it out and let us know what you think on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs@theodi.org</a>.  Although we don't advise you publish anything you want to manage on an ongoing basis until it stabilises.</p>
+		<p>Because it is in BETA you may encounter errors, in which case please raise an issue on <a href="https://github.com/theodi/octopub/issues" title="Octopub GitHub Issues" alt="Octopub GitHub Issues">GitHub</a> or <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">email us</a></p>
+		<p>The old experimental version of octopub is still available <a href="https://octopub.herokuapp.com/" title="ODI Heroku App" alt="ODI Heroku App">here</a> until the end of 2018 after which it will be retired.  Please <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">contact us</a> if you urgently need to transfer any data from the old system.  Don't worry all data published on GitHub will remain untouched and available indefinitely.</p>
+	</div>
+  <div class="home-box-table">
+    <h3 style="display: block">Quick actions:</h3>
+    <% if @datasets.count == 0 %>
+      <%= bs_button_to "<i class='fas fa-question-circle'></i> Getting started".html_safe, '/getting-started', :class => "btn btn-secondary" %>
+    <% end %>
+    <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data collection".html_safe, new_dataset_path, :class => "btn btn-secondary" %>
+    <%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data schema".html_safe, new_dataset_file_schema_path, :class => "btn btn-secondary" %>
+    <div class="row">
+      <div class="col-md-4 col-sm-5">
+        <h3>Recent data collections:</h3>
+      </div>
+      <% if @datasets.count > 0 %>
+        <div class="col-md-3 col-md-offset-5 col-sm-offset-4 table-count-box">
+          <p><span id='data-count'></span> of <%= @datasets.count %> | <%= link_to "View all", main_app.user_datasets_path(current_user) %></p>
+        </div>
+      <% end %>
+    </div>
+    <table id="home-table-data" class="table table-striped"
+    data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Collection Name</th>
+					<th>Number of files</th>
+          <th data-sortable="true">Schema</th>
+          <th data-sortable="true" data-field="creation">Last updated</th>
+          <th data-sortable="true">Published</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+      </tbody>
+    </table>
 
-  <% unless current_user %>
-    <p><%= link_to "<i class='fa fa-github'></i> Sign in with Github".html_safe, '/auth/github', class: "btn btn-primary btn-lg" %></p>
-    <small><%= link_to "Not got a Github account?", "https://github.com/join" %></small>
-  <% end %>
-</div>
-<div class="jumbotron">
-	<p>Octopub is currently under development. You can view the staging website <%= link_to "here", 'https://octopub-staging.herokuapp.com/', title: 'Octopub staging webs' %>.</p>
-</div>
+    <div class="row">
+      <div class="col-md-4 col-sm-5">
+        <h3>Recent schemas:</h3>
+      </div>
+      <% if @dataset_file_schemas.count > 0 %>
+        <div class="col-md-3 col-md-offset-5 col-sm-3 col-sm-offset-4 table-count-box">
+          <p><span id='schema-count'></span> of <%= @dataset_file_schemas.count %> | <%= link_to "View all", main_app.dataset_file_schemas_path %></p>
+        </div>
+      <% end %>
+    </div>
+    <table id="schema-table-data" class="table table-striped"
+    data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Schema Name</th>
+          <th data-sortable="true">Publisher</th>
+          <th data-sortable="true" data-field="creation">Created on</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <%= render(partial: "dataset-schemas", collection: @dataset_file_schemas, as: :schema)  %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<% unless current_user %>
+	<div class="home-box-beta">
+    <p>This is an early preview of a completely new user experience for Octopub.</p>
+    <p>Please try it out and let us know what you think on <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">labs@theodi.org</a>.  Although we don't advise you publish anything you want to manage on an ongoing basis until it stabilises.</p>
+    <p>Because it is in BETA you may encounter errors, in which case please raise an issue on <a href="https://github.com/theodi/octopub/issues" title="Octopub GitHub Issues" alt="Octopub GitHub Issues">GitHub</a> or <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">email us</a></p>
+    <p>The old experimental version of octopub is still available <a href="https://octopub.herokuapp.com/" title="ODI Heroku App" alt="ODI Heroku App">here</a> until the end of 2018 after which it will be retired.  Please <a href="mailto:labs@theodi.org" title="Email the ODI Labs team" alt="Email the ODI Labs team">contact us</a> if you urgently need to transfer any data from the old system.  Don't worry all data published on GitHub will remain untouched and available indefinitely.</p>
+  </div>
+	<div class="home-box-head">
+		<h1 class="orange"><span class="pub">Octo</span>pub</h1>
+		<h1>EXPLORING THE <span>FUTURE</span> of </br> OPEN DATA <span>PUBLISHING</span></h1>
+		<p>An ODI experiment, Octopub offers simple way to prepare and check </br> a dataset, and publish it online onto the GitHub platform.</p>
+		<%= bs_button_to "No GitHub account? Get one", "https://github.com/join", :class => "btn btn-secondary" %>
+		<%= bs_button_to "Sign in to start", "/auth/github", :class => "btn btn-primary" %>
+	</div>
+	<div class="home-box-black">
+		<div class="home-text">
+			<h2>Create <a href ="/getting-started#collections">file collections</a></h2>
+			<p>This is where you’ll put your related data files.</p>
+			<p>Add a description so people can find your collection, and tell others
+				about your update frequencies so they come back.</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-files-collection.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-grey">
+		<div class="home-image">
+			<%= image_tag 'home-page-licence.png', alt: 'Homepage: Files collection' %>
+		</div>
+		<div class="home-text">
+			<h2>Open your data: add a licence</h2>
+			<p><a href ="/getting-started#open-data">Data isn’t open</a> until an open licence has been applied. You can choose
+				a licence that suits your needs.</p>
+			<p>If you know nothing about licences, nothing to worry about, we’ll help
+				you choose.</p>
+		</div>
+	</div>
+	<div class="home-box-blue">
+		<div class="home-text">
+			<h2>Upload your files</h2>
+			<p>Now that your collection has been created and licensed, you can add
+				files to it.</p>
+			<p>CSV, Excel, Geospatial… Whatever your needs, we have you covered.</p>
+			<p>If you are <a href ="/getting-started#shapefile">uploading a Shapefile</a>, Octopub will convert to a GeoJSON file and add it to your Collection.</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-add-files.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-cobalt">
+		<div class="home-image">
+			<%= image_tag 'home-page-apply-schema.png', alt: 'Homepage: Files collection' %>
+		</div>
+		<div class="home-text">
+			<h2>Make your data usable</h2>
+			<p>Want your data to be high quality? Reusable? Machine readable? We
+				encourage you to <a href ="/getting-started#schema">apply schemas to your files</a>, and we can help you get
+				started.</p>
+			<p>There is even a database of useful schemas for you to use.</p>
+		</div>
+	</div>
+	<div class="home-box-grey">
+		<div class="home-text">
+			<h2>Validate your data</h2>
+			<p>Octopub can <a href ="/getting-started#validation">check the quality</a> of your CSV files for common errors.</p>
+			<p>We’ll give you quality feedback, and you can review and re-upload as
+				often as you need to until the data you want to publish is of the
+				highest standard.</p>
+		</div>
+		<div class="home-image">
+			<%= image_tag 'home-page-file-status.png', alt: 'Homepage: Files collection' %>
+		</div>
+	</div>
+	<div class="home-box-black">
+		<div class="home-text">
+			<h2>Create and Publish</h2>
+			<p>You're done. That's it.</p>
+			<p>Your data is ready to be published online, with all the necessary
+				information to make it findable.</p>
+			<p>It'll even have it's own webpage.</p>
+			<%= bs_button_to "Learn more about Octopub", "/getting-started", :class => "btn btn-secondary" %>
+			<%= bs_button_to "Get started", "/auth/github", :class => "btn btn-primary" %>
+		</div>
+	</div>
+<% end %>

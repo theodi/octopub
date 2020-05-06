@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808164922) do
+ActiveRecord::Schema.define(version: 20180710110526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20170808164922) do
     t.text     "view_sha"
     t.integer  "dataset_file_schema_id"
     t.string   "storage_key"
+    t.boolean  "validation"
     t.index ["dataset_file_schema_id"], name: "index_dataset_files_on_dataset_file_schema_id", using: :btree
     t.index ["dataset_id"], name: "index_dataset_files_on_dataset_id", using: :btree
   end
@@ -74,8 +75,9 @@ ActiveRecord::Schema.define(version: 20170808164922) do
     t.string   "full_name"
     t.string   "certificate_url"
     t.string   "job_id"
-    t.integer  "publishing_method", default: 0, null: false
+    t.integer  "publishing_method", default: 0,             null: false
     t.datetime "url_deprecated_at"
+    t.text     "published_status",  default: "unpublished"
     t.index ["user_id"], name: "index_datasets_on_user_id", using: :btree
   end
 

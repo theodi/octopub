@@ -1,0 +1,41 @@
+@import "modules/base";
+
+.form-control {
+	border-radius: 0;
+	line-height: 2em;
+	border: 0;
+	border-bottom: 2px solid $warm-grey;
+}
+
+.form-control::placeholder {
+	font-style: italic;
+	color: $warm-grey;
+}
+
+textarea.form-control {
+	height: 200px
+}
+
+.control-label {
+	font-weight: normal;
+}
+
+label {
+	width: 100%;
+}
+
+.shapefile-msg {
+	color: red;
+}
+
+// JQuery Validate error styling
+.form-control.error {
+	border: 2px solid red;
+}
+
+label.error {
+	padding: 10px 0;
+	width: 100%;
+	color: red;
+	font-weight: normal;
+}

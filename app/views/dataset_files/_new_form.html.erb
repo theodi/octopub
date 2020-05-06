@@ -1,47 +1,50 @@
-<h2>Files</h2>
-<div class="file-panel">
-  <div class="panel panel-default">
-    <div class="panel-heading clearfix" name="data_file_heading">Data Files</div>
-    <div class="panel-body">
-      <fieldset class="file bg-upload">
-        <%= f.text_field "files[][title]", label: "Title", class: "title", value: file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil? %>
-        <%= f.text_area "files[][description]", label: "Description", class: "description", value: file.description, placeholder: t(:'dataset_file.description') %>
-
-        <% if file.filename %>
-          <div class="form-group filename-wrapper">
-            <div class="current-file">
-              <label class="control-label">Current file</label>
-              <p><%= link_to file.filename, file.gh_pages_url %> <%= f.check_box "Change file #{i}", label: "Change file", class: "change-file" %> </p>
-            </div>
-          </div>
-        <% else %>
-          <%= f.file_field "files[][file]", label: "File", accept: ".csv" %>
-        <% end %>
-
-        <%= f.hidden_field("files[][id]", name: "files[][id]", value: file.id) if file.id %>
-      </fieldset>
+<div class="file-input-group">
+  <fieldset class="file bg-upload">
+    <div class="form-group">
+      <label for="files[][title]">File title</label>
+      <%= text_field_tag "files[][title]", file.title, placeholder: t(:'dataset_file.name'), readonly: !file.id.nil?, class: "title form-control" %>
     </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">Optional Schema</div>
-    <div class="panel-body">
-      <fieldset class="file bg-upload">
-
-        <% if dataset_file_schemas.any? %>
-          <h4>Choose an existing schema</h4>
-          <%= f.select "files[][dataset_file_schema_id]", options_from_collection_for_select(dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Existing dataset schemas'}, {'data-live-search': "true", class: 'selectpicker'} %>
-          <h4>Or upload a new one</h4>
-        <% else %>
-          <h4>Upload a schema for this Data File</h4>
-        <% end %>
-
-        <p>Provide an optional <a href='https://csvlint.io/about#how_write_schema\'>schema</a> that all data files must adhere to</p>
-
-        <%= f.text_field "files[][schema_name]", label: "Schema name", value: schema.name, placeholder: t(:'dataset.schema.name') %>
-        <%= f.text_area "files[][schema_description]", label: "Schema description", value: schema.description, placeholder: t(:'dataset.schema.description') %>
-        <div><%= f.file_field "files[][schema]", label: "File", accept: ".json" %></div>
-        <%= f.select "files[][schema_restricted]", dataset_file_schema_access_options, { label: "Access" }, { class: "selectpicker form-control show-tick" } %>
-      </fieldset>
+    <div class="form-group">
+      <label for="files[][description]">File description<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A summary about this particular file. Once published, it will be used alongside the description of the collection to determine relevance, and help people find specific data within the collection. You should include details on the data in this file, including whether it covers a specific place, topic, or time. Example: A count of trees in the London area by latin name, grouped by London borough. Data is for January 2017. Keywords: Trees, London, Monthly, 2017-01"></i></label>
+      <%= text_area_tag "files[][description]", file.description, placeholder: t(:'dataset_file.description'), class: "description form-control" %>
     </div>
-  </div>
+
+		<div class="shapefile-msg" hidden>
+			<p>The file you are uploading is usually part of a Shapefile. If you are uploading a Shapefile, please ensure to 'Save and add another file', including all corresponding files.</p>
+			<p>A GeoJSON file will be created and added to your collection as an additional Collection Files.</p>
+		</div>
+
+    <% if file.filename %>
+      <div class="form-group filename-wrapper">
+        <div class="current-file">
+          <label class="control-label">Current file</label>
+          <p><%= link_to file.filename, file.gh_pages_url %> <%= check_box "Change file #{i}", label: "Change file", class: "change-file form-control" %> </p>
+        </div>
+      </div>
+    <% else %>
+      <div class="form-group">
+        <label for="[files[][file]]">File upload<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="Only CSV files will be checked for errors, but you can upload other file types if you wish. Correctly uploaded Shapefiles will produce an additional GeoJSON file."></i></label>
+        <%= file_field_tag "[files[][file]]" %>
+      </div>
+    <% end %>
+
+    <%= hidden_field_tag "files[][id]", file.id, id: "_files[][id]" if file.id %>
+  </fieldset>
+  <% if @dataset_file_schemas.any? %>
+    <fieldset class="file bg-upload">
+      <div class="form-group">
+        <label for="[files[][dataset_file_schema_id]]">Apply a schema to your file (optional)<i class="fa fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="A &quot;schema&quot; is a special document that describes how your dataset should be structured and the rules to which it must adhere. The schema can be used to validate your data and catch common errors. We recommend using standard schemas if possible to make the data easier to compare and combine. You can find some schemas here. For more information see About/Schemas"></i></label>
+        <p><em>We recommend using standard schemas if possible to make the data easier to compare and combine.</em></p>
+        <%= select_tag "[files[][dataset_file_schema_id]]", options_from_collection_for_select(@dataset_file_schemas, :id, :name), { prompt: 'No schema required', label: 'Apply a schema to your file (optional)', class: "form-control" } %>
+      </div>
+    </fieldset>
+  <% end %>
 </div>
+
+<script>
+
+	$(document).ready(function() {
+
+	})
+
+</script>

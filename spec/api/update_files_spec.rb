@@ -38,7 +38,7 @@ describe 'PUT /datasets/:id/files/:file_id', vcr: { :match_requests_on => [:host
     expect(@dataset.dataset_files.last.description).to eq('My shiny new amazing description')
   end
 
-  it 'updates a file' do
+  pending it 'updates a file' do
     Dataset.set_callback(:update, :after, :update_dataset_in_github)
 
     filename = 'shoes-cotw.csv'

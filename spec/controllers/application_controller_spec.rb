@@ -56,33 +56,8 @@ describe ApplicationController, type: :controller, vcr: { :match_requests_on => 
       json = JSON.parse(response.body)
 
       expect(json).to eq({
-        "licenses" => [
-         {
-           "id" => "CC-BY-4.0",
-           "name" => "Creative Commons Attribution 4.0"
-         },
-         {
-           "id" => "CC-BY-SA-4.0",
-           "name" => "Creative Commons Attribution Share-Alike 4.0"
-         },
-         {
-           "id" => "CC0-1.0",
-           "name" => "CC0 1.0"
-         },
-         {
-           "id" => "OGL-UK-3.0",
-           "name" => "Open Government Licence 3.0 (United Kingdom)"
-         },
-         {
-           "id" => "ODC-BY-1.0",
-           "name" => "Open Data Commons Attribution License 1.0"
-         },
-         {
-           "id" => "ODbL-1.0",
-           "name" => "Open Data Commons Open Database License 1.0"
-         }
-        ]
-        })
+        "licenses" => [{"id"=>[{"id"=>"OGL-UK-3.0", "name"=>"OGL (Open Government Licence 3.0 UK)"}], "name"=>"Government"}, {"id"=>[{"id"=>"CC-BY-4.0", "name"=>"CC BY 4.0 (Creative Commons - Attribution 4.0 International)"}, {"id"=>"CC-BY-SA-4.0", "name"=>"CC BY-SA 4.0 (Creative Commons - Attribution-ShareAlike 4.0 International)"}], "name"=>"Creative Commons"}, {"id"=>[{"id"=>"OGL-UK-3.0", "name"=>"ODC BY 1.0 (Open Data Commons - Attribution License 1.0)"}, {"id"=>"ODbL-1.0", "name"=>"ODbL 1.0 (Open Data Commons - Open Database License 1.0)"}], "name"=>"Open Data Commons"}]
+      })
     end
   end
 end

@@ -1,0 +1,42 @@
+@import "modules/base";
+
+/* Tooltip container */
+.tooltips {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltips .tooltiptexts {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptexts {
+  visibility: visible;
+}
+
+.tooltip > .tooltip-inner { 
+  padding: $padding;
+  background-color: $dusk-blue;
+  border-radius: 0;
+}
+
+.tooltip.right > .tooltip-arrow { 
+  border-right-color: $dusk-blue; 
+}
+
+.fa-question-circle {
+  color: $dusk-blue;
+}

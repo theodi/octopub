@@ -1,0 +1,29 @@
+<%= javascript_include_tag 'swagger-ui-bundle.js' %>
+
+<div id="swagger-ui"
+     style="
+      display: block;
+      width: 50%;
+      margin: 0 auto;
+     "></div>
+
+<script>
+window.onload = function() {
+  const ui = SwaggerUIBundle({
+    url: '<%= url.html_safe %>',
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIBundle.SwaggerUIStandalonePreset
+    ],
+    onComplete: function() {
+      const api_key = '<%= api_key %>'
+      if (api_key === '') return;
+      ui.preauthorizeApiKey('api_key', api_key);
+    }
+  })
+
+  window.ui = ui
+}
+</script>

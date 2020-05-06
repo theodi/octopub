@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
-
-  root 'application#index'
-
-  get '/api-docs' => 'application#api'#, :as => :api
+  root 'application#index', :as => :root
 
   get "/auth/:provider/callback" => "sessions#create", :as => :callback
   get "/signout" => "sessions#destroy", :as => :signout
@@ -16,8 +13,14 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/datasets/:dataset_id/dataset_files" => "dataset_files#index", as: :files
+  get "/collection/:dataset_id/publish_dataset" => "datasets#publish_dataset"
+
+	get "/collection/:dataset_id" => "dataset_files#index", as: :files
+  get "/collection/:dataset_id/file/:dataset_file_id" => "dataset_files#show", as: :dataset_files
+
   get "/dataset_files/:id/download" => "dataset_files#download", as: :dataset_file_download
+
+	get "/collection/:dataset_id/file/:dataset_file_id/validation" => "dataset_file_validation#index", as: :dataset_file_validation
 
   resources :dataset_file_schemas do
     resources :output_schemas, except: [:index, :show, :destroy, :edit, :update]
@@ -43,7 +46,6 @@ Rails.application.routes.draw do
 	get "/privacy-policy" => "application#privacy_policy", as: :privacy_policy
   get "/getting-started" => "application#getting-started"
 
-  mount API => '/'
-  mount GrapeSwaggerRails::Engine => '/api'
-
+  mount API::Root => '/api'
+  get '/api' => 'application#api'
 end

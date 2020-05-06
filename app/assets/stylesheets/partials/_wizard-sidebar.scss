@@ -1,0 +1,105 @@
+@import "modules/base";
+
+#add-dataset-form-container {
+  max-width: 500px;
+  margin-left: 100px;
+}
+
+#wizard-sidebar {
+  padding: 0;
+  margin-top: -20px;
+  margin-left: -20px;
+  background: $white;
+}
+
+.wizard-sidebar-step {
+  position: relative;
+  display: block;
+  min-height: 275px;
+  width: 100%;
+  float: left;
+  padding: $padding $padding $padding*3 $padding;
+  &.wizard-sidebar-step-active {
+    background: $white;
+    color: $black;
+    border: 2px solid $deep-orange;
+    border-top: 0;
+    border-left: 0;
+    // creates the triangles
+    &:after,
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 100%;
+        width: 0;
+        height: 0;
+        border-style: solid;
+    }
+    // controls the inner triangle (fill)
+    &:after {
+        top: 43px;
+        border-color: transparent transparent transparent $white;
+        border-width: 14px;
+    }
+    // controls the outer triangle (border)
+    &:before {
+        top: 40px;
+        border-color: transparent transparent transparent $deep-orange;
+        border-width: 17px;
+    }
+  }
+  &.wizard-sidebar-step-inactive {
+    background: rgba($cobalt, 0.1);
+    border: 2px solid $cobalt;
+    border-top: 0;
+    border-left: 0;
+  }
+  &.wizard-sidebar-step-disabled {
+    background: $light-grey;
+    color: $warm-grey;
+    border: 2px solid $warm-grey;
+    border-top: 0;
+    border-left: 0;
+  }
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.wizard-sidebar-step-link {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: $padding;
+}
+
+// sidebar files
+.sidebar-files {
+  margin: 0;
+  padding: 0;
+  li {
+    position: relative;
+    list-style: none;
+    display: block;
+    background: rgba($cobalt, 0.1);
+    padding: $padding;
+    margin-bottom: $margin;
+  }
+}
+
+.sidebar-file-links {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: $padding/2;
+  a {
+    margin-left: $margin;
+  }
+}
+
+.wizard {
+	.control-label {
+		display: none;
+	}
+}
