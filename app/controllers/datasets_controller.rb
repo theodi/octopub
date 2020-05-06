@@ -67,7 +67,7 @@ class DatasetsController < ApplicationController
         @dataset.update_dataset_in_github
         flash[:success] = "Your changes are being published and will be available shortly!"
       end
-      redirect_to :back
+      redirect_back(fallback_location: root_url)
     end
   end
 
