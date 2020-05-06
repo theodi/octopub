@@ -1,4 +1,4 @@
-class AddExtraFieldsToDataset < ActiveRecord::Migration
+class AddExtraFieldsToDataset < ActiveRecord::Migration[4.2]
   def change
     add_column :datasets, :description, :string
     add_column :datasets, :publisher_name, :string
