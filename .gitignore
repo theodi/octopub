@@ -90,6 +90,9 @@ pickle-email-*.html
 # Textmate project files
 /*.tmproj
 
+# Intellij project files
+/*.iml
+
 # vim artifacts
 **.swp
 

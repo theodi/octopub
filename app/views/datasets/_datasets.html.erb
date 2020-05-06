@@ -1,41 +1,40 @@
 <% if @datasets.count > 0 %>
-<div>
-  <table class="table"
+  <div class="toolbar" id="toolbar">
+    <div class="row">
+      <div class="col-md-3 col-sm-3">
+        <h2 class="orange">All your data collections</h2>
+      </div>
+      <div class="col-md-3 col-md-offset-4 col-sm-3 col-sm-offset-4">
+        <span class="pull-right"><%= bs_button_to "<i class='fas fa-plus-circle'></i> Create a new data collection".html_safe, new_dataset_path, :class => "btn btn-secondary" %></span>
+      </div>
+      <div class="col-md-2 col-sm-2">
+        <div class="form-group has-feedback">
+          <input name="search" id="myInput" class="form-control hasclear" type="text" placeholder='Search sets'>
+          <span class="clearer glyphicon glyphicon-remove-circle form-control-feedback"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="table table-striped"
   data-toggle="table"
-  data-pagination="true"
-  data-search="true"
+	data-sort-name="creation"
+	data-sort-order="desc"
+  data-classes="table"
   data-filter-control="true">
   <thead>
     <tr>
-      <th data-sortable="true"><%= t(:'dataset.owner') %></th>
-      <th>Type</th>
-      <th data-sortable="true">Name</th>
-      <th data-sortable="true">Schemas?</th>
-      <th data-sortable="true">Deprecated On</th>
-      <th data-sortable="true">Created On</th>
-      <th>Actions</th>
+      <th data-sortable="true">Collection Name</th>
+      <th>Number of files</th>
+      <th>Schema</th>
+      <th data-sortable="true" data-field="creation">Last updated</th>
+      <th data-sortable="true">Published</th>
+      <th>Action</th>
     </tr>
     </thead>
-    <%= render(partial: "dataset", collection: @datasets) %>
-    <!--above render is not populating a cell for every header specified - this is done in dataset.html.erb-->
+    <tbody id="myTable">
+      <%= render(partial: "dataset", collection: @datasets, as: :dataset)  %>
+    </tbody>
   </table>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Icon Key</h3>
-  </div>
-  <div class="panel-body">
-    <ul class="list-group">
-      <li class="list-group-item"><i class='fa fa-lock fa-lg' title="private"></i> - Private repository - for you and Administrators only.</li>
-      <li class="list-group-item"><i class='fa fa-globe fa-lg' title="public"></i> - Public repository - anybody can see this data.</li>
-      <li class="list-group-item"><i class='fa fa-github fa-lg' title="github"></i> - In GitHub - published on GitHub</li>
-      <li class="list-group-item"><i class='fa fa-exclamation-triangle' title="warning"></i> - Inaccessible Resource - mouseover for deprecation date</li>
-    </ul>
-  </div>
-</div>
-
-
 <% else %>
   <p class='text-center lead'>You currently have no datasets, why not <%= link_to 'add one', new_dataset_path %>?</p>
 <% end %>

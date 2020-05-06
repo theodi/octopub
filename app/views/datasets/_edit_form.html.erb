@@ -1,52 +1,60 @@
-<%= bootstrap_form_tag url: url, method: method, html: { class: 'edit-form' }, data: { 'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host } do |f| %>
-  <%= f.text_field "dataset[name]", label: "Dataset name", value: dataset.name, disabled: !dataset.id.nil?, required: true, placeholder: t(:'dataset.name') %>
-  <% if dataset.id.nil? %>
-    <%= f.select "dataset[owner]", organization_select_options, { label: t(:'dataset.owner') }, { class: "selectpicker form-control show-tick" } %>
-  <% end %>
-  <%= f.text_area "dataset[description]", label: "Dataset description", value: dataset.description, placeholder: t(:'dataset.description')  %>
-  <%= f.text_field "dataset[publisher_name]", label: "Publisher name", value: dataset.publisher_name, required: true, placeholder: t(:'dataset.publisher_name') %>
-  <%= f.url_field "dataset[publisher_url]", label: "Publisher URL", value: dataset.publisher_url, placeholder: t(:'dataset.publisher_url') %>
-  <%= f.select "dataset[license]", licenses, label: "License", selected: dataset.license %>
-  <%= f.select "dataset[frequency]", Octopub::PUBLICATION_FREQUENCIES, label: "Publication frequency", selected: dataset.frequency %>
+<%= form_tag(url, method: method, :id => "add-dataset-form", :data => {'form-data' => (s3_direct_post.fields), 'url' => s3_direct_post.url, 'host' => URI.parse(s3_direct_post.url).host }, class: 'edit-form') do %>
 
-  <% if dataset.local_private? %>
-    <%= f.form_group :publishing_method, label: { text: "Publish publicly?" } do %>
-      <%= f.radio_button :publishing_method, :github_public, label: "Yes, make this data available on the public web", name: "dataset[publishing_method]" %>
-      <%= f.radio_button :publishing_method, :local_private, label: "No, keep as private", checked: true, name: "dataset[publishing_method]" %>
-    <% end %>
-  <% end %>
+  <div class="form-group">
+    <label for="dataset[name]">Collection name</label>
+    <%= text_field_tag "dataset[name]", dataset.name, disabled: true, placeholder: t(:'dataset.name'), class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <label for="dataset[description]">Collection description</label>
+    <%= text_area_tag "dataset[description]", dataset.description, placeholder: t(:'dataset.description'), class: "form-control"  %>
+  </div>
+  <div class="form-group">
+    <label for="dataset[frequency]">How often do you plan on adding files?</label>
+    <%= select_tag "dataset[frequency]", options_for_select(Octopub::PUBLICATION_FREQUENCIES, dataset.frequency), class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <label for="dataset[frequency]">Licence</label>
+    <div class="license-selector top-buffer">
+      <% licenses.each do |key, arr| %>
+        <p class="subheading"><%= key %></p>
+        <% arr.each_with_index do |l, i| %>
+          <label class="large-radio">
+            <%= radio_button_tag 'dataset[license]', l[:id], dataset.license == l[:id] %>
+            <%= l[:name] %>
+            <span class="checkmark"></span>
+          </label>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 
   <div id="files">
     <% if dataset.dataset_files.count == 0 %>
-      <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, dataset_file_schemas: dataset_file_schemas } %>
+      <!-- render blank form inputs for adding new files -->
+      <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
     <% else %>
+      <div class="hidden">
+        <!-- render blank form inputs for adding new files -->
+        <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, dataset_file_schemas: dataset_file_schemas } %>
+      </div>
       <% dataset.dataset_files.order(created_at: :asc).each_with_index do |file, i| %>
-        <div class="hidden">
-          <%= render partial: "dataset_files/edit_form", locals: { file: DatasetFile.new, schema: DatasetFileSchema.new, f: f, i: i, dataset_file_schemas: dataset_file_schemas } %>
-        </div>
         <div class="visible">
-        <%= render partial: "dataset_files/edit_form", locals: { file: file, f: f, i: i,   dataset_file_schemas: dataset_file_schemas } %>
+          <!-- render the existing files -->
+          <%= render partial: "dataset_files/edit_form", locals: { file: file, i: i, dataset_file_schemas: dataset_file_schemas } %>
         </div>
       <% end %>
     <% end %>
   </div>
-  <p class="text-right" id="wut">
-    <%= bs_button_to 'Add another data file', '#', style: "success", id: "clone", icon: "glyphicon glyphicon-plus", class: "btn-xs" %>
-  </p>
 
-  <% if dataset.id && can?(:transfer, dataset) %>
-    <div class='panel panel-danger'>
-      <div class="panel-heading">
-        <h3 class="panel-title">Danger Zone</h3>
-      </div>
-      <div class="panel-body">
-        <%= f.select "dataset[user_id]", options_for_select(user_select_options(@users), dataset.user.id), { label: "Transfer dataset to another user" }, { 'data-live-search': "true", class: "selectpicker form-control show-tick" } %>
-        <span id="transferHelpBlock" class="help-block">Selecting another user may make it impossible for you to edit this dataset further. Only change it if you know what you are doing!</span>
-      </div>
-    </div>
-  <% end %>
+  <div class="form-group">
+    <button id="clone" class="btn btn-secondary">Save and add another file</button>
+    <!-- <button id="delete"class="btn btn-tertiary">Delete</button> -->
+  </div>
 
-  <button type="submit" class="btn btn-primary btn-lg btn-block">
-    Submit <i class="fa fa-refresh fa-spin hidden" id="spinner"></i>
-  </button>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-lg btn-block">
+      Submit collection for validation <i class="fa fa-spinner fa-spin hidden" id="spinner"></i>
+    </button>
+  </div>
 <% end %>

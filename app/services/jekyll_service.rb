@@ -19,8 +19,8 @@ class JekyllService
 
     create_jekyll_files
     push_to_github
-    wait_for_gh_pages_build(5, @dataset)
-    create_certificate(dataset)
+    # wait_for_gh_pages_build(5, @dataset)
+    # create_certificate(dataset)
   end
 
   def wait_for_gh_pages_build(delay = 5, dataset)
@@ -126,10 +126,12 @@ class JekyllService
   def update_dataset_in_github
     # Update files
     Rails.logger.info 'update_dataset_in_github'
-    @dataset.dataset_files.each do |d|
-      if d.file
-        update_in_github(d.filename, d.file)
-        update_jekyll_in_github(d.filename) unless @dataset.restricted
+    @dataset.dataset_files.each do |f|
+      add_to_github(f)
+      add_jekyll_to_github(f.filename)
+      if f.file
+        update_in_github(f.filename, f.file)
+        update_jekyll_in_github(f.filename) unless @dataset.restricted
       end
     end
     update_datapackage
@@ -162,7 +164,7 @@ class JekyllService
     @dataset.dataset_files.each do |file|
       datapackage["resources"] << {
         "name" => file.title,
-        "mediatype" => 'text/csv',
+        "mediatype" => "text/csv",
         "description" => file.description,
         "path" => "data/#{file.filename}",
         "schema" => json_schema_for_datapackage(file.dataset_file_schema)
@@ -171,6 +173,11 @@ class JekyllService
 
     datapackage.to_json
   end
+
+	# Use this in the creation of datapackage to set different mediatype
+	# def mediatype_for_datapackage(file)
+	# 	file.file_type == '.geojson' ? "application/json" : "text/csv"
+	# end
 
   def update_datapackage
     update_file_in_repo("datapackage.json", create_json_datapackage)

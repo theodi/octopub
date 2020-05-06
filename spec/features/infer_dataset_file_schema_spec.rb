@@ -7,7 +7,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
   let(:data_file) { get_fixture_file('valid-schema.csv') }
   let(:wonky_file) { get_fixture_schema_file('good-schema.json') }
   let(:common_name) { Faker::Lorem.word }
-  let(:page_copy) { 'Create a new Schema from a CSV Data File' }
+  let(:page_copy) { 'Infer a new schema' }
   let(:infer_schema_filename) { 'schemas/infer-from/data_infer.csv' }
   let(:uuid) { 'd42c4843-bc5b-4c62-b161-a55356125b59' }
   let(:csv_storage_key) { "uploads/#{uuid}/data_infer.csv" }
@@ -17,13 +17,13 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
 
   before(:each) do
     visit root_path
-    click_link 'Dataset file schemas'
+    click_link 'Schemas'
     expect(page).to have_content 'You currently have no dataset file schemas, why not add one?'
   end
 
   context "logged in visitors has no schemas" do
     scenario "and can infer a dataset file schema from a data file" do
-      click_link 'Infer a new dataset file schema'
+      click_link 'Infer a new schema'
       expect(page).to have_content page_copy
 
       before_datasets = DatasetFileSchema.count
@@ -34,7 +34,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
         fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
         attach_file('inferred_dataset_file_schema_csv_url', data_file)
-        click_on 'Submit'
+        click_on 'Add to schemas'
       end
 
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
@@ -48,7 +48,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
       category_2 = SchemaCategory.create(name: 'cat2')
       schema_category_ids = [ category_1.id, category_2.id ]
 
-      click_link 'Infer a new dataset file schema'
+      click_link 'Infer a new schema'
       expect(page).to have_content page_copy
 
       within 'form' do
@@ -59,7 +59,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         attach_file('inferred_dataset_file_schema_csv_url', data_file)
         check ('cat1')
         check ('cat2')
-        click_on 'Submit'
+        click_on 'Add to schemas'
       end
 
       expect(CGI.unescapeHTML(page.html)).to have_content "Dataset File Schemas for #{@user.name}"
@@ -71,7 +71,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     context "and gets an error if they do not populate the correct fields" do
 
       before(:each) do
-        click_link 'Infer a new dataset file schema'
+      	click_link 'Infer a new schema'
         expect(page).to have_content page_copy
       end
 
@@ -81,7 +81,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
           fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
           attach_file('inferred_dataset_file_schema_csv_url', data_file)
 
-          click_on 'Submit'
+        	click_on 'Add to schemas'
         end
 
         expect(page).to have_content page_copy
@@ -92,7 +92,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
         within 'form' do
           fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
           fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
-          click_on 'Submit'
+        	click_on 'Add to schemas'
         end
 
         expect(page).to have_content page_copy
@@ -106,7 +106,7 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
           fill_in 'inferred_dataset_file_schema_name', with: "#{common_name}-schema-name"
           fill_in 'inferred_dataset_file_schema_description', with: "#{common_name}-schema-description"
           attach_file('inferred_dataset_file_schema_csv_url', wonky_file)
-          click_on 'Submit'
+        	click_on 'Add to schemas'
         end
 
         expect(page).to have_content page_copy
@@ -115,4 +115,3 @@ feature "Add dataset page", type: :feature, vcr: { :match_requests_on => [:host,
     end
   end
 end
-

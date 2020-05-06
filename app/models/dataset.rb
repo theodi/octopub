@@ -34,7 +34,7 @@ class Dataset < ApplicationRecord
   belongs_to :user
   has_many :dataset_files
 
-  after_update :update_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
+  # after_update :update_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
   after_destroy :delete_dataset_in_github, unless: Proc.new { |dataset| dataset.local_private? }
 
   validate :check_repo, on: :create
@@ -47,13 +47,12 @@ class Dataset < ApplicationRecord
       Pusher[channel_id].trigger('dataset_created', self) if channel_id
       Rails.logger.info "Dataset: Valid so now do the save and trigger the after creates"
       save
-
-      if local_private?
-        send_success_email
-      elsif action == :create
-        # You only want to do this if it's private or public github
-        CreateRepository.perform_async(id)
-      end
+      # if local_private?
+      #   send_success_email
+      # elsif action == :create
+      #   # You only want to do this if it's private or public github
+      #   CreateRepository.perform_async(id)
+      # end
     else
       Rails.logger.info "Dataset: Invalid, so push to pusher"
       messages = errors.full_messages
@@ -84,7 +83,6 @@ class Dataset < ApplicationRecord
     }.to_yaml
   end
 
-
   def github_url
     "http://github.com/#{full_name}"
   end
@@ -114,11 +112,18 @@ class Dataset < ApplicationRecord
     names.join(', ') unless names.nil?
   end
 
+	def is_shapefile
+		dataset_files.any? do |file|
+			File.extname(file.filename) == '.shp'
+		end
+	end
+
   def complete_publishing
     actual_repo
     set_owner_avatar
     publish_public_views(true)
-    send_success_email
+		# Disabled the below function to remove email notification upon successful upload
+    # send_success_email
     SendTweetService.new(self).perform
   end
 
@@ -162,21 +167,17 @@ class Dataset < ApplicationRecord
     # is this the better way to do this method? https://github.com/bblimke/webmock#response-with-custom-status-message
   end
 
+  # This is a callback
+  def update_dataset_in_github
+    Rails.logger.info "in update_dataset_in_github"
+    UpdateDatasetInGithub.perform_async(id)
+    # jekyll_service.update_dataset_in_github
+    make_repo_public_if_appropriate
+    publish_public_views
+    self.update_attribute(:published_status, 'published')
+  end
+
   private
-
-    # This is a callback
-    def update_dataset_in_github
-      Rails.logger.info "in update_dataset_in_github"
-      return if local_private?
-
-      if publishing_method_was == 'local_private' && github_public?
-        CreateRepository.perform_async(id)
-      else
-        jekyll_service.update_dataset_in_github
-        make_repo_public_if_appropriate
-        publish_public_views
-      end
-    end
 
     def make_repo_public_if_appropriate
       Rails.logger.info "in make_repo_public_if_appropriate"

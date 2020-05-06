@@ -1,0 +1,231 @@
+<div class="home-box-dashboard">
+	<%= link_to "< Back to data collection: #{@dataset.name}", files_path(@dataset.id) %>
+
+	<div class="row">
+		<div class="head-dataset">
+			<div class="col-md-3">
+				<h2><span><i class="fas fa-file-alt"></i></span><%= @dataset_file.title %></h2>
+			</div>
+			<div class="col-md-9">
+				<%= bs_button_to "Download File", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
+				<% if @dataset.published_status == 'unpublished' %>
+					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
+				<% else %>
+					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+
+	<div class="box-dataset">
+	  <div class="row">
+			<div class="col-md-2 col-sm-2">
+				<strong>Description:</strong>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<p><%= @dataset_file.description %></p>
+			</div>
+			<div class="col-md-1 col-md-offset-4 col-sm-1 col-sm-offset-4 icon-blue">
+				<%= link_to("Edit", edit_dataset_path(@dataset.id)) %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Schema:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<% if @dataset_file.dataset_file_schema %>
+					<p><%= @dataset_file.dataset_file_schema.name %></p>
+				<% else %>
+					<p>No schema</p>
+				<% end %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Last updated:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<p><%= time_or_date(@dataset_file.updated_at) %></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-sm-2">
+				<p><strong>Published:</strong></p>
+			</div>
+			<div class="col-md-5 col-sm-5">
+				<% if @dataset.published_status == 'published' %>
+		      		<p>Yes</p>
+				<% else %>
+		      		<p>No - this file is not public yet</p>
+				<% end %>
+			</div>
+		</div>
+		<% if @dataset_file.file_type == '.csv' %>
+			<div class="row">
+				<div class="col-md-2 col-sm-2">
+					<p><strong>Validation:</strong></p>
+				</div>
+				<div class="col-md-6 col-sm-6">
+						<% if !@dataset_file.validation.nil? %>
+							<%= link_to image_tag('validation/' + CsvlintValidateService.generate_badge(@dataset_file) + '.svg'), dataset_file_validation_path(@dataset.id, @dataset_file.id) %>
+						<% else %>
+							<a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a>
+						<% end %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+
+	<% if @dataset_file.file_type == '.csv' %>
+		<div class="row">
+			<div class="head-dataset">
+				<div class="col-md-3">
+					<h2>Preview</h2>
+				</div>
+			</div>
+		</div>
+
+		<div class="box-dataset">
+			<div class="table-container">
+				<table class="table table-striped table-bordered" id="data-table">
+					<thead id="data-table-head"></thead>
+					<tbody id="data-table-body"></tbody>
+				</table>
+			</div>
+		</div>
+	<% elsif @dataset_file.file_type == '.geojson' %>
+		<div class="row">
+			<div class="head-dataset">
+				<div class="col-md-3">
+					<h2>GeoJSON</h2>
+				</div>
+			</div>
+		</div>
+		<div id="mapid" class="map"></div>
+	<% end %>
+</div>
+
+<% if @dataset_file.file_type == '.csv' %>
+	<div id="loading" style="display: none; text-align: center;">
+	  <h1>Loading...</h1>
+	  <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+	</div>
+<% end %>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/floatthead/2.0.3/jquery.floatThead.min.js"></script>
+
+<script>
+
+	$( document ).ready(function() {
+
+		// Leaflet.js - Draw map with GeoJSON data from S3
+		drawMap()
+
+		function drawMap() {
+			let map = L.map('mapid').setView([0, 0], 5);
+			var geojson = "<%= @s3_file %>"
+			geojson = geojson.replace(/&amp;/g, '&');
+
+			createLayer(map)
+
+			$.getJSON(geojson,function(data){
+				let datalayer = L.geoJson(data ,{
+					onEachFeature: function(feature, featureLayer) {
+						popupContent = []
+
+						if (feature.geometry.type == 'Point') {
+							placeMarker(feature, map)
+						}
+
+						addProperties(feature, featureLayer, popupContent)
+					}
+				}).addTo(map);
+
+				map.fitBounds(datalayer.getBounds());
+			});
+		}
+
+		function createLayer(map) {
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href=”http://osm.org/copyright”>OpenStreetMap</a> contributors'
+			}).addTo(map);
+		}
+
+		function addProperties(feature, featureLayer, popupContent) {
+			for (var key in feature.properties) {
+				popupContent.push(key + ": " + feature.properties[key]);
+			}
+			featureLayer.bindPopup(popupContent.join("<br/>"));
+		}
+
+		function placeMarker(feature, map) {
+			coordinates = feature.geometry.coordinates
+			L.marker([coordinates[1], coordinates[0]]).addTo(map);
+		}
+	});
+
+	// PapaParse - draw table with CSV data from S3
+	function dataTable () {
+		Papa.SCRIPT_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js'
+
+		var url = "<%= @s3_file %>"
+		url = url.replace(/&amp;/g, '&');
+
+		$('#loading').show()
+		$('#data-table-body').hide()
+
+		Papa.parse(url, {
+			download: true,
+			header: true,
+			step: function(row) {
+				$('#data-table-head').html(dataHead(row.meta['fields']))
+				$('#data-table-body').append(dataRow(row.data[0]))
+			},
+			complete: function() {
+				$('#loading').hide()
+
+				var $table = $('table.table');
+				$table.floatThead({
+					scrollContainer: function($table) {
+						return $table.closest('.table-container');
+					}
+				});
+
+				$('#data-table-body').show()
+				$('#download-csv').removeClass('hidden')
+			}
+		});
+
+		function dataHead (data) {
+			var s = '<tr>'
+
+			$.each(data, function(index, value) {
+					s += '<th>'
+					s += value
+					s += '</th>'
+			})
+
+			s += '</tr>'
+
+			return s
+		}
+
+		function dataRow (data) {
+			var s = '<tr>'
+
+			$.each(data, function(index, value) {
+				s += '<td>'
+				s += value
+				s += '</td>'
+			})
+
+			s += '</tr>'
+
+			return s
+		}
+	};
+
+	dataTable()
+</script>

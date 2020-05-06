@@ -17,13 +17,13 @@ feature "Logged in access to pages", type: :feature do
     end
 
     scenario "logged in publishers can access the home page and datasets" do
-      expect(CGI.unescapeHTML(page.html)).to have_content "Signed in as #{@user.name}"
-      click_link "Public datasets"
+      expect(CGI.unescapeHTML(page.html)).to have_content "#{@user.name}"
+      click_link "Data collection"
       expect(page).to have_content "Woof"
     end
 
     scenario "logged in publishers can view their dataset file schemas (or see there are none)" do
-      click_link 'Dataset file schemas'
+      click_link 'Schemas'
       expect(page).to have_content "You currently have no dataset file schemas"
     end
 
@@ -47,4 +47,3 @@ feature "Logged in access to pages", type: :feature do
     end
   end
 end
-

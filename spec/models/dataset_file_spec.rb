@@ -48,8 +48,13 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
     expect(file.valid?).to eq(false)
   end
 
+	it "is a csv filetype" do
+		file = create(:dataset_file, title: "Something horrible")
+		expect(file.file_type == '.csv').to eq(true)
+	end
+
   context "self.create" do
-    context "with uploaded file" do
+    context "with uploaded csv file" do
 
       before(:each) do
         path = File.join(Rails.root, 'spec', 'fixtures', 'test-data.csv')
@@ -59,7 +64,7 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
           "title" => 'My File',
           "file" => @tempfile,
           "description" => 'A description',
-          "storage_key" => @storage_key
+          "storage_key" => 'test-data.csv'
         }
       end
 
@@ -223,23 +228,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(dataset_file.schema_name).to eq schema_name
     end
 
-    it 'does not validate against a good schema with bad data' do
-
-      storage_key = 'invalid-schema.csv'
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: "example.csv",
-                                  title: "My Awesome File",
-                                  description: "My Awesome File Description",
-                                  storage_key: storage_key,
-                                 # file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
-    end
-
     it 'does not validate against a bad schema with good data' do
 
       schema_path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/bad-schema.json')
@@ -288,24 +276,6 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.valid?).to eq(true)
       expect(@dataset.valid?).to eq(true)
     end
-
-    it 'does not validate with bad data' do
-      file_path = File.join(Rails.root, 'spec', 'fixtures', 'invalid-cotw.csv')
-      storage_key = 'invalid-cotw.csv'
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: "people.csv",
-                                  title: "People",
-                                  description: "People are terrible",
-                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  storage_key: storage_key,
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(@dataset_file_schema.is_schema_otw?).to be true
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
-    end
   end
 
   context 'with multiple csv-on-the-web files' do
@@ -333,87 +303,27 @@ describe DatasetFile, vcr: { :match_requests_on => [:host, :method] } do
       expect(file.valid?).to eq(true)
       expect(@dataset.valid?).to eq(true)
     end
-
-    it 'does not validate with duff data' do
-      file_path = File.join(Rails.root, 'spec', 'fixtures', 'hats-cotw.csv')
-      file_name = 'hats-cotw.csv'
-      storage_key = "uploads/#{file_name}"
-      file = build(:dataset_file, dataset_file_schema: @dataset_file_schema,
-                                  filename: file_name,
-                                  title: "Hats",
-                                  description: "All around my hat",
-                                  file: Rack::Test::UploadedFile.new(file_path, "text/csv"),
-                                  storage_key: storage_key,
-                                  dataset: @dataset)
-
-      @dataset.dataset_files << file
-
-      expect(file.valid?).to eq(false)
-      expect(@dataset.valid?).to eq(false)
-    end
-
   end
 
-  context 'with a non-csv file' do
-    before(:each) do
-      @dataset = build(:dataset)
-      path = File.join(Rails.root, 'spec', 'fixtures', 'schemas/good-schema.json')
-      @file = Rack::Test::UploadedFile.new(path, "text/csv")
-      storage_key = 'schemas/good-schema.json'
-    end
+	context 'as a shapefile' do
+		before(:each) do
+			path = File.join(Rails.root, 'spec', 'fixtures', 'test-shapefile.shp')
+			@tempfile = Rack::Test::UploadedFile.new(path, "text/shp")
 
-    it 'errors on create' do
-      file = build(:dataset_file, filename: "example.csv",
-                                   title: "My Awesome File",
-                                   description: "My Awesome File Description",
-                                   file: get_string_io_from_fixture_file('datapackage.json'),
-                                   storage_key: 'datapackage.json',
-                                   dataset: @dataset)
+			@file = {
+				"title" => 'My File',
+				"file" => @tempfile,
+				"description" => 'A description',
+				"storage_key" => 'test-shapefile.shp'
+			}
+		end
 
-      @dataset.dataset_files << file
+		it "creates a file" do
+			file = DatasetFile.create(@file)
 
-      expect(file.valid?).to eq(false)
-      expect(file.errors.messages[:file].first).to eq('does not appear to be a valid CSV. Please check your file and try again.')
-      expect(@dataset.valid?).to eq(false)
-    end
-
-    it 'errors on create with garbage' do
-
-      allow(CSV).to receive(:parse).and_raise("boom")
-
-      file = build(:dataset_file, filename: "example.csv",
-                                   title: "My Awesome File",
-                                   description: "My Awesome File Description",
-                                   file: @file,
-                                   storage_key: storage_key,
-                                   dataset: @dataset)
-
-      @dataset.dataset_files << file
-      expect(file.valid?).to eq(false)
-      expect(file.errors.messages[:file].first).to eq('had some problems trying to upload. Please check your file and try again.')
-      expect(@dataset.valid?).to eq(false)
-    end
-
-    it 'errors on update' do
-      # Create a nice working file
-      file = create(:dataset_file, title: "Example", storage_key: storage_key)      
-      @dataset.dataset_files << file
-      @dataset.save
-
-      # Update it with some non-CSV junk
-      new_file = {
-        "id" => file.id,
-        "file" => file,
-        "description" => 'A new description',
-        "storage_key" => "datapackage.json"
-      }
-
-      file.update_file(new_file)
-      @dataset.save
-
-      expect(file.valid?).to eq(false)
-      expect(file.errors.messages[:file].first).to eq('does not appear to be a valid CSV. Please check your file and try again.')
-      expect(@dataset.valid?).to eq(false)
-    end
-  end
+			expect(file.title).to eq(@file["title"])
+			expect(file.filename).to eq("my-file.shp")
+			expect(file.description).to eq(@file["description"])
+		end
+	end
 end

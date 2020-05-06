@@ -10,17 +10,16 @@ class DatasetsController < ApplicationController
   before_action :set_licenses, only: [:create, :new, :edit, :update]
   before_action :set_direct_post, only: [:edit, :new]
   before_action(only: :index) { alternate_formats [:json, :feed] }
-  
+
   authorize_resource
 
   skip_before_action :verify_authenticity_token, only: [:create, :update], if: Proc.new { !current_user.nil? }
 
-  def index
-    @title = "Public Datasets"
-    @datasets = Dataset.github_public.order(created_at: :desc)
-  end
+	def index
+		redirect_to :dashboard
+	end
 
-  def dashboard
+	def dashboard
     @title = "My Datasets"
     @datasets = current_user.datasets
   end
@@ -33,7 +32,6 @@ class DatasetsController < ApplicationController
   end
 
   def user_datasets
-    @title = "My Datasets"
     @datasets = current_user.datasets
     render :dashboard
   end
@@ -44,6 +42,7 @@ class DatasetsController < ApplicationController
   end
 
   def created
+		@dataset
     @publishing_method = params[:publishing_method]
     logger.info "DatasetsController: In created for publishing_method #{@publishing_method}"
   end
@@ -58,17 +57,27 @@ class DatasetsController < ApplicationController
     @dataset_file_schemas = available_schemas
   end
 
+  def publish_dataset
+    @dataset = Dataset.find(params[:dataset_id])
+    if @dataset
+      if !@dataset.repo
+        CreateRepository.perform_async(@dataset.id)
+        flash[:success] = "Your collection is being published and will be available shortly!"
+      else
+        @dataset.update_dataset_in_github
+        flash[:success] = "Your changes are being published and will be available shortly!"
+      end
+      redirect_to :back
+    end
+  end
+
   def create
     logger.info "DatasetsController: In create"
-    files_array = get_files_as_array_for_serialisation
+		files_array = get_files_as_array_for_serialisation
+
     CreateDataset.perform_async(dataset_params.to_h, files_array, current_user.id, channel_id: params[:channel_id])
 
-    if params[:async]
-      logger.info "DatasetsController: In create with params aysnc"
-      head :accepted
-    else
-      redirect_to created_datasets_path(publishing_method: dataset_params[:publishing_method])
-    end
+    redirect_to created_datasets_path
   end
 
   def edit
@@ -102,7 +111,7 @@ class DatasetsController < ApplicationController
       success_message = "#{success_message} - but we could not find the repository in GitHub to delete"
     end
     @dataset.destroy
-    redirect_to dashboard_path, notice: success_message
+    redirect_to root_path
   end
 
   private
@@ -110,8 +119,8 @@ class DatasetsController < ApplicationController
   def check_mandatory_fields
     logger.info "DatasetsController: In check_mandatory_fields"
     check_files
-    check_publisher
-    render 'new' unless flash.empty?
+    # check_publisher
+    # render 'new' unless flash.empty?
   end
 
   def check_publisher
@@ -127,7 +136,7 @@ class DatasetsController < ApplicationController
   def set_direct_post
     @s3_direct_post = FileStorageService.private_presigned_post
   end
-  
+
   def available_schemas
     DatasetFileSchema.where(user_id: current_user.id).or(DatasetFileSchema.where(restricted: false))
   end

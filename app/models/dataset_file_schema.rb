@@ -34,7 +34,7 @@ class DatasetFileSchema < ApplicationRecord
   attr_accessor :parsed_schema
 
   def json_table_schema
-    @json_table_schema ||= JsonTableSchema::Schema.new(JSON.parse(schema))
+    @json_table_schema ||= TableSchema::Schema.new(JSON.parse(schema))
   end
 
   def to_builder

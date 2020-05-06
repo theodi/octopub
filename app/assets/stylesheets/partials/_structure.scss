@@ -1,0 +1,191 @@
+@import "modules/base";
+
+@mixin home-box($hv) {
+	display: flex;
+	justify-content: center;
+  background: $hv;
+  padding: 0.6em;
+	margin: 0 -16px 0 -16px;
+
+	.pub {
+		font-weight: 100;
+	}
+
+	.home-text {
+		padding: 2em;
+		text-align: left;
+		max-width: 40%;
+
+		.underline {
+			text-decoration: underline;
+		}
+
+		.btn {
+			margin: 1em 1em 0 0;
+		}
+	}
+
+	.home-image {
+		padding: 2em;
+		text-align: left;
+		max-width: 45%;
+
+		img {
+			width: 100%;
+			margin-top: 1em;
+		}
+	}
+}
+
+.home-box-head {
+	@include home-box($white);
+	display: block;
+	padding: 3em;
+	margin: -20px -16px 0.6em -16px;
+
+	h1 {
+		font-weight: 100 !important;
+	}
+
+	p {
+		margin-bottom: 1em;
+	}
+
+	span {
+		font-weight: 500 !important;
+	}
+
+	.pub {
+		font-weight: 100;
+	}
+}
+
+.home-box-table {
+	@include home-box($light-grey);
+	display: block;
+	padding: 1em 10% 1em 10%;
+
+	.row {
+		margin-top: $margin * 2;
+
+		.table-count-box {
+			padding-top: 1.2em;
+			text-align: right;
+		}
+	}
+}
+
+.home-box-dashboard {
+	@include home-box($light-grey);
+	display: block;
+	padding: 2em 10% 1em 10%;
+}
+
+.home-box-white {
+	@include home-box($black);
+	color: $white;
+}
+
+.home-box-black {
+	@include home-box($black);
+	color: $white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+}
+
+.home-box-grey {
+	@include home-box($light-grey);
+
+	a {
+		color: black;
+		text-decoration: underline;
+	}
+}
+
+.home-box-blue {
+	@include home-box($dusk-blue);
+	color: white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+}
+
+.home-box-cobalt {
+	@include home-box($cobalt);
+	color: white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+}
+
+.home-box-beta {
+	@include home-box(#2f529f);
+	display: block;
+	color: white;
+	padding: 1em 3em 1em 3em;
+	margin: -20px -16px 0.6em -16px;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+}
+
+@media only screen and (max-width: 480px){
+
+	.navbar {
+
+		.menu-icon {
+			display: block;
+			float: right;
+			padding: $padding/2;
+			margin-right: $padding/2;
+		}
+	}
+
+	.home-box-head, .home-box-beta, .home-box-white, .home-box-black,
+	.home-box-grey, .home-box-blue, .home-box-cobalt {
+		padding: 1.4em !important;
+
+		.home-text {
+			width: 100%;
+			padding: 0 !important;
+			max-width: 100% !important;
+		}
+		.home-image {
+			display: none;
+		}
+	}
+
+	.navbar-nav {
+		text-align: right;
+		display: none;
+	}
+
+	.btn-secondary {
+		margin-bottom: 1em;
+	}
+
+	footer {
+		width: 100vw;
+
+		.row {
+			margin: 0;
+
+			div {
+				padding: 0;
+			}
+		}
+
+		.tools, .help, .licence {
+			display: none;
+		}
+	}
+}

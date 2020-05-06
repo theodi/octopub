@@ -1,5 +1,3 @@
-<h1 class="page-header">Add Dataset</h1>
-
 <%= render 'new_form',
   url: datasets_path,
   dataset: @dataset,
@@ -7,3 +5,6 @@
   licenses: @licenses,
   dataset_file_schemas: @dataset_file_schemas,
   method: :post %>
+
+<%= javascript_include_tag 'file_upload' %>
+<%= javascript_include_tag 'license_wizard' %>

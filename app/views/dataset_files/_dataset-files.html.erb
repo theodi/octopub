@@ -1,0 +1,64 @@
+<div class="row title-dataset">
+  <div class="col-md-3">
+    <h2>Files:</h2>
+  </div>
+  <div class="col-md-5 col-md-offset-7 icon-blue" style="text-align: right;">
+    <i class="fa fa-plus-circle"></i>
+    <a href="">Add another file</a>
+  </div>
+</div>
+<div class="box-dataset">
+  <% if @dataset_files.exists? %>
+    <table class="table table-striped"
+    data-toggle="table"
+		data-sort-name="creation"
+		data-sort-order="desc"
+    data-classes="table"
+    data-filter-control="true">
+      <thead>
+        <tr>
+          <th data-sortable="true">Name</th>
+          <th data-sortable="true">Schema</th>
+					<th data-sortable="true">File type</th>
+          <th data-sortable="true" data-field="creation">Creation date</th>
+          <th data-sortable="true">Validation</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody
+        <% @dataset_files.each do |file| %>
+          <tr>
+            <td>
+							<%= link_to(file.title.truncate(30), dataset_files_path(@dataset.id, file.id), class:"collection-link") %>
+						</td>
+            <td><%= file.dataset_file_schema.name if file.dataset_file_schema %></td>
+						<td><%= file.file_type %></td>
+						<td><%= time_or_date(file.created_at.utc) %></td>
+						<% if file.file_type == '.csv' %>
+							<% if !file.validation.nil? %>
+								<%= render :partial => "validation_badge", :locals => {file: file, dataset: @dataset} %>
+							<% else %>
+								<td><a href="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>"><img src="https://csvlint.io/?uri=<%= @dataset.gh_pages_url %>/data/<%= file.filename %>&format=svg" alt="CSVlint validation result" /></a></td>
+							<% end %>
+						<% else %>
+							<td>N/A</td>
+						<% end %>
+            <td>
+              <div class="dropdown show">
+                <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  ...
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                  <%= link_to("<div class='dropdown-link'>View</div>".html_safe, dataset_files_path(@dataset.id, file.id), class: "dropdown-item") %>
+									<% if can? :edit, @dataset %>
+										<%= link_to("<div class='dropdown-link'>Edit</div>".html_safe, edit_dataset_path(@dataset.id), class: "dropdown-item") %>
+									<% end %>
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

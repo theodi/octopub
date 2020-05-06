@@ -1,0 +1,79 @@
+@import "modules/base";
+
+.navbar {
+  background: $black;
+  color: $white;
+  border-color: $black;
+  border-radius: 0;
+  padding: $padding/2;
+
+	.menu-icon {
+		display: none;
+	}
+
+  .navbar-header > .navbar-brand {
+    color: $bright-orange;
+    font-size: 1.9em;
+    font-weight: 500;
+    margin-right: $margin;
+
+    .pub {
+      font-weight: 100;
+    }
+
+    .nav-img {
+      width: 32px;
+      margin-top: -5px;
+    }
+  }
+
+  .navbar-nav {
+    li > a {
+      color: $white;
+      font-size: 18px;
+      margin-right: $margin;
+
+      &:hover {
+        color: $white;
+      }
+    }
+
+    .active {
+      color: $bright-orange;
+
+      &:hover {
+        color: $bright-orange;
+      }
+    }
+
+    .disabled {
+      font-size: 18px;
+      margin-right: 1em;
+      color: grey;
+      pointer-events: none;
+    }
+  }
+
+  .navbar-text {
+    margin: 7px 15px 5px 0 !important;
+		text-align: right !important;
+
+    .btn-primary {
+      margin-left: $margin;
+    }
+
+    a {
+      color: $white;
+      text-decoration: underline;
+    }
+
+		.beta {
+			font-size: 18px;
+			text-decoration: none;
+			border: 3px solid white;
+			border-radius: 25px;
+			padding: 0.4em 0.4em 0.2em 0.4em;
+			margin-left: 1em;
+		}
+  }
+}
