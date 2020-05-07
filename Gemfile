@@ -40,7 +40,7 @@ gem 'bootstrap-table-rails', '1.12.1'
 gem 'emd'
 gem 'jquery-validation-rails'
 gem 'leaflet-rails'
-gem 'sprockets', '~>3.0'
+gem 'sprockets', '~>4.0'
 
 # Logging and debug
 gem 'awesome_print'
