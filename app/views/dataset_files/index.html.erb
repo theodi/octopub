@@ -23,7 +23,7 @@
 
 				<% if @dataset.repo %>
 					<%= bs_button_to "Download data package", @dataset.gh_pages_url + '/datapackage.json', target: "_blank", rel: "alternate",:class => "btn btn-tertiary pull-right" %>
-					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary pull-right" %>
+					<%= bs_button_to "View on Github", @dataset.gh_pages_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary pull-right" %>
 				<% end %>
 			</div>
 		</div>
