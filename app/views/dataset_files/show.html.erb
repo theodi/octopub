@@ -9,9 +9,9 @@
 			<div class="col-md-9">
 				<%= bs_button_to "Download File", @s3_file, rel: "alternate", :class => "btn btn-secondary" %>
 				<% if @dataset.published_status == 'unpublished' %>
-					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
+					<%= bs_button_to "View on Github", @dataset_file.gh_pages_url.sub(/#{File.extname(@dataset_file.gh_pages_url)}$/, ''), target: "_blank", rel: "alternate",:class => "btn btn-tertiary disabled" %>
 				<% else %>
-					<%= bs_button_to "View on Github", @dataset.github_url, target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
+					<%= bs_button_to "View on Github", @dataset_file.gh_pages_url.sub(/#{File.extname(@dataset_file.gh_pages_url)}$/, ''), target: "_blank", rel: "alternate",:class => "btn btn-tertiary" %>
 				<% end %>
 			</div>
 		</div>
