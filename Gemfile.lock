@@ -103,7 +103,9 @@ GEM
       sassc (>= 2.0.0)
     bootstrap-select-rails (1.13.8)
     bootstrap-table-rails (1.12.1)
-    bootstrap_form (2.7.0)
+    bootstrap_form (4.5.0)
+      actionpack (>= 5.2)
+      activemodel (>= 5.2)
     buftok (0.2.0)
     builder (3.2.4)
     bundler-audit (0.6.1)
@@ -561,7 +563,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.4.1)
   bootstrap-select-rails
   bootstrap-table-rails (= 1.12.1)
-  bootstrap_form (~> 2.7)
+  bootstrap_form (~> 4.5)
   bundler-audit
   byebug
   cancancan (~> 2.1)
