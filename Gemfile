@@ -23,7 +23,7 @@ gem 'alternate_rails', '~> 5.0.0', git: 'https://github.com/theodi/alternate-rai
 gem 'csvlint', '~> 0.4'
 
 # New way of validating schemas
-gem 'tableschema', '0.3.0'
+gem 'tableschema', '0.3.1'
 
 # User related
 gem 'omniauth-github'
