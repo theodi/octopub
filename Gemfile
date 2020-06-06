@@ -27,7 +27,7 @@ gem 'tableschema', '0.3.0'
 
 # User related
 gem 'omniauth-github'
-gem 'cancancan', '~> 2.1'
+gem 'cancancan', '~> 3.1'
 
 # Bootstrap and view stuff
 gem 'bootstrap-sass', '~> 3.4.1'
