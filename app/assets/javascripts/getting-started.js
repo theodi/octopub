@@ -1,35 +1,34 @@
 function addAccordionListeners() {
-    var opener = document.getElementsByClassName("opener");
-    var i;
+  var opener = document.getElementsByClassName("opener");
+  var i;
 
-    for (i = 0; i < opener.length; i++) {
-        opener[i].addEventListener("click", function () {
-					console.log(this.classList)
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            if (panel.style.maxHeight) {
-                panel.style.maxHeight = null;
-            } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-            }
-        });
-    }
+  for (i = 0; i < opener.length; i++) {
+    opener[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
 }
 
-function anchorTagOpener() {
-	$(document).ready(function() {
-		let hash = window.location.hash.replace('#','');
-		let opener = document.getElementsByClassName(hash)[0];
-		var panel = opener.nextElementSibling;
-		console.log(panel)
+function readMoreAboutLicensesOpener() {
+  var link   = $('#read-more-about-licenses')
+  var button = $('#making-data-open-button')
+  var panel  = button.next()
 
-		opener.classList.toggle('active')
+  link.click(function(e) {
+    e.preventDefault()
 
-		if (panel.style.maxHeight) {
-				panel.style.maxHeight = null;
-		} else {
-				panel.style.maxHeight = panel.scrollHeight + "px";
-		}
-		$(window).scrollTop($("." + hash).offset().top)
-	})
+    button.addClass("active");
+
+    $('html, body').animate({
+      scrollTop: button.offset().top
+    }, 250);
+
+    panel.css('maxHeight', panel.get(0).scrollHeight + 'px')
+  })
 }

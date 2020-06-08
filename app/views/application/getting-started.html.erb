@@ -182,7 +182,7 @@
 	          licence that defines who can use it and for what purposes. Without a licence people just won't know whether
 	          they can use it or how, and the lawyers would say that they mustn't. Without a licence the data isn't
 	          <i>explicitly</i> free for everyone to access, use and share</p>
-	        <p>Read more about licences <a href="">here</a></p>
+	        <p>Read more about licences <a id="read-more-about-licenses" href="">here</a></p>
 	        <br>
 	        <p><b>Find out more</b></p>
 	        <p>Read more about open data <a href="https://theodi.org/what-is-open-data" target="_blank">here</a></p>
@@ -222,7 +222,7 @@
 	        <br>
 	      </div>
 
-	      <button class="opener">Making Data Open: Licencing</button>
+	      <button class="opener" id="making-data-open-button">Making Data Open: Licencing</button>
 	      <div class="gs-panel">
 	        <br>
 	        <p>At its simplest, open data requires just two things: data and openness. There are lots of aspects to
@@ -327,6 +327,8 @@
 <br>
 
 <script type="text/javascript">
-    addAccordionListeners();
-		anchorTagOpener();
+	document.addEventListener('DOMContentLoaded', function() {
+	  addAccordionListeners();
+		readMoreAboutLicensesOpener();
+	})
 </script>
