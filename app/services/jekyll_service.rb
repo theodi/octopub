@@ -19,17 +19,18 @@ class JekyllService
 
     create_jekyll_files
     push_to_github
-    # wait_for_gh_pages_build(5, @dataset)
-    # create_certificate(dataset)
+    wait_for_gh_pages_build(5, @dataset)
+    create_certificate(dataset)
   end
 
   def wait_for_gh_pages_build(delay = 5, dataset)
     Rails.logger.info "in wait_for_gh_pages_build #{delay}, #{dataset}"
-    sleep(delay) while ! gh_pages_building?(dataset)
+    sleep(delay) while gh_pages_building?(dataset)
   end
 
   def gh_pages_building?(dataset)
     Rails.logger.info "in gh_pages_building?"
+    # Return true while building. Return false when built.
     dataset.user.octokit_client.pages(dataset.full_name).status != "built"
   end
 
@@ -241,13 +242,22 @@ class JekyllService
 
   def create_certificate(dataset)
     Rails.logger.info "in create_certificate"
-    cert = CertificateFactory::Certificate.new(dataset.gh_pages_url)
 
+    # Make sure the scheme is set to https or certificate generation will fail.
+    uri = URI(dataset.gh_pages_url)
+    uri.scheme = 'https'
+    cert = CertificateFactory::Certificate.new(uri.to_s + '/')
     gen = cert.generate
 
     if gen[:success] == 'pending'
       result = cert.result
-      add_certificate_url(result[:certificate_url], dataset)
+      # The returned certificate url is http. Set it to https or the certificate
+      # badge will not render on the GitHub Pages site.
+      if result[:certificate_url]
+        uri = URI(result[:certificate_url])
+        uri.scheme = 'https'
+        add_certificate_url(uri.to_s, dataset)
+      end
     end
   end
 

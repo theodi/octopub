@@ -14,6 +14,9 @@ class CreateDataset
 			dataset_params.merge(job_id: self.jid)
 		))
 
+		@dataset.publisher_name = @dataset.owner
+		@dataset.publisher_url  = @dataset.github_url
+
 		files.each do |dataset_file_creation_hash|
 
 			dataset_file = DatasetFile.create(dataset_file_creation_hash)
