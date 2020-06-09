@@ -45,8 +45,15 @@
       vertical-align: middle;
 
       .dropdown-toggle {
-        font-size: 1.2em;
         text-align: center;
+        background: none;
+        border: none;
+        color: $dusk-blue;
+        padding: 0;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       .dropdown-menu {

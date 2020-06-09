@@ -29,9 +29,9 @@
             <td><%= file.dataset_file_schema.count_datasets_using_this_schema %></td>
             <td>
               <div class="dropdown show">
-                <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  ...
-                </a>
+                <button class="dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  &#8230;
+                </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                   <%= link_to("<div class='dropdown-link'>View</div>".html_safe, dataset_file_schema_path(file.dataset_file_schema_id), class: "dropdown-item") %>
                   <% if can? :delete, file.dataset_file_schema %>
