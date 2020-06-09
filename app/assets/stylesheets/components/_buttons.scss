@@ -61,6 +61,10 @@
   }
 
   &:hover {
-    color: $white;
+    color: $dusk-blue;
+  }
+
+  &:visited {
+    color: $dusk-blue;
   }
 }
