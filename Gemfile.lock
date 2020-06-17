@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/theodi/alternate-rails.git
-  revision: e5d1af8f972174f5a6df6121575b3a5e5528c97d
+  revision: d925c98a234efbd63aaa0103b252c7834d4966de
   specs:
     alternate_rails (5.0.0)
       rails (>= 5.0.0)
@@ -297,7 +297,7 @@ GEM
       actionpack (>= 3.0, < 7.0)
       activerecord (>= 3.0, < 7.0)
       railties (>= 3.0, < 7.0)
-    loofah (2.5.0)
+    loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.2.5)
@@ -372,7 +372,7 @@ GEM
       multi_json (~> 1.0)
       pusher-signature (~> 0.1.8)
     pusher-signature (0.1.8)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-protection (2.0.8.1)
