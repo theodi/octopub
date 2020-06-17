@@ -11,7 +11,7 @@ class InferredDatasetFileSchemaCreationService
     if [ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile].include?(csv_storage_url_or_file.class)
       Rails.logger.info "file is an Http::UploadedFile (non javascript?)"
       storage_object = FileStorageService.create_and_upload_public_object(@inferred_dataset_file_schema.name, csv_storage_url_or_file.read)
-      storage_object.key(csv_storage_url_or_file.original_filename)
+      storage_object.key
     else
       Rails.logger.info "file is not an http uploaded file, it's a URL"
       FileStorageService.get_storage_key_from_public_url(csv_storage_url_or_file)
