@@ -488,7 +488,7 @@ GEM
     spring (2.1.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
-    sprockets (3.7.2)
+    sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -619,7 +619,7 @@ DEPENDENCIES
   sidekiq
   spring
   spring-commands-rspec
-  sprockets (~> 3.0)
+  sprockets (~> 4.0)
   tableschema (= 0.3.0)
   term-ansicolor
   terminal-notifier-guard (~> 1.7.0)
